@@ -26,4 +26,8 @@
   <java-symbol type="id" name="aerr_copy" />
   <java-symbol type="string" name="url_copy_success" />
   <java-symbol type="string" name="url_copy_failed" />
+
+  <!-- Button backlight -->
+  <java-symbol type="dimen" name="config_buttonBrightnessSettingDefaultFloat" />
+  <java-symbol type="bool" name="config_deviceHasVariableButtonBrightness" />
 </resources>

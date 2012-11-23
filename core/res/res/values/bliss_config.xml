@@ -26,4 +26,8 @@
     <!-- Names of the key handler classes -->
     <string-array name="config_deviceKeyHandlerClasses" translatable="false">
     </string-array>
+
+    <!-- Button backlight -->
+    <dimen name="config_buttonBrightnessSettingDefaultFloat">1.0</dimen>
+    <bool name="config_deviceHasVariableButtonBrightness">false</bool>
 </resources>
