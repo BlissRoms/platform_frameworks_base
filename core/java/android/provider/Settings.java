@@ -5813,6 +5813,15 @@ public final class Settings {
         private static final Validator QS_BLUR_ALPHA_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
         /**
+         * Whether to launch default music player when headset plugged in
+         * @hide
+         */
+        public static final String HEADSET_CONNECT_PLAYER = "headset_connect_player";
+        /** @hide */
+        private static final Validator HEADSET_CONNECT_PLAYER_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * FOD pressed state
          * @hide
          */
@@ -5932,6 +5941,7 @@ public final class Settings {
             QS_PANEL_BG_USE_ACCENT,
             QS_BLUR,
             QS_BLUR_ALPHA,
+            HEADSET_CONNECT_PLAYER,
         };
 
         /**
@@ -6111,6 +6121,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_WALL);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_FW);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_ACCENT);
+            PRIVATE_SETTINGS.add(HEADSET_CONNECT_PLAYER);
         }
 
         /**
@@ -6262,6 +6273,7 @@ public final class Settings {
             VALIDATORS.put(QS_PANEL_BG_USE_ACCENT, QS_PANEL_BG_USE_ACCENT_VALIDATOR);
             VALIDATORS.put(QS_BLUR, QS_BLUR_VALIDATOR);
             VALIDATORS.put(QS_BLUR_ALPHA, QS_BLUR_ALPHA_VALIDATOR);
+            VALIDATORS.put(HEADSET_CONNECT_PLAYER, HEADSET_CONNECT_PLAYER_VALIDATOR);
         }
 
         /**
