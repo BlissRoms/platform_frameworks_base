@@ -5813,6 +5813,15 @@ public final class Settings {
         private static final Validator QS_BLUR_ALPHA_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
         /**
+         * Whether to launch default music player when headset plugged in
+         * @hide
+         */
+        public static final String HEADSET_CONNECT_PLAYER = "headset_connect_player";
+        /** @hide */
+        private static final Validator HEADSET_CONNECT_PLAYER_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * FOD pressed state
          * @hide
          */
@@ -5916,6 +5925,7 @@ public final class Settings {
             OMNI_PULSE_BRIGHTNESS,
             OMNI_DOZE_BRIGHTNESS,
             FLASHLIGHT_ON_CALL,
+<<<<<<< HEAD
             LOCK_SCREEN_CUSTOM_NOTIF,
             LOCKSCREEN_MAX_NOTIF_CONFIG,
             SENSOR_BLOCK,
@@ -5932,6 +5942,11 @@ public final class Settings {
             QS_PANEL_BG_USE_ACCENT,
             QS_BLUR,
             QS_BLUR_ALPHA,
+=======
+            LOCKSCREEN_LOCK_ICON,
+            HEADSET_CONNECT_PLAYER,
+            // AICP Settings end
+>>>>>>> d09fc58282e... AudioDeviceInventory: launch default music player on headset connect [1/2]
         };
 
         /**
@@ -6097,6 +6112,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_PULSE_BRIGHTNESS);
             PRIVATE_SETTINGS.add(OMNI_DOZE_BRIGHTNESS);
             PRIVATE_SETTINGS.add(FLASHLIGHT_ON_CALL);
+<<<<<<< HEAD
             PRIVATE_SETTINGS.add(LOCK_SCREEN_CUSTOM_NOTIF);
             PRIVATE_SETTINGS.add(LOCKSCREEN_MAX_NOTIF_CONFIG);
             PRIVATE_SETTINGS.add(SENSOR_BLOCK);
@@ -6111,6 +6127,11 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_WALL);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_FW);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_ACCENT);
+=======
+            PRIVATE_SETTINGS.add(LOCKSCREEN_LOCK_ICON);
+            PRIVATE_SETTINGS.add(HEADSET_CONNECT_PLAYER);
+            // AICP Settings end
+>>>>>>> d09fc58282e... AudioDeviceInventory: launch default music player on headset connect [1/2]
         }
 
         /**
@@ -6246,6 +6267,7 @@ public final class Settings {
             VALIDATORS.put(OMNI_PULSE_BRIGHTNESS, OMNI_PULSE_BRIGHTNESS_VALIDATOR);
             VALIDATORS.put(OMNI_DOZE_BRIGHTNESS, OMNI_DOZE_BRIGHTNESS_VALIDATOR);
             VALIDATORS.put(FLASHLIGHT_ON_CALL, FLASHLIGHT_ON_CALL_VALIDATOR);
+<<<<<<< HEAD
             VALIDATORS.put(LOCK_SCREEN_CUSTOM_NOTIF, LOCK_SCREEN_CUSTOM_NOTIF_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_MAX_NOTIF_CONFIG, LOCKSCREEN_MAX_NOTIF_CONFIG_VALIDATOR);
             VALIDATORS.put(SENSOR_BLOCK, SENSOR_BLOCK_VALIDATOR);
@@ -6262,6 +6284,11 @@ public final class Settings {
             VALIDATORS.put(QS_PANEL_BG_USE_ACCENT, QS_PANEL_BG_USE_ACCENT_VALIDATOR);
             VALIDATORS.put(QS_BLUR, QS_BLUR_VALIDATOR);
             VALIDATORS.put(QS_BLUR_ALPHA, QS_BLUR_ALPHA_VALIDATOR);
+=======
+            VALIDATORS.put(LOCKSCREEN_LOCK_ICON, LOCKSCREEN_LOCK_ICON_VALIDATOR);
+            VALIDATORS.put(HEADSET_CONNECT_PLAYER, HEADSET_CONNECT_PLAYER_VALIDATOR);
+            // AICP Settings end
+>>>>>>> d09fc58282e... AudioDeviceInventory: launch default music player on headset connect [1/2]
         }
 
         /**
