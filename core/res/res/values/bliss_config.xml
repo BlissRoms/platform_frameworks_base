@@ -18,4 +18,7 @@
     <!-- Wheter to enable doze always on -->
     <bool name="config_enableDozeAlwaysOn">false</bool>
 
+  <!-- Package Manager -->
+  <java-symbol type="array" name="config_disabledComponents" />
+
 </resources>
