@@ -6634,6 +6634,12 @@ public final class Settings {
         }
 
         /**
+         * Boolean value whether to link ringtone and notification volume
+         * @hide
+         */
+        public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
+
+        /**
          * Control whether to enable adaptive sleep mode.
          * @hide
          */
