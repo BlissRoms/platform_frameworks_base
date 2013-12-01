@@ -4597,6 +4597,15 @@ public final class Settings {
         private static final Validator BURN_IN_PROTECTION_INTERVAL_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
         /**
+         * Whether to mute annoying notifications
+         * @hide
+         */
+        public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD =
+                "mute_annoying_notifications_threshold";
+        /** @hide */
+        public static final Validator MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD_VALIDATOR = ANY_STRING_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4855,6 +4864,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_DATE_FORMAT);
             PRIVATE_SETTINGS.add(BURN_IN_PROTECTION);
             PRIVATE_SETTINGS.add(BURN_IN_PROTECTION_INTERVAL);
+            PRIVATE_SETTINGS.add(MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD);
         }
 
         /**
@@ -5007,6 +5017,7 @@ public final class Settings {
             VALIDATORS.put(STATUSBAR_CLOCK_DATE_FORMAT, STATUSBAR_CLOCK_DATE_FORMAT_VALIDATOR);
             VALIDATORS.put(BURN_IN_PROTECTION, BURN_IN_PROTECTION_VALIDATOR);
             VALIDATORS.put(BURN_IN_PROTECTION_INTERVAL, BURN_IN_PROTECTION_INTERVAL_VALIDATOR);
+            VALIDATORS.put(MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD, MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD_VALIDATOR);
         }
 
         /**
