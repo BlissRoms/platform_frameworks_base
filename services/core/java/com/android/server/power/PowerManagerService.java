@@ -190,6 +190,7 @@ public final class PowerManagerService extends SystemService
     private static final int HALT_MODE_REBOOT_SAFE_MODE = 2;
 
     private static final float PROXIMITY_NEAR_THRESHOLD = 5.0f;
+
     private static final int BUTTON_ON_DURATION = 5 * 1000;
 
     private final Context mContext;
@@ -743,6 +744,9 @@ public final class PowerManagerService extends SystemService
                     Settings.Secure.HARDWARE_KEYS_DISABLE),
                     false, mSettingsObserver, UserHandle.USER_ALL);
 
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PROXIMITY_ON_WAKE),
+                    false, mSettingsObserver, UserHandle.USER_ALL);
             // Go.
             readConfigurationLocked();
             updateSettingsLocked();
@@ -891,6 +895,10 @@ public final class PowerManagerService extends SystemService
         mHardwareKeysDisable = Settings.Secure.getIntForUser(resolver,
                 Settings.Secure.HARDWARE_KEYS_DISABLE, 0,
                 UserHandle.USER_CURRENT) != 0;
+
+        mProximityWakeEnabled = Settings.System.getInt(resolver,
+                Settings.System.PROXIMITY_ON_WAKE,
+                mProximityWakeEnabledByDefaultConfig ? 1 : 0) == 1;
 
         mDirty |= DIRTY_SETTINGS;
     }
