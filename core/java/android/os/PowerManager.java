@@ -473,7 +473,6 @@ public final class PowerManager {
     }
 
     /**
-<<<<<<< HEAD
      * Gets the minimum supported screen brightness setting for VR Mode.
      * @hide
      */
