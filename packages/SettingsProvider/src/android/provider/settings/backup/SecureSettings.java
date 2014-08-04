@@ -223,5 +223,6 @@ public class SecureSettings {
         Settings.Secure.BLUETOOTH_LE_BROADCAST_APP_SOURCE_NAME,
 	// Bliss Additions
 	Settings.Secure.QUICK_SETTINGS_TILES_VIBRATE,
+        Settings.Secure.LOCKSCREEN_PIN_SCRAMBLE_LAYOUT,
     };
 }
