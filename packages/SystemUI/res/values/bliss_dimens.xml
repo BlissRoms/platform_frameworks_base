@@ -34,4 +34,7 @@
     <!-- carrier label text height -->
     <dimen name="status_bar_carrier_height">14dp</dimen>
 
+    <!-- The task item height in task list. -->
+    <dimen name="task_manager_item_height">40dip</dimen>
+
 </resources>
