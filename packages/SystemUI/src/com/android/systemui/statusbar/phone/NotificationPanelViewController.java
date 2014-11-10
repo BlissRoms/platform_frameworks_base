@@ -457,6 +457,7 @@ public class NotificationPanelViewController extends PanelViewController {
     private boolean mShowingKeyguardHeadsUp;
     private boolean mAllowExpandForSmallExpansion;
     private Runnable mExpandAfterLayoutRunnable;
+    private int mOneFingerQuickSettingsIntercept;
 
     /**
      * Is this a collapse that started on the panel where we should allow the panel to intercept
@@ -1382,7 +1383,23 @@ public class NotificationPanelViewController extends PanelViewController {
                         MotionEvent.BUTTON_SECONDARY) || event.isButtonPressed(
                         MotionEvent.BUTTON_TERTIARY));
 
-        return twoFingerDrag || stylusButtonClickDrag || mouseButtonClickDrag;
+        final float w = mView.getMeasuredWidth();
+
+        final float x = event.getX();
+        float region = w * 1.f / 4.f; // TODO overlay region fraction?
+        boolean showQsOverride = false;
+
+        switch (mOneFingerQuickSettingsIntercept) {
+            case 1: // Right side pulldown
+                showQsOverride = mView.isLayoutRtl() ? x < region : w - region < x;
+                break;
+            case 2: // Left side pulldown
+                showQsOverride = mView.isLayoutRtl() ? w - region < x : x < region;
+                break;
+        }
+        showQsOverride &= mBarState == StatusBarState.SHADE;
+
+        return twoFingerDrag || showQsOverride || stylusButtonClickDrag || mouseButtonClickDrag;
     }
 
     private void handleQsDown(MotionEvent event) {
@@ -3158,6 +3175,10 @@ public class NotificationPanelViewController extends PanelViewController {
 
     public void setOnReinflationListener(Runnable onReinflationListener) {
         mOnReinflationListener = onReinflationListener;
+    }
+
+    public void setQsQuickPulldown(int mode) {
+        mOneFingerQuickSettingsIntercept = mode;
     }
 
     public void setAlpha(float alpha) {
