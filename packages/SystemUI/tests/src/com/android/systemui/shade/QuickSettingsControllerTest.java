@@ -43,6 +43,7 @@ import androidx.test.filters.SmallTest;
 
 import com.android.systemui.R;
 import com.android.systemui.plugins.qs.QS;
+import com.android.systemui.tuner.TunerService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +55,14 @@ import java.util.List;
 @RunWith(AndroidTestingRunner.class)
 @TestableLooper.RunWithLooper(setAsMainLooper = true)
 public class QuickSettingsControllerTest extends QuickSettingsControllerBaseTest {
+
+    private QuickSettingsController mQsController;
+
+    @Mock private TunerService mTunerService;
+
+        mQsController = new QuickSettingsController(
+                mTunerService
+        );
 
     @Test
     public void testCloseQsSideEffects() {
