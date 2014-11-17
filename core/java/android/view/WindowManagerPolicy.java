@@ -508,6 +508,8 @@ public interface WindowManagerPolicy {
          */
         void getStackBounds(int stackId, Rect outBounds);
 
+        void addSystemUIVisibilityFlag(int flags);
+
         /**
          * Overrides all currently playing app animations with {@param a}.
          */
