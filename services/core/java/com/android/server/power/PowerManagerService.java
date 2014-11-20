@@ -855,30 +855,10 @@ public final class PowerManagerService extends SystemService
             updateLowPowerModeLocked();
         }
 
-<<<<<<< HEAD
-        final int buttonBrightnessSetting = Settings.System.getIntForUser(resolver,
-                Settings.System.BUTTON_BRIGHTNESS, mButtonBrightnessSettingDefault,
-                UserHandle.USER_CURRENT);
-        if (buttonBrightnessSetting != mButtonBrightnessSetting) {
-            mButtonBrightnessSetting = buttonBrightnessSetting;
-        }
-
-        final boolean buttonBrightnessEnabled = Settings.System.getIntForUser(resolver,
-                Settings.System.BUTTON_BRIGHTNESS_ENABLED, 1, UserHandle.USER_CURRENT) != 0;
-        if (buttonBrightnessEnabled != mButtonBrightnessEnabled) {
-            mButtonBrightnessEnabled = buttonBrightnessEnabled;
-        }
-
-        final boolean navBarEnabled = Settings.System.getIntForUser(resolver,
-                Settings.System.NAVIGATION_BAR_ENABLED, 0, UserHandle.USER_CURRENT) != 0;
-        mButtonBrightnessEnabled &= !navBarEnabled;
-
         mProximityWakeEnabled = Settings.System.getInt(resolver,
                 Settings.System.PROXIMITY_ON_WAKE,
                 mProximityWakeEnabledByDefaultConfig ? 1 : 0) == 1;
 
-=======
->>>>>>> parent of f14853b... input: hardware buttons lights integration
         mDirty |= DIRTY_SETTINGS;
     }
 
