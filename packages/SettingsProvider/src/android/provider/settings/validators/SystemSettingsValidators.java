@@ -253,5 +253,6 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.STATUS_BAR_QUICK_QS_PULLDOWN, new InclusiveIntegerRangeValidator(0, 2));
         VALIDATORS.put(System.HIGH_TOUCH_SENSITIVITY_ENABLE, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.PROXIMITY_ON_WAKE, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.WAKE_WHEN_PLUGGED_OR_UNPLUGGED, BOOLEAN_VALIDATOR);
     }
 }

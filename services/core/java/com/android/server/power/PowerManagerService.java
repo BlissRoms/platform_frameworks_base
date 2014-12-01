@@ -508,6 +508,9 @@ public final class PowerManagerService extends SystemService
     // True if the device should wake up when plugged or unplugged.
     private boolean mWakeUpWhenPluggedOrUnpluggedConfig;
 
+    // True if the device should wake up when plugged or unplugged
+    private boolean mWakeUpWhenPluggedOrUnpluggedSetting;
+
     // True if the device should wake up when plugged or unplugged in theater mode.
     private boolean mWakeUpWhenPluggedOrUnpluggedInTheaterModeConfig;
 
@@ -1477,6 +1480,9 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.PROXIMITY_ON_WAKE),
                 false, mSettingsObserver, UserHandle.USER_ALL);
+        resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.WAKE_WHEN_PLUGGED_OR_UNPLUGGED),
+                false, mSettingsObserver, UserHandle.USER_ALL);
 
         // Register for broadcasts from other components of the system.
         IntentFilter filter = new IntentFilter();
@@ -1588,6 +1594,9 @@ public final class PowerManagerService extends SystemService
                 Settings.Global.STAY_ON_WHILE_PLUGGED_IN, BatteryManager.BATTERY_PLUGGED_AC);
         mTheaterModeEnabled = Settings.Global.getInt(mContext.getContentResolver(),
                 Settings.Global.THEATER_MODE_ON, 0) == 1;
+        mWakeUpWhenPluggedOrUnpluggedSetting = Settings.System.getIntForUser(resolver,
+                Settings.System.WAKE_WHEN_PLUGGED_OR_UNPLUGGED,
+                (mWakeUpWhenPluggedOrUnpluggedConfig ? 1 : 0), UserHandle.USER_CURRENT) == 1;
         mAlwaysOnEnabled = mAmbientDisplayConfiguration.alwaysOnEnabled(UserHandle.USER_CURRENT);
 
         if (mSupportsDoubleTapWakeConfig) {
@@ -2676,7 +2685,7 @@ public final class PowerManagerService extends SystemService
     private boolean shouldWakeUpWhenPluggedOrUnpluggedLocked(
             boolean wasPowered, int oldPlugType, boolean dockedOnWirelessCharger) {
         // Don't wake when powered unless configured to do so.
-        if (!mWakeUpWhenPluggedOrUnpluggedConfig) {
+        if (!mWakeUpWhenPluggedOrUnpluggedSetting) {
             return false;
         }
 
