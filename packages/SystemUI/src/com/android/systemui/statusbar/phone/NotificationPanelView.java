@@ -178,6 +178,8 @@ public class NotificationPanelView extends PanelView implements
             "system:" + Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN;
     private static final String LOCKSCREEN_ENABLE_QS =
             "global:" + Settings.Global.LOCKSCREEN_ENABLE_QS;
+    private static final String QS_SMART_PULLDOWN =
+            "system:" + Settings.System.QS_SMART_PULLDOWN;
 
     private static final Rect mDummyDirtyRect = new Rect(0, 0, 1, 1);
     private static final Rect mEmptyRect = new Rect();
@@ -486,6 +488,7 @@ public class NotificationPanelView extends PanelView implements
     private boolean mDelayShowingKeyguardStatusBar;
 
     private int mOneFingerQuickSettingsIntercept;
+    private int mQsSmartPullDown;
     private NotificationLightsView mPulseLightsView;
     private boolean mPulseLightHandled;
     private boolean mAmbientPulseLightRunning;
@@ -619,6 +622,7 @@ public class NotificationPanelView extends PanelView implements
         Dependency.get(TunerService.class).addTunable(this, DOUBLE_TAP_SLEEP_GESTURE);
         Dependency.get(TunerService.class).addTunable(this, DOUBLE_TAP_SLEEP_LOCKSCREEN);
         Dependency.get(TunerService.class).addTunable(this, LOCKSCREEN_ENABLE_QS);
+        Dependency.get(TunerService.class).addTunable(this, QS_SMART_PULLDOWN);
         mUpdateMonitor.registerCallback(mKeyguardUpdateCallback);
         // Theme might have changed between inflating this view and attaching it to the window, so
         // force a call to onThemeChanged
@@ -641,6 +645,10 @@ public class NotificationPanelView extends PanelView implements
         switch (key) {
             case STATUS_BAR_QUICK_QS_PULLDOWN:
                 mOneFingerQuickSettingsIntercept =
+                        TunerService.parseInteger(newValue, 0);
+                break;
+            case QS_SMART_PULLDOWN:
+                mQsSmartPullDown =
                         TunerService.parseInteger(newValue, 0);
                 break;
             case DOUBLE_TAP_SLEEP_GESTURE:
@@ -1500,6 +1508,12 @@ public class NotificationPanelView extends PanelView implements
                 break;
         }
         showQsOverride &= mBarState == StatusBarState.SHADE;
+
+        if (mQsSmartPullDown == 1 && !hasActiveClearableNotifications()
+                || mQsSmartPullDown == 2 && !mStatusBar.hasActiveOngoingNotifications()
+                || mQsSmartPullDown == 3 && !mStatusBar.hasActiveVisibleNotifications()) {
+                showQsOverride = true;
+        }
 
         return !isQSEventBlocked() && (twoFingerDrag || showQsOverride
                 || stylusButtonClickDrag || mouseButtonClickDrag);
