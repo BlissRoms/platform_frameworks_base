@@ -53,10 +53,12 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.hardware.biometrics.BiometricSourceType;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.VibrationEffect;
 import android.provider.Settings;
@@ -491,6 +493,9 @@ public class NotificationPanelViewController extends PanelViewController {
     private Runnable mVerticalTranslationListener;
     private HeadsUpAppearanceController mHeadsUpAppearanceController;
 
+    private SettingsObserver mSettingsObserver;
+    private Handler mHandler = new Handler();
+
     private int mPanelAlpha;
     private Runnable mPanelAlphaEndAction;
     private float mBottomAreaShadeAlpha;
@@ -537,6 +542,7 @@ public class NotificationPanelViewController extends PanelViewController {
     private Runnable mExpandAfterLayoutRunnable;
 
     private int mOneFingerQuickSettingsIntercept;
+    private int mQsSmartPullDown;
 
     /**
      * The padding between the start of notifications and the qs boundary on the lockscreen.
@@ -868,6 +874,8 @@ public class NotificationPanelViewController extends PanelViewController {
                 return true;
             }
         });
+
+        mSettingsObserver = new SettingsObserver(mHandler);
 
         onFinishInflate();
     }
@@ -1963,6 +1971,15 @@ public class NotificationPanelViewController extends PanelViewController {
                 break;
         }
         showQsOverride &= mBarState == StatusBarState.SHADE;
+
+        if (mQsSmartPullDown == 1 && !hasActiveClearableNotifications()
+                || mQsSmartPullDown == 2 &&
+                !mEntryManager.hasActiveOngoingNotifications()
+                || mQsSmartPullDown == 3 && !mEntryManager.hasActiveVisibleNotifications()) {
+                showQsOverride = true;
+        }
+
+
 
         return twoFingerDrag || showQsOverride || stylusButtonClickDrag || mouseButtonClickDrag;
     }
@@ -3618,6 +3635,44 @@ public class NotificationPanelViewController extends PanelViewController {
         }
     };
 
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mView.getContext().getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_SMART_PULLDOWN),
+                    false, this, UserHandle.USER_ALL);
+            update();
+        }
+
+        void unobserve() {
+            ContentResolver resolver = mView.getContext().getContentResolver();
+            resolver.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        public void update() {
+            ContentResolver resolver = mView.getContext().getContentResolver();
+            mQsSmartPullDown = Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_SMART_PULLDOWN, 0,
+                    UserHandle.USER_CURRENT);
+
+
+        }
+    }
+
     private final FragmentListener mFragmentListener = new FragmentListener() {
         @Override
         public void onFragmentViewCreated(String tag, Fragment fragment) {
@@ -4590,6 +4645,7 @@ public class NotificationPanelViewController extends PanelViewController {
     private class OnAttachStateChangeListener implements View.OnAttachStateChangeListener {
         @Override
         public void onViewAttachedToWindow(View v) {
+            mSettingsObserver.observe();
             mFragmentService.getFragmentHostManager(mView)
                             .addTagListener(QS.TAG, mFragmentListener);
             mStatusBarStateController.addCallback(mStatusBarStateListener);
@@ -4606,6 +4662,7 @@ public class NotificationPanelViewController extends PanelViewController {
 
         @Override
         public void onViewDetachedFromWindow(View v) {
+            mSettingsObserver.unobserve();
             unregisterSettingsChangeListener();
             mFragmentService.getFragmentHostManager(mView)
                             .removeTagListener(QS.TAG, mFragmentListener);
