@@ -463,6 +463,8 @@ public class NotificationPanelViewController extends PanelViewController {
     private boolean mAllowExpandForSmallExpansion;
     private Runnable mExpandAfterLayoutRunnable;
 
+    private int mQsSmartPullDown;
+
     /**
      * Is this a collapse that started on the panel where we should allow the panel to intercept
      */
@@ -1405,6 +1407,13 @@ public class NotificationPanelViewController extends PanelViewController {
                 break;
         }
         showQsOverride &= mBarState == StatusBarState.SHADE;
+
+        if (mQsSmartPullDown == 1 && !hasActiveClearableNotifications()
+                || mQsSmartPullDown == 2 &&
+                !mEntryManager.hasActiveOngoingNotifications()
+                || mQsSmartPullDown == 3 && !mEntryManager.hasActiveVisibleNotifications()) {
+                showQsOverride = true;
+        }
 
         return twoFingerDrag || showQsOverride || stylusButtonClickDrag || mouseButtonClickDrag;
     }
@@ -2899,6 +2908,9 @@ public class NotificationPanelViewController extends PanelViewController {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_SMART_PULLDOWN),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -2922,6 +2934,9 @@ public class NotificationPanelViewController extends PanelViewController {
             mStatusBarLockedOnSecureKeyguard = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD, 0,
                     UserHandle.USER_CURRENT) == 1;
+            mQsSmartPullDown = Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_SMART_PULLDOWN, 0,
+                    UserHandle.USER_CURRENT);
         }
     }
 
