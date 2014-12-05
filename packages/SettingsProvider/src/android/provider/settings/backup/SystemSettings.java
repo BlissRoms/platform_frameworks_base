@@ -97,5 +97,6 @@ public class SystemSettings {
         Settings.System.OMNI_LOCKSCREEN_WEATHER_ENABLED,
         Settings.System.AICP_LOCKSCREEN_WEATHER_STYLE,
         Settings.System.USE_OLD_MOBILETYPE,
+        Settings.System.STATUSBAR_NOTIF_COUNT,
     };
 }
