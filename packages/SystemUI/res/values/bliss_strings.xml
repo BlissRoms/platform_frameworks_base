@@ -126,4 +126,7 @@
     <string name="screenrecord_hevc_switch_label">Enable HEVC</string>
     <string name="screenrecord_hevc_switch_summary">Use more efficient HEVC video encoding</string>
 
+    <!-- Text to use when the number in a notification info is too large -->
+    <string name="status_bar_notification_info_overflow" translatable="false">\u221E</string>
+
 </resources>
