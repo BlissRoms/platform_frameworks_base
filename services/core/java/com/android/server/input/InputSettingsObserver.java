@@ -77,7 +77,10 @@ class InputSettingsObserver extends ContentObserver {
                                 Settings.Global.MAXIMUM_OBSCURING_OPACITY_FOR_TOUCH),
                         (reason) -> updateMaximumObscuringOpacityForTouch()),
                 Map.entry(Settings.System.getUriFor(Settings.System.SHOW_KEY_PRESSES),
-                        (reason) -> updateShowKeyPresses()));
+                        (reason) -> updateShowKeyPresses()),
+                Map.entry(Settings.System.getUriFor(
+                        Settings.System.SWAP_VOLUME_KEYS_ON_ROTATION),
+                        (reason) -> updateVolumeKeysRotation()));
     }
 
     /**
@@ -153,6 +156,13 @@ class InputSettingsObserver extends ContentObserver {
     private void updateShowKeyPresses() {
         mService.updateFocusEventDebugViewEnabled(
                 getBoolean(Settings.System.SHOW_KEY_PRESSES, false));
+    }
+
+    private void updateVolumeKeysRotation() {
+        mNative.setVolumeKeysRotation(
+                Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.SWAP_VOLUME_KEYS_ON_ROTATION, 0,
+                        UserHandle.USER_CURRENT));
     }
 
     private void updateAccessibilityLargePointer() {
