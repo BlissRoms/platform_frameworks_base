@@ -295,6 +295,7 @@ public:
     void setTouchpadRightClickZoneEnabled(bool enabled);
     void setInputDeviceEnabled(uint32_t deviceId, bool enabled);
     void setShowTouches(bool enabled);
+    void setVolumeKeysRotation(int mode);
     void setInteractive(bool interactive);
     void reloadCalibration();
     void setPointerIconType(PointerIconStyle iconId);
@@ -412,6 +413,9 @@ private:
 
         // The latest request to enable or disable Pointer Capture.
         PointerCaptureRequest pointerCaptureRequest{};
+
+        // Volume keys rotation mode (0 - off, 1 - phone, 2 - tablet)
+        int32_t volumeKeysRotationMode{0};
 
         // Sprite controller singleton, created on first use.
         std::shared_ptr<SpriteController> spriteController{};
@@ -692,6 +696,7 @@ void NativeInputManager::getReaderConfiguration(InputReaderConfiguration* outCon
         outConfig->pointerGesturesEnabled = mLocked.pointerGesturesEnabled;
 
         outConfig->showTouches = mLocked.showTouches;
+        outConfig->volumeKeysRotationMode = mLocked.volumeKeysRotationMode;
 
         outConfig->pointerCaptureRequest = mLocked.pointerCaptureRequest;
 
@@ -1391,6 +1396,22 @@ void NativeInputManager::setShowTouches(bool enabled) {
 
 void NativeInputManager::requestPointerCapture(const sp<IBinder>& windowToken, bool enabled) {
     mInputManager->getDispatcher().requestPointerCapture(windowToken, enabled);
+}
+
+void NativeInputManager::setVolumeKeysRotation(int mode) {
+    { // acquire lock
+        std::scoped_lock _l(mLock);
+
+        if (mLocked.volumeKeysRotationMode == mode) {
+            return;
+        }
+
+        ALOGI("Volume keys: rotation mode set to %d.", mode);
+        mLocked.volumeKeysRotationMode = mode;
+    } // release lock
+
+    mInputManager->getReader().requestRefreshConfiguration(
+            InputReaderConfiguration::Change::VOLUME_KEYS_ROTATION);
 }
 
 void NativeInputManager::setInteractive(bool interactive) {
@@ -2278,6 +2299,12 @@ static void nativeSetShowTouches(JNIEnv* env, jobject nativeImplObj, jboolean en
     im->setShowTouches(enabled);
 }
 
+static void nativeSetVolumeKeysRotation(JNIEnv* env, jobject nativeImplObj, int mode) {
+    NativeInputManager* im = getNativeInputManager(env, nativeImplObj);
+
+    im->setVolumeKeysRotation(mode);
+}
+
 static void nativeSetInteractive(JNIEnv* env, jobject nativeImplObj, jboolean interactive) {
     NativeInputManager* im = getNativeInputManager(env, nativeImplObj);
 
@@ -2890,6 +2917,7 @@ static const JNINativeMethod gInputManagerMethods[] = {
         {"setTouchpadTapDraggingEnabled", "(Z)V", (void*)nativeSetTouchpadTapDraggingEnabled},
         {"setTouchpadRightClickZoneEnabled", "(Z)V", (void*)nativeSetTouchpadRightClickZoneEnabled},
         {"setShowTouches", "(Z)V", (void*)nativeSetShowTouches},
+        {"setVolumeKeysRotation", "(I)V", (void*)nativeSetVolumeKeysRotation},
         {"setInteractive", "(Z)V", (void*)nativeSetInteractive},
         {"reloadCalibration", "()V", (void*)nativeReloadCalibration},
         {"vibrate", "(I[J[III)V", (void*)nativeVibrate},
