@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/* Copyright (c) 2013, The Linux Foundation. All rights reserved.
-** Not a Contribution.
-**
-** Copyright 2012, The Android Open Source Project
+/*
+** Copyright 2009, The Android Open Source Project
+** Copyright 2013, The Android Open Kang Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
 ** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0
+** http://www.apache.org/licenses/LICENSE-2.0
 **
 ** Unless required by applicable law or agreed to in writing, software
 ** distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,12 +17,8 @@
 ** limitations under the License.
 */
 -->
-<resources>
 
-    <string-array translatable="false" name="config_rebootActionsList">
-        <item>restart</item>
-        <item>reboot_recovery</item>
-        <item>reboot_bootloader</item>
-    </string-array>
-
-</resources>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate android:fromXDelta="100%p" android:toXDelta="0"
+        android:duration="1000"/>
+</set>
