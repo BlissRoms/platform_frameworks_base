@@ -224,6 +224,8 @@ public class SecureSettings {
         Settings.Secure.BLUETOOTH_LE_BROADCAST_APP_SOURCE_NAME,
         Settings.Secure.LOCK_SCREEN_WEATHER_ENABLED,
         Settings.Secure.ACCESSIBILITY_FONT_SCALING_HAS_BEEN_CHANGED,
-        Settings.Secure.TETHERING_ALLOW_VPN_UPSTREAMS
+        Settings.Secure.TETHERING_ALLOW_VPN_UPSTREAMS,
+	// Bliss Additions
+	Settings.Secure.QUICK_SETTINGS_TILES_VIBRATE,
     };
 }
