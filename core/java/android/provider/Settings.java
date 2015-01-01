@@ -7028,6 +7028,13 @@ public final class Settings {
         public static final String VOLUME_SLIDER_HAPTIC_FEEDBACK = "volume_slider_haptic_feedback";
 
         /**
+         * Give haptic feedback when quick settings tiles are pressed.
+         * @hide
+         */
+        @Readable
+        public static final String QS_TILES_HAPTIC_FEEDBACK = "qs_tiles_haptic_feedback";
+
+        /**
          * @hide
          */
         public static final String ISLAND_NOTIFICATION_NOW_PLAYING = "island_notification_now_playing";
