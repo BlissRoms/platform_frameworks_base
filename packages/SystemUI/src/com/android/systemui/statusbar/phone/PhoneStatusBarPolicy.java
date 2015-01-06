@@ -98,6 +98,7 @@ public class PhoneStatusBarPolicy implements Callback {
     private boolean mAlarmIconVisible;
     private final SuController mSuController;
     private int mHeadsetIconVisible;
+    private boolean mSuIndicatorVisible;
 
     // Assume it's all good unless we hear otherwise.  We don't always seem
     // to get broadcasts that it *is* there.
@@ -198,6 +199,8 @@ public class PhoneStatusBarPolicy implements Callback {
                 false, mSettingsObserver);
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.SHOW_HEADSET_ICON),
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.SHOW_SU_INDICATOR),
                 false, mSettingsObserver);
 
         // zen
@@ -256,6 +259,10 @@ public class PhoneStatusBarPolicy implements Callback {
             if (am1.isWiredHeadsetOn()) {
                 updateHeadset(mHeadsetIntent);
             }
+            mSuIndicatorVisible = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_SU_INDICATOR, 1) == 1;
+            updateAlarm();
+            updateSu();
         }
 
         @Override
@@ -502,7 +509,7 @@ public class PhoneStatusBarPolicy implements Callback {
     };
 
     private void updateSu() {
-        mService.setIconVisibility(SLOT_SU, mSuController.hasActiveSessions());
+        mService.setIconVisibility(SLOT_SU, mSuController.hasActiveSessions() && mSuIndicatorVisible);
         final int userId = UserHandle.myUserId();
         if (isSuEnabledForUser(userId)) {
             publishSuCustomTile();
