@@ -32,4 +32,11 @@
     <string name="accessibility_quick_settings_ambient_display_changed_off">Ambient Display turned off</string>
     <string name="accessibility_quick_settings_ambient_display_changed_on">Ambient Display turned on</string>
     <string name="quick_settings_ambient_display_label">Ambient Display</string>
+
+    <!-- Sync QS tile -->
+    <string name="quick_settings_sync_label">Sync</string>
+    <string name="accessibility_quick_settings_sync_off">Sync off</string>
+    <string name="accessibility_quick_settings_sync_on">Sync on</string>
+    <string name="accessibility_quick_settings_sync_changed_off">Sync turned off</string>
+    <string name="accessibility_quick_settings_sync_changed_on">Sync turned on</string>
 </resources>
