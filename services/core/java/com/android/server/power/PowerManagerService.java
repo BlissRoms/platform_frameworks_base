@@ -213,6 +213,8 @@ public final class PowerManagerService extends SystemService
     private int mKeyboardBrightness;
     private int mKeyboardBrightnessSettingDefault;
 
+    private TelephonyManager mTelephonyManager;
+
     private final Object mLock = new Object();
 
     // A bitfield that indicates what parts of the power state have
@@ -3562,6 +3564,14 @@ public final class PowerManagerService extends SystemService
             } else {
                 r.run();
             }
+        }
+
+        TelephonyManager getTelephonyManager() {
+            if (mTelephonyManager == null) {
+                mTelephonyManager = (TelephonyManager)mContext.getSystemService(
+                        Context.TELEPHONY_SERVICE);
+            }
+            return mTelephonyManager;
         }
 
         private void runPostProximityCheck(final Runnable r) {
