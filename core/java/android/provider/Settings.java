@@ -3604,6 +3604,13 @@ public final class Settings {
          */
         public static final String STATUSBAR_BATTERY_BAR_ANIMATE = "statusbar_battery_bar_animate";
 
+
+   	/**
+  	* volume answer.
+         * @hide
+        */
+        public static final String ANSWER_VOLUME_BUTTON_BEHAVIOR_ANSWER = "call_volume_answer";
+
         /**
          * Statusbar Bliss logo
          * @hide
@@ -9239,3 +9246,4 @@ public final class Settings {
         return packages[0];
     }
 }
+
