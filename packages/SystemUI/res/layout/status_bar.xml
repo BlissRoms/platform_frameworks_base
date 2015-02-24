@@ -45,23 +45,22 @@
         android:layout_height="match_parent"
         android:paddingStart="6dp"
         android:paddingEnd="8dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <com.android.systemui.statusbar.AlphaOptimizedFrameLayout
             android:id="@+id/notification_icon_area"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
             <!-- The alpha of this area is both controlled from PhoneStatusBarTransitions and
                  PhoneStatusBar (DISABLE_NOTIFICATION_ICONS), so we need two views here. -->
             <com.android.keyguard.AlphaOptimizedLinearLayout
                 android:id="@+id/notification_icon_area_inner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                >
+                android:layout_height="match_parent">
+
                 <com.android.systemui.statusbar.policy.Clock
                     android:id="@+id/left_clock"
                     android:textAppearance="@style/TextAppearance.StatusBar.Clock"
@@ -70,28 +69,38 @@
                     android:singleLine="true"
                     android:paddingEnd="6dip"
                     android:gravity="center"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/bliss_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="4dip"
+                    android:src="@drawable/ic_status_bar_bliss_logo"
+                    android:scaleType="center"
+                    android:visibility="gone" />
+
                 <com.android.systemui.statusbar.StatusBarIconView android:id="@+id/moreIcon"
                     android:layout_width="@dimen/status_bar_icon_size"
                     android:layout_height="match_parent"
                     android:src="@drawable/stat_notify_more"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
+
                 <com.android.systemui.statusbar.phone.IconMerger android:id="@+id/notificationIcons"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"/>
+
             </com.android.keyguard.AlphaOptimizedLinearLayout>
         </com.android.systemui.statusbar.AlphaOptimizedFrameLayout>
 
         <com.android.keyguard.AlphaOptimizedLinearLayout android:id="@+id/system_icon_area"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
 
             <include layout="@layout/system_icons" />
 
@@ -119,8 +128,8 @@
                 android:layout_height="match_parent"
                 android:singleLine="true"
                 android:paddingStart="7dp"
-                android:gravity="center_vertical|start"
-                />
+                android:gravity="center_vertical|start" />
+
         </com.android.keyguard.AlphaOptimizedLinearLayout>
     </LinearLayout>
 
@@ -129,8 +138,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <com.android.systemui.statusbar.policy.Clock
             android:id="@+id/center_clock"
@@ -139,7 +147,7 @@
             android:layout_height="match_parent"
             android:singleLine="true"
             android:gravity="center"
-            android:visibility="gone"
-            />
+        	android:visibility="gone" />
+
     </com.android.keyguard.AlphaOptimizedLinearLayout>
 </com.android.systemui.statusbar.phone.PhoneStatusBarView>
