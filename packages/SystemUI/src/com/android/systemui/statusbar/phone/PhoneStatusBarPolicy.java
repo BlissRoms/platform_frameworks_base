@@ -22,15 +22,19 @@ import android.app.AlarmManager;
 import android.app.AlarmManager.AlarmClockInfo;
 import android.app.SynchronousUserSwitchObserver;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.UserInfo;
+import android.database.ContentObserver;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.telecom.TelecomManager;
 import android.util.Log;
@@ -80,6 +84,7 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
     private final StatusBarIconController mIconController;
     private final RotationLockController mRotationLockController;
     private final DataSaverController mDataSaver;
+    private final SettingsObserver mSettingsObserver;
     private StatusBarKeyguardViewManager mStatusBarKeyguardViewManager;
 
     // Assume it's all good unless we hear otherwise.  We don't always seem
@@ -97,6 +102,38 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
     private boolean mManagedProfileInQuietMode = false;
 
     private BluetoothController mBluetooth;
+    private boolean mBluetoothIconVisible;
+    private boolean mBluetoothConnected = false;
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_BLUETOOTH_ICON),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        void unobserve() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            mBluetoothIconVisible = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_BLUETOOTH_ICON, 1) == 1;
+            updateBluetooth();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+    }
 
     public PhoneStatusBarPolicy(Context context, StatusBarIconController iconController,
             CastController cast, HotspotController hotspot, UserInfoController userInfoController,
@@ -154,6 +191,8 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
         mIconController.setIconVisibility(mSlotTty, false);
 
         // bluetooth status
+        mSettingsObserver = new SettingsObserver(mHandler);
+        mSettingsObserver.observe();
         updateBluetooth();
 
         // Alarm clock
@@ -307,14 +346,19 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
         boolean bluetoothEnabled = false;
         if (mBluetooth != null) {
             bluetoothEnabled = mBluetooth.isBluetoothEnabled();
-            if (mBluetooth.isBluetoothConnected()) {
+            mBluetoothConnected = mBluetooth.isBluetoothConnected();
+            if (mBluetoothConnected) {
                 iconId = R.drawable.stat_sys_data_bluetooth_connected;
                 contentDescription = mContext.getString(R.string.accessibility_bluetooth_connected);
             }
         }
 
         mIconController.setIcon(mSlotBluetooth, iconId, contentDescription);
-        mIconController.setIconVisibility(mSlotBluetooth, bluetoothEnabled);
+        if (mBluetoothConnected) {
+            mIconController.setIconVisibility(mSlotBluetooth, true);
+        } else {
+            mIconController.setIconVisibility(mSlotBluetooth, bluetoothEnabled && mBluetoothIconVisible);    
+        }
     }
 
     private final void updateTTY(Intent intent) {
