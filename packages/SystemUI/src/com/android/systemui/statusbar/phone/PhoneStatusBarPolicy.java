@@ -99,6 +99,7 @@ public class PhoneStatusBarPolicy implements Callback {
     private final SuController mSuController;
     private int mHeadsetIconVisible;
     private boolean mSuIndicatorVisible;
+    private boolean mBluetoothIconVisible;
 
     // Assume it's all good unless we hear otherwise.  We don't always seem
     // to get broadcasts that it *is* there.
@@ -115,6 +116,7 @@ public class PhoneStatusBarPolicy implements Callback {
 
     private boolean mKeyguardVisible = true;
     private BluetoothController mBluetooth;
+    private boolean mBluetoothConnected = false;
 
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
@@ -243,6 +245,11 @@ public class PhoneStatusBarPolicy implements Callback {
         mService.setIconVisibility(SLOT_MANAGED_PROFILE, false);
 
         QSUtils.registerObserverForQSChanges(mContext, mQSListener);
+
+        mBluetoothIconObserver.onChange(true);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.SHOW_BLUETOOTH_ICON),
+                false, mBluetoothIconObserver);
     }
 
     private ContentObserver mSettingsObserver = new ContentObserver(null) {
@@ -280,6 +287,20 @@ public class PhoneStatusBarPolicy implements Callback {
         int state = intent.getIntExtra("state", 0);
         mService.setIconVisibility(SLOT_HEADSET, ((state == 1 && (mHeadsetIconVisible == 1)))  ? true : false);
     }
+
+    private ContentObserver mBluetoothIconObserver = new ContentObserver(null) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            mBluetoothIconVisible = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_BLUETOOTH_ICON, 1) == 1;
+            updateBluetooth();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+    };
 
     public void setZenMode(int zen) {
         mZen = zen;
@@ -405,14 +426,19 @@ public class PhoneStatusBarPolicy implements Callback {
         boolean bluetoothEnabled = false;
         if (mBluetooth != null) {
             bluetoothEnabled = mBluetooth.isBluetoothEnabled();
-            if (mBluetooth.isBluetoothConnected()) {
+            mBluetoothConnected = mBluetooth.isBluetoothConnected();
+            if (mBluetoothConnected) {
                 iconId = R.drawable.stat_sys_data_bluetooth_connected;
                 contentDescription = mContext.getString(R.string.accessibility_bluetooth_connected);
             }
         }
 
         mService.setIcon(SLOT_BLUETOOTH, iconId, 0, contentDescription);
-        mService.setIconVisibility(SLOT_BLUETOOTH, bluetoothEnabled);
+        if (mBluetoothConnected) {
+            mService.setIconVisibility(SLOT_BLUETOOTH, true);
+        } else {
+            mService.setIconVisibility(SLOT_BLUETOOTH, bluetoothEnabled && mBluetoothIconVisible);    
+        }
     }
 
     private final void updateTTY(Intent intent) {
