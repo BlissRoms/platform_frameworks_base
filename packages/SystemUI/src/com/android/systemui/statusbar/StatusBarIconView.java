@@ -118,7 +118,7 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
     private StatusBarIcon mIcon;
     @ViewDebug.ExportedProperty private String mSlot;
     private Drawable mNumberBackground;
-    private Paint mNumberPain;
+    private Paint mNumberPaint;
     private int mNumberX;
     private int mNumberY;
     private String mNumberText;
@@ -170,10 +170,6 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
         mDozer = new NotificationIconDozeHelper(context);
         mBlocked = blocked;
         mSlot = slot;
-        mNumberPain = new Paint();
-        mNumberPain.setTextAlign(Paint.Align.CENTER);
-        mNumberPain.setColor(context.getColor(R.drawable.notification_number_text_color));
-        mNumberPain.setAntiAlias(true);
         setNotification(sbn);
         setScaleType(ScaleType.CENTER);
         mDensity = context.getResources().getDisplayMetrics().densityDpi;
@@ -340,6 +336,15 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
             if (icon.number > 0 && getContext().getResources().getBoolean(
                         R.bool.config_statusBarShowNumber)) {
                 if (mNumberBackground == null) {
+                    final Resources res = mContext.getResources();
+                    final float densityMultiplier = res.getDisplayMetrics().density;
+                    final float scaledPx = 8 * densityMultiplier;
+                    mNumberPaint = new Paint();
+                    mNumberPaint.setTextAlign(Paint.Align.CENTER);
+                    mNumberPaint.setColor(res.getColor(R.drawable.notification_number_text_color));
+                    mNumberPaint.setAntiAlias(true);
+                    mNumberPaint.setTypeface(Typeface.DEFAULT_BOLD);
+                    mNumberPaint.setTextSize(scaledPx);
                     mNumberBackground = getContext().getResources().getDrawable(
                             R.drawable.ic_notification_overlay);
                 }
@@ -347,6 +352,7 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
             } else {
                 mNumberBackground = null;
                 mNumberText = null;
+                mNumberPaint = null;
             }
             invalidate();
         }
@@ -456,7 +462,7 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
 
         if (mNumberBackground != null) {
             mNumberBackground.draw(canvas);
-            canvas.drawText(mNumberText, mNumberX, mNumberY, mNumberPain);
+            canvas.drawText(mNumberText, mNumberX, mNumberY, mNumberPaint);
         }
         if (mDotAppearAmount != 0.0f) {
             float radius;
@@ -496,7 +502,7 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
         final int w = getWidth();
         final int h = getHeight();
         final Rect r = new Rect();
-        mNumberPain.getTextBounds(str, 0, str.length(), r);
+        mNumberPaint.getTextBounds(str, 0, str.length(), r);
         final int tw = r.right - r.left;
         final int th = r.bottom - r.top;
         mNumberBackground.getPadding(r);
