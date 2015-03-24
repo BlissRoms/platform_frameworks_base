@@ -23,6 +23,7 @@ package com.android.internal.logging;
 public interface MetricsConstants {
     // These constants must match those in the analytic pipeline, do not edit.
     // Add temporary values to the top of MetricsLogger instead.
+    public static final int DONT_TRACK_ME_BRO = -Integer.MAX_VALUE + 1;
     public static final int VIEW_UNKNOWN = 0;
     public static final int MAIN_SETTINGS = 1;
     public static final int ACCESSIBILITY = 2;
