@@ -138,4 +138,7 @@
     <dimen name="opa_line_x_trans_bg">30dp</dimen>
     <dimen name="opa_line_x_trans_ry">15dp</dimen>
     <dimen name="opa_line_y_translation">16dp</dimen>
+
+    <!-- QS detail view scrolling -->
+    <dimen name="qs_detail_item_height_twoline">72dp</dimen>
 </resources>
