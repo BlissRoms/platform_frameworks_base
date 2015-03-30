@@ -49,6 +49,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -374,6 +375,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     // Bliss logo
     private boolean mBlissLogo;
+    private int mBlissLogoColor;
     private ImageView blissLogo;
 
     boolean mExpandedVisible;
@@ -467,6 +469,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     CMSettings.Secure.RECENTS_LONG_PRESS_ACTIVITY), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BLISS_LOGO), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BLISS_LOGO_COLOR), false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -496,7 +500,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             mBlissLogo = Settings.System.getIntForUser(resolver,
 					Settings.System.STATUS_BAR_BLISS_LOGO, 0, mCurrentUserId) == 1;
-			showBlissLogo(mBlissLogo);
+            mBlissLogoColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_BLISS_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
+            showBlissLogo(mBlissLogo, mBlissLogoColor);
 
             // This method reads CMSettings.Secure.RECENTS_LONG_PRESS_ACTIVITY
             updateCustomRecentsLongPressHandler(false);
@@ -3631,10 +3637,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
-    public void showBlissLogo(boolean show) {
+    public void showBlissLogo(boolean show, int color) {
         if (mStatusBarView == null) return;
         ContentResolver resolver = mContext.getContentResolver();
         blissLogo = (ImageView) mStatusBarView.findViewById(R.id.bliss_logo);
+        blissLogo.setColorFilter(color, Mode.SRC_IN);
         if (blissLogo != null) {
             blissLogo.setVisibility(show ? (mBlissLogo ? View.VISIBLE : View.GONE) : View.GONE);
         }
