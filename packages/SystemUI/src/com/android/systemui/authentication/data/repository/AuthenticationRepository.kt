@@ -97,6 +97,9 @@ interface AuthenticationRepository {
      */
     val isAutoConfirmFeatureEnabled: StateFlow<Boolean>
 
+    /** The current pattern size. */
+    val patternSize: StateFlow<Byte>
+
     /**
      * The currently-configured authentication method. This determines how the authentication
      * challenge needs to be completed in order to unlock an otherwise locked device.
@@ -182,6 +185,12 @@ constructor(
     override val authenticationChallengeResult = MutableSharedFlow<Boolean>()
 
     override val hintedPinLength: Int = 6
+
+    override val patternSize: StateFlow<Byte> =
+        refreshingFlow(
+            initialValue = LockPatternUtils.PATTERN_SIZE_DEFAULT,
+            getFreshValue = lockPatternUtils::getLockPatternSize,
+        )
 
     override val isPatternVisible: StateFlow<Boolean> =
         refreshingFlow(
