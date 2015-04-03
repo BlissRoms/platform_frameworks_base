@@ -50,6 +50,9 @@ class FakeAuthenticationRepository(
     override val isAutoConfirmFeatureEnabled: StateFlow<Boolean> =
         _isAutoConfirmFeatureEnabled.asStateFlow()
 
+    private val _patternSize = MutableStateFlow(LockPatternUtils.PATTERN_SIZE_DEFAULT)
+    override val patternSize: StateFlow<Byte> = _patternSize.asStateFlow()
+
     private val _authenticationMethod =
         MutableStateFlow<AuthenticationMethodModel>(DEFAULT_AUTHENTICATION_METHOD)
     override val authenticationMethod: StateFlow<AuthenticationMethodModel> =
@@ -219,7 +222,8 @@ class FakeAuthenticationRepository(
                 isPattern ->
                     credential.contentEquals(
                         LockPatternUtils.patternToByteArray(
-                            expectedCredential as List<LockPatternView.Cell>
+                            expectedCredential as List<LockPatternView.Cell>,
+                            LockPatternUtils.PATTERN_SIZE_DEFAULT
                         )
                     )
                 else -> error("Unsupported credential type $type!")
@@ -227,7 +231,8 @@ class FakeAuthenticationRepository(
         }
 
         private fun List<AuthenticationPatternCoordinate>.toCells(): List<LockPatternView.Cell> {
-            return map { coordinate -> LockPatternView.Cell.of(coordinate.y, coordinate.x) }
+            return map { coordinate -> LockPatternView.Cell.of(
+                coordinate.y, coordinate.x, LockPatternUtils.PATTERN_SIZE_DEFAULT) }
         }
     }
 }

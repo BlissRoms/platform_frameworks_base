@@ -84,6 +84,9 @@ interface AuthenticationRepository {
      */
     val isAutoConfirmFeatureEnabled: StateFlow<Boolean>
 
+    /** The current pattern size. */
+    val patternSize: StateFlow<Byte>
+
     /**
      * The number of failed authentication attempts for the selected user since their last
      * successful authentication.
@@ -197,6 +200,12 @@ constructor(
 ) : AuthenticationRepository {
 
     override val hintedPinLength: Int = 6
+
+    override val patternSize: StateFlow<Byte> =
+        refreshingFlow(
+            initialValue = LockPatternUtils.PATTERN_SIZE_DEFAULT,
+            getFreshValue = lockPatternUtils::getLockPatternSize,
+        )
 
     override val isPatternVisible: StateFlow<Boolean> =
         refreshingFlow(
