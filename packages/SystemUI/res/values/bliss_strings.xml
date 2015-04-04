@@ -101,4 +101,6 @@
     <!-- notification controls -->
     <string name="tuner_notification_control">Power notification controls</string>
 
+    <!-- Recents Membar -->
+    <string name="recents_free_ram">FREE RAM</string>
 </resources>
