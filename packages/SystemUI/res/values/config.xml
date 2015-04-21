@@ -110,8 +110,9 @@
 
     <!-- The default tiles to display in QuickSettings -->
       <string name="quick_settings_tiles_extra" translatable="false">
-          hotspot,inversion,saver,work,cast,night,ambient_display,sync.screenshot,brightness,reboot,ime,expanded_desktop,screenrecord,usb_tether,music,caffeine
+          hotspot,inversion,saver,work,cast,night,ambient_display,sync.screenshot,brightness,reboot,ime,expanded_desktop,screenrecord,usb_tether,music,caffeine,heads_up
       </string>
+
     <!-- The tiles to display in QuickSettings -->
     <string name="quick_settings_tiles" translatable="false">default</string>
 
