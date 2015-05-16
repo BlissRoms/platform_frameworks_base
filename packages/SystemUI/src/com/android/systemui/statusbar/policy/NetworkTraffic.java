@@ -9,6 +9,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
@@ -59,6 +63,7 @@ public class NetworkTraffic extends TextView {
     private boolean mAutoHide;
     private boolean mHideArrow;
     private int mAutoHideThreshold;
+    private int mNetworkTrafficColor;
 
     private Handler mTrafficHandler = new Handler() {
         @Override
@@ -283,15 +288,16 @@ public class NetworkTraffic extends TextView {
 	    int defaultColor = Settings.System.getInt(resolver,
                 Settings.System.NETWORK_TRAFFIC_COLOR, 0xFFFFFFFF);
 
-	    int mNetworkTrafficColor = Settings.System.getInt(resolver,
+	    mNetworkTrafficColor = Settings.System.getInt(resolver,
                 Settings.System.NETWORK_TRAFFIC_COLOR, -2);
 
-	    if (mNetworkTrafficColor == Integer.MIN_VALUE
+        if (mNetworkTrafficColor == Integer.MIN_VALUE
                 || mNetworkTrafficColor == -2) {
             mNetworkTrafficColor = defaultColor;
         }
 
-	    setTextColor(mNetworkTrafficColor);
+        setTextColor(mNetworkTrafficColor);
+        updateTrafficDrawable();
 
         if (isSet(mState, MASK_UNIT)) {
             KB = KILOBYTE;
@@ -335,6 +341,7 @@ public class NetworkTraffic extends TextView {
 
     private void updateTrafficDrawable() {
         int intTrafficDrawable;
+        Drawable drawTrafficIcon = null;
         if (!mHideArrow) {
             if (isSet(mState, MASK_UP + MASK_DOWN)) {
                 intTrafficDrawable = R.drawable.stat_sys_network_traffic_updown;
@@ -345,9 +352,13 @@ public class NetworkTraffic extends TextView {
             } else {
                 intTrafficDrawable = 0;
             }
+            if (intTrafficDrawable != 0) {
+                drawTrafficIcon = getResources().getDrawable(intTrafficDrawable);
+                drawTrafficIcon.setColorFilter(mNetworkTrafficColor, PorterDuff.Mode.SRC_ATOP);
+            }
         } else {
-            intTrafficDrawable = 0;
-	    }
-        setCompoundDrawablesWithIntrinsicBounds(0, 0, intTrafficDrawable, 0);
+            drawTrafficIcon = null;
+        }
+        setCompoundDrawablesWithIntrinsicBounds(null, null, drawTrafficIcon, null);
     }
 }
