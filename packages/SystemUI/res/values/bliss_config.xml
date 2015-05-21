@@ -19,7 +19,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Show voice assist affordance on Keyguard -->
     <bool name="config_keyguardShowVoiceAssistAffordance">false</bool>
-
-    <!-- Whether to enable to show task manager or not -->
-    <bool name="config_showTaskManagerSwitcher">true</bool>
 </resources>
