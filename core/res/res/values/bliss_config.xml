@@ -224,4 +224,9 @@
          For example, a device with notification and battery lights that supports
          pulsating and RGB control would set this config to 75. -->
     <integer name="config_deviceLightCapabilities">8</integer>
+
+  <!-- Indicates that the device has Single-stage Camera key
+       (without "Focus" state) instead of Dual-stage. -->
+  <bool name="config_singleStageCameraKey">false</bool>
+
 </resources>
