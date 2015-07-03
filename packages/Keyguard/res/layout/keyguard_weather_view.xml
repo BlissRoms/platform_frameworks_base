@@ -71,9 +71,9 @@
 
             <ImageView
                 android:id="@+id/weather_image"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:scaleType="centerInside"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="fitCenter"
                 android:adjustViewBounds="true" />
 
         </LinearLayout>
