@@ -216,9 +216,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected boolean mHeadsUpTicker = false;
     protected boolean mDisableNotificationAlerts = false;
 
-    // Enable navigation bar.
-    protected boolean mUseNavBar = false;
-
     protected DevicePolicyManager mDevicePolicyManager;
     protected IDreamManager mDreamManager;
     protected PowerManager mPowerManager;
