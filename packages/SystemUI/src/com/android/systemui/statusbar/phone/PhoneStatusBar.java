@@ -396,6 +396,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     boolean mExpandedVisible;
 
+    // Bliss logo
+    private boolean mBlissLogo;
+    private ImageView blissLogo;
+
     private int mNavigationBarWindowState = WINDOW_STATE_SHOWING;
 
     private int mStatusBarHeaderHeight;
@@ -465,6 +469,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BLISS_LOGO), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
@@ -483,6 +490,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mBrightnessControl = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0,
                     UserHandle.USER_CURRENT) == 1;
+            mBlissLogo = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_BLISS_LOGO, 0, mCurrentUserId) == 1;
+            showBlissLogo(mBlissLogo);
         }
     }
 
@@ -3781,6 +3791,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
         }
     };
+
+    public void showBlissLogo(boolean show) {
+        if (mStatusBarView == null) return;
+        ContentResolver resolver = mContext.getContentResolver();
+        blissLogo = (ImageView) mStatusBarView.findViewById(R.id.bliss_logo);
+        if (blissLogo != null) {
+            blissLogo.setVisibility(show ? (mBlissLogo ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+    }
 
     public void resetUserExpandedStates() {
         ArrayList<Entry> activeNotifications = mNotificationData.getActiveNotifications();
