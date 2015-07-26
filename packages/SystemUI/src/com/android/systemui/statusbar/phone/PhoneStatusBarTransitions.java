@@ -32,7 +32,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     private final PhoneStatusBarView mView;
     private final float mIconAlphaWhenOpaque;
 
-    private View mLeftSide, mStatusIcons, mSignalCluster, mBattery, mClock, mBlissLogo, mWeatherTextView;
+    private View mLeftSide, mStatusIcons, mSignalCluster, mBattery, mClock, mBlissLogo, mWeatherTextView, mLeftWeatherTextView;
 
     private Animator mCurrentAnimation;
 
@@ -52,8 +52,9 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
         mSignalCluster = mView.findViewById(R.id.signal_cluster);
         mBattery = mView.findViewById(R.id.battery);
         mClock = mView.findViewById(R.id.clock);
-		mBlissLogo = mView.findViewById(R.id.bliss_logo);
         mWeatherTextView = mView.findViewById(R.id.weather_temp);
+        mLeftWeatherTextView = mView.findViewById(R.id.left_weather_temp);
+		mBlissLogo = mView.findViewById(R.id.bliss_logo);
         applyModeBackground(-1, getMode(), false /*animate*/);
         applyMode(getMode(), false /*animate*/);
     }
@@ -98,6 +99,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
                     animateTransitionTo(mStatusIcons, newAlpha),
                     animateTransitionTo(mSignalCluster, newAlpha),
                     animateTransitionTo(mWeatherTextView, newAlpha),
+                    animateTransitionTo(mLeftWeatherTextView, newAlpha),
                     animateTransitionTo(mBattery, newAlphaBC),
                     animateTransitionTo(mClock, newAlphaBC),
                     animateTransitionTo(mBlissLogo, newAlphaBC)
@@ -112,6 +114,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
             mStatusIcons.setAlpha(newAlpha);
             mSignalCluster.setAlpha(newAlpha);
             mWeatherTextView.setAlpha(newAlpha);
+            mLeftWeatherTextView.setAlpha(newAlpha);
             mBattery.setAlpha(newAlphaBC);
             mClock.setAlpha(newAlphaBC);
             mBlissLogo.setAlpha(newAlphaBC);
