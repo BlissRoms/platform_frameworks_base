@@ -292,7 +292,7 @@ public final class AudioFormat implements Parcelable {
      * @hide
      * */
     public static final int ENCODING_EVRCNW = 105;
-
+    
     /** @hide */
     public static String toLogFriendlyEncoding(int enc) {
         switch(enc) {
