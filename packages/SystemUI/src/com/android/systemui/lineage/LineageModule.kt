@@ -33,6 +33,7 @@ import com.android.systemui.qs.tiles.SoundTile
 import com.android.systemui.qs.tiles.SyncTile
 import com.android.systemui.qs.tiles.UsbTetherTile
 import com.android.systemui.qs.tiles.NotificationScheduleTile
+import com.android.systemui.qs.tiles.VolumeTile
 import com.android.systemui.qs.tiles.VpnTile
 import com.android.systemui.qs.tiles.base.shared.model.QSTileConfig
 import com.android.systemui.qs.tiles.base.shared.model.QSTileUIConfig
@@ -122,6 +123,12 @@ interface LineageModule {
     @IntoMap
     @StringKey(NotificationScheduleTile.TILE_SPEC)
     fun bindNotificationScheduleTile(tile: NotificationScheduleTile): QSTileImpl<*>
+
+    /** Inject VolumeTile into tileMap in QSModule */
+    @Binds
+    @IntoMap
+    @StringKey(VolumeTile.TILE_SPEC)
+    fun bindVolumeTile(volumeTile: VolumeTile): QSTileImpl<*>
 
     /** Inject VpnTile into tileMap in QSModule */
     @Binds
@@ -333,6 +340,20 @@ interface LineageModule {
                     QSTileUIConfig.Resource(
                         iconRes = R.drawable.ic_qs_notification_schedule,
                         labelRes = R.string.quick_settings_notification_schedule_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.UTILITIES,
+            )
+        @Provides
+        @IntoMap
+        @StringKey(VolumeTile.TILE_SPEC)
+        fun provideVolumeTile(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(VolumeTile.TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_volume_panel,
+                        labelRes = R.string.quick_settings_volume_panel_label
                     ),
                 instanceId = uiEventLogger.getNewInstanceId(),
                 category = TileCategory.UTILITIES,
