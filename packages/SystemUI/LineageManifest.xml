@@ -23,6 +23,10 @@
     <uses-permission android:name="lineageos.permission.HARDWARE_ABSTRACTION_ACCESS" />
     <uses-permission android:name="lineageos.permission.MANAGE_LIVEDISPLAY" />
 
+    <!-- Visualizer -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <!-- SystemUI Tuner -->
     <application>
         <activity-alias
