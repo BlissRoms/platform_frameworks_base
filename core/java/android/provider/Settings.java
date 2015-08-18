@@ -8371,6 +8371,12 @@ public final class Settings {
                 "packages_to_clear_data_before_full_restore";
 
         /**
+         * Whether to show the brightness slider in quick settings panel
+         * @hide
+         */
+        public static final String LOCKSCREEN_VISUALIZER_ENABLED = "lockscreen_visualizer_enabled";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
