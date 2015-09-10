@@ -3265,6 +3265,7 @@
         <item>lockdown</item>
         <item>torch</item>
         <!--<item>bugreport</item>-->
+        <item>onthego</item>
     </string-array>
 
     <!-- Number of milliseconds to hold a wake lock to ensure that drawing is fully
