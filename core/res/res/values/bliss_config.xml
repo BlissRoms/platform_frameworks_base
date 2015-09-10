@@ -70,6 +70,7 @@
         <item>power</item>
         <item>restart</item>
         <item>screenshot</item> <!--2 buttons nav-->
+        <item>onthego</item>
     </string-array>
 
     <bool name="config_has_Soli">false</bool>
@@ -121,5 +122,6 @@
 
     <!-- True if the home button has the ability to wake up phone from lockscreen-->
     <bool name="config_HomeWakeButton">false</bool>
+
 
 </resources>
