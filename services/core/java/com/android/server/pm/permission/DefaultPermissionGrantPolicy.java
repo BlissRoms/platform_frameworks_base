@@ -894,6 +894,11 @@ final class DefaultPermissionGrantPolicy {
         grantPermissionsToPackage(pm, "com.google.android.googlequicksearchbox", userId,
                 false /* ignoreSystemPackage */, true /*whitelistRestrictedPermissions*/,
                 PHONE_PERMISSIONS);
+
+        // Chromium Sign-in
+        grantSystemFixedPermissionsToSystemPackage(pm, "org.chromium.chrome", userId, CONTACTS_PERMISSIONS,
+                STORAGE_PERMISSIONS);
+
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(PackageManagerWrapper pm,
