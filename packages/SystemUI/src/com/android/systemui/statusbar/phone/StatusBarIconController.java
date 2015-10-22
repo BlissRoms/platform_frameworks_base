@@ -71,13 +71,15 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private LinearLayout mStatusIcons;
     private SignalClusterView mSignalCluster;
     private LinearLayout mStatusIconsKeyguard;
+    private IconMerger mNotificationIcons;
 
     private NotificationIconAreaController mNotificationIconAreaController;
     private View mNotificationIconAreaInner;
 
     private BatteryMeterView mBatteryMeterView;
     private BatteryMeterView mBatteryMeterViewKeyguard;
-    private TextView mClock;
+    private ClockController mClockController;
+    private View mCenterClockLayout;
 
     private int mIconSize;
     private int mIconHPadding;
@@ -117,6 +119,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mSystemIconArea = (LinearLayout) statusBar.findViewById(R.id.system_icon_area);
         mStatusIcons = (LinearLayout) statusBar.findViewById(R.id.statusIcons);
         mSignalCluster = (SignalClusterView) statusBar.findViewById(R.id.signal_cluster);
+        mNotificationIcons = (IconMerger) statusBar.findViewById(R.id.notificationIcons);
 
         mNotificationIconAreaController = SystemUIFactory.getInstance()
                 .createNotificationIconAreaController(context, phoneStatusBar);
@@ -133,10 +136,11 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mBatteryMeterViewKeyguard = (BatteryMeterView) keyguardStatusBar.findViewById(R.id.battery);
         scaleBatteryMeterViews(context);
 
-        mClock = (TextView) statusBar.findViewById(R.id.clock);
         mDarkModeIconColorSingleTone = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
         mHandler = new Handler();
+        mClockController = new ClockController(statusBar, mNotificationIcons, mHandler);
+        mCenterClockLayout = statusBar.findViewById(R.id.center_clock_layout);
         defineSlots();
         loadDimens();
 
@@ -318,22 +322,26 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
 
     public void hideSystemIconArea(boolean animate) {
         animateHide(mSystemIconArea, animate);
+        animateHide(mCenterClockLayout, animate);
     }
 
     public void showSystemIconArea(boolean animate) {
         animateShow(mSystemIconArea, animate);
+        animateShow(mCenterClockLayout, animate);
     }
 
     public void hideNotificationIconArea(boolean animate) {
         animateHide(mNotificationIconAreaInner, animate);
+        animateHide(mCenterClockLayout, animate);
     }
 
     public void showNotificationIconArea(boolean animate) {
         animateShow(mNotificationIconAreaInner, animate);
+        animateShow(mCenterClockLayout, animate);
     }
 
     public void setClockVisibility(boolean visible) {
-        mClock.setVisibility(visible ? View.VISIBLE : View.GONE);
+        mClockController.setVisibility(visible);
     }
 
     public void dump(PrintWriter pw) {
@@ -529,7 +537,7 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mSignalCluster.setIconTint(mIconTint, mDarkIntensity, mTintArea);
         mBatteryMeterView.setDarkIntensity(
                 isInArea(mTintArea, mBatteryMeterView) ? mDarkIntensity : 0);
-        mClock.setTextColor(getTint(mTintArea, mClock, mIconTint));
+        mClockController.setTextColor(mIconTint);
     }
 
     public void appTransitionPending() {
@@ -599,13 +607,6 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     }
 
     private void updateClock() {
-        FontSizeUtils.updateFontSize(mClock, R.dimen.status_bar_clock_size);
-        mClock.setPaddingRelative(
-                mContext.getResources().getDimensionPixelSize(
-                        R.dimen.status_bar_clock_starting_padding),
-                0,
-                mContext.getResources().getDimensionPixelSize(
-                        R.dimen.status_bar_clock_end_padding),
-                0);
+        mClockController.updateFontSize();
     }
 }
