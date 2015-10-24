@@ -2037,6 +2037,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_MEDIA_BLUR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_LOCKSCREEN_MEDIA_ART),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2050,12 +2053,17 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_MEDIA_BLUR))) {
                 setLockScreenMediaBlurLevel();
+            }  else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.SHOW_LOCKSCREEN_MEDIA_ART))) {
+                setLockScreenMediaArt();
+			}
             update();
         }
 
         public void update() {
             setPulseOnNewTracks();
             setLockScreenMediaBlurLevel();
+            setLockScreenMediaArt();
         }
     }
 
@@ -2070,6 +2078,12 @@ public class StatusBar extends SystemUI implements DemoMode,
     private void setLockScreenMediaBlurLevel() {
         if (mMediaManager != null) {
             mMediaManager.setLockScreenMediaBlurLevel();
+        }
+    }
+
+    private void setLockScreenMediaArt() {
+        if (mMediaManager != null) {
+            mMediaManager.setLockScreenMediaArt();
         }
     }
 
