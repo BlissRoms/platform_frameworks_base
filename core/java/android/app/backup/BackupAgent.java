@@ -833,8 +833,11 @@ public abstract class BackupAgent extends ContextWrapper {
         String domainPath = FullBackup.getBackupScheme(this, mBackupDestination)
                 .tokenToDirectoryPath(domain);
         if (domainPath == null) {
-            // Should never happen.
-            return;
+            if (startingPath == null) {
+                return;
+            } else {
+                domainPath = startingPath;
+            }
         }
 
         File rootFile = new File(startingPath);
