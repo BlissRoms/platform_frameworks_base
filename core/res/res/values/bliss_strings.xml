@@ -41,4 +41,8 @@
     <string name="animation_random">Random</string>
     <string name="action_null">Blank</string>
     <string name="animation_ethans">Ethans</string>
+
+    <!-- Vendor mismatch fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">It appears your vendor image may be out of date. Please flash the latest vendor image for your device.</string>
+
 </resources>
