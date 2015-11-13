@@ -131,4 +131,6 @@
    <!-- Default UDFPS pressed icon -->
    <java-symbol type="integer" name="config_udfps_pressed_color" />
 
+   <!-- Vendor mismatch fingerprint warning -->
+   <java-symbol type="string" name="system_error_vendorprint" />
 </resources>
