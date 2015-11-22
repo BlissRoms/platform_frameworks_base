@@ -16,4 +16,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
      <color name="dark_material_dialog_background">#ff212021</color>
      <drawable name="dark_material_bg">@color/dark_material_dialog_background</drawable>
+
+<!-- Colors specific to Material themes. -->
+     
+    <!-- Boot dexopt layout -->
+    <color name="dexopt_background">#000</color>
+    <color name="dexopt_text">#fff</color>
+
 </resources>

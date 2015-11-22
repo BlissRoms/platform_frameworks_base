@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-/*
-** Copyright 2015 Resurrection Remix Rom
+<!--s
+**
+** Copyright 2016 RR
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -16,8 +16,11 @@
 ** limitations under the License.
 */
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">    
-<!-- Button to soft reboot the device, within the Reboot Options dialog -->
-  <string name="reboot_systemui">Restart SystemUI</string>
-
+<resources>
+     <!-- Boot dexopt layout -->
+    <dimen name="dexopt_icon_margin">6dp</dimen>
+    <dimen name="dexopt_icon_size">42dp</dimen>
+    <dimen name="dexopt_logo_size">400dp</dimen>
+    <dimen name="dexopt_margin">10dp</dimen>
+    <dimen name="dexopt_message">10dp</dimen>
 </resources>
