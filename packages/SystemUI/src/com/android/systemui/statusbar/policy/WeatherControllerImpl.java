@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The CyanogenMod Project
+ * Copyright (C) 2015 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,14 @@ package com.android.systemui.statusbar.policy;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.ContentObserver;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -46,10 +46,15 @@ public class WeatherControllerImpl implements WeatherController {
     public static final Uri CURRENT_WEATHER_URI
             = Uri.parse("content://com.cyanogenmod.lockclock.weather.provider/weather/current");
     public static final String[] WEATHER_PROJECTION = new String[]{
-            "temperature",
             "city",
+            "wind",
+            "condition_code",
+            "temperature",
+            "humidity",
             "condition"
+
     };
+    public static final String LOCK_CLOCK_PACKAGE_NAME = "com.cyanogenmod.lockclock";
 
     private final ArrayList<Callback> mCallbacks = new ArrayList<Callback>();
     private final Receiver mReceiver = new Receiver();
@@ -93,9 +98,12 @@ public class WeatherControllerImpl implements WeatherController {
         } else {
             try {
                 c.moveToFirst();
-                mCachedInfo.temp = c.getString(0);
-                mCachedInfo.city = c.getString(1);
-                mCachedInfo.condition = c.getString(2);
+                mCachedInfo.city = c.getString(0);
+                mCachedInfo.wind = c.getString(1);
+                mCachedInfo.conditionCode = c.getInt(2);
+                mCachedInfo.temp = c.getString(3);
+                mCachedInfo.humidity = c.getString(4);
+                mCachedInfo.condition = c.getString(5);
             } finally {
                 c.close();
             }
@@ -121,6 +129,12 @@ public class WeatherControllerImpl implements WeatherController {
             queryWeather();
             fireCallback();
         }
+    }
+
+    @Override
+    public void updateWeather() {
+        queryWeather();
+        fireCallback();
     }
 
 }
