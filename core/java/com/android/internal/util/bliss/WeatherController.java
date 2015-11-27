@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.statusbar.policy;
+package com.android.internal.util.bliss;
 
 import android.graphics.drawable.Drawable;
 
