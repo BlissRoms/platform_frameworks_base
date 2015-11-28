@@ -87,6 +87,9 @@ LOCAL_C_INCLUDES += \
     external/skia/src/core
 
 LOCAL_CFLAGS += -DEGL_EGLEXT_PROTOTYPES -DGL_GLEXT_PROTOTYPES
+# The aliasing rule violation in SkiaShader.cpp doesn't result in incorrect
+# code with gcc 5.2 and clang 3.6
+LOCAL_CFLAGS += -Wno-error=strict-aliasing
 LOCAL_SHARED_LIBRARIES := liblog libcutils libutils libEGL libGLESv2 libskia libui libgui
 
 ifneq (false,$(ANDROID_ENABLE_RENDERSCRIPT))
