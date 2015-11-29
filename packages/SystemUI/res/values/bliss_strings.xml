@@ -24,4 +24,9 @@
     <string name="show_fourg_summary">Replaces LTE statusbar indicator with 4G</string>
     <string name="statusbar_tuner_category_title">Hide items from statusbar</string>
 
+    <!-- Music QS Tile -->
+    <string name="quick_settings_music_label">Music</string>
+    <string name="quick_settings_music_play">Play</string>
+    <string name="quick_settings_music_pause">Pause</string>
+
 </resources>
