@@ -42,4 +42,7 @@
 
     <!-- Screenshoty QS Tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
+
+    <!-- Brightness QS Tile -->
+    <string name="quick_settings_brightness">Brightness</string>
 </resources>
