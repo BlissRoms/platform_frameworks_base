@@ -45,4 +45,8 @@
 
     <!-- Brightness QS Tile -->
     <string name="quick_settings_brightness">Brightness</string>
+
+    <!-- Reboot QS Tile -->
+    <string name="quick_settings_reboot_label">Reboot</string>
+    <string name="quick_settings_reboot_recovery_label"</string>
 </resources>
