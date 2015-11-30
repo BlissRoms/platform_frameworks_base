@@ -3476,6 +3476,13 @@ public final class Settings {
          */
         public static final String GESTURES_RIGHT_SWIPE = "gestures_right_swipe";
 
+     /**
+         * Whether to display powermenu on secure lockscreen
+         *
+         * @hide
+         */
+        public static final String POWER_MENU_LOCKSCREEN = "power_menu_lockscreen";
+
         /**
          * Up Swipe Action
          *
