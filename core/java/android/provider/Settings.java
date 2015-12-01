@@ -6019,6 +6019,12 @@ public final class Settings {
         public static final String VOLUME_BUTTON_MUSIC_CONTROL = "volume_button_music_control";
 
         /**
+         * Volume rocker wake
+         * @hide
+         */
+        public static final String VOLUME_ROCKER_WAKE = "volume_rocker_wake";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -6144,6 +6150,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(TRANSPARENT_POWER_MENU);
             PRIVATE_SETTINGS.add(TRANSPARENT_POWER_DIALOG_DIM);
             PRIVATE_SETTINGS.add(VOLUME_BUTTON_MUSIC_CONTROL);
+            PRIVATE_SETTINGS.add(VOLUME_ROCKER_WAKE);
         }
 
         /**
