@@ -4615,6 +4615,12 @@ public final class Settings {
         public static final String QS_DATE_TIME_CENTER = "qs_date_time_center";
 
         /**
+         * Boolean value whether to link ringtone and notification volume
+         * @hide
+         */
+        public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
+
+        /**
          * @hide
          */
         public static final String QS_QUICKBAR_SCROLL_ENABLED = "qs_quickbar_scroll_enabled";
