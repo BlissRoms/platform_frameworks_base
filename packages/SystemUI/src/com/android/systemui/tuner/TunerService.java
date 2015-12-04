@@ -52,6 +52,12 @@ import java.util.Set;
 
 public class TunerService extends SystemUI {
 
+     public static final String ACTION_CLEAR = "com.android.systemui.action.CLEAR_TUNER";
+ 
+    private static final String TUNER_VERSION = "sysui_tuner_version";
+
+    private static final int CURRENT_TUNER_VERSION = 1;
+
     private final Observer mObserver = new Observer();
     // Map of Uris we listen on to their settings keys.
     private final ArrayMap<Uri, String> mListeningUris = new ArrayMap<>();
