@@ -487,6 +487,10 @@ public class Clock extends TextView implements DemoMode {
         }
     };
 
+    public void setStatusBarIconController(StatusBarIconController statusBarIconController) {
+        mStatusBarIconController = statusBarIconController;
+    }
+
     @Override
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld){
         super.onSizeChanged(xNew, yNew, xOld, yOld);
