@@ -3798,6 +3798,13 @@ public final class Settings {
          */
         public static final String NOTIFICATION_APP_ICON_BG_COLOR = "notification_app_icon_bg_color";
 
+ 	/**
+         * Three Finger Gesture from Oppo
+         *
+         * @hide
+         */
+        public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
+
         /**
          * Color of the notification text
          * @hide
