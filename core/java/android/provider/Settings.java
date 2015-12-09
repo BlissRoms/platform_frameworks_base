@@ -4424,6 +4424,12 @@ public final class Settings {
         public static final String MUSIC_TILE_TITLE = "music_tile_title";
 
         /**
+         * Three Finger Gesture
+         * @hide
+         */
+        public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
