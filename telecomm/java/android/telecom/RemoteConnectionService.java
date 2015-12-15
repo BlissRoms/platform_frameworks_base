@@ -61,7 +61,6 @@ final class RemoteConnectionService {
                 mPendingConnections.remove(connection);
                 // Unconditionally initialize the connection ...
                 connection.setConnectionCapabilities(parcel.getConnectionCapabilities());
-                connection.setConnectionProperties(parcel.getConnectionProperties());
                 if (parcel.getHandle() != null
                     || parcel.getState() != Connection.STATE_DISCONNECTED) {
                     connection.setAddress(parcel.getHandle(), parcel.getHandlePresentation());
@@ -157,17 +156,6 @@ final class RemoteConnectionService {
         }
 
         @Override
-        public void setConnectionProperties(String callId, int connectionProperties) {
-            if (mConnectionById.containsKey(callId)) {
-                findConnectionForAction(callId, "setConnectionProperties")
-                        .setConnectionProperties(connectionProperties);
-            } else {
-                findConferenceForAction(callId, "setConnectionProperties")
-                        .setConnectionProperties(connectionProperties);
-            }
-        }
-
-        @Override
         public void setIsConferenced(String callId, String conferenceCallId) {
             // Note: callId should not be null; conferenceCallId may be null
             RemoteConnection connection =
@@ -218,7 +206,6 @@ final class RemoteConnectionService {
 
             conference.setState(parcel.getState());
             conference.setConnectionCapabilities(parcel.getConnectionCapabilities());
-            conference.setConnectionProperties(parcel.getConnectionProperties());
             mConferenceById.put(callId, conference);
             conference.registerCallback(new RemoteConference.Callback() {
                 @Override

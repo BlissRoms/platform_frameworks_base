@@ -651,11 +651,6 @@ public class TelephonyManager {
      */
     public static final String VVM_TYPE_CVVM = "vvm_type_cvvm";
 
-    /*
-     * @hide
-     */
-    public static final String EXTRA_IS_FORWARDED = "is_forwarded";
-
     //
     //
     // Device Info
