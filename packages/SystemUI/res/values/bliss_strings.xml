@@ -74,4 +74,7 @@
     <string name="quick_settings_compass_W">W</string>
     <string name="quick_settings_compass_NW">NW</string>
 
+    <!-- SleepScreen QS Tile -->
+    <string name="quick_settings_sleepscreen_label">Sleep Screen</string>
+
 </resources>
