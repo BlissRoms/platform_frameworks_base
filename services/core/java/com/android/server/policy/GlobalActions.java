@@ -305,11 +305,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mItems.add(getScreenshotAction());
             } else if (GLOBAL_ACTION_KEY_AIRPLANE.equals(actionKey)) {
                 mItems.add(mAirplaneModeOn);
-            } else if (GLOBAL_ACTION_KEY_BUGREPORT.equals(actionKey)) {
-                if (Settings.Global.getInt(mContext.getContentResolver(),
-                        Settings.Global.BUGREPORT_IN_POWER_MENU, 0) != 0 && isCurrentUserOwner()) {
-                    mItems.add(getBugReportAction());
-                }
             } else if (GLOBAL_ACTION_KEY_SILENT.equals(actionKey)) {
                 if (mShowSilentToggle) {
                     mItems.add(mSilentModeAction);
@@ -442,61 +437,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
             public boolean showBeforeProvisioning() {
                 return true;
-            }
-        };
-    }
-
-    private Action getBugReportAction() {
-        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_bugreport,
-                R.string.bugreport_title) {
-
-            public void onPress() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(com.android.internal.R.string.bugreport_title);
-                builder.setMessage(com.android.internal.R.string.bugreport_message);
-                builder.setNegativeButton(com.android.internal.R.string.cancel, null);
-                builder.setPositiveButton(com.android.internal.R.string.report,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // don't actually trigger the bugreport if we are running stability
-                                // tests via monkey
-                                if (ActivityManager.isUserAMonkey()) {
-                                    return;
-                                }
-                                // Add a little delay before executing, to give the
-                                // dialog a chance to go away before it takes a
-                                // screenshot.
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override public void run() {
-                                        try {
-                                            ActivityManagerNative.getDefault()
-                                                    .requestBugReport();
-                                        } catch (RemoteException e) {
-                                        }
-                                    }
-                                }, 500);
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
-                dialog.show();
-            }
-
-            public boolean showDuringKeyguard() {
-                return true;
-            }
-
-            public boolean showBeforeProvisioning() {
-                return false;
-            }
-
-            @Override
-            public String getStatus() {
-                return mContext.getString(
-                        com.android.internal.R.string.bugreport_status,
-                        Build.VERSION.RELEASE,
-                        Build.ID);
             }
         };
     }
