@@ -61,6 +61,7 @@ import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
+import com.android.systemui.qs.tiles.ScreenrecordTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.WifiTile;
@@ -443,6 +444,7 @@ public class QSTileHost implements QSTile.Host, Tunable {
         else if (tileSpec.equals("night")) return new NightDisplayTile(this);
         else if (tileSpec.equals("ambient_display")) return new AmbientDisplayTile(this);
         else if (tileSpec.equals("brightness")) return new BrightnessTile(this);
+        else if (tileSpec.equals("screenrecord")) return new ScreenrecordTile(this);
         else if (tileSpec.equals("expanded_desktop")) return new ExpandedDesktopTile(this);
         else if (tileSpec.equals("ime")) return new ImeTile(this);
         else if (tileSpec.equals("nfc")) return new NfcTile(this);
