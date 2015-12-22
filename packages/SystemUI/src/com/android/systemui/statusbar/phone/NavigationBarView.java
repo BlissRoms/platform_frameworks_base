@@ -570,7 +570,7 @@ public class NavigationBarView extends LinearLayout {
         mDeadZone.setDisplayRotation(mCurrentRotation);
 
         // force the low profile & disabled states into compliance
-        mBarTransitions.init();
+        mBarTransitions.init(mVertical);
         setDisabledFlags(mDisabledFlags, true /* force */);
         setMenuVisibility(mShowMenu, true /* force */);
 
