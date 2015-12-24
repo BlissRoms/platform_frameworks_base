@@ -5432,6 +5432,12 @@ public final class Settings {
         public static final String PIXEL_NAV_ANIMATION = "pixel_nav_animation";
 
         /**
+         * Show 4G instead of LTE
+         * @hide
+         */
+        public static final String SHOW_FOURG = "show_fourg";
+
+        /**
          * FOD recognizing animation
          * @hide
          */
@@ -5606,6 +5612,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(NETWORK_TRAFFIC_VIEW_LOCATION);
             PRIVATE_SETTINGS.add(BACK_GESTURE_HAPTIC);
             PRIVATE_SETTINGS.add(NETWORK_TRAFFIC_LAYOUT);
+            PRIVATE_SETTINGS.add(SHOW_FOURG);
         }
 
         /**
