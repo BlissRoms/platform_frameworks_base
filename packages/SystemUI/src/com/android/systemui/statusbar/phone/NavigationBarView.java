@@ -48,6 +48,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewRootImpl;
 import android.view.WindowManager;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -68,6 +69,14 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     // slippery nav bar when everything is disabled, e.g. during setup
     final static boolean SLIPPERY_WHEN_DISABLED = true;
+
+    private OnLongClickListener mPowerListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            ((KeyButtonView) v).sendEvent(KeyEvent.KEYCODE_POWER, KeyEvent.FLAG_LONG_PRESS);
+            return true;
+        }
+    };
 
     final Display mDisplay;
     View mCurrentView = null;
@@ -484,6 +493,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         setButtonWithTagVisibility(NavbarEditor.NAVBAR_BACK, !disableBack);
         setButtonWithTagVisibility(NavbarEditor.NAVBAR_HOME, !disableHome);
         setButtonWithTagVisibility(NavbarEditor.NAVBAR_RECENT, !disableRecent);
+        setButtonWithTagVisibility(NavbarEditor.NAVBAR_POWER, !disableRecent);
         setButtonWithTagVisibility(NavbarEditor.NAVBAR_SEARCH, !disableSearch);
     }
 
@@ -834,6 +844,11 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
             homeView.setOnTouchListener(mHomeSearchActionListener);
             homeView.setLongClickable(true);
             homeView.setOnLongClickListener(mLongPressHomeListener);
+        }
+        View powerView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_POWER);
+        if (powerView != null) {
+            powerView.setLongClickable(true);
+            powerView.setOnLongClickListener(mPowerListener);
         }
     }
 
