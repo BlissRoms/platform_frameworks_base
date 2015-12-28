@@ -80,6 +80,7 @@
   <java-symbol type="anim" name="shrink_fade_out_right_ribbon" />
   <java-symbol type="anim" name="shrink_fade_out_left_ribbon" />
   <java-symbol type="anim" name="shrink_fade_out_from_bottom_ribbon" />
+  <java-symbol type="anim" name="translucent_exit_left" />
   <java-symbol type="anim" name="grow_fade_in_ribbon" />
   <java-symbol type="anim" name="grow_fade_in_center_ribbon" />
   <java-symbol type="anim" name="grow_fade_in_left_ribbon" />
@@ -101,6 +102,7 @@
   <java-symbol type="anim" name="slide_out_left_no_fade" />
   <java-symbol type="anim" name="slide_in_left_no_fade" />
   <java-symbol type="anim" name="slide_out_right_no_fade" />
+  <java-symbol type="anim" name="no_animation" />
 
   <!-- Power menu Animations  -->
   <java-symbol type="style" name="PowerMenuBottomAnimation" />

@@ -236,6 +236,9 @@ public class AppTransition implements Dump {
     private int[] mActivityAnimations = new int[11];
     private int mAnimationDuration;
     private boolean mIsResId = false;
+    private boolean mNoOverrides;
+    private boolean mExitOnly;
+    private boolean mReverseExit;
 
     private int mCurrentUserId = 0;
     private long mLastClipRevealTransitionDuration = DEFAULT_APP_TRANSITION_DURATION;
@@ -1564,7 +1567,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_ACTIVITY_OPEN:
                     if (mActivityAnimations[0] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[0]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[0], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1577,7 +1580,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_ACTIVITY_CLOSE:
                     if (mActivityAnimations[1] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[1]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[1], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1591,7 +1594,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_TASK_OPEN:
                     if (mActivityAnimations[2] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[2]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[2], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1604,7 +1607,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_TASK_CLOSE:
                     if (mActivityAnimations[3] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[3]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[3], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1617,7 +1620,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_TASK_TO_FRONT:
                     if (mActivityAnimations[4] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[4]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[4], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1630,7 +1633,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_TASK_TO_BACK:
                     if (mActivityAnimations[5] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[5]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[5], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1643,7 +1646,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_WALLPAPER_OPEN:
                     if (mActivityAnimations[6] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[6]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[6], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1656,7 +1659,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_WALLPAPER_CLOSE:
                     if (mActivityAnimations[7] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[7]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[7], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1669,7 +1672,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_WALLPAPER_INTRA_OPEN:
                     if (mActivityAnimations[8] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[8]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[8], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1682,7 +1685,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_WALLPAPER_INTRA_CLOSE:
                     if (mActivityAnimations[9] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[9]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[9], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1695,7 +1698,7 @@ public class AppTransition implements Dump {
                 case TRANSIT_TASK_OPEN_BEHIND:
                     if (mActivityAnimations[10] != 0) {
                         mIsResId = true;
-                        int[] animArray = AwesomeAnimationHelper.getAnimations(mActivityAnimations[10]);
+                        int[] animArray = AwesomeAnimationHelper.getSystemAnimations(mActivityAnimations[10], mExitOnly, mReverseExit);
                         animAttr = enter
                                 ? animArray[1]
                                 : animArray[0];
@@ -1739,7 +1742,9 @@ public class AppTransition implements Dump {
     }
 
     void overridePendingAppTransition(String packageName, int enterAnim, int exitAnim,
-            IRemoteCallback startedCallback) {
+
+        IRemoteCallback startedCallback) {
+        if (mNoOverrides) return;
         if (isTransitionSet()) {
             clear();
             mNextAppTransitionType = NEXT_TRANSIT_TYPE_CUSTOM;
@@ -1754,7 +1759,9 @@ public class AppTransition implements Dump {
     }
 
     void overridePendingAppTransitionScaleUp(int startX, int startY, int startWidth,
+
             int startHeight) {
+        if (mNoOverrides) return;
         if (isTransitionSet()) {
             clear();
             mNextAppTransitionType = NEXT_TRANSIT_TYPE_SCALE_UP;
@@ -1775,6 +1782,7 @@ public class AppTransition implements Dump {
 
     void overridePendingAppTransitionThumb(Bitmap srcThumb, int startX, int startY,
                                            IRemoteCallback startedCallback, boolean scaleUp) {
+        if (mNoOverrides) return;
         if (isTransitionSet()) {
             clear();
             mNextAppTransitionType = scaleUp ? NEXT_TRANSIT_TYPE_THUMBNAIL_SCALE_UP
@@ -1790,6 +1798,7 @@ public class AppTransition implements Dump {
 
     void overridePendingAppTransitionAspectScaledThumb(Bitmap srcThumb, int startX, int startY,
             int targetWidth, int targetHeight, IRemoteCallback startedCallback, boolean scaleUp) {
+        if (mNoOverrides) return;
         if (isTransitionSet()) {
             clear();
             mNextAppTransitionType = scaleUp ? NEXT_TRANSIT_TYPE_THUMBNAIL_ASPECT_SCALE_UP
@@ -2115,6 +2124,12 @@ public class AppTransition implements Dump {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.ANIMATION_CONTROLS_DURATION), false, this);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.ANIMATION_CONTROLS_NO_OVERRIDE), false, this);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.ANIMATION_CONTROLS_EXIT_ONLY), false, this);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.ANIMATION_CONTROLS_REVERSE_EXIT), false, this);
             for (int i = 0; i < 11; i++) {
 	            resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.ACTIVITY_ANIMATION_CONTROLS[i]), false, this);
@@ -2131,6 +2146,10 @@ public class AppTransition implements Dump {
         for (int i = 0; i < 11; i++) {
             mActivityAnimations[i] = Settings.System.getInt(resolver, Settings.System.ACTIVITY_ANIMATION_CONTROLS[i], 0);
         }
+
+        mNoOverrides = Settings.System.getInt(resolver, Settings.System.ANIMATION_CONTROLS_NO_OVERRIDE, 0) == 1;
+        mExitOnly = Settings.System.getInt(resolver, Settings.System.ANIMATION_CONTROLS_EXIT_ONLY, 1) == 1;
+        mReverseExit = Settings.System.getInt(resolver, Settings.System.ANIMATION_CONTROLS_REVERSE_EXIT, 0) == 1;
 
         int temp = Settings.System.getInt(resolver, Settings.System.ANIMATION_CONTROLS_DURATION, 0);
         mAnimationDuration = temp * 15;
