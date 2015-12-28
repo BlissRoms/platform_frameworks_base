@@ -85,9 +85,10 @@
                    android:layout_width="wrap_content"
                    android:layout_height="match_parent"
                    android:singleLine="true"
-                   android:gravity="right|center_vertical"
+                   android:gravity="center"
                    android:textAppearance="@style/TextAppearance.StatusBar.WeatherTemp"
-                   android:paddingStart="2dp"
+                   android:visibility="gone"
+                   android:paddingStart="4dp"
                    android:paddingEnd="4dp" />
 
                 <com.android.systemui.statusbar.StatusBarIconView android:id="@+id/moreIcon"
@@ -116,6 +117,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:singleLine="true"
+                android:visibility="gone"
                 android:gravity="right|center_vertical"
                 android:textAppearance="@style/TextAppearance.StatusBar.WeatherTemp"
                 android:paddingStart="2dp"

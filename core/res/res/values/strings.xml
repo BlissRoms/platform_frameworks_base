@@ -2616,7 +2616,7 @@
     <string name="android_upgrading_starting_apps">Starting apps.</string>
 
     <!-- [CHAR LIMIT=NONE] Message to show in upgrading dialog when the bulk of the upgrade work is done. -->
-    <string name="android_upgrading_complete">Finishing boot.</string>
+    <string name="android_upgrading_complete">Welcome to Bliss.</string>
 
     <!-- Notification text to tell the user that a heavy-weight application is running. -->
     <string name="heavy_weight_notification"><xliff:g id="app">%1$s</xliff:g> running</string>
