@@ -197,8 +197,13 @@ public class PhoneStatusBarPolicy implements Callback {
         mContext.getContentResolver().registerContentObserver(
                 CMSettings.System.getUriFor(CMSettings.System.SHOW_ALARM_ICON),
                 false, mSettingsObserver);
+
+	//  Headset Icon
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.SHOW_HEADSET_ICON),
+                false, mSettingsObserver);
+
+	// Su Icon
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.SHOW_SU_INDICATOR),
                 false, mSettingsObserver);
