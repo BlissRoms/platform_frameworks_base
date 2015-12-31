@@ -31,6 +31,7 @@ import android.app.TaskStackBuilder;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -1972,6 +1973,10 @@ public abstract class BaseStatusBar extends SystemUI implements
             }
         }
 
+        if (onKeyguard) {
+            hideWeatherPanelIfNecessary(visibleNotifications, getMaxKeyguardNotifications());
+        }
+
         mStackScroller.updateOverflowContainerVisibility(onKeyguard
                 && mKeyguardIconOverflowContainer.getIconsView().getChildCount() > 0);
 
@@ -1983,6 +1988,19 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     private boolean shouldShowOnKeyguard(StatusBarNotification sbn) {
         return mShowLockscreenNotifications && !mNotificationData.isAmbient(sbn.getKey());
+    }
+
+    private void hideWeatherPanelIfNecessary(int visibleNotifications, int maxKeyguardNotifications) {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        int notifications = visibleNotifications;
+        if (mKeyguardIconOverflowContainer.getIconsView().getChildCount() > 0) {
+            notifications += 1;
+        }
+        Settings.System.putInt(resolver,
+                Settings.System.LOCK_SCREEN_VISIBLE_NOTIFICATIONS, notifications);
+        Settings.System.putInt(resolver,
+                Settings.System.LOCK_SCREEN_MAX_NOTIFICATIONS, maxKeyguardNotifications);
     }
 
     protected void setZenMode(int mode) {

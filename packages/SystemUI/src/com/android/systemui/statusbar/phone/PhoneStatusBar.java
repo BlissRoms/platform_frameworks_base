@@ -1440,12 +1440,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 UserHandle.USER_CURRENT);
         if (mWeatherController == null) {
             mWeatherController = new WeatherControllerImpl(mContext);
-            /*mWeatherController.addCallback(new WeatherController.Callback() {
+            mWeatherController.addCallback(new WeatherController.Callback() {
                 @Override
                 public void onWeatherChanged(WeatherInfo temp) {
                     updateWeatherTextState(temp.temp, mWeatherTempColor, mWeatherTempSize, mWeatherTempFontStyle);
                 }
-            });*/
+            });
         }
         updateWeatherTextState(mWeatherController.getWeatherInfo().temp, mWeatherTempColor, mWeatherTempSize, mWeatherTempFontStyle);
 
