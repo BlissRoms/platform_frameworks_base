@@ -61,6 +61,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <ImageView
+                    android:id="@+id/bliss_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="4dip"
+                    android:src="@drawable/ic_status_bar_bliss_logo"
+                    android:scaleType="center"
+                    android:visibility="gone" />
+
                 <com.android.systemui.statusbar.policy.Clock
                     android:id="@+id/left_clock"
                     android:textAppearance="@style/TextAppearance.StatusBar.Clock"
@@ -69,15 +78,6 @@
                     android:singleLine="true"
                     android:paddingEnd="6dip"
                     android:gravity="center"
-                    android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/bliss_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="4dip"
-                    android:src="@drawable/ic_status_bar_bliss_logo"
-                    android:scaleType="center"
                     android:visibility="gone" />
 
                 <TextView
@@ -112,6 +112,15 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
+            <com.android.systemui.statusbar.policy.NetworkTraffic
+                android:id="@+id/networkTraffic"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:singleLine="false"
+                android:gravity="right|center_vertical"
+                android:visibility="gone"
+                android:paddingEnd="2dp" />
+
             <TextView
                 android:id="@+id/weather_temp"
                 android:layout_width="wrap_content"
@@ -122,13 +131,6 @@
                 android:textAppearance="@style/TextAppearance.StatusBar.WeatherTemp"
                 android:paddingStart="2dp"
                 android:paddingEnd="4dp" />
-
-            <com.android.systemui.statusbar.policy.NetworkTraffic
-                android:id="@+id/networkTraffic"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:singleLine="false"
-                android:gravity="right|center_vertical"/>
 
             <include layout="@layout/system_icons" />
 
