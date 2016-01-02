@@ -410,6 +410,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         updatePhoneIconColor();
         updateLockIconColor();
         updateIndicationTextColor();
+        updateLeftButtonVisibility();
     }
 
     public void setUserSetupComplete(boolean userSetupComplete) {
@@ -765,6 +766,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             updatePhoneIconColor();
             updateLockIconColor();
             updateIndicationTextColor();
+            updateLeftButtonVisibility();
         }
     }
 
@@ -894,6 +896,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                     updatePhoneIconColor();
                     updateLockIconColor();
                     updateIndicationTextColor();
+                    updateLeftButtonVisibility();
                 }
             });
         }
@@ -909,6 +912,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             updatePhoneIconColor();
             updateLockIconColor();
             updateIndicationTextColor();
+            updateLeftButtonVisibility();
         }
 
         @Override
