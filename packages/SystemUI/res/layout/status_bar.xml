@@ -65,7 +65,7 @@
                     android:id="@+id/bliss_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingEnd="4dip"
+                    android:paddingEnd="2dip"
                     android:src="@drawable/ic_status_bar_bliss_logo"
                     android:scaleType="center"
                     android:visibility="gone" />
@@ -76,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:singleLine="true"
-                    android:paddingEnd="6dip"
+                    android:paddingEnd="2dip"
                     android:gravity="center"
                     android:visibility="gone" />
 
@@ -85,7 +85,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="match_parent"
                    android:singleLine="true"
-                   android:gravity="center"
+                   android:gravity="right|center_vertical"
                    android:textAppearance="@style/TextAppearance.StatusBar.WeatherTemp"
                    android:visibility="gone"
                    android:paddingStart="4dp"
