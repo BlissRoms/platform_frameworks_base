@@ -51,11 +51,13 @@ import android.os.storage.IMountShutdownObserver;
 import android.provider.Settings;
 import android.system.ErrnoException;
 import android.system.Os;
+import android.view.Gravity; 
 import android.widget.ListView;
 
 import com.android.internal.telephony.ITelephony;
 import com.android.server.pm.PackageManagerService;
 
+import com.android.internal.R;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -266,7 +268,34 @@ public final class ShutdownThread extends Thread {
                 attrs.windowAnimations = R.style.PowerMenuRotateAnimation;
                 attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
             }
-
+            if (powermenuAnimations == 4) {
+                attrs.windowAnimations = R.style.PowerMenuXylonAnimation;
+                attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            }
+            if (powermenuAnimations == 5) {
+                attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
+                attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            }
+            if (powermenuAnimations == 6) {
+                attrs.windowAnimations = R.style.PowerMenuTnAnimation;
+                attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            }
+            if (powermenuAnimations == 7) {
+                attrs.windowAnimations = R.style.PowerMenuflyAnimation;
+                attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            }
+            if (powermenuAnimations == 8) {
+                attrs.windowAnimations = R.style.PowerMenuCardAnimation;
+                attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            }
+            if (powermenuAnimations == 9) {
+                attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
+                attrs.gravity = Gravity.TOP|Gravity.CENTER_HORIZONTAL;
+            }
+            if (powermenuAnimations == 10) {
+                attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
+                attrs.gravity = Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL;
+            }
             sConfirmDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
             sConfirmDialog.show();
         } else {
@@ -423,6 +452,7 @@ public final class ShutdownThread extends Thread {
         pd.setCancelable(false);
         pd.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
 
+        WindowManager.LayoutParams attrs = pd.getWindow().getAttributes();
         boolean isPrimary = UserHandle.getCallingUserId() == UserHandle.USER_OWNER;
         int powermenuAnimations = isPrimary ? getPowermenuAnimations(context) : 0;
 
@@ -440,6 +470,34 @@ public final class ShutdownThread extends Thread {
         if (powermenuAnimations == 3) {
             attrs.windowAnimations = R.style.PowerMenuRotateAnimation;
             attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+        }
+        if (powermenuAnimations == 4) {
+            attrs.windowAnimations = R.style.PowerMenuXylonAnimation;
+            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+        }
+        if (powermenuAnimations == 5) {
+            attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
+            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+        }
+        if (powermenuAnimations == 6) {
+            attrs.windowAnimations = R.style.PowerMenuTnAnimation;
+            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+        }
+        if (powermenuAnimations == 7) {
+            attrs.windowAnimations = R.style.PowerMenuflyAnimation;
+            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+        }
+        if (powermenuAnimations == 8) {
+            attrs.windowAnimations = R.style.PowerMenuCardAnimation;
+            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+        }
+        if (powermenuAnimations == 9) {
+            attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
+            attrs.gravity = Gravity.TOP|Gravity.CENTER_HORIZONTAL;
+        }
+        if (powermenuAnimations == 10) {
+            attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
+            attrs.gravity = Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL;
         }
 
         pd.show();
