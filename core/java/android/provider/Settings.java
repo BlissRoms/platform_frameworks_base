@@ -4673,6 +4673,12 @@ public final class Settings {
         public static final String SHOW_QS_CLOCK = "show_qs_clock";
 
         /**
+         * Whether to enable or disable vibration on fingerprint auth error
+         * @hide
+         */
+        public static final String FP_ERROR_VIBRATE = "fp_error_vibrate";
+
+        /**
          * Whether to use the custom quick unlock screen control
          * @hide
          */
