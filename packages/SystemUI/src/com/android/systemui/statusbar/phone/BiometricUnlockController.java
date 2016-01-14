@@ -23,6 +23,7 @@ import static com.android.systemui.flags.Flags.ONE_WAY_HAPTICS_API_MIGRATION;
 import static com.android.systemui.keyguard.WakefulnessLifecycle.UNKNOWN_LAST_WAKE_TIME;
 
 import android.annotation.IntDef;
+import android.content.Context;
 import android.content.res.Resources;
 import android.hardware.biometrics.BiometricFaceConstants;
 import android.hardware.biometrics.BiometricFingerprintConstants;
@@ -33,6 +34,8 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.os.Trace;
 import android.view.HapticFeedbackConstants;
+import android.os.UserHandle;
+import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 
@@ -178,6 +181,7 @@ public class BiometricUnlockController extends KeyguardUpdateMonitorCallback imp
     private final BiometricUnlockLogger mLogger;
     private final SystemClock mSystemClock;
     private final boolean mOrderUnlockAndWake;
+    private final Context mContext;
 
     private long mLastFpFailureUptimeMillis;
     private int mNumConsecutiveFpFailures;
@@ -288,7 +292,8 @@ public class BiometricUnlockController extends KeyguardUpdateMonitorCallback imp
             ScreenOffAnimationController screenOffAnimationController,
             VibratorHelper vibrator,
             SystemClock systemClock,
-            FeatureFlags featureFlags
+            FeatureFlags featureFlags,
+            Context context
     ) {
         mPowerManager = powerManager;
         mUpdateMonitor = keyguardUpdateMonitor;
@@ -319,6 +324,7 @@ public class BiometricUnlockController extends KeyguardUpdateMonitorCallback imp
         mFeatureFlags = featureFlags;
         mOrderUnlockAndWake = resources.getBoolean(
                 com.android.internal.R.bool.config_orderUnlockAndWake);
+        mContext = context;
 
         dumpManager.registerDumpable(getClass().getName(), this);
     }
@@ -762,6 +768,12 @@ public class BiometricUnlockController extends KeyguardUpdateMonitorCallback imp
                 && lastWakeupFromPowerButtonWithinHapticThreshold()) {
             mLogger.d("Skip auth success haptic. Power button was recently pressed.");
             return;
+        }
+        boolean FingerprintVib = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.FINGERPRINT_SUCCESS_VIB, 1, UserHandle.USER_CURRENT) == 1;
+        if (FingerprintVib) {
+            mVibratorHelper.vibrateAuthSuccess(
+                getClass().getSimpleName() + ", type =" + type + "device-entry::success");
         }
         if (mFeatureFlags.isEnabled(ONE_WAY_HAPTICS_API_MIGRATION)) {
             mVibratorHelper.performHapticFeedback(
