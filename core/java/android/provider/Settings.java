@@ -3389,6 +3389,12 @@ public final class Settings {
         public static final Validator SIP_CALL_OPTIONS_VALIDATOR = new DiscreteValueValidator(
                 new String[] {"SIP_ALWAYS", "SIP_ADDRESS_ONLY"});
 
+	    /**
+         * Show four g instead of lte
+         * @hide
+         */
+        public static final String SHOW_FOURG = "show_fourg";
+
         /**
          * One of the sip call options: Always use SIP with network access.
          * @hide
