@@ -3825,6 +3825,13 @@ public final class Settings {
          */
         public static final String RECENTS_USE_OMNISWITCH = "recents_use_omniswitch";
 
+	    /**
+         * Whether to enable status and navigation bar color in battery saver mode.
+         *
+         * @hide
+         */
+        public static final String BATTERY_SAVER_MODE_COLOR = "battery_save_mode_color";
+
         /**
          * Change the screenshot delay
          * @hide
