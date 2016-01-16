@@ -3558,7 +3558,12 @@ public final class Settings {
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
          * the setting value. See an example above.
+	/*
+         * Whether to mute annoying notifications
+         * @hide
          */
+        public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD = "mute_annoying_notifications_threshold";
+
 
          /**
          * Whether wifi settings will connect to access point automatically
