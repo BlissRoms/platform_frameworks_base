@@ -51,9 +51,9 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
     private static final Intent LOCATION_SETTINGS_INTENT
             = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
     public static final Integer[] LOCATION_SETTINGS = new Integer[]{
+            Settings.Secure.LOCATION_MODE_HIGH_ACCURACY,
             Settings.Secure.LOCATION_MODE_BATTERY_SAVING,
-            Settings.Secure.LOCATION_MODE_SENSORS_ONLY,
-            Settings.Secure.LOCATION_MODE_HIGH_ACCURACY
+            Settings.Secure.LOCATION_MODE_SENSORS_ONLY
     };
 
     private final AnimationIcon mEnable =
@@ -122,7 +122,7 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
         // Work around for bug 15916487: don't show location tile on top of lock screen. After the
         // bug is fixed, this should be reverted to only hiding it on secure lock screens:
         // state.visible = !(mKeyguard.isSecure() && mKeyguard.isShowing());
-        state.visible = !mKeyguard.isShowing();
+        state.visible = true;
         state.label = mContext.getString(getStateLabelRes(currentState));
 
         switch (currentState) {
