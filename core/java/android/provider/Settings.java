@@ -3476,10 +3476,16 @@ public final class Settings {
          */
         public static final String GESTURES_RIGHT_SWIPE = "gestures_right_swipe";
 
-     /**
-         * Whether to display powermenu on secure lockscreen
+        /**
+         * Change fonts for the system lockscreen clock widget
          *
          * @hide
+         */
+        public static final String LOCK_CLOCK_FONTS = "lock_clock_fonts";
+
+        /**
+         * Whether to display powermenu on secure lockscreen
+         *
          */
         public static final String POWER_MENU_LOCKSCREEN = "power_menu_lockscreen";
 
