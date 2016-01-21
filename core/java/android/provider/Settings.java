@@ -683,7 +683,7 @@ public final class Settings {
     public static final String ACTION_APP_OPS_SETTINGS =
             "android.settings.APP_OPS_SETTINGS";
 
-    /**
+     /**
      * Activity Action: Show settings for system update functionality.
      * <p>
      * In some cases, a matching Activity may not exist, so ensure you
@@ -3726,6 +3726,12 @@ public final class Settings {
          * @hide
          */
         public static final String TOAST_ICON = "toast_icon";
+
+        /**
+         * Whether to display dashboard tiles in a double column layout
+         * @hide
+         */
+        public static final String DASHBOARD_TWO_COLUMNS = "dashboard_two_columns";
 
         /**
          * Status bar weather temperature
