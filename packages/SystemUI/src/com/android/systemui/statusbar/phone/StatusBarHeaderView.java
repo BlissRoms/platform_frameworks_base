@@ -118,6 +118,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private boolean mShowEmergencyCallsOnly;
     private boolean mAlarmShowing;
+    private boolean mNextAlarmVisible;
     private AlarmManager.AlarmClockInfo mNextAlarm;
 
     private int mCollapsedHeight;
@@ -398,9 +399,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void updateVisibilities() {
-        mDateCollapsed.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
-        mDateExpanded.setVisibility(mExpanded && mAlarmShowing ? View.INVISIBLE : View.VISIBLE);
-        mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
+        mDateCollapsed.setVisibility(mExpanded && mAlarmShowing && mNextAlarmVisible ? View.VISIBLE : View.INVISIBLE);
+        mDateExpanded.setVisibility(mExpanded && mAlarmShowing && mNextAlarmVisible ? View.INVISIBLE : View.VISIBLE);
+        mAlarmStatus.setVisibility(mExpanded && mAlarmShowing && mNextAlarmVisible ? View.VISIBLE : View.INVISIBLE);
         mSettingsContainer.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mWeatherContainer.setVisibility(mExpanded && mShowWeather ? View.VISIBLE : View.GONE);
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail ? View.VISIBLE : View.INVISIBLE);
@@ -935,7 +936,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             if (mShowWeather) {
                 transition(mWeatherContainer, !showingDetail);
             }
-            if (mAlarmShowing) {
+            if (mAlarmShowing && mNextAlarmVisible) {
                 transition(mAlarmStatus, !showingDetail && !mDetailTransitioning);
             }
             transition(mQsDetailHeader, showingDetail);
@@ -1015,6 +1016,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     CMSettings.System.STATUS_BAR_BATTERY_STYLE), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(CMSettings.System.getUriFor(
                     CMSettings.System.STATUS_BAR_SHOW_BATTERY_PERCENT), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(CMSettings.System.getUriFor(
+                    CMSettings.System.SHOW_NEXT_ALARM), false, this, UserHandle.USER_ALL);
+
             update();
         }
 
@@ -1048,6 +1052,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             mShowBatteryTextExpanded = showExpandedBatteryPercentage;
             mShowWeather = CMSettings.System.getInt(
                     resolver, CMSettings.System.STATUS_BAR_SHOW_WEATHER, 1) == 1;
+            mNextAlarmVisible = CMSettings.System.getInt(
+                    resolver, CMSettings.System.SHOW_NEXT_ALARM, 1) == 1;
             updateVisibilities();
             requestCaptureValues();
         }

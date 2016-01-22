@@ -41,6 +41,8 @@ import android.widget.TextView;
 
 import com.android.internal.widget.LockPatternUtils;
 
+import cyanogenmod.providers.CMSettings;
+
 import java.util.Locale;
 
 public class KeyguardStatusView extends GridLayout {
@@ -49,6 +51,8 @@ public class KeyguardStatusView extends GridLayout {
 
     private final LockPatternUtils mLockPatternUtils;
     private final AlarmManager mAlarmManager;
+
+    private boolean mNextAlarmVisible;
 
     private TextView mAlarmStatusView;
     private TextClock mDateView;
@@ -168,7 +172,9 @@ public class KeyguardStatusView extends GridLayout {
     private void refresh() {
         AlarmManager.AlarmClockInfo nextAlarm =
                 mAlarmManager.getNextAlarmClock(UserHandle.USER_CURRENT);
-        Patterns.update(mContext, nextAlarm != null);
+        mNextAlarmVisible = CMSettings.System.getInt(mContext.getContentResolver(), 
+                CMSettings.System.SHOW_NEXT_ALARM, 1) == 1;
+        Patterns.update(mContext, nextAlarm != null && mNextAlarmVisible);
 
         refreshTime();
         refreshAlarmStatus(nextAlarm);
@@ -176,7 +182,9 @@ public class KeyguardStatusView extends GridLayout {
     }
 
     void refreshAlarmStatus(AlarmManager.AlarmClockInfo nextAlarm) {
-        if (nextAlarm != null) {
+		mNextAlarmVisible = CMSettings.System.getInt(mContext.getContentResolver(), 
+                CMSettings.System.SHOW_NEXT_ALARM, 1) == 1;
+        if (nextAlarm != null && mNextAlarmVisible) {
             String alarm = formatNextAlarm(mContext, nextAlarm);
             mAlarmStatusView.setText(alarm);
             mAlarmStatusView.setContentDescription(
@@ -243,7 +251,6 @@ public class KeyguardStatusView extends GridLayout {
         boolean isPrimary = UserHandle.getCallingUserId() == UserHandle.USER_OWNER;
         int lockClockFont = isPrimary ? getLockClockFont() : 0;
 
-       
         if (lockClockFont == 0) {
             mClockView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         }
@@ -298,7 +305,6 @@ public class KeyguardStatusView extends GridLayout {
         if (lockClockFont == 17) {
             mClockView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
         }
-
     }
 
     private void updateClockColor() {
