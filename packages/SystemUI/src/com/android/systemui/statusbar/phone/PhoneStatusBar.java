@@ -1430,6 +1430,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
                 @Override
                 public void setEditing(final boolean editing) {
+                    if (mState != StatusBarState.SHADE) {
+                        return;
+                    }
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -1446,6 +1449,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
                 @Override
                 public void goToSettingsPage() {
+                    if (mState != StatusBarState.SHADE) {
+                        return;
+                    }
                     setEditing(true);
                     mHandler.postDelayed(new Runnable() {
                         @Override
