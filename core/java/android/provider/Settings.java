@@ -3543,6 +3543,12 @@ public final class Settings {
          */
         public static final String EGG_MODE = "egg_mode";
 
+	/**
+         * Whether to disable showing arrows in network traffic indicators
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_HIDEARROW = "network_traffic_hidearrow";
+
         /**
          * show the membar in recents
          *  @hide
