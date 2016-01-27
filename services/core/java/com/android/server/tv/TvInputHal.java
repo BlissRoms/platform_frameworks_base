@@ -104,10 +104,6 @@ final class TvInputHal implements Handler.Callback {
             if (mPtr == 0) {
                 return ERROR_NO_INIT;
             }
-            int generation = mStreamConfigGenerations.get(deviceId, 0);
-            if (generation != streamConfig.getGeneration()) {
-                return ERROR_STALE_CONFIG;
-            }
             if (nativeRemoveStream(mPtr, deviceId, streamConfig.getStreamId()) == 0) {
                 return SUCCESS;
             } else {
