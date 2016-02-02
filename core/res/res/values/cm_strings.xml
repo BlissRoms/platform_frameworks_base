@@ -248,4 +248,7 @@
          with spaces on either side. [CHAR LIMIT=3] -->
     <string name="kg_sub_separator" translatable="false">" | "</string>
 
+    <!-- Battery fully charged notification -->
+    <string name="notify_battery_fully_charged_title">Battery fully charged</string>
+    <string name="notify_battery_fully_charged_text">Disconnect your device from the charger to improve battery longevity.</string>
 </resources>
