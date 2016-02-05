@@ -3574,6 +3574,12 @@ public final class Settings {
         public static final String WIFI_AUTO_CONNECT_TYPE = "wifi_auto_connect_type";
 
         /**
+         * Custom carrier label font style
+         * @hide
+         */
+        public static final String STATUS_BAR_CARRIER_FONT_STYLE = "status_bar_carrier_font_style";
+
+        /**
           * Volume keys control cursor in text fields (default is 0)
           * 0 - Disabled
           * 1 - Volume up/down moves cursor left/right
