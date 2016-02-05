@@ -232,6 +232,8 @@ public class StatusBarManager {
     /** @hide */
     public static final int CAMERA_LAUNCH_SOURCE_QUICK_AFFORDANCE = 3;
 
+    public static final int CAMERA_LAUNCH_SOURCE_SCREEN_GESTURE = 4;
+
     /**
      * Session flag for {@link #registerSessionListener} indicating the listener
      * is interested in sessions on the keygaurd.
