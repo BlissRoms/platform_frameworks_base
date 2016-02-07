@@ -422,7 +422,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     public boolean isLeftVoiceAssist() {
-        return !isTargetCustom(Shortcuts.LEFT_SHORTCUT) && canLaunchVoiceAssist();
+		return !isTargetCustom(Shortcuts.LEFT_SHORTCUT) && canLaunchVoiceAssist();
     }
 
     private boolean isPhoneVisible() {
@@ -645,7 +645,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     private boolean canLaunchVoiceAssist() {
-        if (mAssistManager == null) {
+	    boolean leftvoicedefault = Settings.System.getInt(getContext().getContentResolver(), 
+                Settings.System.LEFT_DEFAULT_VOICE, 1) == 1;
+        if (mAssistManager == null || (leftvoicedefault == false)) {
             return false;
         }
         return mAssistManager.canVoiceAssistBeLaunchedFromKeyguard();
