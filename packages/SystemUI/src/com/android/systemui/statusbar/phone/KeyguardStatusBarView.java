@@ -102,11 +102,6 @@ public class KeyguardStatusBarView extends RelativeLayout {
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
-        // Respect font size setting.
-        mCarrierLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.text_size_small_material));
     }
 
     @Override
