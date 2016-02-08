@@ -2004,6 +2004,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     true /* dismissShade */);
         }
     };
+    private final View.OnLongClickListener mCameraLongClickListener =
+            new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            startGallery();
+            return true;
+        }
+    };
 
     //Screenshot
     private final View.OnClickListener mScreenShotClickListener = new View.OnClickListener() {
@@ -2195,13 +2203,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+    private void startGallery(){
+        Intent galleryIntent = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivity(galleryIntent , true);
+    }
+
     private void prepareNavigationBarView() {
         mNavigationBarView.reorient();
 
         mNavigationBarView.setListeners(mRecentsClickListener, mRecentsPreloadOnTouchListener,
                 mLongPressBackRecentsListener, mHomeActionListener, mLongPressHomeListener,
                 mNotificationsClickListener, mNotificationsLongListener, mTorchClickListener,
-                mCameraClickListener, mScreenShotClickListener, mImmersiveClickListener);
+                mCameraClickListener, mCameraLongClickListener, mScreenShotClickListener,
+                mImmersiveClickListener);
         mAssistManager.onConfigurationChanged();
     }
 

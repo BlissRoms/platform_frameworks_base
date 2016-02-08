@@ -153,6 +153,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     private OnLongClickListener mNotificationsLongListener;
     private OnClickListener mTorchClickListener;
     private OnClickListener mCameraClickListener;
+    private OnLongClickListener mCameraLongClickListener;
     private OnClickListener mScreenShotClickListener;
     private OnClickListener mImmersiveClickListener;
 
@@ -934,8 +935,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
                       OnLongClickListener recentsBackListener, OnTouchListener homeSearchActionListener,
                       OnLongClickListener longPressHomeListener, OnClickListener notificationsClickListener,
                       OnLongClickListener notificationsLongListener,OnClickListener torchClickListener,
-                      OnClickListener cameraClickListener, OnClickListener screenshotClickListener,
-                      OnClickListener immersiveClickListener) {
+                      OnClickListener cameraClickListener, OnLongClickListener cameraLongClickListener,
+                      OnClickListener screenshotClickListener, OnClickListener immersiveClickListener) {
         mRecentsClickListener = recentsClickListener;
         mRecentsPreloadListener = recentsPreloadListener;
         mHomeSearchActionListener = homeSearchActionListener;
@@ -945,6 +946,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         mNotificationsLongListener = notificationsLongListener;
         mTorchClickListener = torchClickListener;
         mCameraClickListener = cameraClickListener;
+        mCameraLongClickListener = cameraLongClickListener;
         mScreenShotClickListener = screenshotClickListener;
         mImmersiveClickListener = immersiveClickListener;
         updateButtonListeners();
@@ -1001,6 +1003,8 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         View cameraView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_CAMERA);
         if (cameraView != null) {
             cameraView.setOnClickListener(mCameraClickListener);
+            cameraView.setLongClickable(true);
+            cameraView.setOnLongClickListener(mCameraLongClickListener);
         }
         View screenshotView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_SCREENSHOT);
         if (screenshotView != null) {
