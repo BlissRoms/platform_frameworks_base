@@ -1991,6 +1991,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
+    //App picker
+    private final View.OnClickListener mAppPickerClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            appPicker();
+        }
+    };
+
     private void awakenDreams() {
         if (mDreamManager != null) {
             try {
@@ -2167,11 +2174,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+
     private void startGallery(){
         Intent galleryIntent = new Intent(
                 Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivity(galleryIntent , true);
+    }
+
+    private void appPicker() {
+        Intent intent = new Intent(".bliss.apppicker.AppPickerActivity");
+        startActivity(intent, true);
     }
 
     private void prepareNavigationBarView() {
@@ -2181,7 +2194,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mLongPressBackRecentsListener, mHomeActionListener, mLongPressHomeListener,
                 mNotificationsClickListener, mNotificationsLongListener, mTorchClickListener,
                 mCameraClickListener, mCameraLongClickListener, mScreenShotClickListener,
-                mImmersiveClickListener);
+                mImmersiveClickListener, mAppPickerClickListener);
         mAssistManager.onConfigurationChanged();
     }
 
