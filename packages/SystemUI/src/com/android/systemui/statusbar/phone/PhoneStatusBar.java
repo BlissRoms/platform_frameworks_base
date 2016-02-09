@@ -2423,11 +2423,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
         }
 
-        // apply user lockscreen image
-        if (mMediaMetadata == null && backdropBitmap == null) {
-            backdropBitmap = mKeyguardWallpaper;
-        }
-
         // HACK: Consider keyguard as visible if showing sim pin security screen
         KeyguardUpdateMonitor updateMonitor = KeyguardUpdateMonitor.getInstance(mContext);
         boolean keyguardVisible = mState != StatusBarState.SHADE || updateMonitor.isSimPinSecure();
@@ -2441,7 +2436,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             == PlaybackState.STATE_PLAYING);
         }
 
-        if (backdropBitmap == null && mMediaMetadata == null) {
+        // apply user lockscreen image
+        if (backdropBitmap == null && mMediaMetadata == null &&
+                !mNotificationPanel.hasExternalKeyguardView()) {
             backdropBitmap = mKeyguardWallpaper;
         }
 
