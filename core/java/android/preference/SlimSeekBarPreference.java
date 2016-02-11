@@ -68,7 +68,7 @@ public class SlimSeekBarPreference extends Preference
         mChanger = onPreferenceChangeListener;
         super.setOnPreferenceChangeListener(onPreferenceChangeListener);
     }
-
+/** {@hide} */
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -126,12 +126,12 @@ public class SlimSeekBarPreference extends Preference
     public void isMilliseconds(boolean millis) {
         mIsMilliSeconds = millis;
     }
-
+/** {@hide} */
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
 
     }
-
+/** {@hide} */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
