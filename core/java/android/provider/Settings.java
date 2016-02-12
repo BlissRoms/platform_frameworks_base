@@ -3609,7 +3609,7 @@ public final class Settings {
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
          * the setting value. See an example above.
-	/*
+	/**
          * Whether to mute annoying notifications
          * @hide
          */
@@ -3954,7 +3954,7 @@ public final class Settings {
          */
         public static final String NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD = "network_traffic_autohide_threshold";
 
-	    /*
+	    /**
          * Settings for carrier label font size
          * @hide
          */
