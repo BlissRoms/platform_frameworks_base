@@ -48,5 +48,8 @@
 
     <!-- Reboot QS Tile -->
     <string name="quick_settings_reboot_label">Reboot</string>
-    <string name="quick_settings_reboot_recovery_label"</string>
+    <string name="quick_settings_reboot_recovery_label">Reboot Recovery</string>
+
+    <!-- IME Tile -->
+    <string name="quick_settings_ime_label">Input Method</string>
 </resources>
