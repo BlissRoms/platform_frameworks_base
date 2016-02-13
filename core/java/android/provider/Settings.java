@@ -4283,13 +4283,19 @@ public final class Settings {
          */
         public static final String  RECENTS_CLEAR_ALL_LOCATION = "recents_clear_all_location";
 
-
         /**
          * Should the alarm be shown in fullscreen instead of heads-up
          *
          * @hide
          */
         public static final String SHOW_ALARM_FULLSCREEN = "show_alarm_fullscreen";
+
+        /**
+         * Whether to show statusbar clock in the keyguard
+         * @hide
+         */
+        public static final String KEYGUARD_SHOW_CLOCK = "keyguard_show_clock";
+
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
