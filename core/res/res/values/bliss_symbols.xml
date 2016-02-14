@@ -166,5 +166,7 @@
   <java-symbol type="style" name="GlobalActionsAnimationXylon" />
   <java-symbol type="style" name="GlobalActionsAnimationCard" />
   <java-symbol type="style" name="GlobalActionsAnimationRotate" />
+  <!-- Hardware Key Binding -->
+  <java-symbol type="integer" name="config_deviceHardwareKeys" />
 
 </resources>
