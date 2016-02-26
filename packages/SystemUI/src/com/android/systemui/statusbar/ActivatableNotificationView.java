@@ -33,9 +33,6 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.PathInterpolator;
 
-import com.android.internal.util.bliss.ColorHelper;
-import com.android.internal.util.bliss.NotificationColorHelper;
-
 import com.android.systemui.R;
 import com.android.systemui.ViewInvertHelper;
 
@@ -129,9 +126,8 @@ public abstract class ActivatableNotificationView extends ExpandableOutlineView 
     private float mAppearAnimationTranslation;
     private boolean mShowingLegacyBackground;
     private final int mLegacyColor;
-    private int mNormalColor;
-    private int mMediaColor;
-    private int mLowPriorityColor;
+    private final int mNormalColor;
+    private final int mLowPriorityColor;
     private boolean mIsBelowSpeedBump;
     private ViewInvertHelper mBackgroundNormalInvertHelper;
     private ViewInvertHelper mBackgroundDimmedInvertHelper;
@@ -149,6 +145,9 @@ public abstract class ActivatableNotificationView extends ExpandableOutlineView 
         setClipChildren(false);
         setClipToPadding(false);
         mLegacyColor = context.getColor(R.color.notification_legacy_background_color);
+        mNormalColor = context.getColor(R.color.notification_material_background_color);
+        mLowPriorityColor = context.getColor(
+                R.color.notification_material_background_low_priority_color);
         int roundedRectCornerRadius = getResources().getDimensionPixelSize(
                 R.dimen.notification_material_rounded_rect_radius);
         setRoundCornerRadius(roundedRectCornerRadius); // Themes: For drop-shadow rounded corners
@@ -172,7 +171,7 @@ public abstract class ActivatableNotificationView extends ExpandableOutlineView 
         mBackgroundDimmedInvertHelper =
                 new ViewInvertHelper(mBackgroundDimmed, DARK_ANIMATION_LENGTH);
         updateBackground();
-        updateSettings();
+        updateBackgroundTint();
     }
 
     private final Runnable mTapTimeoutRunnable = new Runnable() {
@@ -383,12 +382,16 @@ public abstract class ActivatableNotificationView extends ExpandableOutlineView 
      */
     public void setTintColor(int color) {
         mBgTint = color;
-        updateSettings();
+        updateBackgroundTint();
     }
 
     private void updateBackgroundTint() {
         int color = getBgColor();
         int rippleColor = getRippleColor();
+        if (color == mNormalColor) {
+            // We don't need to tint a normal notification
+            color = 0;
+        }
         mBackgroundDimmed.setTint(color);
         mBackgroundNormal.setTint(color);
         mBackgroundDimmed.setRippleColor(rippleColor);
@@ -680,7 +683,7 @@ public abstract class ActivatableNotificationView extends ExpandableOutlineView 
 
     private int getBgColor() {
         if (mBgTint != 0) {
-            return mMediaColor;
+            return mBgTint;
         } else if (mShowingLegacyBackground) {
             return mLegacyColor;
         } else if (mIsBelowSpeedBump) {
@@ -744,13 +747,5 @@ public abstract class ActivatableNotificationView extends ExpandableOutlineView 
     public interface OnActivatedListener {
         void onActivated(ActivatableNotificationView view);
         void onActivationReset(ActivatableNotificationView view);
-    }
-
-    public void updateSettings() {
-        mNormalColor = NotificationColorHelper.getCustomNotificationBgColor(mContext);
-        mMediaColor = NotificationColorHelper.getNotificationMediaBgColor(mContext, mBgTint);
-        mLowPriorityColor = ColorHelper.getLightenOrDarkenColor(mNormalColor);
-
-        updateBackgroundTint();
     }
 }
