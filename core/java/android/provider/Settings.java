@@ -3966,6 +3966,13 @@ public final class Settings {
          */
         public static final String CLOCK_USE_SECOND = "clock_use_second";
 
+  	/**
+	 *
+         * Whether to show switches for wifi/cell/bt in the settings dashboard
+         * @hide
+         */
+        public static final String DASHBOARD_SWITCHES = "dashboard_switches";
+
         /**
          * Alternative recent apps integration using OmniSwitch
          * @hide
