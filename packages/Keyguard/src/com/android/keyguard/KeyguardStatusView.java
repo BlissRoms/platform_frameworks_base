@@ -426,8 +426,7 @@ public class KeyguardStatusView extends GridLayout implements
     private void updateWeatherSettings(boolean forceHide) {
         final ContentResolver resolver = getContext().getContentResolver();
         final Resources res = getContext().getResources();
-        View weatherPanel = findViewById(R.id.weather_panel);
-        TextView noWeatherInfo = (TextView) findViewById(R.id.no_weather_info_text);
+
         int currentVisibleNotifications = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_VISIBLE_NOTIFICATIONS, 0);
         int maxAllowedNotifications = Settings.System.getInt(resolver,
@@ -467,19 +466,13 @@ public class KeyguardStatusView extends GridLayout implements
             }
         }
         if (forceHide) {
-            noWeatherInfo.setVisibility(View.VISIBLE);
-            weatherPanel.setVisibility(View.GONE);
-            mWeatherConditionText.setVisibility(View.GONE);
-            mWeatherTimestamp.setVisibility(View.GONE);
+            mWeatherView.setVisibility(View.GONE);
         } else {
-            noWeatherInfo.setVisibility(View.GONE);
-            weatherPanel.setVisibility(View.VISIBLE);
-            mWeatherConditionText.setVisibility(View.VISIBLE);
-            mWeatherCity.setVisibility(showLocation ? View.VISIBLE : View.INVISIBLE);
-            mWeatherTimestamp.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
+            mWeatherView.setVisibility(mShowWeather ? View.VISIBLE : View.GONE);
         }
+        mWeatherCity.setVisibility(showLocation ? View.VISIBLE : View.INVISIBLE);
+        mWeatherTimestamp.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
 
-        noWeatherInfo.setTextColor(primaryTextColor);
         mWeatherCity.setTextColor(primaryTextColor);
         mWeatherConditionText.setTextColor(primaryTextColor);
         mWeatherCurrentTemp.setTextColor(primaryTextColor);
