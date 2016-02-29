@@ -130,7 +130,7 @@ public class CastControllerImpl implements CastController {
         }
         if (mDiscovering) {
             mMediaRouter.addCallback(ROUTE_TYPE_REMOTE_DISPLAY, mMediaCallback,
-                    MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY);
+                    MediaRouter.CALLBACK_FLAG_PERFORM_ACTIVE_SCAN);
             mCallbackRegistered = true;
         } else {
             boolean hasCallbacks = false;
