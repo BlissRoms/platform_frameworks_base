@@ -29,6 +29,7 @@ public class PowerMenuConstants {
     public static final String GLOBAL_ACTION_KEY_BUGREPORT = "bugreport";
     public static final String GLOBAL_ACTION_KEY_VOICEASSIST = "voiceassist";
     public static final String GLOBAL_ACTION_KEY_ASSIST = "assist";
+    public static final String GLOBAL_ACTION_KEY_TORCH = "torch";
     public static final String GLOBAL_ACTION_KEY_SILENT = "silent";
 
     private static String[] ALL_ACTIONS = {
@@ -43,6 +44,7 @@ public class PowerMenuConstants {
         GLOBAL_ACTION_KEY_BUGREPORT,
         GLOBAL_ACTION_KEY_VOICEASSIST,
         GLOBAL_ACTION_KEY_ASSIST,
+        GLOBAL_ACTION_KEY_TORCH,
         GLOBAL_ACTION_KEY_SILENT
     };
 
