@@ -622,6 +622,7 @@ public class SignalClusterView
             setTint(mMobile, tint);
             setTint(mMobileDark, tint);
             setTint(mMobileType, tint);
+            setTint(mMobileRoaming, tint);
         }
     }
 }
