@@ -4105,6 +4105,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         ArrayList<Pair<String, StatusBarNotification>> notifications =
                 new ArrayList<Pair<String, StatusBarNotification>>(nNotifs);
         copyNotifications(notifications, mNotificationData);
+        // now remove all the notifications since we'll be re-creating these with the copied data
         mNotificationData.clear();
 
         if (mCustomTileListenerService != null) {
