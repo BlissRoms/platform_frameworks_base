@@ -230,6 +230,10 @@ public class NetworkControllerImpl extends BroadcastReceiver
         return mWifiSignalController.getState().level;
     }
 
+    public String getConnectedWifiSsid() {
+        return mWifiSignalController.getWifiSsid();
+    }
+
     @Override
     public AccessPointController getAccessPointController() {
         return mAccessPoints;

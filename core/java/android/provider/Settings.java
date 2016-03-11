@@ -3819,6 +3819,30 @@ public final class Settings {
         public static final String STATUS_BAR_WEATHER_FONT_STYLE = "status_bar_weather_font_style";
 
         /**
+         * Whether or not to show the Wi-Fi SSID of a connected AP
+         * @hide
+         */
+        public static final String WIFI_STATUS_BAR_SSID = "wifi_status_bar_ssid";
+
+        /**
+         * Choose the color of the status bar SSID
+         * @hide
+         */
+        public static final String WIFI_STATUS_BAR_SSID_COLOR = "wifi_status_bar_ssid_color";
+
+        /**
+         * Choose the font size of the status bar SSID
+         * @hide
+         */
+        public static final String WIFI_STATUS_BAR_SSID_SIZE = "wifi_status_bar_ssid_size";
+
+        /**
+         * Choose the font style of the status bar SSID
+         * @hide
+         */
+        public static final String WIFI_STATUS_BAR_SSID_FONT_STYLE = "wifi_status_bar_ssid_font_style";
+
+        /**
          * Toast animations
          *
          * @hide

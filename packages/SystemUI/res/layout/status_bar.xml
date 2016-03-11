@@ -70,6 +70,17 @@
                     android:scaleType="center"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/status_bar_wifi_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="2dp"
+                    android:paddingEnd="2dp"
+                    android:visibility="gone"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.StatusBar.WifiLabel" />
+
                 <com.android.systemui.statusbar.policy.Clock
                     android:id="@+id/left_clock"
                     android:textAppearance="@style/TextAppearance.StatusBar.Clock"
@@ -88,8 +99,8 @@
                    android:gravity="right|center_vertical"
                    android:textAppearance="@style/TextAppearance.StatusBar.WeatherTemp"
                    android:visibility="gone"
-                   android:paddingStart="4dp"
-                   android:paddingEnd="4dp" />
+                   android:paddingStart="2dp"
+                   android:paddingEnd="2dp" />
 
                 <com.android.systemui.statusbar.StatusBarIconView android:id="@+id/moreIcon"
                     android:layout_width="@dimen/status_bar_icon_size"

@@ -12,4 +12,8 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <style name="TextAppearance.StatusBar.WifiLabel" parent="@*android:style/TextAppearance.StatusBar.Icon">
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>

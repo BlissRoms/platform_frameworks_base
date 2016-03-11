@@ -86,6 +86,7 @@ import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.NotificationListenerService.RankingMap;
 import android.service.notification.StatusBarNotification;
+import android.telephony.SubscriptionInfo;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
@@ -180,6 +181,8 @@ import com.android.systemui.statusbar.policy.KeyguardMonitor;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
 import com.android.systemui.statusbar.policy.LocationControllerImpl;
 import com.android.systemui.statusbar.policy.NetworkController;
+import com.android.systemui.statusbar.policy.NetworkController.IconState;
+import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.PreviewInflater;
@@ -386,10 +389,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mBlissLogoColor;
     private ImageView blissLogo;
 
+    private TextView mWifiSsidLabel;
+    private boolean mShowWifiSsidLabel;
+    private int mWifiSsidColor;
+    private int mWifiSsidSize;
+    private int mWifiSsidFontStyle = FONT_NORMAL;
+    private NetworkControllerImpl mWifiController;
+
     boolean mExpandedVisible;
 
     // Weather temperature
-    TextView mWeatherTempView;
+    private TextView mWeatherTempView;
     private int mWeatherTempState;
     private int mWeatherTempStyle;
     private int mWeatherTempColor;
@@ -505,8 +515,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(CMSettings.System.getUriFor(
-                    CMSettings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this,
-                    UserHandle.USER_ALL);
+                    CMSettings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(CMSettings.System.getUriFor(
@@ -532,33 +541,30 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 	        resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SHOW_FOURG), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NETWORK_ICONS_SIGNAL_COLOR),
-                    false, this, UserHandle.USER_ALL);
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_SIGNAL_COLOR), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NETWORK_ICONS_NO_SIM_COLOR),
-                    false, this, UserHandle.USER_ALL);
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_NO_SIM_COLOR), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NETWORK_ICONS_AIRPLANE_MODE_COLOR),
-                    false, this, UserHandle.USER_ALL);
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_AIRPLANE_MODE_COLOR), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_STATUS_ICONS_COLOR),
-                    false, this, UserHandle.USER_ALL);
+                    Settings.System.STATUS_BAR_STATUS_ICONS_COLOR), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_NOTIFICATION_ICONS_COLOR),
-                    false, this, UserHandle.USER_ALL);
+                    Settings.System.STATUS_BAR_NOTIFICATION_ICONS_COLOR), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WIFI_STATUS_BAR_SSID), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WIFI_STATUS_BAR_SSID_COLOR), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WIFI_STATUS_BAR_SSID_SIZE), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WIFI_STATUS_BAR_SSID_FONT_STYLE), false, this, UserHandle.USER_ALL);
             update();
         }
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE))
-                    || uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_WEATHER_COLOR))
-                    || uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_WEATHER_SIZE))
-                    || uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_WEATHER_FONT_STYLE))) {
+                    Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE))) {
                	    recreateStatusBar();
                     updateRowStates();
                     updateSpeedbump();
@@ -626,26 +632,31 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             boolean mShow4G = Settings.System.getIntForUser(resolver,
                     Settings.System.SHOW_FOURG, 0, UserHandle.USER_CURRENT) == 1;
 
-            final int oldWeatherState = mWeatherTempState;
-            mWeatherTempState = Settings.System.getIntForUser(
-                    resolver, Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0,
-                    UserHandle.USER_CURRENT);
-            if (oldWeatherState != mWeatherTempState) {
-                updateWeatherTextState(mWeatherController.getWeatherInfo().temp,
-                    mWeatherTempColor, mWeatherTempSize, mWeatherTempFontStyle);
-            }
             mWeatherTempStyle = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE, 0,
                     UserHandle.USER_CURRENT);
-
             mWeatherTempColor = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_WEATHER_COLOR, 0xFFFFFFFF, mCurrentUserId);
-
             mWeatherTempSize = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_WEATHER_SIZE, 14, mCurrentUserId);
-
             mWeatherTempFontStyle = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_WEATHER_FONT_STYLE, FONT_NORMAL, mCurrentUserId);
+            mWeatherTempState = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0,
+                    UserHandle.USER_CURRENT);
+            updateWeatherTextState(mWeatherController.getWeatherInfo().temp,
+                    mWeatherTempColor, mWeatherTempSize, mWeatherTempFontStyle);
+
+            mWifiSsidColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.WIFI_STATUS_BAR_SSID_COLOR, 0xFFFFFFFF, mCurrentUserId);
+            mWifiSsidSize = Settings.System.getIntForUser(resolver,
+                    Settings.System.WIFI_STATUS_BAR_SSID_SIZE, 14, mCurrentUserId);
+            mWifiSsidFontStyle = Settings.System.getIntForUser(resolver,
+                    Settings.System.WIFI_STATUS_BAR_SSID_FONT_STYLE, FONT_NORMAL, mCurrentUserId);
+            mShowWifiSsidLabel = Settings.System.getIntForUser(resolver,
+                    Settings.System.WIFI_STATUS_BAR_SSID, 0, UserHandle.USER_CURRENT) == 1;
+            updateWifiSsid(mNetworkController.getConnectedWifiSsid(), mWifiSsidColor,
+                    mWifiSsidSize, mWifiSsidFontStyle);
 
             mBlissLogo = Settings.System.getIntForUser(resolver,
 					Settings.System.STATUS_BAR_BLISS_LOGO, 0, mCurrentUserId) == 1;
@@ -1074,7 +1085,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mStatusBarWindow = new StatusBarWindowView(mContext, null);
         mStatusBarWindow.setService(this);
-        
+
         super.start(); // calls createAndAddWindows()
 
         mMediaSessionManager
@@ -1413,6 +1424,25 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mFlashlightController == null) {
             mFlashlightController = new FlashlightController(mContext);
         }
+
+        mShowWifiSsidLabel = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.WIFI_STATUS_BAR_SSID, 0) == 1;
+
+        mWifiSsidLabel = (TextView)mStatusBarView.findViewById(R.id.status_bar_wifi_label);
+
+        mWifiSsidColor = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.WIFI_STATUS_BAR_SSID_COLOR, 0xFFFFFFFF, mCurrentUserId);
+        mWifiSsidSize = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.WIFI_STATUS_BAR_SSID_SIZE, 14, mCurrentUserId);
+        mWifiSsidFontStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.WIFI_STATUS_BAR_SSID_FONT_STYLE, FONT_NORMAL, mCurrentUserId);
+        if (mWifiController == null) {
+			mWifiController = new NetworkControllerImpl(mContext, mHandlerThread.getLooper());
+            mWifiController.addSignalCallback(mWifiCallback);
+        }
+        updateWifiSsid(mNetworkController.getConnectedWifiSsid(), mWifiSsidColor,
+                mWifiSsidSize, mWifiSsidFontStyle);
+
         mKeyguardBottomArea.setFlashlightController(mFlashlightController);
         mKeyguardBottomArea.setPhoneStatusBar(this);
         mKeyguardBottomArea.setUserSetupComplete(mUserSetup);
@@ -1431,9 +1461,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mUserSwitcherController = new UserSwitcherController(mContext, mKeyguardMonitor,
                         mHandler);
             }
-        }
-        if (mWeatherController == null) {
-            mWeatherController = new WeatherControllerImpl(mContext);
         }
 
         mWeatherTempStyle = Settings.System.getIntForUser(
@@ -1642,6 +1669,42 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateNetworkIconColors();
         return mStatusBarView;
     }
+
+    private final SignalCallback mWifiCallback = new SignalCallback() {
+		@Override
+        public void setWifiIndicators(boolean enabled, IconState statusIcon, IconState qsIcon,
+                boolean activityIn, boolean activityOut, String description) {
+			boolean connected = qsIcon.visible;
+            String ssid = mNetworkController.getConnectedWifiSsid();
+            updateWifiSsid(connected ? ssid : "", mWifiSsidColor, mWifiSsidSize, mWifiSsidFontStyle);
+        }
+
+        @Override
+        public void setMobileDataIndicators(IconState statusIcon, IconState qsIcon, int statusType,
+                int qsType, boolean activityIn, boolean activityOut, String typeContentDescription,
+                String description, boolean isWide, boolean showSeparateRoaming, int subId) {
+		}
+
+        @Override
+        public void setSubs(List<SubscriptionInfo> subs) {
+	    }
+
+        @Override
+        public void setNoSims(boolean show) {
+	    }
+
+        @Override
+        public void setEthernetIndicators(IconState icon) {
+		}
+
+        @Override
+        public void setIsAirplaneMode(IconState icon) {
+		}
+
+        @Override
+        public void setMobileDataEnabled(boolean enabled) {
+		}
+    };
 
     private void clearAllNotifications() {
 
@@ -3949,6 +4012,105 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         blissLogo.setColorFilter(color, Mode.SRC_IN);
         if (blissLogo != null) {
             blissLogo.setVisibility(show ? (mBlissLogo ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+    }
+
+    public void updateWifiSsid(String ssid, int color, int size, int font) {
+        if (mStatusBarView == null || mContext == null
+            || mWifiSsidLabel == null || mNetworkController == null) {
+            return;
+        }
+        mShowWifiSsidLabel = Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.WIFI_STATUS_BAR_SSID, 0) == 1;
+        if (ssid != null) {
+            ssid = ssid.replace("\"", "");
+        }
+        if (mShowWifiSsidLabel && !TextUtils.isEmpty(ssid)) {
+            mWifiSsidLabel.setText(ssid);
+            mWifiSsidLabel.setTextColor(color);
+            mWifiSsidLabel.setTextSize(size);
+            switch (font) {
+               case FONT_NORMAL:
+               default:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                   break;
+               case FONT_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                   break;
+               case FONT_BOLD:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                   break;
+               case FONT_BOLD_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                   break;
+               case FONT_LIGHT:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                   break;
+               case FONT_LIGHT_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                   break;
+               case FONT_THIN:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                   break;
+               case FONT_THIN_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                   break;
+               case FONT_CONDENSED:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                   break;
+               case FONT_CONDENSED_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                   break;
+               case FONT_CONDENSED_LIGHT:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                   break;
+               case FONT_CONDENSED_LIGHT_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                   break;
+               case FONT_CONDENSED_BOLD:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                   break;
+               case FONT_CONDENSED_BOLD_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                   break;
+               case FONT_MEDIUM:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                   break;
+               case FONT_MEDIUM_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                   break;
+               case FONT_BLACK:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                   break;
+               case FONT_BLACK_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                   break;
+               case FONT_DANCINGSCRIPT:
+                   mWifiSsidLabel.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                   break;
+               case FONT_DANCINGSCRIPT_BOLD:
+                   mWifiSsidLabel.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                   break;
+               case FONT_COMINGSOON:
+                   mWifiSsidLabel.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                   break;
+               case FONT_NOTOSERIF:
+                   mWifiSsidLabel.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                   break;
+               case FONT_NOTOSERIF_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                   break;
+               case FONT_NOTOSERIF_BOLD:
+                   mWifiSsidLabel.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                   break;
+               case FONT_NOTOSERIF_BOLD_ITALIC:
+                   mWifiSsidLabel.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                   break;
+            }
+        mWifiSsidLabel.setVisibility(View.VISIBLE);
+        } else {
+            mWifiSsidLabel.setText("");
+            mWifiSsidLabel.setVisibility(View.GONE);
         }
     }
 
