@@ -141,6 +141,10 @@ public class WifiSignalController extends
         return null;
     }
 
+    public String getWifiSsid() {
+        return mCurrentState.ssid;
+    }
+
     @VisibleForTesting
     void setActivity(int wifiActivity) {
         mCurrentState.activityIn = wifiActivity == WifiManager.DATA_ACTIVITY_INOUT
