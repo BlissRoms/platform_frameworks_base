@@ -4216,6 +4216,12 @@ public final class Settings {
         private static final Validator OMNI_USE_OLD_MOBILETYPE_VALIDATOR =
                 BOOLEAN_VALIDATOR;
 
+        /** Whether to skip music track with volume rocker 
+        /**
+         * @hide
+         */
+        public static final String VOLUME_BUTTON_MUSIC_CONTROL = "volume_button_music_control";
+
         /**
          * @hide
          */
