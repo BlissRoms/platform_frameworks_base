@@ -10251,10 +10251,10 @@ public class PackageManagerService extends IPackageManager.Stub {
 
     void startCleaningPackages() {
         // reader
+        if (!isExternalMediaAvailable()) {
+            return;
+        }
         synchronized (mPackages) {
-            if (!isExternalMediaAvailable()) {
-                return;
-            }
             if (mSettings.mPackagesToBeCleaned.isEmpty()) {
                 return;
             }
