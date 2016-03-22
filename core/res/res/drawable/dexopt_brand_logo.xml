@@ -16,4 +16,6 @@
 -->
 
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/bliss_logo" />
+    android:src="@drawable/bliss_logo"
+    android:tint="@color/dexopt_progressTint"/>
+

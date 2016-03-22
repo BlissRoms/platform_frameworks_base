@@ -22,5 +22,8 @@
     <!-- Boot dexopt layout -->
     <color name="dexopt_background">#000</color>
     <color name="dexopt_text">#fff</color>
+    
+     <color name="dexopt_progressTint">#FF00A8EC</color>
+     <color name="dexopt_progressBackgroundTint">#FF00A8EC</color>
 
 </resources>
