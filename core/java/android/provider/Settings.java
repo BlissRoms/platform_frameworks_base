@@ -7061,6 +7061,13 @@ public final class Settings {
         public static final String LESS_BORING_HEADS_UP = "less_boring_heads_up";
 
 	/**
+        /**
+         * Heads up timeout configuration
+         * @hide
+         */
+        public static final String HEADS_UP_TIMEOUT = "heads_up_timeout";
+
+        /**
          * @hide
          */
         public static final String ISLAND_NOTIFICATION = "island_notification";

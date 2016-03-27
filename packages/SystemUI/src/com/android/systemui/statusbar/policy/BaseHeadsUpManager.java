@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
@@ -108,10 +110,12 @@ public abstract class BaseHeadsUpManager implements HeadsUpManager {
         mAccessibilityMgr = accessibilityManagerWrapper;
         mUiEventLogger = uiEventLogger;
         Resources resources = context.getResources();
-        mMinimumDisplayTime = resources.getInteger(R.integer.heads_up_notification_minimum_time);
         mStickyForSomeTimeAutoDismissTime = resources.getInteger(
                 R.integer.sticky_heads_up_notification_time);
-        mAutoDismissTime = resources.getInteger(R.integer.heads_up_notification_decay);
+        mAutoDismissTime = resources.getInteger(R.integer.heads_up_notification_decay) / 1000;
+        mMinimumDisplayTime = Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.HEADS_UP_TIMEOUT,
+                mAutoDismissTime, UserHandle.USER_CURRENT) * 1000;
         mTouchAcceptanceDelay = resources.getInteger(R.integer.touch_acceptance_delay);
         mSnoozedPackages = new ArrayMap<>();
         int defaultSnoozeLengthMs =
@@ -128,11 +132,17 @@ public abstract class BaseHeadsUpManager implements HeadsUpManager {
                     mSnoozeLengthMs = packageSnoozeLengthMs;
                     mLogger.logSnoozeLengthChange(packageSnoozeLengthMs);
                 }
+                mMinimumDisplayTime  = Settings.System.getIntForUser(
+                    context.getContentResolver(), Settings.System.HEADS_UP_TIMEOUT,
+                    mAutoDismissTime, UserHandle.USER_CURRENT) * 1000;
             }
         };
         globalSettings.registerContentObserver(
                 globalSettings.getUriFor(SETTING_HEADS_UP_SNOOZE_LENGTH_MS),
                 /* notifyForDescendants = */ false,
+                settingsObserver);
+        context.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.HEADS_UP_TIMEOUT), false,
                 settingsObserver);
     }
 
