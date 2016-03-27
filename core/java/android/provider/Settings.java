@@ -5022,6 +5022,16 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
+        * Heads up timeout configuration
+        * @hide
+        */
+        public static final String HEADS_UP_TIMEOUT = "heads_up_timeout";
+
+        /** @hide */
+        private static final Validator HEADS_UP_TIMEOUT_VALIDATOR =
+              new SettingsValidators.InclusiveIntegerRangeValidator(0, 10000);
+
+        /**
          * Enable\Disable Bluetooth Battery bar in quick settings
          * @hide
          */
@@ -5123,6 +5133,7 @@ public final class Settings {
             FINGERPRINT_SUCCESS_VIB,
             WIRELESS_CHARGING_ANIMATION,
             HEADS_UP_NOTIFICATION_SNOOZE,
+            HEADS_UP_TIMEOUT,
         };
 
         /**
@@ -5254,6 +5265,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(FINGERPRINT_SUCCESS_VIB);
             PRIVATE_SETTINGS.add(WIRELESS_CHARGING_ANIMATION);
             PRIVATE_SETTINGS.add(HEADS_UP_NOTIFICATION_SNOOZE);
+            PRIVATE_SETTINGS.add(HEADS_UP_TIMEOUT);
         }
 
         /**
@@ -5359,6 +5371,7 @@ public final class Settings {
             VALIDATORS.put(FINGERPRINT_SUCCESS_VIB, FINGERPRINT_SUCCESS_VIB_VALIDATOR);
             VALIDATORS.put(WIRELESS_CHARGING_ANIMATION, WIRELESS_CHARGING_ANIMATION_VALIDATOR);
             VALIDATORS.put(HEADS_UP_NOTIFICATION_SNOOZE,HEADS_UP_NOTIFICATION_SNOOZE_VALIDATOR);
+            VALIDATORS.put(HEADS_UP_TIMEOUT,HEADS_UP_TIMEOUT_VALIDATOR);
         }
 
         /**
