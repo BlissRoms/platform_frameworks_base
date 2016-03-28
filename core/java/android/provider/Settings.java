@@ -3735,6 +3735,11 @@ public final class Settings {
          */
         public static final String STATUS_BAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
 
+        /**
+         * Default left lockscreen shortcut
+         * @hide
+         */
+        public static final String LEFT_DEFAULT_VOICE = "left_default_voice";
 
         /**
          * Forces formal text input.  1 to replace emoticon key with enter key.
