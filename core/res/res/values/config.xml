@@ -2157,7 +2157,6 @@
          -->
     <string-array translatable="false" name="config_globalActionsList">
         <item>power</item>
-        <item>bugreport</item>
         <item>users</item>
     </string-array>
 
