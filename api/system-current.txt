@@ -25357,6 +25357,7 @@ package android.os {
   }
 
   public final class PowerManager {
+    method public java.lang.String getSeenWakeLocks();
     method public boolean isDeviceIdleMode();
     method public boolean isIgnoringBatteryOptimizations(java.lang.String);
     method public boolean isInteractive();
