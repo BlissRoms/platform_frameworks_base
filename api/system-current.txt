@@ -16121,6 +16121,7 @@ package android.media {
     method public void setRingerMode(int);
     method public deprecated void setRouting(int, int, int);
     method public void setSpeakerphoneOn(boolean);
+    method public void setStreamMaxVolume(int, int);
     method public deprecated void setStreamMute(int, boolean);
     method public deprecated void setStreamSolo(int, boolean);
     method public void setStreamVolume(int, int, int);
@@ -28751,6 +28752,7 @@ package android.provider {
     field public static final deprecated java.lang.String PARENTAL_CONTROL_ENABLED = "parental_control_enabled";
     field public static final deprecated java.lang.String PARENTAL_CONTROL_LAST_UPDATE = "parental_control_last_update";
     field public static final deprecated java.lang.String PARENTAL_CONTROL_REDIRECT_URL = "parental_control_redirect_url";
+    field public static final java.lang.String POWER_MENU_LOCKSCREEN = "power_menu_lockscreen";
     field public static final deprecated java.lang.String RADIO_BLUETOOTH = "bluetooth";
     field public static final deprecated java.lang.String RADIO_CELL = "cell";
     field public static final deprecated java.lang.String RADIO_NFC = "nfc";
