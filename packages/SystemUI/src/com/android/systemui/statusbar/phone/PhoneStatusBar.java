@@ -5579,6 +5579,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     public void onHintFinished() {
         // Delay the reset a bit so the user can read the text.
         mKeyguardIndicationController.hideTransientIndicationDelayed(HINT_RESET_DELAY_MS);
+        mKeyguardBottomArea.expand(false);
     }
 
     public void onCameraHintStarted(String hint) {
