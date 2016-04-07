@@ -170,19 +170,6 @@ public class LiveLockScreenController {
         }
 
         @Override
-        public void collapseNotificationPanel() {
-            if (mStatusBarState == StatusBarState.KEYGUARD && isShowingLiveLockScreenView() &&
-                    mLiveLockScreenView.isInteractive()) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mBar.focusKeyguardExternalView();
-                    }
-                });
-            }
-        }
-
-        @Override
         public void providerDied() {
             mLiveLockScreenView.unregisterKeyguardExternalViewCallback(
                     mExternalKeyguardViewCallbacks);
