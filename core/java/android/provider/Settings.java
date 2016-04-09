@@ -5001,6 +5001,16 @@ public final class Settings {
          */
         public static final String ALERT_SLIDER_SILENT_MODE = "alert_slider_silent_mode";
 
+       /**
+        * Defines the global heads up notification snooze
+        * @hide
+        */
+        public static final String HEADS_UP_NOTIFICATION_SNOOZE = "heads_up_notification_snooze";
+
+        /** @hide */
+        private static final Validator HEADS_UP_NOTIFICATION_SNOOZE_VALIDATOR =
+              new SettingsValidators.InclusiveIntegerRangeValidator(0, 1200000);
+
         /**
          * Whether to show wireless charging animation
          * @hide
@@ -5112,6 +5122,7 @@ public final class Settings {
             LOCKSCREEN_MEDIA_BLUR,
             FINGERPRINT_SUCCESS_VIB,
             WIRELESS_CHARGING_ANIMATION,
+            HEADS_UP_NOTIFICATION_SNOOZE,
         };
 
         /**
@@ -5242,6 +5253,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SCREENSHOT_DEFAULT_MODE);
             PRIVATE_SETTINGS.add(FINGERPRINT_SUCCESS_VIB);
             PRIVATE_SETTINGS.add(WIRELESS_CHARGING_ANIMATION);
+            PRIVATE_SETTINGS.add(HEADS_UP_NOTIFICATION_SNOOZE);
         }
 
         /**
@@ -5346,6 +5358,7 @@ public final class Settings {
             VALIDATORS.put(LOCKSCREEN_MEDIA_BLUR, LOCKSCREEN_MEDIA_BLUR_VALIDATOR);
             VALIDATORS.put(FINGERPRINT_SUCCESS_VIB, FINGERPRINT_SUCCESS_VIB_VALIDATOR);
             VALIDATORS.put(WIRELESS_CHARGING_ANIMATION, WIRELESS_CHARGING_ANIMATION_VALIDATOR);
+            VALIDATORS.put(HEADS_UP_NOTIFICATION_SNOOZE,HEADS_UP_NOTIFICATION_SNOOZE_VALIDATOR);
         }
 
         /**
