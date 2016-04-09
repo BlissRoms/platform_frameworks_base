@@ -5025,6 +5025,16 @@ public final class Settings {
         private static final Validator LOCK_HIDE_STATUS_BAR_VALIDATOR =
                BOOLEAN_VALIDATOR;
 
+       /**
+        * Defines the global heads up notification snooze
+        * @hide
+        */
+        public static final String HEADS_UP_NOTIFICATION_SNOOZE = "heads_up_notification_snooze";
+
+        /** @hide */
+        private static final Validator HEADS_UP_NOTIFICATION_SNOOZE_VALIDATOR =
+              new SettingsValidators.InclusiveIntegerRangeValidator(0, 1200000);
+
         /**
          * Enable\Disable Bluetooth Battery bar in quick settings
          * @hide
@@ -5127,6 +5137,7 @@ public final class Settings {
             FINGERPRINT_SUCCESS_VIB,
             OMNI_DOZE_ON_CHARGE,
             LOCK_HIDE_STATUS_BAR,
+            HEADS_UP_NOTIFICATION_SNOOZE,
         };
 
         /**
@@ -5258,6 +5269,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(FINGERPRINT_SUCCESS_VIB);
             PRIVATE_SETTINGS.add(OMNI_DOZE_ON_CHARGE);
             PRIVATE_SETTINGS.add(LOCK_HIDE_STATUS_BAR);
+            PRIVATE_SETTINGS.add(HEADS_UP_NOTIFICATION_SNOOZE);
         }
 
         /**
@@ -5363,6 +5375,7 @@ public final class Settings {
             VALIDATORS.put(FINGERPRINT_SUCCESS_VIB, FINGERPRINT_SUCCESS_VIB_VALIDATOR);
             VALIDATORS.put(OMNI_DOZE_ON_CHARGE, OMNI_DOZE_ON_CHARGE_VALIDATOR);
             VALIDATORS.put(LOCK_HIDE_STATUS_BAR,LOCK_HIDE_STATUS_BAR_VALIDATOR);
+            VALIDATORS.put(HEADS_UP_NOTIFICATION_SNOOZE,HEADS_UP_NOTIFICATION_SNOOZE_VALIDATOR);
         }
 
         /**
