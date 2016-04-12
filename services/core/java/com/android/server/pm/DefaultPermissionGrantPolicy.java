@@ -21,7 +21,6 @@ import android.Manifest;
 import android.app.DownloadManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManagerInternal.PackagesProvider;
@@ -573,28 +572,6 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(musicPackage, STORAGE_PERMISSIONS, userId);
             }
 
-<<<<<<< HEAD
-            // Android Wear Home
-            if (mService.hasSystemFeature(PackageManager.FEATURE_WATCH)) {
-                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                homeIntent.addCategory(Intent.CATEGORY_HOME_MAIN);
-
-                PackageParser.Package wearHomePackage = getDefaultSystemHandlerActivityPackageLPr(
-                        homeIntent, userId);
-
-                if (wearHomePackage != null
-                        && doesPackageSupportRuntimePermissions(wearHomePackage)) {
-                    grantRuntimePermissionsLPw(wearHomePackage, CONTACTS_PERMISSIONS, false,
-                            userId);
-                    grantRuntimePermissionsLPw(wearHomePackage, PHONE_PERMISSIONS, true, userId);
-                    grantRuntimePermissionsLPw(wearHomePackage, MICROPHONE_PERMISSIONS, false,
-                            userId);
-                    grantRuntimePermissionsLPw(wearHomePackage, LOCATION_PERMISSIONS, false,
-                            userId);
-                }
-            }
-
-=======
             // Google Account
             PackageParser.Package googleaccountPackage = getDefaultProviderAuthorityPackageLPr(
                     "com.google.android.gsf.login", userId);
@@ -681,7 +658,6 @@ final class DefaultPermissionGrantPolicy {
             }	
 				
 			
->>>>>>> 9c36be6... PermissionGrant: Introduce Support for flashing Gapps
             mService.mSettings.onDefaultRuntimePermissionsGrantedLPr(userId);
         }
     }
@@ -689,15 +665,13 @@ final class DefaultPermissionGrantPolicy {
     private void grantDefaultPermissionsToDefaultSystemDialerAppLPr(
             PackageParser.Package dialerPackage, int userId) {
         if (doesPackageSupportRuntimePermissions(dialerPackage)) {
-            boolean isPhonePermFixed =
-                    mService.hasSystemFeature(PackageManager.FEATURE_WATCH);
-            grantRuntimePermissionsLPw(
-                    dialerPackage, PHONE_PERMISSIONS, isPhonePermFixed, userId);
+            grantRuntimePermissionsLPw(dialerPackage, PHONE_PERMISSIONS, userId);
             grantRuntimePermissionsLPw(dialerPackage, CONTACTS_PERMISSIONS, userId);
             grantRuntimePermissionsLPw(dialerPackage, SMS_PERMISSIONS, userId);
             grantRuntimePermissionsLPw(dialerPackage, MICROPHONE_PERMISSIONS, userId);
         }
     }
+
 
     private void grantDefaultPermissionsToDefaultSystemSmsAppLPr(
             PackageParser.Package smsPackage, int userId) {
@@ -709,6 +683,7 @@ final class DefaultPermissionGrantPolicy {
             grantRuntimePermissionsLPw(smsPackage, STORAGE_PERMISSIONS, true, userId);
         }
     }
+
 
     public void grantDefaultPermissionsToDefaultSmsAppLPr(String packageName, int userId) {
         Log.i(TAG, "Granting permissions to default sms app for user:" + userId);
@@ -787,23 +762,29 @@ final class DefaultPermissionGrantPolicy {
 
     private PackageParser.Package getDefaultSystemHandlerActivityPackageLPr(
             Intent intent, int userId) {
-        ResolveInfo handler = mService.resolveIntent(intent,
-                intent.resolveType(mService.mContext.getContentResolver()), 0, userId);
-        if (handler == null || handler.activityInfo == null) {
+        List<ResolveInfo> handlers = mService.mActivities.queryIntent(intent,
+                intent.resolveType(mService.mContext.getContentResolver()),
+                PackageManager.GET_DISABLED_COMPONENTS, userId);
+        if (handlers == null) {
             return null;
         }
-        ActivityInfo activityInfo = handler.activityInfo;
-        if (activityInfo.packageName.equals(mService.mResolveActivity.packageName)
-                && activityInfo.name.equals(mService.mResolveActivity.name)) {
-            return null;
+        final int handlerCount = handlers.size();
+        for (int i = 0; i < handlerCount; i++) {
+            ResolveInfo handler = handlers.get(i);
+            PackageParser.Package handlerPackage = getSystemPackageLPr(
+                    handler.activityInfo.packageName);
+            if (handlerPackage != null) {
+                return handlerPackage;
+            }
         }
-        return getSystemPackageLPr(handler.activityInfo.packageName);
+        return null;
     }
 
     private PackageParser.Package getDefaultSystemHandlerServicePackageLPr(
             Intent intent, int userId) {
         List<ResolveInfo> handlers = mService.queryIntentServices(intent,
-                intent.resolveType(mService.mContext.getContentResolver()), 0, userId);
+                intent.resolveType(mService.mContext.getContentResolver()),
+                PackageManager.GET_DISABLED_COMPONENTS, userId);
         if (handlers == null) {
             return null;
         }
@@ -829,9 +810,10 @@ final class DefaultPermissionGrantPolicy {
         for (String syncAdapterPackageName : syncAdapterPackageNames) {
             homeIntent.setPackage(syncAdapterPackageName);
 
-            ResolveInfo homeActivity = mService.resolveIntent(homeIntent,
-                    homeIntent.resolveType(mService.mContext.getContentResolver()), 0, userId);
-            if (homeActivity != null) {
+            List<ResolveInfo> homeActivities = mService.mActivities.queryIntent(homeIntent,
+                    homeIntent.resolveType(mService.mContext.getContentResolver()),
+                    PackageManager.GET_DISABLED_COMPONENTS, userId);
+            if (!homeActivities.isEmpty()) {
                 continue;
             }
 
@@ -950,7 +932,7 @@ final class DefaultPermissionGrantPolicy {
             return false;
         }
         PackageSetting sysPkg = mService.mSettings.getDisabledSystemPkgLPr(pkg.packageName);
-        if (sysPkg != null && sysPkg.pkg != null) {
+        if (sysPkg != null) {
             if ((sysPkg.pkg.applicationInfo.flags & ApplicationInfo.FLAG_PERSISTENT) == 0) {
                 return false;
             }
