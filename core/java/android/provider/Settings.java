@@ -4380,6 +4380,7 @@ public final class Settings {
 
         /**
          * Define when Nfc polling is activated.
+         * @hide
          */
         public static final String NFC_POLLING_MODE = "nfc_polling";
 
