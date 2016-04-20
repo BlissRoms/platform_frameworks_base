@@ -28721,7 +28721,6 @@ package android.provider {
     method public static deprecated boolean getShowGTalkServiceStatus(android.content.ContentResolver);
     method public static java.lang.String getString(android.content.ContentResolver, java.lang.String);
     method public static android.net.Uri getUriFor(java.lang.String);
-    method public static boolean putBoolean(android.content.ContentResolver, java.lang.String, boolean);
     method public static boolean putConfiguration(android.content.ContentResolver, android.content.res.Configuration);
     method public static boolean putFloat(android.content.ContentResolver, java.lang.String, float);
     method public static boolean putInt(android.content.ContentResolver, java.lang.String, int);
@@ -28757,15 +28756,12 @@ package android.provider {
     field public static final java.lang.String END_BUTTON_BEHAVIOR = "end_button_behavior";
     field public static final java.lang.String FONT_SCALE = "font_scale";
     field public static final java.lang.String HAPTIC_FEEDBACK_ENABLED = "haptic_feedback_enabled";
-    field public static final java.lang.String HIDE_PANEL_BATTERY = "hide_panel_battery";
     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
-    field public static final java.lang.String IMMERSIVE_RECENTS = "immersive_recents";
     field public static final deprecated java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
     field public static final deprecated java.lang.String LOCATION_PROVIDERS_ALLOWED = "location_providers_allowed";
     field public static final deprecated java.lang.String LOCK_PATTERN_ENABLED = "lock_pattern_autolock";
     field public static final deprecated java.lang.String LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
     field public static final deprecated java.lang.String LOCK_PATTERN_VISIBLE = "lock_pattern_visible_pattern";
-    field public static final java.lang.String LOCK_SCREEN_SHOW_WEATHER = "lock_screen_show_weather";
     field public static final deprecated java.lang.String LOGGING_ID = "logging_id";
     field public static final deprecated java.lang.String MODE_RINGER = "mode_ringer";
     field public static final java.lang.String MODE_RINGER_STREAMS_AFFECTED = "mode_ringer_streams_affected";
