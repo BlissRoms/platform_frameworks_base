@@ -30,7 +30,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     framework-protos \
     SystemUI-proto-tags \
     android-support-v7-palette \
-    android-support-v4
+    android-support-v4 \
+    uicommon
 
 LOCAL_JAVA_LIBRARIES := telephony-common telephony-ext
 
