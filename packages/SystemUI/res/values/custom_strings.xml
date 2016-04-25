@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (C) 2015-2016 The CyanogenMod Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ */
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Path data for portrait battery -->
+    <string name="battery_portrait_path_full" translatable="false">M 5 2 H 19 V 21 H 5 V 2 Z</string>
+    <string name="battery_portrait_path_empty" translatable="false">M 5 21 H 19 V 21 H 5 V 21 Z</string>
+    <string name="battery_portrait_clip_path" translatable="false">M6,21V4h3V2h6v2h3v17H6z</string>
+
+</resources>
