@@ -45,5 +45,15 @@
         <item name="android:textSize">@dimen/status_bar_temp_text_size</item>
         <item name="android:textStyle">normal</item>
     </style>
+	
+    <!-- Base battery metter drawable style -->
+     <style name="BatteryMeterViewDrawable">
+         <!-- gravity used for positioning text within the battery meter -->
+         <item name="android:gravity">center</item>
+     </style>
+     <!-- Battery meter drawable styles -->
+     <style name="BatteryMeterViewDrawable.Portrait"/>
+     <style name="BatteryMeterViewDrawable.Landscape"/>
+     <style name="BatteryMeterViewDrawable.Circle"/>
 
 </resources>
