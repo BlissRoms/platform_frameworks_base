@@ -28,12 +28,15 @@ import android.app.IActivityManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.Region;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.os.Trace;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -230,6 +233,14 @@ public class NotificationShadeWindowControllerImpl implements NotificationShadeW
         }
     }
 
+    private boolean shouldEnableKeyguardScreenRotation() {
+        boolean enableLockScreenRotation =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_ROTATION, 0) != 0;
+        return mKeyguardStateController.isKeyguardScreenRotationAllowed()
+                && enableLockScreenRotation;
+    }
+
     /**
      * Adds the notification shade view to the window manager.
      */
@@ -265,6 +276,8 @@ public class NotificationShadeWindowControllerImpl implements NotificationShadeW
         mWindowManager.addView(mNotificationShadeView, mLp);
 
         mLpChanged.copyFrom(mLp);
+        SettingsObserver observer = new SettingsObserver(new Handler());
+        observer.observe(mContext);
         onThemeChanged();
 
         // Make the state consistent with KeyguardViewMediator#setupLocked during initialization.
@@ -360,7 +373,7 @@ public class NotificationShadeWindowControllerImpl implements NotificationShadeW
 
     private void adjustScreenOrientation(NotificationShadeWindowState state) {
         if (state.bouncerShowing || state.isKeyguardShowingAndNotOccluded() || state.dozing) {
-            if (mKeyguardStateController.isKeyguardScreenRotationAllowed()) {
+            if (shouldEnableKeyguardScreenRotation()) {
                 mLpChanged.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_USER;
             } else {
                 mLpChanged.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
@@ -918,4 +931,26 @@ public class NotificationShadeWindowControllerImpl implements NotificationShadeW
             setDreaming(isDreaming);
         }
     };
+
+    private class SettingsObserver extends ContentObserver {
+        public SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        public void observe(Context context) {
+            context.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.LOCKSCREEN_ROTATION),
+                    false, this);
+        }
+
+        public void unobserve(Context context) {
+            context.getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            // update the state
+            apply(mCurrentState);
+        }
+    }
 }
