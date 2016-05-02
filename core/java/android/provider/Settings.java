@@ -6699,6 +6699,13 @@ public final class Settings {
         public static final String ISLAND_NOTIFICATION_NOW_PLAYING = "island_notification_now_playing";
 
         /**
+         * Whether keyguard will rotate
+         * 0 = false, 1 = true
+         */
+        @SuppressLint("NoSettingsProvider")
+        public static final String LOCKSCREEN_ROTATION = "lockscreen_rotation";
+
+        /**
          * These are all public system settings
          *
          * @hide
