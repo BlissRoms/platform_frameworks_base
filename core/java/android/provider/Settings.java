@@ -7028,6 +7028,14 @@ public final class Settings {
                 "lockscreen_scramble_pin_layout";
 
         /**
+         * Whether keyguard will rotate
+         * 0 = false, 1 = true
+          * @hide
+         */
+        @SuppressLint("NoSettingsProvider")
+        public static final String LOCKSCREEN_ROTATION = "lockscreen_rotation";
+
+        /**
          * Whether to show the battery info on the lockscreen while charging
          * @hide
          */
