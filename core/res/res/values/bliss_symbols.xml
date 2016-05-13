@@ -81,5 +81,8 @@
   <java-symbol type="string" name="global_action_screenrecord" />
 
   <java-symbol type="integer" name="config_notificationsBatteryReallyFullARGB" />
-
+  
+   <!-- Power menu -->
+   <java-symbol type="string" name="system_error_vendorprint" />
+ </resources>
 </resources>
