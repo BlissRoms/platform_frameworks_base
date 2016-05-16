@@ -16,6 +16,10 @@
 
 package com.android.systemui.qs;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -327,6 +331,27 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
         return mExpanded;
     }
 
+    private void setAnimationTile(TileRecord r) {
+        ObjectAnimator animTile = null;
+        int animStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.ANIM_TILE_STYLE, 0, UserHandle.USER_CURRENT);
+        int animDuration = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.ANIM_TILE_DURATION, 2000, UserHandle.USER_CURRENT);
+        if (animStyle == 0) {
+            //No animation
+        }
+        if (animStyle == 1) {
+            animTile = ObjectAnimator.ofFloat(r.tileView, "rotationY", 0f, 360f);
+        }
+        if (animStyle == 2) {
+            animTile = ObjectAnimator.ofFloat(r.tileView, "rotation", 0f, 360f);
+        }
+        if (animTile != null) {
+            animTile.setDuration(animDuration);
+            animTile.start();
+        }
+    }
+
     protected void addTile(final QSTile<?> tile, boolean collapsedView) {
         final TileRecord r = new TileRecord();
         r.tile = tile;
@@ -373,6 +398,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
             public void onClick(View v) {
                 onTileClick(r.tile);
                 vibrateTile(45);
+                setAnimationTile(r);
             }
         };
         final View.OnLongClickListener longClick = new View.OnLongClickListener() {
@@ -380,6 +406,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback {
             public boolean onLongClick(View v) {
                 r.tile.longClick();
                 vibrateTile(45);
+                setAnimationTile(r);
                 return true;
             }
         };
