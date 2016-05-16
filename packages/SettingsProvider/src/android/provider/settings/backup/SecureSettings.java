@@ -242,6 +242,8 @@ public class SecureSettings {
         Settings.Secure.HEARING_AID_SYSTEM_SOUNDS_ROUTING,
         Settings.Secure.ACCESSIBILITY_FONT_SCALING_HAS_BEEN_CHANGED,
         Settings.Secure.DOZE_ON_CHARGE,
-        Settings.Secure.TETHERING_ALLOW_VPN_UPSTREAMS
+        Settings.Secure.TETHERING_ALLOW_VPN_UPSTREAMS,
+        Settings.Secure.QUICK_SETTINGS_TILES_ANIM_STYLE,
+        Settings.Secure.QUICK_SETTINGS_TILES_ANIM_DURATION
     };
 }
