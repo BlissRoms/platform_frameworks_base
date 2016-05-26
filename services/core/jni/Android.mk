@@ -35,8 +35,6 @@ LOCAL_SRC_FILES += \
     $(LOCAL_REL_DIR)/com_android_server_PersistentDataBlockService.cpp \
     $(LOCAL_REL_DIR)/onload.cpp
 
-LOCAL_CFLAGS += -Wno-error=shift-negative-value
-
 LOCAL_C_INCLUDES += \
     $(JNI_H_INCLUDE) \
     frameworks/base/services \
