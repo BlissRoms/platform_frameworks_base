@@ -72,7 +72,7 @@ public class QSPanel extends ViewGroup {
     protected int mDualTileUnderlap;
     protected int mBrightnessPaddingTop;
     protected int mGridHeight;
-    protected boolean mExpanded;
+    private boolean mExpanded;
     protected boolean mListening;
     private boolean mClosingDetail;
 
