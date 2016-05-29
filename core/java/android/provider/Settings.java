@@ -4154,12 +4154,19 @@ public final class Settings {
          */
         public static final String ANIM_TILE_STYLE = "anim_tile_style";
 
-		/**
+        /**
          * Change quick settings tiles animation duration
          *
          * @hide
          */
         public static final String ANIM_TILE_DURATION = "anim_tile_duration";
+
+        /**
+         * Change quick settings tiles interpolator
+         *
+         * @hide
+         */
+        public static final String ANIM_TILE_INTERPOLATOR = "anim_tile_interpolator";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
