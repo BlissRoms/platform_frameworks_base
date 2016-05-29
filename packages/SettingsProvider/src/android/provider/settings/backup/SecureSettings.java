@@ -260,6 +260,7 @@ public class SecureSettings {
         Settings.Secure.EVEN_DIMMER_MIN_NITS,
         Settings.Secure.TETHERING_ALLOW_VPN_UPSTREAMS,
         Settings.Secure.QUICK_SETTINGS_TILES_ANIM_STYLE,
-        Settings.Secure.QUICK_SETTINGS_TILES_ANIM_DURATION
+        Settings.Secure.QUICK_SETTINGS_TILES_ANIM_DURATION,
+        Settings.Secure.QUICK_SETTINGS_TILES_ANIM_INTERPOLATOR
     };
 }
