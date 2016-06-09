@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2016 The CyanogenMod Project
+    Copyright (C) 2016 The ParanoidAndroid Project
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,12 +21,14 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
+    <clip-path
+        android:name="mask"
+        android:pathData="@string/battery_circle_full" />
+
     <!-- Path will be tinted based on light/dark modes -->
     <path
         android:name="frame"
-        android:strokeColor="#000000"
-        android:strokeLineJoin="round"
-        android:strokeWidth="3"
-        android:pathData="@string/battery_circle_path" />
-
+        android:fillColor="#000000"
+        android:strokeWidth="1"
+        android:pathData="@string/battery_circle_full" />
 </vector>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2016 The CyanogenMod Project
+    Copyright (C) 2016 The ParanoidAndroid Project
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,7 +18,7 @@
 <objectAnimator
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:interpolator="@android:interpolator/linear"
-  android:propertyName="trimPathEnd"
-  android:valueFrom="0"
-  android:valueTo="1"
-  android:valueType="floatType" />
+  android:propertyName="pathData"
+  android:valueFrom="@string/battery_circle_empty"
+  android:valueTo="@string/battery_circle_full"
+  android:valueType="pathType"/>
