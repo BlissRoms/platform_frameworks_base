@@ -77,4 +77,7 @@
     <bool name="config_has_weird_dt_sensor">false</bool>
 
     <bool name="config_has_elmyra">false</bool>
+
+    <!-- Whether device has dash charging support -->
+    <bool name="config_hasDashCharger">false</bool>
 </resources>
