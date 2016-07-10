@@ -65,4 +65,7 @@
   <!-- Global Actions pref list -->
   <java-symbol type="array" name="custom_config_globalActionsList" />
 
+  <!-- Whether device has dash charging support -->
+  <java-symbol type="bool" name="config_hasDashCharger" />
+
 </resources>
