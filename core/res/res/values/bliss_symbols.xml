@@ -127,4 +127,7 @@
     <!-- Alert Slider -->
     <java-symbol type="bool" name="config_hasAlertSlider" />
     <java-symbol type="integer" name="config_alertSliderLocation" />
+
+    <!-- Whether device has dash charging support -->
+    <java-symbol type="bool" name="config_hasDashCharger" />
 </resources>
