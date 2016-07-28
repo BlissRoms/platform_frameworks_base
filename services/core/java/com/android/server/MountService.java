@@ -2583,6 +2583,7 @@ class MountService extends IMountService.Stub
                             Slog.e(TAG, "unable to shut down internal volume", e);
                         }
                         try {
+                            mConnector.execute("volume", "shutdown");
                             mCryptConnector.execute("cryptfs", "restart");
                         } catch (NativeDaemonConnectorException e) {
                             Slog.e(TAG, "problem executing in background", e);
