@@ -2644,6 +2644,12 @@ class StorageManagerService extends IStorageManager.Stub
                 // to let the UI to clear itself
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
+                        // unmount the internal emulated volume first
+                        try {
+                            mConnector.execute("volume", "unmount", "emulated");
+                        } catch (NativeDaemonConnectorException e) {
+                            Slog.e(TAG, "unable to shut down internal volume", e);
+                        }
                         try {
                             mCryptConnector.execute("cryptfs", "restart");
                         } catch (NativeDaemonConnectorException e) {
