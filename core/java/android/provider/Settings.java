@@ -6230,6 +6230,13 @@ public final class Settings {
          */
         public static final String QS_TRANSPARENCY = "qs_transparency";
 
+
+	/**
+         * Disable hw buttons - actions, brightness, haptic feedback, overflow menu
+         * @hide
+         */
+        public static final String HARDWARE_KEYS_DISABLE = "hardware_keys_disable";
+
         /**
          * These are all public system settings
          *
