@@ -2249,5 +2249,9 @@ message MetricsEvent {
 
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
+
+    // Bliss Constants
+    BLISSIFY = 497;
+
   }
 }
