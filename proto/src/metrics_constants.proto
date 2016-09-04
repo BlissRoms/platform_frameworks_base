@@ -2220,5 +2220,10 @@ message MetricsEvent {
 
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
+
+    // Bliss Settings
+    BLISS_SETTINGS = 411;
+    STATUSBAR_SETTINGS = 412;
+
   }
 }
