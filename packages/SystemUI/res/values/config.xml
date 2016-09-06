@@ -348,4 +348,6 @@
     <bool name="config_data_signal_control">false</bool>
 
     <bool name="config_always_hide_roaming_indicator">false</bool>
+    <!-- When true,show the AutoBrightness checkbox -->
+    <bool name="config_show_auto_brightness">false</bool>
 </resources>
