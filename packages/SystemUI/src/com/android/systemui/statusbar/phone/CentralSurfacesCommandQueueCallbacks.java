@@ -64,6 +64,7 @@ import com.android.systemui.statusbar.disableflags.DisableFlagsLogger;
 import com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayoutController;
 import com.android.systemui.statusbar.phone.dagger.CentralSurfacesComponent;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
+import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
@@ -82,6 +83,7 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
     private final com.android.systemui.shade.ShadeController mShadeController;
     private final CommandQueue mCommandQueue;
     private final ShadeViewController mShadeViewController;
+    private final FlashlightController mFlashlightController;
     private final RemoteInputQuickSettingsDisabler mRemoteInputQuickSettingsDisabler;
     private final MetricsLogger mMetricsLogger;
     private final KeyguardUpdateMonitor mKeyguardUpdateMonitor;
@@ -119,6 +121,7 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
             ShadeController shadeController,
             CommandQueue commandQueue,
             ShadeViewController shadeViewController,
+            FlashlightController flashlightController,
             RemoteInputQuickSettingsDisabler remoteInputQuickSettingsDisabler,
             MetricsLogger metricsLogger,
             KeyguardUpdateMonitor keyguardUpdateMonitor,
@@ -147,6 +150,7 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
         mShadeController = shadeController;
         mCommandQueue = commandQueue;
         mShadeViewController = shadeViewController;
+        mFlashlightController = flashlightController;
         mRemoteInputQuickSettingsDisabler = remoteInputQuickSettingsDisabler;
         mMetricsLogger = metricsLogger;
         mKeyguardUpdateMonitor = keyguardUpdateMonitor;
@@ -575,5 +579,12 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
     private void vibrateForCameraGesture() {
         mVibratorOptional.ifPresent(
                 v -> v.vibrate(VibrationEffect.get(VibrationEffect.EFFECT_DOUBLE_CLICK)));
+    }
+
+    @Override
+    public void toggleCameraFlash() {
+        if (mFlashlightController.isAvailable()) {
+            mFlashlightController.setFlashlight(!mFlashlightController.isEnabled());
+        }
     }
 }
