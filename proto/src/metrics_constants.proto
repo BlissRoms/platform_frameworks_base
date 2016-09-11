@@ -2224,6 +2224,8 @@ message MetricsEvent {
     // Bliss Settings
     BLISS_SETTINGS = 411;
     STATUSBAR_SETTINGS = 412;
+    ANIMATION_SETTINGS = 413;
+
 
   }
 }
