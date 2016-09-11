@@ -60,4 +60,6 @@
     <!-- Button to soft reboot the device, within the Reboot Options dialog -->
     <string name="reboot_systemui">Restart SystemUI</string>
 
+    <string name="default_string">Default</string>
+
 </resources>
