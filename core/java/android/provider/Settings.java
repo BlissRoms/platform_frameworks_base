@@ -3933,7 +3933,13 @@ public final class Settings {
         public static final String BRIGHTNESS_ICON = "brightness_icon";
 
         /**
-         * Whether to wake the screen with the volume keys, the value is boolean.
+         * Disable dashboard suggestions in settings
+         * @hide
+         */
+        public static final String DISABLE_SUGGESTIONS = "disable_suggestions";
+
+        /**
+         * Volume rocker wake
          * @hide
          */
         public static final String VOLUME_ROCKER_WAKE = "volume_rocker_wake";
