@@ -28,4 +28,7 @@
   <!-- Boost parameters which get passed to QPerformance -->
   <integer-array name="onbootboost_param_value"/>
 
+  <!-- Setting to false will disable CM's IME switcher implementation for tablets -->
+  <bool name="config_show_cmIMESwitcher">true</bool>
+
 </resources>
