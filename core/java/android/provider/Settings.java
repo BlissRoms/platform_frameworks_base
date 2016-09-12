@@ -3815,6 +3815,13 @@ public final class Settings {
          * @hide
          */
         public static final String FORMAL_TEXT_INPUT = "formal_text_input";
+      
+        /**
+         * Disable dashboard suggestions in settings
+         * @hide
+         */
+        public static final String DISABLE_SUGGESTIONS = "disable_suggestions";
+
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
