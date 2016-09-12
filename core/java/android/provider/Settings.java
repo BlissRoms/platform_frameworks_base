@@ -4109,6 +4109,13 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_CARRIER_FONT_SIZE = "status_bar_carrier_font_size";
+      
+        /**
+         * Disable dashboard suggestions in settings
+         * @hide
+         */
+        public static final String DISABLE_SUGGESTIONS = "disable_suggestions";
+
 
         /**
          * ListView Animations
