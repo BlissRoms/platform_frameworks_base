@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2014-2023 BlissRoms Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Description for the screen zoom level that makes interface elements smaller. [CHAR LIMIT=24] -->
+    <string name="screen_zoom_summary_smaller">Smaller</string>
+    <!-- Description for the screen zoom level that makes interface elements smallest. [CHAR LIMIT=24] -->
+    <string name="screen_zoom_summary_smallest">Smallest</string>
+</resources>
