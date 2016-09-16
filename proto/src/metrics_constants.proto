@@ -2225,7 +2225,7 @@ message MetricsEvent {
     BLISS_SETTINGS = 411;
     STATUSBAR_SETTINGS = 412;
     ANIMATION_SETTINGS = 413;
-
+    GESTURE_SETTINGS = 414;
 
   }
 }
