@@ -247,6 +247,14 @@
             </intent-filter>
         </activity-alias>
 
+        <activity android:name=".tuner.NavbarActivity"
+                  android:theme="@android:style/Theme.Material.Settings"
+                  android:label="@string/navbar_tuner_title"
+                  android:process=":tuner"
+                  android:parentActivityName="com.aosip.owlsnest.navigation.NavigationButtonsCategory"
+                  android:exported="true">
+        </activity>
+
         <!-- Service used by secondary users to register themselves with the system user. -->
         <service android:name=".recents.RecentsSystemUserService"
             android:exported="false"
