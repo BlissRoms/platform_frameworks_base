@@ -41,7 +41,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_extra" translatable="false">
-        hotspot,inversion,saver,work,cast,screenshot,sync,reboot,usb_tether,music,ime,expanded_desktop,caffeine,heads_up,pulse,lte,locale,screenrecord,assist,voiceassist
+        hotspot,inversion,saver,work,cast,screenshot,sync,reboot,usb_tether,music,ime,expanded_desktop,caffeine,heads_up,pulse,lte,locale,screenrecord,assist,voiceassist,sound,ambient_display,volume
     </string>
 
 </resources>
