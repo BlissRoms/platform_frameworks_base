@@ -29,4 +29,7 @@
     <string name="select_custom_activity_title">Select custom activity</string>
     <string name="lockscreen_targets_message">Lock screen shortcuts</string>
 
+    <!-- Regex used to parse the processor string from kernel -->
+    <string name="processor_regex" translatable="false">Hardware\\s*:\\s*(.*?)(?:\\(.*)?$</string>
+
 </resources>
