@@ -6625,6 +6625,12 @@ public final class Settings {
          */
         public static final String MANAGED_PROFILE_CONTACT_REMOTE_SEARCH =
                 "managed_profile_contact_remote_search";
+        
+        /**
+         * Whether to use one tap tile action to enable or disable data 
+         * @hide
+         */
+        public static final String QS_DATA_ADVANCED = "qs_data_advanced";
 
         /**
          * Whether or not the automatic storage manager is enabled and should run on the device.
