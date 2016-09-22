@@ -2918,6 +2918,10 @@ public class Camera {
          * @return the int value of the parameter
          */
         public int getInt(String key) {
+            if (mMap.get(key) == null) {
+                Log.e(TAG, "Value for key: " + key + " is null!");
+                return -1;
+            }
             return Integer.parseInt(mMap.get(key));
         }
 
