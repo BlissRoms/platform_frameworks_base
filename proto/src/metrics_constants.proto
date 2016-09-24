@@ -2222,10 +2222,7 @@ message MetricsEvent {
     // END OF AOSP CONSTANTS
 
     // Bliss Settings
-    BLISS_SETTINGS = 411;
-    STATUSBAR_SETTINGS = 412;
-    ANIMATION_SETTINGS = 413;
-    GESTURE_SETTINGS = 414;
+    BLISSIFY = 411;
 
   }
 }
