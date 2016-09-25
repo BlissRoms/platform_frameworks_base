@@ -2212,7 +2212,6 @@ message MetricsEvent {
     ACTION_SETTING_HELP_AND_FEEDBACK = 496;
 
     // ---- End N-MR1 Constants, all N-MR1 constants go above this line ----
-
     // ACTION: The lockscreen gets shown because the SIM card was removed
     // SUBTYPE: false: device was previously unlocked, true: device was previously locked
     // CATEGORY: GLOBAL_SYSTEM_UI
@@ -2252,6 +2251,9 @@ message MetricsEvent {
 
     // Bliss Constants
     BLISSIFY = 497;
+
+    // Quick setting tiles
+    QUICK_SETTINGS = 412;
 
   }
 }
