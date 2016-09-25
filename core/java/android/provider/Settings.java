@@ -4291,6 +4291,12 @@ public final class Settings {
         public static final String LISTVIEW_INTERPOLATOR = "listview_interpolator";
 
         /**
+         * Quick Settings nougat animation
+         * @hide
+         */
+        public static final String QS_FANCY_ANIMATION = "qs_fancy_animation";
+
+        /**
          * Change quick settings tiles animation style
          *
          * @hide
