@@ -53,6 +53,7 @@ import com.android.systemui.qs.tiles.QuickAccessWalletTile;
 import com.android.systemui.qs.tiles.ReduceBrightColorsTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
+import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.SoundTile;
 import com.android.systemui.qs.tiles.WifiTile;
@@ -101,6 +102,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<OneHandedModeTile> mOneHandedModeTileProvider;
     private final Provider<CaffeineTile> mCaffeineTileProvider;
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
+    private final Provider<SyncTile> mSyncTileProvider;
     private final Provider<SoundTile> mSoundTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
@@ -141,6 +143,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<ColorCorrectionTile> colorCorrectionTileProvider,
             Provider<CaffeineTile> caffeineTileProvider,
             Provider<DataSwitchTile> dataSwitchTileProvider,
+            Provider<SyncTile> syncTileProvider,
             Provider<SoundTile> soundTileProvider) {
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
@@ -176,6 +179,7 @@ public class QSFactoryImpl implements QSFactory {
         mColorCorrectionTileProvider = colorCorrectionTileProvider;
         mCaffeineTileProvider = caffeineTileProvider;
         mDataSwitchTileProvider = dataSwitchTileProvider;
+        mSyncTileProvider = syncTileProvider;
         mSoundTileProvider = soundTileProvider;
     }
 
@@ -254,6 +258,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mCaffeineTileProvider.get();
             case "dataswitch":
                 return mDataSwitchTileProvider.get();
+            case "sync":
+                return mSyncTileProvider.get();
             case "sound":
                 return mSoundTileProvider.get();
         }
