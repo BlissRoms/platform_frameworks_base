@@ -23,6 +23,8 @@
     <string name="reboot_recovery">Recovery</string>
     <!-- Button to reboot the phone into bootloader in reboot menu -->
     <string name="reboot_bootloader">Bootloader</string>
+    <!-- Button to restart SystemUI -->
+    <string name="reboot_systemui">Restart SystemUI</string> 
     <!-- Button to soft reboot the device in reboot menu -->
     <string name="reboot_soft">Soft reboot</string>
     <!-- Reboot Confirmation Dialog. -->
