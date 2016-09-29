@@ -3908,6 +3908,12 @@ public final class Settings {
         public static final String QS_SHOW_BRIGHTNESS_SLIDER = "qs_show_brightness_slider";
 
         /**
+         * Whether to show Brightness Icon On Brightness Slider
+         * @hide
+         */
+        public static final String BRIGHTNESS_ICON = "brightness_icon";
+
+        /**
          * Whether to wake the screen with the volume keys, the value is boolean.
          * @hide
          */
