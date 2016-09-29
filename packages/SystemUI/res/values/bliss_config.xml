@@ -29,4 +29,19 @@
     <!-- The min animation duration for animating the fab out. -->
     <integer name="recents_animate_fab_exit_duration">125</integer>
 
+    <!-- The default tiles to display in QuickSettings -->
+    <string name="quick_settings_tiles_default" translatable="false">
+        wifi,cell,battery,dnd,flashlight,rotation,bt,airplane,location
+    </string>
+
+    <!-- Tiles native to System UI. Order should match "quick_settings_tiles_default" -->
+    <string name="quick_settings_tiles_stock" translatable="false">
+        wifi,cell,battery,dnd,flashlight,rotation,bt,airplane,location,hotspot,inversion,saver,work,cast,night
+    </string>
+
+    <!-- The default tiles to display in QuickSettings -->
+    <string name="quick_settings_tiles_extra" translatable="false">
+        hotspot,inversion,saver,work,cast,screenshot,sync,reboot,usb_tether,music,ime,expanded_desktop,caffeine,heads_up,pulse,lte
+    </string>
+
 </resources>
