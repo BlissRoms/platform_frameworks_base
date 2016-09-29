@@ -17,14 +17,14 @@
 package com.android.systemui.statusbar.phone;
 
 import android.content.Context;
-import android.database.ContentObserver;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
-import android.provider.Settings;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -32,7 +32,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.provider.Settings;
 
+import com.android.systemui.BatteryMeterDrawable;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
@@ -53,12 +55,13 @@ public class KeyguardStatusBarView extends RelativeLayout
 
     private static final String STATUS_BAR_SHOW_BATTERY_PERCENT =
             Settings.Secure.STATUS_BAR_SHOW_BATTERY_PERCENT;
-    private static final String TEXT_CHARGING_SYMBOL =
-            Settings.Secure.TEXT_CHARGING_SYMBOL;
+    private static final String STATUS_BAR_BATTERY_STYLE =
+            Settings.Secure.STATUS_BAR_BATTERY_STYLE;
 
     private boolean mBatteryCharging;
     private boolean mKeyguardUserSwitcherShowing;
     private boolean mBatteryListening;
+
     private int mShowCarrierLabel;
 
     private TextView mCarrierLabel;
@@ -66,9 +69,6 @@ public class KeyguardStatusBarView extends RelativeLayout
     private MultiUserSwitch mMultiUserSwitch;
     private ImageView mMultiUserAvatar;
     private TextView mBatteryLevel;
-
-    private TextView mKeyguardClock;
-    private int mShowKeyguardClock;
 
     private BatteryController mBatteryController;
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
@@ -81,13 +81,9 @@ public class KeyguardStatusBarView extends RelativeLayout
     private boolean mShowBatteryText;
     private boolean mForceBatteryText;
     private boolean mForceChargeBatteryText;
-    private int mTextChargingSymbol;
-    private int currentLevel;
-    private boolean isPlugged;
 
     private ContentObserver mObserver = new ContentObserver(new Handler()) {
         public void onChange(boolean selfChange, Uri uri) {
-            showKeyguardClock();
             showStatusBarCarrier();
             updateVisibilities();
         }
@@ -95,13 +91,7 @@ public class KeyguardStatusBarView extends RelativeLayout
 
     public KeyguardStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        showKeyguardClock();
         showStatusBarCarrier();
-    }
-
-    private void showKeyguardClock() {
-        mShowKeyguardClock = Settings.System.getIntForUser(getContext().getContentResolver(),
-                Settings.System.KEYGUARD_SHOW_CLOCK, 1, UserHandle.USER_CURRENT);
     }
 
     private void showStatusBarCarrier() {
@@ -118,7 +108,6 @@ public class KeyguardStatusBarView extends RelativeLayout
         mMultiUserAvatar = (ImageView) findViewById(R.id.multi_user_avatar);
         mBatteryLevel = (TextView) findViewById(R.id.battery_level);
         mCarrierLabel = (TextView) findViewById(R.id.keyguard_carrier_text);
-        mKeyguardClock = (TextView) findViewById(R.id.keyguard_clock);
         loadDimens();
         updateUserSwitcher();
         updateVisibilities();
@@ -166,9 +155,6 @@ public class KeyguardStatusBarView extends RelativeLayout
                 mBatteryLevel.getPaddingBottom());
         mBatteryLevel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(R.dimen.battery_level_text_size));
-        mKeyguardClock.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.text_size_small_material));
 
         // Respect font size setting.
         mCarrierLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -212,15 +198,10 @@ public class KeyguardStatusBarView extends RelativeLayout
             } else {
                 mMultiUserSwitch.setVisibility(View.GONE);
             }
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.KEYGUARD_SHOW_CLOCK, 0) == 1) {
-            mKeyguardClock.setVisibility(View.VISIBLE);
-        } else {
-            mKeyguardClock.setVisibility(View.GONE);
-        }
         mBatteryLevel.setVisibility(
                 (mBatteryCharging && mForceChargeBatteryText) || mShowBatteryText || mForceBatteryText ? View.VISIBLE : View.GONE);
         }
+
         if (mCarrierLabel != null) {
             if (mShowCarrierLabel == 1) {
                 mCarrierLabel.setVisibility(View.VISIBLE);
@@ -230,7 +211,7 @@ public class KeyguardStatusBarView extends RelativeLayout
                 mCarrierLabel.setVisibility(View.GONE);
             }
         }
-    }
+     }
 
     private void updateSystemIconsLayoutParams() {
         RelativeLayout.LayoutParams lp =
@@ -254,7 +235,8 @@ public class KeyguardStatusBarView extends RelativeLayout
         }
         mBatteryListening = listening;
         if (mBatteryListening) {
-            TunerService.get(getContext()).addTunable(this, STATUS_BAR_SHOW_BATTERY_PERCENT, TEXT_CHARGING_SYMBOL);
+            TunerService.get(getContext()).addTunable(this,
+                    STATUS_BAR_SHOW_BATTERY_PERCENT, STATUS_BAR_BATTERY_STYLE);
             mBatteryController.addStateChangedCallback(this);
         } else {
             mBatteryController.removeStateChangedCallback(this);
@@ -294,33 +276,12 @@ public class KeyguardStatusBarView extends RelativeLayout
 
     @Override
     public void onBatteryLevelChanged(int level, boolean pluggedIn, boolean charging) {
-        currentLevel = level;
-        isPlugged = pluggedIn;
-        updateChargingSymbol(currentLevel, isPlugged);
+        String percentage = NumberFormat.getPercentInstance().format((double) level / 100.0);
+        mBatteryLevel.setText(percentage);
         boolean changed = mBatteryCharging != charging;
         mBatteryCharging = charging;
         if (changed) {
             updateVisibilities();
-        }
-    }
-
-    private void updateChargingSymbol(int level, boolean pluggedIn) {
-        mTextChargingSymbol = Settings.Secure.getInt(getContext().getContentResolver(),
-                TEXT_CHARGING_SYMBOL, 0);
-        if (pluggedIn) {
-            switch (mTextChargingSymbol) {
-                case 1:
-                    mBatteryLevel.setText("⚡️" + NumberFormat.getPercentInstance().format((double) level / 100.0));
-                    break;
-                case 2:
-                    mBatteryLevel.setText("~" + NumberFormat.getPercentInstance().format((double) level / 100.0));
-                    break;
-                default:
-                    mBatteryLevel.setText(NumberFormat.getPercentInstance().format((double) level / 100.0));
-                    break;
-            }
-        } else {
-            mBatteryLevel.setText(NumberFormat.getPercentInstance().format((double) level / 100.0));
         }
     }
 
@@ -409,19 +370,6 @@ public class KeyguardStatusBarView extends RelativeLayout
         return false;
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                "keyguard_show_clock"), false, mObserver);
-        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
-		        Settings.System.STATUS_BAR_SHOW_CARRIER), false, mObserver);
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-    }
 
     @Override
     public void onTuningChanged(String key, String newValue) {
@@ -433,11 +381,19 @@ public class KeyguardStatusBarView extends RelativeLayout
                 mForceChargeBatteryText = Settings.Secure.getInt(getContext().getContentResolver(),
                         Settings.Secure.FORCE_CHARGE_BATTERY_TEXT, 0) == 1 ? true : false;
                 updateVisibilities();
-            case TEXT_CHARGING_SYMBOL:
-                updateChargingSymbol(currentLevel, isPlugged);
-                break;
             default:
                 break;
         }
+  }
+
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+		        Settings.System.STATUS_BAR_SHOW_CARRIER), false, mObserver);
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 }
