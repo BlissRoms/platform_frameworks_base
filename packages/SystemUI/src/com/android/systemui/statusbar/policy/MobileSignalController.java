@@ -481,6 +481,15 @@ public class MobileSignalController extends SignalController<
             switch (mServiceState.getVoiceRegState()) {
                 case ServiceState.STATE_POWER_OFF:
                     return false;
+                case ServiceState.STATE_IN_SERVICE:
+                    if (mServiceState.getVoiceNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN
+                            && (mServiceState.getDataNetworkType() ==
+                            TelephonyManager.NETWORK_TYPE_IWLAN ||
+                            mServiceState.getDataRegState() != ServiceState.STATE_IN_SERVICE)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 case ServiceState.STATE_OUT_OF_SERVICE:
                 case ServiceState.STATE_EMERGENCY_ONLY:
                     if (mContext.getResources().getBoolean(R.bool.config_showSignalForIWlan)) {
