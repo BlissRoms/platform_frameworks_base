@@ -3766,6 +3766,18 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
 
         /**
+         * Option to hide the alarm icon in the expanded status bar.
+	     * @hide
+         */
+        public static final String SHOW_NEXT_ALARM_ICON = "show_next_alarm_icon";
+
+        /**
+         * Option to hide the next alarm on the lockscreen.
+	     * @hide
+         */
+        public static final String SHOW_NEXT_ALARM_LOCKSCREEN = "show_next_alarm_lockscreen";
+
+        /**
          * Default left lockscreen shortcut
          * @hide
          */

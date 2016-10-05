@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,6 +68,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
     private boolean mExpanded;
     private boolean mAlarmShowing;
+    private boolean mNextAlarmVisible;
 
     private ViewGroup mDateTimeGroup;
     private ViewGroup mDateTimeAlarmGroup;
@@ -269,14 +271,18 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
     }
 
     private void updateAlarmVisibilities() {
-        mAlarmStatus.setVisibility(mAlarmShowing && mShowFullAlarm ? View.VISIBLE : View.INVISIBLE);
-        mAlarmStatusCollapsed.setVisibility(mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
+		mNextAlarmVisible = Settings.System.getInt(
+            mContext.getContentResolver(), Settings.System.SHOW_NEXT_ALARM_ICON, 1) == 1;
+        mAlarmStatus.setVisibility(mAlarmShowing && mNextAlarmVisible && mShowFullAlarm ? View.VISIBLE : View.INVISIBLE);
+        mAlarmStatusCollapsed.setVisibility(mAlarmShowing && mNextAlarmVisible ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void updateDateTimePosition() {
         // This one has its own because we have to rebuild it every time the alarm state changes.
+        mNextAlarmVisible = Settings.System.getInt(
+            mContext.getContentResolver(), Settings.System.SHOW_NEXT_ALARM_ICON, 1) == 1;
         mAlarmTranslation = new TouchAnimator.Builder()
-                .addFloat(mDateTimeAlarmGroup, "translationY", 0, mAlarmShowing
+                .addFloat(mDateTimeAlarmGroup, "translationY", 0, mAlarmShowing && mNextAlarmVisible
                         ? mDateTimeAlarmTranslation : mDateTimeTranslation)
                 .build();
         mAlarmTranslation.setPosition(mExpansionAmount);
