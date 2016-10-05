@@ -7633,8 +7633,8 @@ public final class Settings {
          */
         public static final String DEVICE_PAIRED = "device_paired";
 
-        /**
-         * Force authorize Substratum (or equivalent) frontend calling packages by Masquerade
+	/**
+	* Force authorize Substratum (or equivalent) frontend calling packages by Masquerade
          * @hide
          */
         public static final String FORCE_AUTHORIZE_SUBSTRATUM_PACKAGES = "force_authorize_substratum_packages";
@@ -7644,6 +7644,12 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD = "status_bar_locked_on_secure_keyguard";
+
+        /**
+         * Count of small QS tiles.
+         * @hide
+         */
+        public static final String QQS_COUNT = "sysui_qqs_count";
 
         /**
          * This are the settings to be backed up.
