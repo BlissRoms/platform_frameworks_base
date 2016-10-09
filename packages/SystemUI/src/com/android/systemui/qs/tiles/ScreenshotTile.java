@@ -69,6 +69,18 @@ public class ScreenshotTile extends QSTile<QSTile.BooleanState> {
     }
 
     @Override
+    public void handleLongClick() {
+        mHost.collapsePanels();
+        /* wait for the panel to close */
+        try {
+             Thread.sleep(2000);
+        } catch (InterruptedException ie) {
+             // Do nothing
+        }
+        takeScreenshot();
+    }
+
+    @Override
     public Intent getLongClickIntent() {
         return new Intent().setComponent(new ComponentName(
             "com.android.gallery3d", "com.android.gallery3d.app.GalleryActivity"));
