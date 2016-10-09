@@ -90,6 +90,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
     private LinearLayout mCenterClockLayout;
     private NetworkTraffic mNetworkTraffic;
     private TextView mCarrierLabel;
+    private ImageView mBlissLogoRight;
+    private ImageView mBlissLogoLeft;
 
     private int mIconSize;
     private int mIconHPadding;
@@ -153,6 +155,8 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
         mCenterClock = (Clock) statusBar.findViewById(R.id.center_clock);
         mLeftClock = (Clock) statusBar.findViewById(R.id.left_clock);
         mNetworkTraffic = (NetworkTraffic) statusBar.findViewById(R.id.networkTraffic);
+	mBlissLogoRight = (ImageView) statusBar.findViewById(R.id.bliss_logo);
+        mBlissLogoLeft = (ImageView) statusBar.findViewById(R.id.left_bliss_logo);
         mDarkModeIconColorSingleTone = context.getColor(R.color.dark_mode_icon_color_single_tone);
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
         mHandler = new Handler();
@@ -588,6 +592,12 @@ public class StatusBarIconController extends StatusBarIconList implements Tunabl
                 isInArea(mTintArea, mBatteryMeterView) ? mDarkIntensity : 0);
         mClock.setTextColor(getTint(mTintArea, mClock, mIconTint));
 	mNetworkTraffic.setDarkIntensity(mDarkIntensity);
+	if (Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BLISS_LOGO_COLOR, 0xFFFFFFFF,
+                UserHandle.USER_CURRENT) == 0xFFFFFFFF) {
+            mBlissLogoRight.setImageTintList(ColorStateList.valueOf(mIconTint));
+            mBlissLogoLeft.setImageTintList(ColorStateList.valueOf(mIconTint));
+        }
         mBatteryLevelView.setTextColor(getTint(mTintArea, mBatteryLevelView, mIconTint));
         mCenterClock.setTextColor(getTint(mTintArea, mCenterClock, mIconTint));
         mLeftClock.setTextColor(getTint(mTintArea, mLeftClock, mIconTint));

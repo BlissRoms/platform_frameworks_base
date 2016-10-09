@@ -424,10 +424,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     int mMaxAllowedKeyguardNotifications;
 
-    // carrier label
+    // Carrier label
     private TextView mCarrierLabel;
     private boolean mShowCarrierInPanel = false;
     boolean mExpandedVisible;
+
+    // Bliss logo
+    private boolean mBlissLogo;
+    private int mBlissLogoColor;
+    private ImageView mBlissLogoRight;
+    private ImageView mBlissLogoLeft;
+    private int mBlissLogoStyle;
 
     private int mNavigationBarWindowState = WINDOW_STATE_SHOWING;
 
@@ -523,6 +530,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
+    private SettingsObserver mSettingsObserver;
+
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
@@ -545,6 +554,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_CLOCK_STYLE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BLISS_LOGO),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BLISS_LOGO_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BLISS_LOGO_STYLE),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -561,8 +579,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_SHOW_CARRIER))) {
                     update();
                     updateCarrier();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BLISS_LOGO_STYLE))) {
+                if (mIconController != null) {
+                    mIconController.onDensityOrFontScaleChanged();
+                }
             }
-             update();
+            update();
         }
 
         public void update() {
@@ -580,6 +603,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 	    mClockLocation = Settings.System.getIntForUser(
                 resolver, Settings.System.STATUSBAR_CLOCK_STYLE, 0,
                 UserHandle.USER_CURRENT);
+            mBlissLogoStyle = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_BLISS_LOGO_STYLE, 0,
+                    UserHandle.USER_CURRENT);
+            mBlissLogo = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_BLISS_LOGO, 0, mCurrentUserId) == 1;
+            mBlissLogoColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_BLISS_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
+            mBlissLogoLeft = (ImageView) mStatusBarView.findViewById(R.id.left_bliss_logo);
+            mBlissLogoRight = (ImageView) mStatusBarView.findViewById(R.id.bliss_logo);
+            showBlissLogo(mBlissLogo, mBlissLogoColor, mBlissLogoStyle);
+            mQsLayoutColumns = Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_LAYOUT_COLUMNS, 3, mCurrentUserId);
         }
     }
 
@@ -908,8 +943,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         addNavigationBar();
 
-        SettingsObserver observer = new SettingsObserver(mHandler);
-        observer.observe();
+        if (mSettingsObserver == null) {
+            mSettingsObserver = new SettingsObserver(new Handler());
+        }
+        mSettingsObserver.observe();
 
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext, mIconController, mCastController,
@@ -4056,6 +4093,29 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 return deferred;
             }
         }, cancelAction, afterKeyguardGone);
+    }
+
+    public void showBlissLogo(boolean show, int color, int style) {
+        if (mStatusBarView == null) return;
+        if (!show) {
+            mBlissLogoRight.setVisibility(View.GONE);
+            mBlissLogoLeft.setVisibility(View.GONE);
+            return;
+        }
+        if (color != 0xFFFFFFFF) {
+            mBlissLogoRight.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            mBlissLogoLeft.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        } else {
+            mBlissLogoRight.clearColorFilter();
+            mBlissLogoLeft.clearColorFilter();
+        }
+        if (style == 0) {
+            mBlissLogoRight.setVisibility(View.GONE);
+            mBlissLogoLeft.setVisibility(View.VISIBLE);
+        } else {
+            mBlissLogoLeft.setVisibility(View.GONE);
+            mBlissLogoRight.setVisibility(View.VISIBLE);
+        }
     }
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
