@@ -604,6 +604,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.RECENT_APPS_SCALE_PREFERENCE_KEY), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.RECENT_APPS_RADIUS_PREFERENCE_KEY), false, this);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                   Settings.Secure.QS_ROWS_PORTRAIT),
+                   false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                   Settings.Secure.QS_ROWS_LANDSCAPE),
+                   false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                   Settings.Secure.QS_COLUMNS),
+                   false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -633,6 +642,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                                         0, UserHandle.USER_CURRENT) == 1;
                     RecentsActivity.startBlurTask();
                     updatePreferences(mContext);
+            } else if (uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_ROWS_PORTRAIT))
+                    || uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_ROWS_LANDSCAPE))) {
+                    updateResources();
+            } else if (uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_COLUMNS))) {
+                    updateResources();
             }
 	      update();
          }
