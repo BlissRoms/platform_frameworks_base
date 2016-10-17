@@ -21,4 +21,6 @@
         <item name="preferenceTheme">@style/TunerPreferenceTheme</item>
     </style>
 
+    <!-- Status bar battery level text color -->
+    <color name="status_bar_battery_level_text_color">#ffffff</color>
 </resources>
