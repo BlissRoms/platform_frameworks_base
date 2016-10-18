@@ -103,4 +103,10 @@
 
     <!-- Recents Membar -->
     <string name="recents_free_ram">FREE RAM</string>
+
+     <!-- Pulse QS Tile -->
+    <string name="quick_settings_pulse_enabled">Pulse Enabled</string>
+    <string name="quick_settings_pulse_disabled">No Visualizer</string>
+    <string name="quick_settings_pulse_label">Navigationbar Visualizer</string>
+
 </resources>
