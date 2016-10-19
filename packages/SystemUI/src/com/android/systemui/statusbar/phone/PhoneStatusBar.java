@@ -235,6 +235,8 @@ import java.util.Map;
 
 import static com.android.systemui.settings.BrightnessController.BRIGHTNESS_ADJ_RESOLUTION;
 
+import static android.service.notification.NotificationListenerService.Ranking.importanceToLevel;
+
 public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         DragDownHelper.DragDownCallback, ActivityStarter, OnUnlockMethodChangedListener,
         HeadsUpManager.OnHeadsUpChangedListener {
@@ -1984,8 +1986,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 if (DEBUG) {
                     Log.d(TAG, "No Fullscreen intent: suppressed by DND: " + notification.getKey());
                 }
-            } else if (mNotificationData.getImportance(notification.getKey())
-                    < NotificationListenerService.Ranking.IMPORTANCE_MAX) {
+            } else if (importanceToLevel(mNotificationData.getImportance(notification.getKey()))
+                       < importanceToLevel(NotificationListenerService.Ranking.IMPORTANCE_MAX)) {
                 if (DEBUG) {
                     Log.d(TAG, "No Fullscreen intent: not important enough: "
                             + notification.getKey());
