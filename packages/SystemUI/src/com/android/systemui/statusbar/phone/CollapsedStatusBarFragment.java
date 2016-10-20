@@ -68,6 +68,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private LinearLayout mSystemIconArea;
     private LinearLayout mCustomIconArea;
     private LinearLayout mCenterClockLayout;
+    private View mCustomCarrierLabel;
     private View mBlissLogoRight;
     private View mNotificationIconAreaInner;
     private View mCenteredIconArea;
@@ -156,6 +157,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mCenterClockLayout = (LinearLayout) mStatusBar.findViewById(R.id.center_clock_layout);
         mBatteryBar = mStatusBar.findViewById(R.id.battery_bar);
         mBlissLogoRight = mStatusBar.findViewById(R.id.bliss_logo_right);
+        mCustomCarrierLabel = mStatusBar.findViewById(R.id.statusbar_carrier_text);
         mClockController = new ClockController(mStatusBar);
         mWeatherTextView = mStatusBar.findViewById(R.id.weather_temp);
         mWeatherImageView = mStatusBar.findViewById(R.id.weather_image);
@@ -320,12 +322,14 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         animateHide(mBatteryBar, animate);
         animateHide(mSystemIconArea, animate);
         animateHide(mBlissLogoRight, animate);
+        animateHide(mCustomCarrierLabel, animate);
     }
 
     public void showSystemIconArea(boolean animate) {
         animateShow(mBatteryBar, animate);
         animateShow(mSystemIconArea, animate);
         animateShow(mBlissLogoRight, animate);
+        animateShow(mCustomCarrierLabel, animate);
     }
 
     /**
