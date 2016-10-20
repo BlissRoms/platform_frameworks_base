@@ -102,4 +102,7 @@
     <dimen name="config_customCutoutBottomWidth">0.0px</dimen>
     <dimen name="config_customCutoutBottomHeight">0.0px</dimen>
 
+    <!-- Custom Carrier Label -->
+    <dimen name="status_bar_carrier_height">14dp</dimen>
+
 </resources>
