@@ -392,6 +392,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     View mExpandedContents;
     TextView mNotificationPanelDebugText;
 
+    // Custom Carrier Label
+    private int mShowCarrierLabel;
+    private TextView mCustomCarrierLabel;
+
     // settings
     private QSPanel mQSPanel;
 
@@ -533,6 +537,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_TICKER),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                   Settings.System.STATUS_BAR_SHOW_CARRIER),
+                   false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -546,6 +553,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mContext.getResources().getBoolean(R.bool.enable_ticker)
                         ? 1 : 1, UserHandle.USER_CURRENT) == 1;
                 initTickerView();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_SHOW_CARRIER))) {
+                    update();
+                    updateCarrier();
             }
              update();
         }
@@ -560,6 +571,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mBrightnessControl = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0,
                     UserHandle.USER_CURRENT) == 1;
+            mShowCarrierLabel = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_SHOW_CARRIER, 1, UserHandle.USER_CURRENT);
         }
     }
 
@@ -1116,6 +1129,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         initSignalCluster(mKeyguardStatusBar);
         initEmergencyCryptkeeperText();
 
+	mCustomCarrierLabel = (TextView) mStatusBarWindow.findViewById(R.id.statusbar_carrier_text);
+        if (mCustomCarrierLabel != null) {
+            updateCarrier();
+        }
         mCarrierLabel = (TextView)mStatusBarWindow.findViewById(R.id.carrier_label);
         final boolean showCarrierLabel = mContext.getResources().getBoolean(
                 R.bool.config_showCarrierLabel);
@@ -2233,6 +2250,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
 
             mCarrierLabel.setVisibility(makeVisible ? View.VISIBLE : View.INVISIBLE);
+	}
+    }
+
+    private void updateCarrier() {
+        if (mCustomCarrierLabel != null) {
+            if (mShowCarrierLabel == 2) {
+                mCustomCarrierLabel.setVisibility(View.VISIBLE);
+            } else if (mShowCarrierLabel == 3) {
+                mCustomCarrierLabel.setVisibility(View.VISIBLE);
+            } else {
+                mCustomCarrierLabel.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -4843,6 +4872,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateNotifications();
         checkBarModes();
         updateCarrierLabelVisibility();
+        updateCarrier();
         updateMediaMetaData(false, mState != StatusBarState.KEYGUARD);
         mKeyguardMonitor.notifyKeyguardState(mStatusBarKeyguardViewManager.isShowing(),
                 mStatusBarKeyguardViewManager.isSecure(),
