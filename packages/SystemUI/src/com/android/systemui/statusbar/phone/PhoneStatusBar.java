@@ -613,8 +613,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mBlissLogoLeft = (ImageView) mStatusBarView.findViewById(R.id.left_bliss_logo);
             mBlissLogoRight = (ImageView) mStatusBarView.findViewById(R.id.bliss_logo);
             showBlissLogo(mBlissLogo, mBlissLogoColor, mBlissLogoStyle);
-            mQsLayoutColumns = Settings.System.getIntForUser(resolver,
-                    Settings.System.QS_LAYOUT_COLUMNS, 3, mCurrentUserId);
         }
     }
 
@@ -1740,11 +1738,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mNavigationController.getBar() == null) return;
 
         prepareNavigationBarView();
-        try {
-          mWindowManager.addView(mNavigationController.getBar().getBaseView(), getNavigationBarLayoutParams());
-        } catch (Exception e) {
-          if (DEBUG) Log.e(TAG, "Unable to add window android.view.ViewRootImpl$W@5456577 -- another window of type 2019 already exists");
-        }
+
+        mWindowManager.addView(mNavigationController.getBar().getBaseView(), getNavigationBarLayoutParams());
     }
 
     protected void repositionNavigationBar() {
