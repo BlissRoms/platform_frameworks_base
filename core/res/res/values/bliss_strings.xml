@@ -168,4 +168,7 @@
     <!-- Name of that alternative key handler class -->
     <string name="config_alternativeDeviceKeyHandlerClass" translatable="false"></string>
 
+    <!-- Pocket Lock --> 
+    <string name="pocket_lock_message_long_press">Press and hold power button to unlock</string> 
+
 </resources>
