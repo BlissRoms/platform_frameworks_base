@@ -2770,7 +2770,7 @@ public class NotificationManagerService extends SystemService {
 
         boolean canBeep = readyForBeepOrBuzz && canInterrupt;
         boolean canBuzz = readyForBeepOrBuzz &&
-            (canInterrupt || mZenModeHelper.allowVibrationForNotifications());
+            (canInterrupt || (aboveThreshold && mZenModeHelper.allowVibrationForNotifications()));
         boolean hasValidSound = false;
 
         if (canBeep || canBuzz) {
