@@ -715,6 +715,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private LineageButtons mLineageButtons;
 
+    private int mVolButtonScreenshotType;
+
     private static final int MSG_DISPATCH_MEDIA_KEY_WITH_WAKE_LOCK = 3;
     private static final int MSG_DISPATCH_MEDIA_KEY_REPEAT_WITH_WAKE_LOCK = 4;
     private static final int MSG_KEYGUARD_DRAWN_COMPLETE = 5;
@@ -997,6 +999,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DOZE_TRIGGER_DOUBLETAP), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SCREENSHOT_TYPE), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -1617,7 +1622,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             + SCREENSHOT_CHORD_DEBOUNCE_DELAY_MILLIS) {
                 mScreenshotChordVolumeDownKeyConsumed = true;
                 cancelPendingPowerKeyAction();
-                takeScreenshotDelayed(TAKE_SCREENSHOT_FULLSCREEN, getScreenshotChordLongPressDelay());
+                if (mVolButtonScreenshotType != 1) {
+                    takeScreenshotDelayed(TAKE_SCREENSHOT_FULLSCREEN, getScreenshotChordLongPressDelay());
+                } else {
+                    takeScreenshotDelayed(TAKE_SCREENSHOT_SELECTED_REGION, getScreenshotChordLongPressDelay());
+                }
             }
         }
     }
@@ -2636,7 +2645,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Global.POWER_BUTTON_VERY_LONG_PRESS,
                     mContext.getResources().getInteger(
                             com.android.internal.R.integer.config_veryLongPressOnPowerBehavior));
-
+            mVolButtonScreenshotType = Settings.System.getIntForUser(resolver,
+                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
         }
         if (updateRotation) {
             updateRotation(true);
