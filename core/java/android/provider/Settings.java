@@ -4099,6 +4099,12 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
 
         /**
+         * Change the delay when a screenshot is taken
+         * @hide
+         */
+        public static final String SCREENSHOT_DELAY = "screenshot_delay";
+
+        /**
          * Whether to display qs tile titles in the qs panel
          * @hide
          */
