@@ -365,19 +365,24 @@ public class MobileSignalController extends SignalController<
         int typeIcon = showDataIcon ? icons.mDataType : 0;
         int dataActivityId = showMobileActivity() ? 0 : icons.mActivityId;
         int mobileActivityId = showMobileActivity() ? icons.mActivityId : 0;
-        int dataNetworkTypeInRoamingId = 0;
-        if (mStyle == STATUS_BAR_STYLE_EXTENDED && isRoaming()) {
-            dataNetworkTypeInRoamingId = mCurrentState.dataConnected ? typeIcon : 0;
-            typeIcon = TelephonyIcons.ROAMING_ICON;
-            qsTypeIcon = mCurrentState.dataConnected ? qsTypeIcon : 0;
+        int dataNetworkTypeId = 0;
+        if (mStyle == STATUS_BAR_STYLE_EXTENDED) {
+            if (isRoaming()) {
+                dataNetworkTypeId = mCurrentState.dataConnected ? icons.mDataType : 0;
+                typeIcon = TelephonyIcons.ROAMING_ICON;
+                qsTypeIcon = mCurrentState.dataConnected ? qsTypeIcon : 0;
+            } else {
+                dataNetworkTypeId = showDataIcon ? icons.mDataType : 0;
+                typeIcon = 0;
+            }
         }
         if( callback instanceof SignalCallbackExtended ) {
             ((SignalCallbackExtended)callback).setMobileDataIndicators(statusIcon, qsIcon, typeIcon,
                     qsTypeIcon, activityIn, activityOut, dataActivityId, mobileActivityId,
                     icons.mStackedDataIcon, icons.mStackedVoiceIcon,
                     dataContentDescription, description, icons.mIsWide,
-                    mSubscriptionInfo.getSubscriptionId(), dataNetworkTypeInRoamingId,
-                    getEmbmsIconId(), getImsIconId(), isImsRegisteredInWifi());
+                    mSubscriptionInfo.getSubscriptionId(), dataNetworkTypeId,
+                    getEmbmsIconId(), isMobileIms(), isImsRegisteredInWifi());
         } else {
             callback.setMobileDataIndicators(statusIcon, qsIcon, typeIcon, qsTypeIcon,
                     activityIn, activityOut, dataActivityId, mobileActivityId,
@@ -429,15 +434,26 @@ public class MobileSignalController extends SignalController<
         return false;
     }
 
-    private int getImsIconId() {
-        if (mStyle != STATUS_BAR_STYLE_EXTENDED || mServiceState == null ||
-                (mServiceState.getVoiceRegState() != ServiceState.STATE_IN_SERVICE)) {
-            return 0;
+    private boolean isMobileIms() {
+        if (mStyle != STATUS_BAR_STYLE_EXTENDED) {
+            return false;
         }
-        if (mCurrentState.imsRadioTechnology == ServiceState.RIL_RADIO_TECHNOLOGY_LTE) {
-            return R.drawable.volte;
+
+        List<SubscriptionInfo> subInfos = SubscriptionManager.from(mContext)
+                        .getActiveSubscriptionInfoList();
+        if (subInfos != null) {
+            for (SubscriptionInfo subInfo: subInfos) {
+                int subId = subInfo.getSubscriptionId();
+                if (mPhone != null
+                        && mPhone.isImsRegisteredForSubscriber(subId)
+                        && (!(isImsRegisteredInWifi()))) {
+                    return true;
+                }
+            }
+        } else {
+            Log.e(mTag, "Invalid SubscriptionInfo");
         }
-        return 0;
+        return false;
     }
 
     @Override
