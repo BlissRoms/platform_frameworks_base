@@ -203,25 +203,36 @@ public class CallLog {
          * device other than the current one.
          */
         public static final int ANSWERED_EXTERNALLY_TYPE = 7;
-        /** Call log type for outgoing IMS calls. */
-        private static final int OUTGOING_IMS_TYPE = 9;
-        /** Call log type for missed IMS calls. */
-        private static final int MISSED_IMS_TYPE = 10;
+        /**
+         * Call log type for incoming IMS calls.
+         * @hide
+         */
+        public static final int INCOMING_IMS_TYPE = 1000;
+        /**
+         * Call log type for outgoing IMS calls.
+         * @hide
+         */
+        public static final int OUTGOING_IMS_TYPE = 1001;
+        /**
+         * Call log type for missed IMS calls.
+         * @hide
+         */
+        public static final int MISSED_IMS_TYPE = 1002;
         /**
          * Call log type for incoming WiFi calls.
          * @hide
          */
-        public static final int INCOMING_WIFI_TYPE = 20;
+        public static final int INCOMING_WIFI_TYPE = 1003;
         /**
          * Call log type for outgoing WiFi calls.
          * @hide
          */
-        public static final int OUTGOING_WIFI_TYPE = 21;
+        public static final int OUTGOING_WIFI_TYPE = 1004;
         /**
          * Call log type for missed WiFi calls.
          * @hide
          */
-        public static final int MISSED_WIFI_TYPE = 22;
+        public static final int MISSED_WIFI_TYPE = 1005;
 
         /**
          * Bit-mask describing features of the call (e.g. video).
