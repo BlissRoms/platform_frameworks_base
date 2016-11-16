@@ -424,7 +424,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
             }
         }
     }
-    
+
     @Override
     public void onUserInfoChanged(String name, Drawable picture) {
         mMultiUserAvatar.setImageDrawable(picture);
@@ -434,4 +434,13 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
        return Settings.System.getInt(mContext.getContentResolver(),
 	    Settings.System.ENABLE_TASK_MANAGER, 0) == 1;
    }
+    @Override
+    public void updateSettings() {
+        if (mQsPanel != null) {
+            mQsPanel.updateSettings();
+        }
+        if (mHeaderQsPanel != null) {
+            mHeaderQsPanel.updateSettings();
+        }
+    }
 }

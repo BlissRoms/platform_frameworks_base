@@ -405,6 +405,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // Custom Carrier Label
     private int mShowCarrierLabel;
     private TextView mCustomCarrierLabel;
+    private int mQsLayoutColumns;
 
     // settings
     private QSPanel mQSPanel;
@@ -627,7 +628,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAV_BAR_DYNAMIC),
                     false, this, UserHandle.USER_ALL);
-            update();
+           resolver.registerContentObserver(Settings.System.getUriFor(
+                  Settings.System.QS_LAYOUT_COLUMNS),
+                  false, this, UserHandle.USER_ALL);
+           update();
         }
 
         @Override
@@ -733,6 +737,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.RECENT_APPS_RADIUS_PREFERENCE_KEY, 3);
                     
             RecentsActivity.updateRadiusScale(mScaleRecents,mRadiusRecents);
+
+            mQsLayoutColumns = Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_LAYOUT_COLUMNS, 3, mCurrentUserId);
+
+            if (mHeader != null) {
+                mHeader.updateSettings();
+            }
         }
     }
 
