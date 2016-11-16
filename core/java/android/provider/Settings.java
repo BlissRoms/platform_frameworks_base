@@ -3973,6 +3973,12 @@ public final class Settings {
         public static final String REMOVE_TILE_SUMMARY = "remove_tile_summary";
 
         /**
+         * Quick Settings number of columns
+         * @hide
+         */
+        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
+
+        /**
          * Volume rocker wake
          * @hide
          */
