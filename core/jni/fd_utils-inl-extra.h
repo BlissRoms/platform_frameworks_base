@@ -1,6 +1,3 @@
-// Overload this file in your device specific config if you need
-// to add extra whitelisted paths.
-// A typical file would look like this:
 /*
  * Copyright (C) 2016 The CyanogenMod Project
  *
@@ -16,8 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /*
 #define PATH_WHITELIST_EXTRA_H \
     "/proc/apid", \
     "/proc/aprf",
 */
+
+// Overload this file in your device specific config if you need
+// to add extra whitelisted paths.
+// WARNING: Only use this if necessary. Custom inits should be
+// checked for leaked file descriptors before even considering
+// this.
+// In order to add your files, copy the whole file (don't forget the copyright notice!),
+// uncomment the #define above and change the paths inside to match your requirements
