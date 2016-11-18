@@ -1608,7 +1608,6 @@
   <java-symbol type="string" name="faceunlock_multiple_failures" />
   <java-symbol type="string" name="global_action_power_off" />
   <java-symbol type="string" name="global_action_reboot" />
-  <java-symbol type="string" name="global_action_restart" />
   <java-symbol type="string" name="global_actions_airplane_mode_off_status" />
   <java-symbol type="string" name="global_actions_airplane_mode_on_status" />
   <java-symbol type="string" name="global_actions_toggle_airplane_mode" />
@@ -2844,8 +2843,6 @@
 
   <!-- Default first user restrictions -->
   <java-symbol type="array" name="config_defaultFirstUserRestrictions" />
-
-  <java-symbol type="drawable" name="ic_restart" />
 
   <java-symbol type="drawable" name="emergency_icon" />
 
