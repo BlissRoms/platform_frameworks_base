@@ -37,7 +37,6 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 
-import com.android.systemui.BatteryMeterDrawable;
 import com.android.systemui.DemoMode;
 import com.android.systemui.R;
 import com.android.systemui.SystemUI;
@@ -116,7 +115,7 @@ public class TunerService extends SystemUI {
         Uri uri = Settings.Secure.getUriFor(key);
         if (!mListeningUris.containsKey(uri)) {
             mListeningUris.put(uri, key);
-            mContentResolver.registerContentObserver(uri, false, mObserver, mCurrentUser);
+            mContentResolver.registerContentObserver(uri, true, mObserver, mCurrentUser);
         }
         // Send the first state.
         String value = Settings.Secure.getStringForUser(mContentResolver, key, mCurrentUser);
@@ -135,7 +134,7 @@ public class TunerService extends SystemUI {
         }
         mContentResolver.unregisterContentObserver(mObserver);
         for (Uri uri : mListeningUris.keySet()) {
-            mContentResolver.registerContentObserver(uri, false, mObserver, mCurrentUser);
+            mContentResolver.registerContentObserver(uri, true, mObserver, mCurrentUser);
         }
     }
 
@@ -158,6 +157,12 @@ public class TunerService extends SystemUI {
             for (Tunable tunable : mTunableLookup.get(key)) {
                 tunable.onTuningChanged(key, value);
             }
+        }
+    }
+
+    public void clearAll() {
+        for (String key : mTunableLookup.keySet()) {
+            Settings.Secure.putString(mContentResolver, key, null);
         }
     }
 
@@ -187,13 +192,8 @@ public class TunerService extends SystemUI {
         return sInstance;
     }
 
-    private static Context userContext(Context context) {
-        try {
-            return context.createPackageContextAsUser(context.getPackageName(), 0,
-                    new UserHandle(ActivityManager.getCurrentUser()));
-        } catch (NameNotFoundException e) {
-            return context;
-        }
+    public static final boolean isTunerEnabled(Context context) {
+        return true;
     }
 
     private class Observer extends ContentObserver {

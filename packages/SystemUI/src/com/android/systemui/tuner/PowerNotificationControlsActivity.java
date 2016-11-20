@@ -20,12 +20,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class NavbarActivity extends Activity {
+public class PowerNotificationControlsActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new NavBarTuner())
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new PowerNotificationControlsFragment())
                 .commit();
     }
 
