@@ -236,6 +236,12 @@ public class CallLog {
         /** Call was pulled externally. */
         public static final int FEATURES_PULLED_EXTERNALLY = 0x2;
 
+        /** Call had enriched data.
+         *
+         * @hide
+         */
+        public static final int FEATURES_ENRICHED = 0x100;
+
         /**
          * The phone number as the user entered it.
          * <P>Type: TEXT</P>
