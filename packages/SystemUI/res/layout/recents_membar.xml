@@ -45,7 +45,7 @@
         android:layout_marginBottom="0dp"
         android:text="@string/recents_stack_action_button_label"
         android:textSize="14sp"
-        android:textColor="?attr/wallpaperTextColor"
+        android:textColor="@color/recents_membar_text_color"
         android:textAllCaps="true"
         android:shadowColor="#99000000"
         android:shadowDx="0"
