@@ -7248,6 +7248,12 @@ public final class Settings {
                 "camera_double_tap_power_gesture_disabled";
 
         /**
+         * Whether to sync the battery tile stile with the statusbar battery icon style
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_STYLE_TILE = "status_bar_battery_style_tile";
+
+        /**
          * Whether the camera double twist gesture to flip between front and back mode should be
          * enabled.
          *
@@ -7552,6 +7558,7 @@ public final class Settings {
             STATUS_BAR_SHOW_BATTERY_PERCENT,
             STATUS_BAR_BATTERY_STYLE,
             STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD
+            STATUS_BAR_BATTERY_STYLE_TILE
         };
 
         /**
