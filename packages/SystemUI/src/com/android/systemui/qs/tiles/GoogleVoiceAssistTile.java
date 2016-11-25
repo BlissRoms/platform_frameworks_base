@@ -69,7 +69,7 @@ public class GoogleVoiceAssistTile extends QSTile<QSTile.BooleanState>  {
 
     @Override
     public int getMetricsCategory() {
-        return MetricsEvent.OWL_TILE;
+        return MetricsEvent.QUICK_SETTINGS;
     }
 
     @Override
