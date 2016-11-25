@@ -56,6 +56,8 @@ public class BatteryMeterDrawable extends Drawable implements
     public static final String TAG = BatteryMeterDrawable.class.getSimpleName();
     private static final String STATUS_BAR_SHOW_BATTERY_PERCENT =
             Settings.Secure.STATUS_BAR_SHOW_BATTERY_PERCENT;
+    private static final String STATUS_BAR_CHARGE_COLOR =
+            Settings.Secure.STATUS_BAR_CHARGE_COLOR;
 
     private static final boolean SINGLE_DIGIT_PERCENT = false;
 
@@ -186,6 +188,7 @@ public class BatteryMeterDrawable extends Drawable implements
                 R.fraction.battery_subpixel_smoothing_left, 1, 1);
         mSubpixelSmoothingRight = context.getResources().getFraction(
                 R.fraction.battery_subpixel_smoothing_right, 1, 1);
+        mChargeColor = mContext.getResources().getColor(R.color.batterymeter_charge_color);
 
         loadBatteryDrawables(res, style);
 
@@ -247,7 +250,11 @@ public class BatteryMeterDrawable extends Drawable implements
         mContext.getContentResolver().registerContentObserver(
                 Settings.Secure.getUriFor(Settings.Secure.STATUS_BAR_SHOW_BATTERY_PERCENT),
                 false, mSettingObserver);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.Secure.getUriFor(Settings.Secure.STATUS_BAR_CHARGE_COLOR),
+                false, mSettingObserver);
         updateShowPercent();
+        updateChargeColor();
         mBatteryController.addStateChangedCallback(this);
     }
 
@@ -347,6 +354,17 @@ public class BatteryMeterDrawable extends Drawable implements
                 Settings.Secure.STATUS_BAR_SHOW_BATTERY_PERCENT, 0) == 1;
     }
 
+    private void updateChargeColor() {
+        mChargeColor = Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.STATUS_BAR_CHARGE_COLOR,
+                        mContext.getResources().getColor(R.color.batterymeter_charge_color));
+    }
+
+    private int updateDarkDensityChargeColor() {
+        updateChargeColor();
+        return mChargeColor;
+    }
+
     private int getColorForLevel(int percent) {
         return getColorForLevel(percent, false);
     }
@@ -367,26 +385,30 @@ public class BatteryMeterDrawable extends Drawable implements
                 }
             }
         }
-        // If we are in power save mode, always use the normal color.
-        if (mPowerSaveEnabled) {
-            return mColors[mColors.length - 1];
-        }
-        int thresh = 0;
-        int color = 0;
-        for (int i = 0; i < mColors.length; i += 2) {
-            thresh = mColors[i];
-            color = mColors[i + 1];
-            if (percent <= thresh) {
+        if (mPluggedIn) {
+            int chargeColor = mChargeColor;
+            return chargeColor;
+        } else {
+            // If we are in power save mode, always use the normal color.
+            if (mPowerSaveEnabled) {
+                return mColors[mColors.length-1];
+            }
+            int thresh, color = 0;
+            for (int i=0; i<mColors.length; i+=2) {
+                thresh = mColors[i];
+                color = mColors[i+1];
+                if (percent <= thresh) {
 
-                // Respect tinting for "normal" level
-                if (i == mColors.length - 2) {
-                    return mIconTint;
-                } else {
-                    return color;
+                    // Respect tinting for "normal" level
+                    if (i == mColors.length-2) {
+                        return mIconTint;
+                    } else {
+                        return color;
+                    }
                 }
             }
+            return color;
         }
-        return color;
     }
 
     public void setDarkIntensity(float darkIntensity) {
@@ -396,12 +418,15 @@ public class BatteryMeterDrawable extends Drawable implements
         mCurrentBackgroundColor = getBackgroundColor(darkIntensity);
         mCurrentFillColor = getFillColor(darkIntensity);
         mIconTint = mCurrentFillColor;
-        // Make bolt fully opaque for increased visibility
-        mFrameDrawable.setTint(mCurrentBackgroundColor);
-        if (mBoltDrawable != null) {
+        if (darkIntensity == 0f) {
+            updateChargeColor();
+            mBoltDrawable.setTint(0xff000000 | mChargeColor);
+        } else {
+            mChargeColor = mCurrentFillColor;
             mBoltDrawable.setTint(0xff000000 | mCurrentFillColor);
-            updateBoltDrawableLayer(mBatteryDrawable, mBoltDrawable);
         }
+        mFrameDrawable.setTint(mCurrentBackgroundColor);
+        updateBoltDrawableLayer(mBatteryDrawable, mBoltDrawable);
         invalidateSelf();
         mOldDarkIntensity = darkIntensity;
     }
@@ -464,6 +489,7 @@ public class BatteryMeterDrawable extends Drawable implements
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             updateShowPercent();
+            updateChargeColor();
             postInvalidate();
         }
     }
@@ -558,6 +584,11 @@ public class BatteryMeterDrawable extends Drawable implements
         if (mBoltOverlay) {
             return mContext.getResources().getColor(mStyle == BATTERY_STYLE_CIRCLE ? R.color.batterymeter_bolt_color : R.color.system_primary_color);
         }
+        if (mStyle == BATTERY_STYLE_CIRCLE) {
+            updateChargeColor();
+            int chargeColor = mChargeColor;
+            return chargeColor;
+        }
         return mContext.getResources().getColor(R.color.batterymeter_bolt_color);
     }
 
@@ -570,7 +601,20 @@ public class BatteryMeterDrawable extends Drawable implements
 
         final float widthDiv2 = mWidth / 2f;
         // text size is width / 2 - 2dp for wiggle room
-        final float textSize = widthDiv2 - mContext.getResources().getDisplayMetrics().density * 2;
+
+        final float textSize;
+        switch(mStyle) {
+            case 2:
+                textSize = widthDiv2 - mContext.getResources().getDisplayMetrics().density / 1.3f;
+                break;
+            case 5:
+                textSize = widthDiv2 * 1.3f;
+                break;
+            default:
+                textSize = widthDiv2;
+                break;
+        }
+
         mTextAndBoltPaint.setTextSize(textSize);
         mWarningTextPaint.setTextSize(textSize);
 
