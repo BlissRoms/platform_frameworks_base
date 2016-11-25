@@ -79,7 +79,8 @@ public class KeyguardStatusBarView extends RelativeLayout
     private View mSystemIconsContainer;
     
     private boolean mShowBatteryText;
-    private Boolean mForceBatteryText;
+    private boolean mForceBatteryText;
+    private boolean mForceChargeBatteryText;
 
     private ContentObserver mObserver = new ContentObserver(new Handler()) {
         public void onChange(boolean selfChange, Uri uri) {
@@ -197,13 +198,8 @@ public class KeyguardStatusBarView extends RelativeLayout
             } else {
                 mMultiUserSwitch.setVisibility(View.GONE);
             }
-        }
-
-        if (mForceBatteryText != null) {
-            mBatteryLevel.setVisibility(mForceBatteryText ? View.VISIBLE : View.GONE);
-        } else {
-            mBatteryLevel.setVisibility(
-                    mBatteryCharging || mShowBatteryText ? View.VISIBLE : View.GONE);
+        mBatteryLevel.setVisibility(
+                (mBatteryCharging && mForceChargeBatteryText) || mShowBatteryText || mForceBatteryText ? View.VISIBLE : View.GONE);
         }
 
         if (mCarrierLabel != null) {
@@ -374,27 +370,21 @@ public class KeyguardStatusBarView extends RelativeLayout
         return false;
     }
 
+
     @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
             case STATUS_BAR_SHOW_BATTERY_PERCENT:
-                mShowBatteryText = newValue != null && Integer.parseInt(newValue) == 2;
-                break;
-            case STATUS_BAR_BATTERY_STYLE:
-                if (newValue != null) {
-                    final int value = Integer.parseInt(newValue);
-                    if (value == BatteryMeterDrawable.BATTERY_STYLE_TEXT) {
-                        mForceBatteryText = true;
-                    } else if (value == BatteryMeterDrawable.BATTERY_STYLE_HIDDEN) {
-                        mForceBatteryText = false;
-                    } else {
-                        mForceBatteryText = null;
-                    }
-                }
+                mShowBatteryText = newValue == null ? false : Integer.parseInt(newValue) == 2;
+                mForceBatteryText = Settings.Secure.getInt(getContext().getContentResolver(),
+                        Settings.Secure.STATUS_BAR_BATTERY_STYLE, 0) == 6 ? true : false;
+                mForceChargeBatteryText = Settings.Secure.getInt(getContext().getContentResolver(),
+                        Settings.Secure.FORCE_CHARGE_BATTERY_TEXT, 0) == 1 ? true : false;
+                updateVisibilities();
+            default:
                 break;
         }
-        updateVisibilities();
-    }
+  }
 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();

@@ -31,7 +31,7 @@ import android.view.View;
 
 import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.systemui.R;
-import com.android.systemui.omni.screenrecord.TakeScreenrecordService;
+import com.android.systemui.bliss.screenrecord.TakeScreenrecordService;
 import com.android.systemui.qs.QSTile;
 
 /** Quick settings tile: Screenrecord **/
@@ -177,6 +177,6 @@ public class ScreenrecordTile extends QSTile<QSTile.BooleanState> {
 
     @Override
     public int getMetricsCategory() {
-        return MetricsEvent.OWL_TILE;
+        return MetricsEvent.QUICK_SETTINGS;
     }
 }
