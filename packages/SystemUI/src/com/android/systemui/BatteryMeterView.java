@@ -94,6 +94,10 @@ public class BatteryMeterView extends LinearLayout implements
 
     private final BatteryMeterDrawableBase mXDrawable;
     private final ThemedBatteryDrawable mDrawable;
+
+    public static final String TEXT_CHARGING_SYMBOL =
+            "system:" + Settings.System.TEXT_CHARGING_SYMBOL;
+
     private final String mSlotBattery;
     private final ImageView mBatteryIconView;
     private final CurrentUserTracker mUserTracker;
@@ -114,6 +118,7 @@ public class BatteryMeterView extends LinearLayout implements
     public int mShowBatteryPercent;
     private boolean mBatteryPercentCharging;
     private boolean mShowPercentAvailable;
+    private int mTextChargingSymbol;
 
     private DualToneHandler mDualToneHandler;
     private int mUser;
@@ -246,7 +251,8 @@ public class BatteryMeterView extends LinearLayout implements
         Dependency.get(TunerService.class)
                 .addTunable(this, STATUS_BAR_BATTERY_STYLE,
                                   STATUS_BAR_SHOW_BATTERY_PERCENT,
-                                  STATUS_BAR_BATTERY_TEXT_CHARGING);
+                                  STATUS_BAR_BATTERY_TEXT_CHARGING,
+                                  TEXT_CHARGING_SYMBOL);
         mIsSubscribedForTunerUpdates = true;
     }
 
@@ -315,6 +321,13 @@ public class BatteryMeterView extends LinearLayout implements
             case STATUS_BAR_BATTERY_TEXT_CHARGING:
                 mBatteryPercentCharging =
                         TunerService.parseIntegerSwitch(newValue, true);
+                updatePercentView();
+                break;
+            case TEXT_CHARGING_SYMBOL:
+                mTextChargingSymbol = 0;
+                try {
+                    mTextChargingSymbol = Integer.valueOf(newValue);
+                } catch (NumberFormatException ex) {}
                 updatePercentView();
                 break;
             default:
@@ -410,11 +423,27 @@ public class BatteryMeterView extends LinearLayout implements
     }
 
     private void setPercentTextAtCurrentLevel() {
-        mBatteryPercentView.setText(
-                NumberFormat.getPercentInstance().format(mLevel / 100f));
+        String pct = NumberFormat.getPercentInstance().format(mLevel / 100f);
+
+        if (mTextChargingSymbol > 0) {
+            switch (mTextChargingSymbol) {
+                case 1:
+                default:
+                    pct = "⚡️ " + pct;
+                   break;
+                case 2:
+                    pct = "~ " + pct;
+                    break;
+            }
+        }
+
         setContentDescription(
                 getContext().getString(mCharging ? R.string.accessibility_battery_level_charging
                         : R.string.accessibility_battery_level, mLevel));
+
+        if (mBatteryIconView != null) pct = pct + " ";
+
+        mBatteryPercentView.setText(pct);
     }
 
     private void removeBatteryPercentView() {
