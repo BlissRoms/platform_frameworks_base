@@ -22,6 +22,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHearingAid;
 import android.bluetooth.BluetoothProfile;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.media.AudioDevicePort;
 import android.media.AudioFormat;
@@ -892,10 +893,12 @@ public class AudioDeviceInventory {
         switch (device) {
             case AudioSystem.DEVICE_OUT_WIRED_HEADSET:
                 connType = AudioRoutesInfo.MAIN_HEADSET;
+                startMusicPlayer();
                 break;
             case AudioSystem.DEVICE_OUT_WIRED_HEADPHONE:
             case AudioSystem.DEVICE_OUT_LINE:
                 connType = AudioRoutesInfo.MAIN_HEADPHONES;
+                startMusicPlayer();
                 break;
             case AudioSystem.DEVICE_OUT_HDMI:
             case AudioSystem.DEVICE_OUT_HDMI_ARC:
@@ -920,6 +923,23 @@ public class AudioDeviceInventory {
             if (newConn != mCurAudioRoutes.mainType) {
                 mCurAudioRoutes.mainType = newConn;
                 mDeviceBroker.postReportNewRoutes();
+            }
+        }
+    }
+
+    private void startMusicPlayer() {
+        boolean launchPlayer = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.HEADSET_CONNECT_PLAYER, 0, UserHandle.USER_CURRENT) != 0;
+        TelecomManager tm = (TelecomManager) mContext.getSystemService(Context.TELECOM_SERVICE);
+
+        if (launchPlayer && !tm.isInCall()) {
+            try {
+                Intent playerIntent = new Intent(Intent.ACTION_MAIN);
+                playerIntent.addCategory(Intent.CATEGORY_APP_MUSIC);
+                playerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(playerIntent);
+            } catch (ActivityNotFoundException | IllegalArgumentException e) {
+                Log.w(TAG, "No music player Activity could be found");
             }
         }
     }
