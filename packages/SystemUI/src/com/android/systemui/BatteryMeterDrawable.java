@@ -39,6 +39,7 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.StopMotionVectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,16 +50,13 @@ import android.view.View;
 
 import com.android.systemui.statusbar.policy.BatteryController;
 
-import cyanogenmod.providers.CMSettings;
-
-import org.cyanogenmod.graphics.drawable.StopMotionVectorDrawable;
-
 public class BatteryMeterDrawable extends Drawable implements
         BatteryController.BatteryStateChangeCallback {
 
     private static final float ASPECT_RATIO = 9.5f / 14.5f;
     public static final String TAG = BatteryMeterDrawable.class.getSimpleName();
-    public static final String SHOW_PERCENT_SETTING = "status_bar_show_battery_percent";
+    private static final String STATUS_BAR_SHOW_BATTERY_PERCENT =
+            Settings.Secure.STATUS_BAR_SHOW_BATTERY_PERCENT;
 
     private static final boolean SINGLE_DIGIT_PERCENT = false;
 
@@ -238,7 +236,7 @@ public class BatteryMeterDrawable extends Drawable implements
     public void startListening() {
         mListening = true;
         mContext.getContentResolver().registerContentObserver(
-                CMSettings.System.getUriFor(CMSettings.System.STATUS_BAR_SHOW_BATTERY_PERCENT),
+                Settings.Secure.getUriFor(Settings.Secure.STATUS_BAR_SHOW_BATTERY_PERCENT),
                 false, mSettingObserver);
         updateShowPercent();
         mBatteryController.addStateChangedCallback(this);
@@ -338,8 +336,8 @@ public class BatteryMeterDrawable extends Drawable implements
     }
 
     private void updateShowPercent() {
-        mShowPercent = CMSettings.System.getInt(mContext.getContentResolver(),
-                CMSettings.System.STATUS_BAR_SHOW_BATTERY_PERCENT, 0) == 1;
+        mShowPercent = Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.STATUS_BAR_SHOW_BATTERY_PERCENT, 0) == 1;
     }
 
     private int getColorForLevel(int percent) {

@@ -27,13 +27,11 @@ import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.tuner.TunerService;
 
-import cyanogenmod.providers.CMSettings;
-
 public class BatteryMeterView extends ImageView implements
         BatteryController.BatteryStateChangeCallback, TunerService.Tunable {
 
     private static final String STATUS_BAR_BATTERY_STYLE =
-            "cmsystem:" + CMSettings.System.STATUS_BAR_BATTERY_STYLE;
+            Settings.Secure.STATUS_BAR_BATTERY_STYLE;
 
     private BatteryMeterDrawable mDrawable;
     private final String mSlotBattery;

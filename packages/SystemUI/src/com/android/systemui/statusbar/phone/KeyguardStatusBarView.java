@@ -39,8 +39,6 @@ import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.tuner.TunerService;
 
-import cyanogenmod.providers.CMSettings;
-
 import java.text.NumberFormat;
 
 /**
@@ -50,9 +48,9 @@ public class KeyguardStatusBarView extends RelativeLayout
         implements BatteryController.BatteryStateChangeCallback, TunerService.Tunable {
 
     private static final String STATUS_BAR_SHOW_BATTERY_PERCENT =
-            "cmsystem:" + CMSettings.System.STATUS_BAR_SHOW_BATTERY_PERCENT;
+            Settings.Secure.STATUS_BAR_SHOW_BATTERY_PERCENT;
     private static final String STATUS_BAR_BATTERY_STYLE =
-            "cmsystem:" + CMSettings.System.STATUS_BAR_BATTERY_STYLE;
+            Settings.Secure.STATUS_BAR_BATTERY_STYLE;
 
     private boolean mBatteryCharging;
     private boolean mKeyguardUserSwitcherShowing;
