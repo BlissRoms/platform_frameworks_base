@@ -217,7 +217,6 @@ public class FODCircleView extends ImageView implements TunerService.Tunable {
             if (mFODIcon != null) {
                 mFODIcon.setIsKeyguard(mIsKeyguard);
             }
-            handlePocketManagerCallback(showing);
         }
 
         @Override
