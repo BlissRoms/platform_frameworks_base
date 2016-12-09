@@ -324,7 +324,8 @@ public class GestureLauncherService extends SystemService {
                 Slog.i(TAG, "Power button Triple tap gesture detected, launching Emergency Call");
                 Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
                         Uri.fromParts("tel", mEmergencyNumber, null));
-                getContext().startActivity(intent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivityAsUser(intent, UserHandle.CURRENT);
             } else {
                 Slog.i(TAG, "Power button double tap gesture detected, launching camera. Interval="
                         + doubleTapInterval + "ms");
