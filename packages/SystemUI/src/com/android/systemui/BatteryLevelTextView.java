@@ -21,6 +21,7 @@ import android.icu.text.NumberFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
+import android.provider.Settings;
 
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.tuner.TunerService;

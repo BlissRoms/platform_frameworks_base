@@ -22,6 +22,7 @@ import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.provider.Settings;
 
 import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.policy.BatteryController;

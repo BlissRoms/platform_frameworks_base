@@ -27,6 +27,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.provider.Settings;
 
 import com.android.systemui.BatteryMeterDrawable;
 import com.android.systemui.BatteryMeterView;
