@@ -21,7 +21,6 @@ import android.annotation.Nullable;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.content.res.ThemeConfig;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
@@ -442,23 +441,6 @@ public class BatteryMeterDrawable extends Drawable implements
     }
 
     private void loadBatteryDrawables(Resources res, int style) {
-        if (isThemeApplied()) {
-            try {
-                checkBatteryMeterDrawableValid(res, style);
-            } catch (BatteryMeterDrawableException e) {
-                Log.w(TAG, "Invalid themed battery meter drawable, falling back to system", e);
-/*              Disable until the theme engine is brought up
-                PackageManager pm = mContext.getPackageManager();
-                try {
-                    res = pm.getThemedResourcesForApplication(mContext.getPackageName(),
-                            ThemeConfig.SYSTEM_DEFAULT);
-                } catch (PackageManager.NameNotFoundException nnfe) {
-                    // Ignore; this should not happen
-                }
-*/
-            }
-        }
-
         final int drawableResId = getBatteryDrawableResourceForStyle(style);
         mBatteryDrawable = (LayerDrawable) res.getDrawable(drawableResId);
         mFrameDrawable = mBatteryDrawable.findDrawableByLayerId(R.id.battery_frame);
@@ -468,12 +450,6 @@ public class BatteryMeterDrawable extends Drawable implements
         final Drawable levelDrawable = mBatteryDrawable.findDrawableByLayerId(R.id.battery_fill);
         mLevelDrawable = new StopMotionVectorDrawable(levelDrawable);
         mBoltDrawable = mBatteryDrawable.findDrawableByLayerId(R.id.battery_charge_indicator);
-    }
-
-    private boolean isThemeApplied() {
-        final ThemeConfig themeConfig = ThemeConfig.getBootTheme(mContext.getContentResolver());
-        return themeConfig != null &&
-                !ThemeConfig.SYSTEM_DEFAULT.equals(themeConfig.getOverlayForStatusBar());
     }
 
     private void checkBatteryMeterDrawableValid(Resources res, int style) {
