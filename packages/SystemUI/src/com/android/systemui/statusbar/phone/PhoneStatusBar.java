@@ -624,6 +624,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                    Settings.Secure.QS_COLUMNS),
                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_BAR_DYNAMIC),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -661,6 +664,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.Secure.getUriFor(
                     Settings.Secure.QS_COLUMNS))) {
                     updateResources();
+            } else if (uri.equals(Settings.System.getUriFor(
+                      Settings.System.NAV_BAR_DYNAMIC))) {
+                      mNavigationController.updateNavbarOverlay(mContext.getResources());
             }
 	      update();
          }
