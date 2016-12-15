@@ -4412,6 +4412,12 @@ public final class Settings {
         public static final String SHOW_SETTINGS_DRAWER = "show_settings_drawer";
 
         /**
+         * Dyanamic Navbar Switch
+         * @hide
+         */
+        public static final String NAV_BAR_DYNAMIC = "nav_bar_dynamic";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
