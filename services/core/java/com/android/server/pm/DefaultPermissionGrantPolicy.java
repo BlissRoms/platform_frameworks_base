@@ -731,6 +731,17 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(googlecontactssyncPackage, CONTACTS_PERMISSIONS, userId);
             }
 
+                         // Chromium Browser
+            PackageParser.Package chromiumbrowser = getDefaultProviderAuthorityPackageLPr(
+                    "org.chromium.chrome", userId);
+            if (chromiumbrowser != null) {
+                grantRuntimePermissionsLPw(chromiumbrowser, CONTACTS_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(chromiumbrowser, LOCATION_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(chromiumbrowser, STORAGE_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(chromiumbrowser, CAMERA_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(chromiumbrowser, MICROPHONE_PERMISSIONS, userId);
+           }
+
             // Google Backup Transport
             PackageParser.Package googlebackuptransportPackage = getSystemPackageLPr(
                     "com.google.android.backuptransport");
