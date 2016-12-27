@@ -205,7 +205,7 @@ public class CarrierText extends TextView {
                 }
             }
             CharSequence carrierName = subs.get(i).getCarrierName();
-            if (showLocale || showRat) {
+            if ((showLocale || showRat) && !TextUtils.isEmpty(carrierName)) {
                 String[] names = carrierName.toString().split(mSeparator.toString(), 2);
                 StringBuilder newCarrierName = new StringBuilder();
                 for (int j = 0; j < names.length; j++) {
