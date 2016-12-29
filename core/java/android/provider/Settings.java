@@ -4905,6 +4905,12 @@ public final class Settings {
         public static final String QS_LAYOUT_ROWS = "qs_layout_rows";
 
         /**
+        * media artwork wallpaper blur level on lockscreen
+        * @hide
+        */
+       public static final String LOCKSCREEN_MEDIA_BLUR = "lockscreen_media_blur";        
+
+       /**
          * Number of qs columns on quickbar
          * @hide
          */
