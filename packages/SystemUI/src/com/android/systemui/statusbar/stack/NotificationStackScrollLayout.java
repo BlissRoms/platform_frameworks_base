@@ -4333,6 +4333,15 @@ public class NotificationStackScrollLayout extends ViewGroup
         mSwipeHelper.closeControlsIfOutsideTouch(ev);
     }
 
+    public void updateNotificationView() {
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child instanceof ActivatableNotificationView) {
+                ((ActivatableNotificationView) child).updateNotificationView();
+            }
+        }
+    }
+
     static class AnimationEvent {
 
         static AnimationFilter[] FILTERS = new AnimationFilter[] {
