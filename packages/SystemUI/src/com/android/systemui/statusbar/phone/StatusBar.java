@@ -1954,6 +1954,39 @@ public class StatusBar extends SystemUI implements DemoMode,
         mUserSetup = userSetup;
     }
 
+    private BlissSettingsObserver mBlissSettingsObserver = new BlissSettingsObserver(mHandler);
+    private class BlissSettingsObserver extends ContentObserver {
+
+        BlissSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_MEDIA_BLUR),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_MEDIA_BLUR))) {
+                setLockScreenMediaBlurLevel();
+            }
+        }
+
+        public void update() {
+            setLockScreenMediaBlurLevel();
+        }
+    }
+
+    private void setLockScreenMediaBlurLevel() {
+        if (mMediaManager != null) {
+            mMediaManager.setLockScreenMediaBlurLevel();
+        }
+    }
+
     /**
      * All changes to the status bar and notifications funnel through here and are batched.
      */
