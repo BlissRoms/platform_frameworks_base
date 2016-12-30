@@ -739,7 +739,7 @@ public class MobileSignalController extends SignalController<
         final boolean dataConnected = mCurrentState.dataConnected;
         final boolean roaming = isRoaming();
         final int voiceType = getVoiceNetworkType();
-        final int dataType =  getDataNetworkType();
+        final int dataType =  mDataNetType;
         int[][] sbIcons = TelephonyIcons.TELEPHONY_SIGNAL_STRENGTH;
         int[][] qsIcons = TelephonyIcons.QS_TELEPHONY_SIGNAL_STRENGTH;
         int[] contentDesc = AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH;
