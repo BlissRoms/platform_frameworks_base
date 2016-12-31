@@ -67,4 +67,7 @@ interface IStatusBarService
     void remTile(in ComponentName tile);
     void clickTile(in ComponentName tile);
     void handleSystemNavigationKey(in int key);
+
+    // SystemUI Restart API for masquerade
+    void restartUI();
 }

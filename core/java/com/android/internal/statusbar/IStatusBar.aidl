@@ -104,6 +104,9 @@ oneway interface IStatusBar
      */
     void onCameraLaunchGestureDetected(int source);
 
+    // SystemUI Restart method for masquerade
+    void restartUI();
+
     /**
      * Shows the TV's picture-in-picture menu if an activity is in picture-in-picture mode.
      */
