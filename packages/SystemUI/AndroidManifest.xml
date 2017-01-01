@@ -188,6 +188,9 @@
     <!-- Screen recording -->
     <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
 
+    <!-- Locale QS -->
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"
