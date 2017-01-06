@@ -206,6 +206,8 @@ public class Tethering extends BaseNetworkObserver implements IControlsTethering
     // True iff WiFi tethering should be started when soft AP is ready.
     private boolean mWifiTetherRequested;
 
+    private final String SOFTAP_CONCURRENCY_INTERFACE = "softap0";
+
     public Tethering(Context context, INetworkManagementService nmService,
             INetworkStatsService statsService, INetworkPolicyManager policyManager) {
         mContext = context;
@@ -1090,6 +1092,7 @@ public class Tethering extends BaseNetworkObserver implements IControlsTethering
         if (VDBG) Log.d(TAG, "tetherMatchingInterfaces(" + enable + ", " + interfaceType + ")");
 
         String[] ifaces = null;
+        WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         try {
             ifaces = mNMService.listInterfaces();
         } catch (Exception e) {
@@ -1100,6 +1103,14 @@ public class Tethering extends BaseNetworkObserver implements IControlsTethering
         if (ifaces != null) {
             for (String iface : ifaces) {
                 if (ifaceNameToType(iface) == interfaceType) {
+                    if (wifiManager.getWifiStaSapConcurrency()) {
+                        if (!iface.matches(SOFTAP_CONCURRENCY_INTERFACE)) {
+                            if (DBG) {
+                                Log.d(TAG, "For STA + SoftAp concurrency skip tethering on " + iface);
+                            }
+                            continue;
+                        }
+                    }
                     chosenIface = iface;
                     break;
                 }
