@@ -1271,12 +1271,7 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         final ArrayList<Pair<String, NetworkIdentity>> connIdents = new ArrayList<>(states.length);
         final ArraySet<String> connIfaces = new ArraySet<String>(states.length);
         for (NetworkState state : states) {
-            if (state.networkInfo != null && state.networkInfo.isConnected()
-                        && (state.networkCapabilities == null
-                        || !state.networkCapabilities.hasTransport(
-                                    NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || state.networkCapabilities.hasCapability(
-                                    NetworkCapabilities.NET_CAPABILITY_INTERNET))) {
+            if (state.networkInfo != null && state.networkInfo.isConnected()) {
                 final NetworkIdentity ident = NetworkIdentity.buildNetworkIdentity(mContext, state);
 
                 final String baseIface = state.linkProperties.getInterfaceName();

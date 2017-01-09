@@ -997,12 +997,7 @@ public class NetworkStatsService extends INetworkStatsService.Stub {
 
         final ArraySet<String> mobileIfaces = new ArraySet<>();
         for (NetworkState state : states) {
-            if (state.networkInfo.isConnected() && (state.networkCapabilities == null
-                        || !state.networkCapabilities.hasTransport(
-                                    NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || state.networkCapabilities.hasCapability(
-                                    NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                        || hasImsNetworkCapability(state))) {
+            if (state.networkInfo != null && state.networkInfo.isConnected()) {
                 final boolean isMobile = isNetworkTypeMobile(state.networkInfo.getType());
                 final NetworkIdentity ident = NetworkIdentity.buildNetworkIdentity(mContext, state);
 

@@ -2709,7 +2709,7 @@
     </integer-array>
 
     <!--  Enable framework to record video call data usage -->
-    <bool name="config_video_call_datausage_enable">false</bool>
+    <bool name="config_video_call_datausage_enable">true</bool>
     <!-- Enables the feature that can show/hide the operator name in statusbar.
         When true, the user can select to show/hide operator name through a
         checkbox in Settings. When false, there is no option to show operator
