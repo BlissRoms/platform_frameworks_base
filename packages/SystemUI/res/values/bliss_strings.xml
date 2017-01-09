@@ -67,6 +67,10 @@
     <string name="accessibility_quick_settings_heads_up_changed_on">Heads up turned on.</string>
     <string name="quick_settings_google_assist_label">Assist</string>
     <string name="quick_settings_google_voice_assist_label">Voice assist</string>
+    <string name="quick_settings_sound_label">Sound</string>
+    <string name="quick_settings_sound_ring">Ring</string>
+    <string name="quick_settings_sound_vibrate">Vibrate</string>
+    <string name="quick_settings_sound_silent">Silent</string>
 
     <!-- Path data for portrait battery -->
     <string name="battery_portrait_path_full" translatable="false">M 5 2 H 19 V 21 H 5 V 2 Z</string>
