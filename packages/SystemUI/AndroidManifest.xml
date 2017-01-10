@@ -549,6 +549,19 @@
             </intent-filter>
         </activity>
 
+        <!-- App picker activity -->
+        <activity
+            android:name=".bliss.apppicker.AppPickerActivity"
+            android:theme="@style/AppPicker"
+            android:label="@string/quick_settings_app_picker"
+            android:icon="@drawable/ic_qs_app_picker"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name=".bliss.apppicker.AppPickerActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".DaylightHeaderDefault"
                   android:label="Default" >
             <intent-filter>
