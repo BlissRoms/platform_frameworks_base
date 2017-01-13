@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Calendar;
 
+import com.android.systemui.statusbar.phone.QuickStatusBarHeader;
+
 public class StatusBarHeaderMachine {
 
     private static final String TAG = "StatusBarHeaderMachine";
@@ -172,6 +174,22 @@ public class StatusBarHeaderMachine {
     }
 
     public void addObserver(IStatusBarHeaderMachineObserver observer) {
+
+        // there can only be one of that kind at a time
+        // so remove the old one first
+        if (observer instanceof QuickStatusBarHeader) {
+            IStatusBarHeaderMachineObserver prevObserver = null;
+            Iterator<IStatusBarHeaderMachineObserver> nextObserver = mObservers.iterator();
+            while (nextObserver.hasNext()) {
+                IStatusBarHeaderMachineObserver o = nextObserver.next();
+                if (o instanceof QuickStatusBarHeader) {
+                    prevObserver = o;
+                }
+            }
+            if (prevObserver != null) {
+                mObservers.remove(prevObserver);
+            }
+        }
         if (!mObservers.contains(observer)) {
             mObservers.add(observer);
         }
