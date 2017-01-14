@@ -39,9 +39,6 @@
     <dimen name="right_tri_state_up_top_left_radius">24.0dip</dimen>
     <dimen name="right_tri_state_up_top_right_radius">24.0dip</dimen>
 
-    <!-- Maximum vertical offset of statusbar for burn-in protection -->
-    <dimen name="status_bar_offset_max_y">4dp</dimen>
-
     <!-- Width of the battery icon in the status bar when set to circle style. -->
     <dimen name="status_bar_battery_icon_circle_width">14.5dp</dimen>
 
@@ -79,5 +76,9 @@
 
     <!-- Margin on the right side of the center clock -->
     <dimen name="status_bar_center_clock_padding_end">0dp</dimen>
+
+    <!-- Burn-in protection -->
+    <dimen name="horizontal_max_shift">3.0dp</dimen>
+    <dimen name="vertical_max_shift">1.0dp</dimen>
 
 </resources>
