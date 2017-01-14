@@ -62,6 +62,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -405,6 +406,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // Bliss logo
     private boolean mBlissLogo;
     private ImageView blissLogo;
+    private int mBlissLogoColor;
 
     private int mNavigationBarWindowState = WINDOW_STATE_SHOWING;
 
@@ -487,6 +489,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_TICKER), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BLISS_LOGO_COLOR), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
@@ -513,9 +518,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mBrightnessControl = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0,
                     UserHandle.USER_CURRENT) == 1;
+	    blissLogo = (ImageView) mStatusBarView.findViewById(R.id.bliss_logo);
             mBlissLogo = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_BLISS_LOGO, 0, mCurrentUserId) == 1;
-            showBlissLogo(mBlissLogo);
+            mBlissLogoColor = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.STATUS_BAR_BLISS_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
+            showBlissLogo(mBlissLogo,mBlissLogoColor);
         }
     }
 
@@ -3949,13 +3957,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
-    public void showBlissLogo(boolean show) {
+    public void showBlissLogo(boolean show, int color) {
         if (mStatusBarView == null) return;
-        ContentResolver resolver = mContext.getContentResolver();
-        blissLogo = (ImageView) mStatusBarView.findViewById(R.id.bliss_logo);
-        if (blissLogo != null) {
-            blissLogo.setVisibility(show ? (mBlissLogo ? View.VISIBLE : View.GONE) : View.GONE);
+ 	 	if (!show) {
+            blissLogo.setVisibility(View.GONE);
+            return;
+		}
+		if (color != 0xFFFFFFFF) {
+       	    blissLogo.setColorFilter(color, Mode.SRC_IN);
+		} else {
+             blissLogo.clearColorFilter();
         }
+             blissLogo.setVisibility(View.VISIBLE);
     }
 
     public void resetUserExpandedStates() {

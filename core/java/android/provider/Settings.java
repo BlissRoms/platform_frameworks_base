@@ -3981,6 +3981,12 @@ public final class Settings {
         public static final String STATUS_BAR_TICKER_FONT_SIZE = "status_bar_ticker_font_size";
 
         /**
+         * Statusbar Bliss logo color setting
+         * @hide
+         */
+        public static final String STATUS_BAR_BLISS_LOGO_COLOR = "status_bar_bliss_logo_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
