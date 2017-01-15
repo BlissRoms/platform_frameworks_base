@@ -44,4 +44,19 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <!-- Header tex shadow -->
+    <style name="TextAppearance.StatusBar.Expanded.Clock.Shadow" parent="TextAppearance.StatusBar.Expanded.Clock" >
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">4</item>
+    </style>
+
+    <style name="TextAppearance.StatusBar.Expanded.Date.Shadow" parent="TextAppearance.StatusBar.Expanded.Date" >
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">4</item>
+    </style>
+
 </resources>
