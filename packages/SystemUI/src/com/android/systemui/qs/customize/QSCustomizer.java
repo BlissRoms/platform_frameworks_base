@@ -130,6 +130,10 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
         mQsContainer = qsContainer;
     }
 
+    public void setenabled() {
+        mPhoneStatusBar.setenabled();
+    }
+
     public void show(int x, int y) {
         if (!isShown) {
             MetricsLogger.visible(getContext(), MetricsProto.MetricsEvent.QS_EDIT);

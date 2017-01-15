@@ -25,6 +25,7 @@ import android.app.ActivityManager;
 import android.app.StatusBarManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.*;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -39,6 +40,8 @@ import android.os.Handler;
 import android.os.UserHandle;
 import android.os.PowerManager;
 import android.os.UserHandle;
+import android.os.ServiceManager;
+import android.os.RemoteException;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.MathUtils;
@@ -46,12 +49,14 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ImageButton;
 import android.view.animation.*;
 
 import com.android.internal.logging.MetricsLogger;
@@ -82,6 +87,7 @@ import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
 import com.android.systemui.statusbar.stack.StackStateAnimator;
 import com.android.systemui.statusbar.*;
+import com.android.internal.statusbar.IStatusBarService;
 
 import java.util.List;
 
@@ -220,7 +226,6 @@ public class NotificationPanelView extends PanelView implements
     private LockPatternUtils mLockPatternUtils;
 
     private boolean mStatusBarLockedOnSecureKeyguard;
-    private QSDetailClipper mClipper;
 
     private Runnable mHeadsUpExistenceChangedRunnable = new Runnable() {
         @Override
@@ -273,6 +278,11 @@ public class NotificationPanelView extends PanelView implements
     // Task manager
     private boolean mShowTaskManager;
     private LinearLayout mTaskManagerPanel;
+    public boolean mTaskManagerShowing;
+    private QSDetailClipper mClipper;
+    public ImageButton mServices;
+    private ImageButton mClearall;
+    private TaskManager mTaskManager;
 
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -301,8 +311,7 @@ public class NotificationPanelView extends PanelView implements
         super.onFinishInflate();
         mKeyguardStatusBar = (KeyguardStatusBarView) findViewById(R.id.keyguard_header);
         mKeyguardStatusView = (KeyguardStatusView) findViewById(R.id.keyguard_status_view);
-        mTaskManagerPanel = (LinearLayout) findViewById(R.id.task_manager_panel);
-        mClipper = new QSDetailClipper(mTaskManagerPanel);
+
         mClockView = (TextView) findViewById(R.id.clock_view);
 
         mNotificationContainerParent = (NotificationsQuickSettingsContainer)
@@ -317,7 +326,10 @@ public class NotificationPanelView extends PanelView implements
         mAfforanceHelper = new KeyguardAffordanceHelper(this, getContext());
         mKeyguardBottomArea.setAffordanceHelper(mAfforanceHelper);
         mLastOrientation = getResources().getConfiguration().orientation;
-
+        mServices = (ImageButton) findViewById(R.id.tm_services);
+        mClearall = (ImageButton) findViewById(R.id.tm_clear_all);
+        mServices.setOnClickListener(this);
+        mClearall.setOnClickListener(this);
         mQsAutoReinflateContainer =
                 (AutoReinflateContainer) findViewById(R.id.qs_auto_reinflate_container);
         mQsAutoReinflateContainer.addInflateListener(new InflateListener() {
@@ -443,6 +455,10 @@ public class NotificationPanelView extends PanelView implements
         BlurTask.setBlurEngine(BlurUtils.BlurEngine.RenderScriptBlur);
 
         new BlurTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public void InitTaskmanager() {
+            mTaskManagerPanel = (LinearLayout) findViewById(R.id.task_manager_panel);
     }
 
     @Override
@@ -1499,6 +1515,36 @@ public class NotificationPanelView extends PanelView implements
         if (mKeyguardUserSwitcher != null && mQsExpanded && !mStackScrollerOverscrolling) {
             mKeyguardUserSwitcher.hideIfNotSimple(true /* animate */);
         }
+        animatehideTaskManager();
+    }
+
+   private void animatehideTaskManager() {
+        InitTaskmanager();
+        boolean showing = mTaskManagerPanel.getVisibility() == View.GONE;
+        if (showing || isFullyCollapsed()) {
+            return;
+        }
+        if(!mQsExpanded && mTaskManagerShowing) {
+            fadeOutAndHideImage(mTaskManagerPanel);
+        }
+   }
+
+   private void fadeOutAndHideImage(final LinearLayout taskmanagerlayout) {
+       Animation fadeOut = new AlphaAnimation(1, 0);
+       fadeOut.setInterpolator(new AccelerateInterpolator());
+       fadeOut.setDuration(150);
+       fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationEnd(Animation animation){
+                  taskmanagerlayout.setVisibility(View.GONE);
+            }
+            public void onAnimationRepeat(Animation animation) {
+                  taskmanagerlayout.setVisibility(View.GONE);
+            }
+            public void onAnimationStart(Animation animation) {
+                  // do nothing here
+            }
+     });
+    taskmanagerlayout.startAnimation(fadeOut);
     }
 
     private void setQsExpansion(float height) {
@@ -1691,33 +1737,49 @@ public class NotificationPanelView extends PanelView implements
 
     void setTaskManagerEnabled(boolean enabled) {
         mShowTaskManager = enabled;
+        InitTaskmanager();
         // explicity restore visibility states when disabled
         // and TaskManager last state was showing
         if (!enabled && mTaskManagerShowing) {
             mTaskManagerShowing = false;
-            mQsPanel.setVisibility(View.VISIBLE);
+            mQsContainer.getQsPanel().setVisibility(View.VISIBLE);
             mTaskManagerPanel.setVisibility(View.GONE);
         }
     }
 
     public void setTaskManagerVisibility(boolean taskManagerShowing) {
-        if (mShowTaskManager && !mKeyguardShowing) {
+        if (mShowTaskManager  && !mKeyguardShowing) {
+            InitTaskmanager();
             mTaskManagerShowing = taskManagerShowing;
             cancelAnimation();
-            int x = mQsPanel.getLeft() + mQsPanel.getWidth() / 2;
-            int y = mQsPanel.getTop() / 2;
+            mTaskManager = new TaskManager(mContext, mTaskManagerPanel);
+            mTaskManager.setActivityStarter(mStatusBar);
+            int x = mQsContainer.getQsPanel().getLeft() + mQsContainer.getQsPanel().getWidth() / 2;
+            int y = mQsContainer.getQsPanel().getTop() / 2;
             if (!taskManagerShowing) {
-                mQsPanel.setVisibility(View.VISIBLE);
+                mQsContainer.getQsPanel().setVisibility(View.VISIBLE);
+                mQsContainer.getHeader().updateVisibilities();
+            } 
+            if (taskManagerShowing) {
+                mQsContainer.getHeader().killvisibilities();
+                mTaskManager.refreshTaskManagerView();
             }
-            mClipper.animateCircularClip(x, y, taskManagerShowing, mHideQsPanelWhenDone);
-        }
-    }
-
-   private final AnimatorListenerAdapter mHideQsPanelWhenDone = new AnimatorListenerAdapter() {
+            mClipper = new QSDetailClipper(mTaskManagerPanel);
+            mTaskManagerPanel.post( new Runnable(){
+              @Override
+               public void run() {
+               mClipper.animateCircularClip(x, y, taskManagerShowing, mHideQsPanelWhenDone);
+               }
+            });
+            updateQsState();
+         }
+     }
+ 
+    private final AnimatorListenerAdapter mHideQsPanelWhenDone = new AnimatorListenerAdapter() {
         public void onAnimationEnd(Animator animation) {
             if (mTaskManagerShowing) {
-			mTaskManagerPanel.setVisibility(View.VISIBLE);
-			mQsPanel.setVisibility(View.GONE);
+                mTaskManagerPanel.setVisibility(View.VISIBLE);
+                mQsContainer.getQsPanel().setVisibility(View.GONE);
             }
         };
     };
@@ -2116,6 +2178,12 @@ public class NotificationPanelView extends PanelView implements
         }
     }
 
+    public boolean enabletaskmanager() {
+       InitTaskmanager();
+       boolean showing = mTaskManagerPanel.getVisibility() == View.VISIBLE;
+       return showing;
+    }
+
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -2158,6 +2226,16 @@ public class NotificationPanelView extends PanelView implements
                 flingSettings(0 /* vel */, true /* expand */, null, true /* isClick */);
             }
         }
+       if (v.getId() == R.id.tm_services) {
+           startTaskManagerServicesClickActivity();
+       }
+       if (v.getId() == R.id.tm_clear_all) {
+           mStatusBar.clearAllNotifications();
+       }
+    }
+
+    private void startTaskManagerServicesClickActivity() {
+         mQsContainer.getHeader().starttmactivity();
     }
 
     @Override

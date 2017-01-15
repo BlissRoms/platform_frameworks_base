@@ -66,6 +66,7 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
     private int mNumQuickTiles;
     private float mLastPosition;
     private QSTileHost mHost;
+    private boolean mShowTaskManager;
 
     public QSAnimator(QSContainer container, QuickQSPanel quickPanel, QSPanel panel) {
         mQsContainer = container;
@@ -318,8 +319,10 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
 
     @Override
     public void onAnimationStarted() {
+        if (!mQsContainer.isTaskManagerShowing()) {
         mQuickQsPanel.setVisibility(mOnKeyguard ? View.INVISIBLE : View.VISIBLE);
-        if (mOnFirstPage) {
+        }
+        if (mOnFirstPage && !mQsContainer.isTaskManagerShowing()) {
             final int N = mTopFiveQs.size();
             for (int i = 0; i < N; i++) {
                 mTopFiveQs.get(i).setVisibility(View.INVISIBLE);
