@@ -63,6 +63,7 @@ public class SignalClusterView
     private static final String SLOT_MOBILE = "mobile";
     private static final String SLOT_WIFI = "wifi";
     private static final String SLOT_ETHERNET = "ethernet";
+    private static final String SLOT_VPN = "vpn";
 
     NetworkControllerImpl mNC;
     SecurityController mSC;
@@ -113,6 +114,8 @@ public class SignalClusterView
     private boolean mBlockMobile;
     private boolean mBlockWifi;
     private boolean mBlockEthernet;
+    private boolean mBlockVpn;
+
     private TelephonyManager mTelephonyManager;
 
     public SignalClusterView(Context context) {
@@ -153,16 +156,19 @@ public class SignalClusterView
         boolean blockMobile = blockList.contains(SLOT_MOBILE);
         boolean blockWifi = blockList.contains(SLOT_WIFI);
         boolean blockEthernet = blockList.contains(SLOT_ETHERNET);
+        boolean blockVpn = blockList.contains(SLOT_VPN);
 
         if (blockAirplane != mBlockAirplane || blockMobile != mBlockMobile
-                || blockEthernet != mBlockEthernet || blockWifi != mBlockWifi) {
+                || blockEthernet != mBlockEthernet || blockWifi != mBlockWifi || blockVpn != mBlockVpn) {
             mBlockAirplane = blockAirplane;
             mBlockMobile = blockMobile;
             mBlockEthernet = blockEthernet;
             mBlockWifi = blockWifi;
+            mBlockVpn = blockVpn;
             // Re-register to get new callbacks.
             mNC.removeSignalCallback(this);
             mNC.addSignalCallback(this);
+            apply();
         }
     }
 
@@ -546,8 +552,8 @@ public class SignalClusterView
     private void apply() {
         if (mWifiGroup == null) return;
 
-        mVpn.setVisibility(mVpnVisible ? View.VISIBLE : View.GONE);
-        if (mVpnVisible) {
+        mVpn.setVisibility(mVpnVisible && !mBlockVpn ? View.VISIBLE : View.GONE);
+        if (mVpnVisible && !mBlockVpn) {
             if (mLastVpnIconId != mVpnIconId) {
                 setIconForView(mVpn, mVpnIconId);
                 mLastVpnIconId = mVpnIconId;
