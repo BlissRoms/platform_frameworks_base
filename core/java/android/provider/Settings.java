@@ -4207,13 +4207,6 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_CARRIER_FONT_SIZE = "status_bar_carrier_font_size";
-      
-        /**
-         * Disable dashboard suggestions in settings
-         * @hide
-         */
-        public static final String DISABLE_SUGGESTIONS = "disable_suggestions";
-
 
         /**
          * ListView Animations
@@ -4443,6 +4436,12 @@ public final class Settings {
          * @hide
          */
         public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
+
+        /**
+         * Disable dashboard conditions in settings
+         * @hide
+         */
+        public static final String DISABLE_DASHBOARD_CONDITIONS = "disable_dashboard_conditions";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
