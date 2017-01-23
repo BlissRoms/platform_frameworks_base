@@ -14,7 +14,8 @@ RINGTONE_FILES := Atria Callisto Dione Ganymede Luna Oberon Phobos Pyxis Sedna T
 	Umbriel
 EFFECT_FILES := Effect_Tick KeypressReturn KeypressInvalid KeypressDelete KeypressSpacebar KeypressStandard \
 	Lock Unlock Trusted
-MATERIAL_EFFECT_FILES := camera_click VideoRecord WirelessChargingStarted LowBattery VideoStop
+MATERIAL_EFFECT_FILES := camera_click camera_focus Dock Undock WirelessChargingStarted LowBattery \
+	VideoRecord VideoStop
 
 PRODUCT_COPY_FILES += $(foreach fn,$(ALARM_FILES),\
 	$(LOCAL_PATH)/alarms/material/ogg/$(fn)_48k.ogg:system/media/audio/alarms/$(fn).ogg)
@@ -29,9 +30,3 @@ PRODUCT_COPY_FILES += $(foreach fn,$(EFFECT_FILES),\
 	$(LOCAL_PATH)/effects/ogg/$(fn)_48k.ogg:system/media/audio/ui/$(fn).ogg)
 PRODUCT_COPY_FILES += $(foreach fn,$(MATERIAL_EFFECT_FILES),\
 	$(LOCAL_PATH)/effects/material/ogg/$(fn)_48k.ogg:system/media/audio/ui/$(fn).ogg)
-
-# no gold-plated version yet
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/effects/ogg/camera_focus.ogg:system/media/audio/ui/camera_focus.ogg \
-    $(LOCAL_PATH)/effects/ogg/Dock.ogg:system/media/audio/ui/Dock.ogg \
-    $(LOCAL_PATH)/effects/ogg/Undock.ogg:system/media/audio/ui/Undock.ogg
