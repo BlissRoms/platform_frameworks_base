@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.UserManager;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,7 +41,7 @@ import com.android.internal.logging.MetricsProto;
 import com.android.keyguard.KeyguardStatusView;
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.R;
-import com.android.systemui.cm.UserContentObserver;
+import com.android.systemui.bliss.UserContentObserver;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QSPanel.Callback;
 import com.android.systemui.qs.QuickQSPanel;
@@ -407,6 +408,6 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
    public boolean enabletaskmanager() {
        return Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.ENABLE_TASK_MANAGER, 0) == 1;
+	    Settings.System.ENABLE_TASK_MANAGER, 0) == 1;
    }
 }
