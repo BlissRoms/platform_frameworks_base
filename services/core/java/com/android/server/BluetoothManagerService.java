@@ -203,7 +203,7 @@ class BluetoothManagerService extends IBluetoothManager.Stub {
                     } finally {
                         mBluetoothLock.readLock().unlock();
                     }
-                    Slog.d(TAG, "state" + st);
+                    Slog.d(TAG, "state: " + st);
 
                     if (isAirplaneModeOn()) {
                         // Clear registered LE apps to force shut-off
