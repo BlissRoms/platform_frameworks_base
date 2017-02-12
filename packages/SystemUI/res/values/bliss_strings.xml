@@ -234,4 +234,7 @@
     <!-- data saver icon switch -->
     <string name="status_bar_datasaver">Data saver</string>
 
+    <!-- VOLTE icon switch -->
+    <string name="status_bar_volte">VoLTE</string>
+
 </resources>
