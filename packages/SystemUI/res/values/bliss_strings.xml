@@ -133,4 +133,7 @@
     <string name="accessibility_quick_settings_onthego_on">On-The-Go on</string>
     <string name="accessibility_quick_settings_onthego_changed_off">On-The-Go turned off</string>
     <string name="accessibility_quick_settings_onthego_changed_on">On-The-Go turned on</string>
+
+    <!-- Text to use when the number in a notification info is too large -->
+    <string name="status_bar_notification_info_overflow" translatable="false">\u221E</string>
 </resources>
