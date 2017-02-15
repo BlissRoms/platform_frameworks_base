@@ -1450,6 +1450,14 @@ public final class Call {
         if (childrenChanged) {
             fireChildrenChanged(getChildren());
         }
+
+        // If we have transitioned to DISCONNECTED, that means we need to notify clients and
+        // remove ourselves from the Phone. Note that we do this after completing all state updates
+        // so a client can cleanly transition all their UI to the state appropriate for a
+        // DISCONNECTED Call while still relying on the existence of that Call in the Phone's list.
+        if (mState == STATE_DISCONNECTED) {
+            fireCallDestroyed();
+        }
     }
 
     /** {@hide} */
