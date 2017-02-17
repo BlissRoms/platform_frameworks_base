@@ -547,15 +547,19 @@ public class GnssLocationProvider implements LocationProviderInterface {
         if (!TextUtils.isEmpty(mccMnc)) {
             if (DEBUG) Log.d(TAG, "SIM MCC/MNC is available: " + mccMnc);
             synchronized (mLock) {
-                if (isVerizon(mccMnc, imsi, groupId)) {
-                        // load current properties for carrier VZW
-                        loadPropertiesFromResource(context, mProperties);
-                        String lpp_profile = mProperties.getProperty("LPP_PROFILE");
-                        // set the persist property LPP_PROFILE for VZW
-                        SystemProperties.set(LPP_PROFILE, lpp_profile);
-                } else {
-                        // reset the persist property for Non VZW
-                        SystemProperties.set(LPP_PROFILE, "");
+                try {
+                    if (isVerizon(mccMnc, imsi, groupId)) {
+                            // load current properties for carrier VZW
+                            loadPropertiesFromResource(context, mProperties);
+                            String lpp_profile = mProperties.getProperty("LPP_PROFILE");
+                            // set the persist property LPP_PROFILE for VZW
+                            SystemProperties.set(LPP_PROFILE, lpp_profile);
+                    } else {
+                            // reset the persist property for Non VZW
+                            SystemProperties.set(LPP_PROFILE, "");
+                    }
+                } catch (RuntimeException e) {
+                    Log.e(TAG, "Unable to set SystemProperties for key: " + LPP_PROFILE);
                 }
                 reloadGpsProperties(context, mProperties);
                 mNIHandler.setSuplEsEnabled(mSuplEsEnabled);
