@@ -21,5 +21,8 @@
   <!-- The list of components which should be automatically disabled. -->
   <string-array name="config_disabledComponents" translatable="false"/>
 
+    <!-- Allows an application to authorize outgoing SMS messages.
+         @hide -->
+    <permission android:name="com.qti.permission.AUTHORIZE_OUTGOING_SMS" android:protectionLevel="signature" />
 </resources>
 
