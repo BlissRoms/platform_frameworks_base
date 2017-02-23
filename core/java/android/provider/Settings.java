@@ -5017,6 +5017,15 @@ public final class Settings {
         public static final String OMNI_DOZE_ON_CHARGE_NOW = "doze_on_charge_now";
 
         /**
+         * @hide
+         */
+        public static final String LOCK_HIDE_STATUS_BAR = "lockscreen_hide_status_bar";
+
+        /** @hide */
+        private static final Validator LOCK_HIDE_STATUS_BAR_VALIDATOR =
+               BOOLEAN_VALIDATOR;
+
+        /**
          * Enable\Disable Bluetooth Battery bar in quick settings
          * @hide
          */
@@ -5117,6 +5126,7 @@ public final class Settings {
             LOCKSCREEN_MEDIA_BLUR,
             FINGERPRINT_SUCCESS_VIB,
             OMNI_DOZE_ON_CHARGE,
+            LOCK_HIDE_STATUS_BAR,
         };
 
         /**
@@ -5247,6 +5257,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SCREENSHOT_DEFAULT_MODE);
             PRIVATE_SETTINGS.add(FINGERPRINT_SUCCESS_VIB);
             PRIVATE_SETTINGS.add(OMNI_DOZE_ON_CHARGE);
+            PRIVATE_SETTINGS.add(LOCK_HIDE_STATUS_BAR);
         }
 
         /**
@@ -5351,6 +5362,7 @@ public final class Settings {
             VALIDATORS.put(LOCKSCREEN_MEDIA_BLUR, LOCKSCREEN_MEDIA_BLUR_VALIDATOR);
             VALIDATORS.put(FINGERPRINT_SUCCESS_VIB, FINGERPRINT_SUCCESS_VIB_VALIDATOR);
             VALIDATORS.put(OMNI_DOZE_ON_CHARGE, OMNI_DOZE_ON_CHARGE_VALIDATOR);
+            VALIDATORS.put(LOCK_HIDE_STATUS_BAR,LOCK_HIDE_STATUS_BAR_VALIDATOR);
         }
 
         /**
