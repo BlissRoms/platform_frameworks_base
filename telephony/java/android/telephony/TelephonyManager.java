@@ -5182,10 +5182,12 @@ public class TelephonyManager {
      */
     public void setBasebandVersionForPhone(int phoneId, String version) {
         if (SubscriptionManager.isValidPhoneId(phoneId)) {
-            String prop = TelephonyProperties.PROPERTY_BASEBAND_VERSION +
-                    ((phoneId == 0) ? "" : Integer.toString(phoneId));
-            SystemProperties.set(prop, version);
-        }
+           String [] version_real = version.split("\n");
+           SystemProperties.set("gsm.version.baseband" + (phoneId == 0 ? "" : Integer.toString(phoneId)), version_real[0]);
+            if (version_real.length > 1) {
+	        SystemProperties.set("gsm.version.nv" + (phoneId == -1 ? "" : Integer.toString(phoneId)), version_real[1]);
+	    }
+	}
     }
 
     /**
