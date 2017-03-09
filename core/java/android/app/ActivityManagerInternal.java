@@ -60,6 +60,7 @@ public abstract class ActivityManagerInternal {
      */
     public static final int APP_TRANSITION_TIMEOUT = 3;
 
+
     // Called by the power manager.
     public abstract void onWakefulnessChanged(int wakefulness);
 
