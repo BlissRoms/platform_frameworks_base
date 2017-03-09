@@ -62,7 +62,7 @@ import com.android.systemui.EventLogConstants;
 import com.android.systemui.EventLogTags;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
-import com.android.systemui.cm.UserContentObserver;
+import com.android.systemui.bliss.UserContentObserver;
 import com.android.systemui.classifier.FalsingManager;
 import com.android.systemui.qs.QSContainer;
 import com.android.systemui.statusbar.ExpandableNotificationRow;
