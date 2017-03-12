@@ -1265,7 +1265,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         RecentsActivity.updatePreferences(context);
         BaseStatusBar.updatePreferences();
     }
-    
+
     protected BatteryController createBatteryController() {
         return new BatteryControllerImpl(mContext);
     }

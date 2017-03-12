@@ -168,6 +168,7 @@ public abstract class PackageManagerInternal {
      * @return Whether was launched.
      */
     public abstract boolean wasPackageEverLaunched(String packageName, int userId);
+
     /**
      * Get all overlay packages for a user.
      * @param userId The user for which to get the overlays.

@@ -713,6 +713,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 mCameraPreview.setVisibility(View.GONE);
             }
         }
+        if (mAffordanceHelper != null) {
+            mAffordanceHelper.updatePreviews();
+        }
     }
 
     private void updateLeftPreview() {
