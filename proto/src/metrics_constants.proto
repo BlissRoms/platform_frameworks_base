@@ -2221,5 +2221,8 @@ message MetricsEvent {
     // Quick setting tiles
     QUICK_SETTINGS = 412;
 
+    // AboutBliss Constants
+    ABOUT_BLISS = 498;
+
   }
 }
