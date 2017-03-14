@@ -46,5 +46,7 @@
     <!-- Separate QS text label tint from icon tint -->
     <color name="qs_tile_label_tint_unavailable">@color/qs_tile_tint_unavailable</color>
     <color name="alarm_status_color">#E0E0E0</color>
+    <!-- OmniJaws detailed view temperature text -->
+    <color name="omni_jaws_detailed_temperature_color">@android:color/white</color>
 
 </resources>
