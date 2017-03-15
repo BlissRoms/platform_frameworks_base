@@ -128,6 +128,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     private boolean mShowVolteIcon;
     private boolean mIsVowifiAvailable;
     private boolean mDataDisabledIcon;
+    private boolean mRoamingIconAllowed;
 
     // Volte Icon Style
     private int mVolteIconStyle = 1;
@@ -323,6 +324,9 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.VOWIFI_ICON_STYLE), false,
                     this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.ROAMING_INDICATOR_ICON), false,
+                    this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -348,6 +352,10 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
         mVoWifiIconStyle = Settings.System.getIntForUser(resolver,
                 Settings.System.VOWIFI_ICON_STYLE, 1,
                 UserHandle.USER_CURRENT);
+
+        mRoamingIconAllowed = Settings.System.getIntForUser(resolver,
+                Settings.System.ROAMING_INDICATOR_ICON, 1,
+                UserHandle.USER_CURRENT) == 1;
 
         mConfig = Config.readConfig(mContext);
         setConfiguration(mConfig);
@@ -930,7 +938,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
         }
         mCurrentState.dataConnected = mCurrentState.isDataConnected();
 
-        mCurrentState.roaming = isRoaming();
+        mCurrentState.roaming = isRoaming() && mRoamingIconAllowed;
         if (isCarrierNetworkChangeActive()) {
             mCurrentState.iconGroup = TelephonyIcons.CARRIER_NETWORK_CHANGE;
         } else if (isDataDisabled() && mDataDisabledIcon) {
