@@ -5468,6 +5468,11 @@ public final class Settings {
         public static final String NETWORK_TRAFFIC_LAYOUT = "network_traffic_layout";
 
         /**
+         * @hide
+         */
+        public static final String ROAMING_INDICATOR_ICON = "roaming_indicator_icon";
+
+        /**
          * FOD pressed color
          * @hide
          */
