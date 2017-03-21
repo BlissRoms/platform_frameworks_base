@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -82,6 +83,14 @@ public class BootReceiver extends BroadcastReceiver {
                 Intent fpsinfo = new Intent(context, com.android.systemui.FPSInfoService.class);
                 context.startService(fpsinfo);
             }
+
+            // start the screen state service if activated
+            if (Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.START_SCREEN_STATE_SERVICE, 0, UserHandle.USER_CURRENT) != 0) {
+                Intent screenstate = new Intent(mContext, com.android.systemui.havoc.screenstate.ScreenStateService.class);
+                mContext.startService(screenstate);
+            }
+
         } catch (Exception e) {
             Log.e(TAG, "Can't start custom services", e);
         }
