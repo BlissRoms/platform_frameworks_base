@@ -104,7 +104,6 @@ public class BatteryMeterDrawable extends Drawable implements
     private static final int ANIM_DURATION = 500;
     private int mAnimOffset;
     private boolean mCharging;
-    private boolean mBatteryPct;
 
     private final Runnable mInvalidate = new Runnable() {
         @Override
@@ -294,8 +293,8 @@ public class BatteryMeterDrawable extends Drawable implements
     }
 
     private void updateShowPercent() {
-        mShowPercent = (0 != Settings.System.getInt(mContext.getContentResolver(),
-                SHOW_PERCENT_SETTING, 0)) && !mBatteryPct;
+        mShowPercent = 0 != Settings.System.getInt(mContext.getContentResolver(),
+                SHOW_PERCENT_SETTING, 0);
     }
 
     private int getColorForLevel(int percent) {
