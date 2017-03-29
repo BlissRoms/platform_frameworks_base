@@ -686,6 +686,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // Maps global key codes to the components that will handle them.
     private GlobalKeyManager mGlobalKeyManager;
 
+    // Gesture key handler.
+    private KeyHandler mGestureKeyHandler;
+
     // Fallback actions by key code.
     private final SparseArray<KeyCharacterMap.FallbackAction> mFallbackActions =
             new SparseArray<KeyCharacterMap.FallbackAction>();
@@ -2318,7 +2321,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             Slog.d(TAG, "" + mDeviceKeyHandlers.size() + " device key handlers loaded");
         }
 
-        if (!defaultKeyHandlerLoaded){
+        boolean enableKeyHandler = context.getResources().
+                getBoolean(com.android.internal.R.bool.config_enableKeyHandler);
+        if (enableKeyHandler) {
+            mGestureKeyHandler = new KeyHandler(mContext);
+        }
+
+        if (!defaultKeyHandlerLoaded || !enableKeyHandler){
             String alternativeDeviceKeyHandlerLib = res.getString(
                     com.android.internal.R.string.config_alternativeDeviceKeyHandlerLib);
 
@@ -2361,7 +2370,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         context.registerReceiver(torchReceiver, filter);
     }
 
-     private void enableSwipeThreeFingerGesture(boolean enable){
+    private void enableSwipeThreeFingerGesture(boolean enable){
         if (enable) {
             if (haveEnableGesture) return;
             haveEnableGesture = true;
@@ -4403,6 +4412,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     + " policyFlags=" + Integer.toHexString(policyFlags));
         }
 
+        /**
+         * Handle gestures input earlier then anything when screen is off.
+         * @author Carlo Savignano
+         */
+        if (!interactive) {
+            if (mGestureKeyHandler != null && mGestureKeyHandler.handleKeyEvent(event)) {
+                return 0;
+            }
+        }
+
         if (mANBIHandler != null && mANBIEnabled && mANBIHandler.isScreenTouched()
                 && !navBarKey && (appSwitchKey || homeKey || menuKey || backKey || assistKey)) {
             return 0;
@@ -5793,6 +5812,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mLineageButtons = new LineageButtons(mContext);
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
+        if (mGestureKeyHandler != null) {
+            mGestureKeyHandler.systemReady();
+        }
     }
 
     /** {@inheritDoc} */
