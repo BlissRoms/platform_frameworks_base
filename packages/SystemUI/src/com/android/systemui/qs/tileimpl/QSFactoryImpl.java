@@ -68,6 +68,7 @@ import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.SleepScreenTile;
 import com.android.systemui.qs.tiles.SoundSearchTile;
 import com.android.systemui.qs.tiles.SoundTile;
+import com.android.systemui.qs.tiles.SuspendActionsTile;
 import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.ScreenStabilizationTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
@@ -137,6 +138,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<ScreenStabilizationTile> mScreenStabilizationTileProvider;
     private final Provider<LocaleTile> mLocaleTileProvider;
     private final Provider<FPSInfoTile> mFPSInfoTileProvider;
+    private final Provider<SuspendActionsTile> mSuspendActionsTileProvider;
 
     private QSTileHost mHost;
 
@@ -189,7 +191,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<MonoToggleTile> monoToggleTileProvider,
             Provider<ScreenStabilizationTile> screenStabilizationTileProvider,
             Provider<LocaleTile> localeTileProvider,
-            Provider<FPSInfoTile> fpsInfoTileProvider) {
+            Provider<FPSInfoTile> fpsInfoTileProvider,
+            Provider<SuspendActionsTile> suspendActionsTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -239,6 +242,7 @@ public class QSFactoryImpl implements QSFactory {
         mScreenStabilizationTileProvider = screenStabilizationTileProvider;
         mLocaleTileProvider = localeTileProvider;
         mFPSInfoTileProvider = fpsInfoTileProvider;
+        mSuspendActionsTileProvider = suspendActionsTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -355,6 +359,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mLocaleTileProvider.get();
             case "fpsinfo":
                 return mFPSInfoTileProvider.get();
+            case "suspend_actions":
+                return mSuspendActionsTileProvider.get();
         }
 
         // Intent tiles.
