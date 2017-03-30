@@ -239,4 +239,9 @@
     <string name="accessibility_quick_settings_animations_on">Animations On</string>
     <string name="accessibility_quick_settings_animations_off">Animations Off</string>
 
+    <!-- Suspend Actions Tile -->
+    <string name="accessibility_quick_settings_suspend_actions_on">Suspend actions enabled</string>
+    <string name="accessibility_quick_settings_suspend_actions_off">Suspend actions disabled</string>
+    <string name="quick_settings_suspend_actions_label">Suspend actions</string>
+
 </resources>
