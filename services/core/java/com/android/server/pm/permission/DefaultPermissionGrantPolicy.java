@@ -884,6 +884,9 @@ public final class DefaultPermissionGrantPolicy {
                 getDefaultProviderAuthorityPackage("com.google.android.flipendo", userId),
                 userId, SUSPEND_APP_PERMISSIONS);
 
+        // OmniJaws
+        grantSystemFixedPermissionsToSystemPackage(pm, "org.omnirom.omnijaws", userId, ALWAYS_LOCATION_PERMISSIONS);
+
         // Wellbeing
         grantSystemFixedPermissionsToSystemPackage(pm,
                 getDefaultProviderAuthorityPackage("com.google.android.apps.wellbeing", userId),
