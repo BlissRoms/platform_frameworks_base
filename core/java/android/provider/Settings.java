@@ -4056,6 +4056,12 @@ public final class Settings {
         public static final String HEADS_UP_NOTIFICATION_SNOOZE = "heads_up_notification_snooze";
 
         /**
+         * Controls whether the shutter sound is played when making a screenshot
+         * @hide
+         */
+        public static final String SCREENSHOT_SHUTTER_SOUND = "screenshot_shutter_sound";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4117,7 +4123,8 @@ public final class Settings {
             STATUSBAR_CLOCK_DATE_DISPLAY,
             STATUSBAR_CLOCK_DATE_STYLE,
             NOTIFICATION_LIGHT_SCREEN_ON,
-            ALLOW_LIGHTS
+            ALLOW_LIGHTS,
+            SCREENSHOT_SHUTTER_SOUND
         };
 
         /**
