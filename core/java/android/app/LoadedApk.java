@@ -1417,7 +1417,7 @@ public final class LoadedApk {
                 if (cached != null) {
                     // Looks like this is always happening for the system server, because
                     // the LoadedApk created in systemMain() -> attach() isn't cached properly?
-                    if (!"android".equals(mPackageName)) {
+                    if (!ActivityThread.isSystem()) {
                         Slog.wtfStack(TAG, "App instance already created for package="
                                 + mPackageName + " instance=" + cached);
                     }
