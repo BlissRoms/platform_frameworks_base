@@ -128,7 +128,7 @@ public class CallbackHandler extends Handler implements EmergencyListener, Signa
             final boolean activityOut, final int dataActivityId, final int mobileActivityId,
             final int stackedDataIcon, final int stackedVoiceIcon,
             final String typeContentDescription, final String description, final boolean isWide,
-            final int subId) {
+            final int subId, boolean roaming) {
         post(new Runnable() {
             @Override
             public void run() {
@@ -136,7 +136,7 @@ public class CallbackHandler extends Handler implements EmergencyListener, Signa
                     signalCluster.setMobileDataIndicators(statusIcon, qsIcon, statusType, qsType,
                             activityIn, activityOut, dataActivityId, mobileActivityId,
                             stackedDataIcon, stackedVoiceIcon,
-                            typeContentDescription, description, isWide, subId);
+                            typeContentDescription, description, isWide, subId, roaming);
                 }
             }
         });
@@ -149,7 +149,7 @@ public class CallbackHandler extends Handler implements EmergencyListener, Signa
             final int stackedDataIcon, final int stackedVoiceIcon,
             final String typeContentDescription, final String description, final boolean isWide,
             final int subId, final int dataNetworkTypeId, final int embmsIconId,
-            final boolean isMobileIms, final boolean isImsOverWifi) {
+            final boolean isMobileIms, final boolean isImsOverWifi, boolean roaming) {
         post(new Runnable() {
             @Override
             public void run() {
@@ -160,12 +160,12 @@ public class CallbackHandler extends Handler implements EmergencyListener, Signa
                                 activityOut, dataActivityId, mobileActivityId,
                                 stackedDataIcon, stackedVoiceIcon, typeContentDescription,
                                 description, isWide, subId, dataNetworkTypeId,
-                                embmsIconId, isMobileIms, isImsOverWifi);
+                                embmsIconId, isMobileIms, isImsOverWifi, roaming);
                     } else {
                         signalCluster.setMobileDataIndicators(statusIcon, qsIcon, statusType,
                                 qsType, activityIn, activityOut, dataActivityId,
                                 mobileActivityId, stackedDataIcon, stackedVoiceIcon,
-                                typeContentDescription, description, isWide, subId);
+                                typeContentDescription, description, isWide, subId, roaming);
                     }
                 }
             }
