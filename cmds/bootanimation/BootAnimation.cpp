@@ -27,7 +27,6 @@
 #include <utils/misc.h>
 #include <signal.h>
 #include <time.h>
-#include <sys/syscall.h>
 
 #include <cutils/properties.h>
 
@@ -70,15 +69,26 @@ static const char THEME_BOOTANIMATION_FILE[] = "/data/system/theme/bootanimation
 static const char SYSTEM_DATA_DIR_PATH[] = "/data/system";
 static const char SYSTEM_TIME_DIR_NAME[] = "time";
 static const char SYSTEM_TIME_DIR_PATH[] = "/data/system/time";
+static const char CLOCK_FONT_ASSET[] = "images/clock_font.png";
+static const char CLOCK_FONT_ZIP_NAME[] = "clock_font.png";
 static const char LAST_TIME_CHANGED_FILE_NAME[] = "last_time_change";
 static const char LAST_TIME_CHANGED_FILE_PATH[] = "/data/system/time/last_time_change";
 static const char ACCURATE_TIME_FLAG_FILE_NAME[] = "time_is_accurate";
 static const char ACCURATE_TIME_FLAG_FILE_PATH[] = "/data/system/time/time_is_accurate";
+static const char TIME_FORMAT_12_HOUR_FLAG_FILE_PATH[] = "/data/system/time/time_format_12_hour";
 // Java timestamp format. Don't show the clock if the date is before 2000-01-01 00:00:00.
 static const long long ACCURATE_TIME_EPOCH = 946684800000;
+static constexpr char FONT_BEGIN_CHAR = ' ';
+static constexpr char FONT_END_CHAR = '~' + 1;
+static constexpr size_t FONT_NUM_CHARS = FONT_END_CHAR - FONT_BEGIN_CHAR + 1;
+static constexpr size_t FONT_NUM_COLS = 16;
+static constexpr size_t FONT_NUM_ROWS = FONT_NUM_CHARS / FONT_NUM_COLS;
+static const int TEXT_CENTER_VALUE = INT_MAX;
+static const int TEXT_MISSING_VALUE = INT_MIN;
 static const char EXIT_PROP_NAME[] = "service.bootanim.exit";
 static const char PLAY_SOUND_PROP_NAME[] = "persist.sys.bootanim.play_sound";
 static const int ANIM_ENTRY_NAME_MAX = 256;
+static constexpr size_t TEXT_POS_LEN_MAX = 16;
 static const char BOOT_COMPLETED_PROP_NAME[] = "sys.boot_completed";
 static const char BOOTREASON_PROP_NAME[] = "ro.boot.bootreason";
 // bootreasons list in "system/core/bootstat/bootstat.cpp".
@@ -90,64 +100,8 @@ static const std::vector<std::string> PLAY_SOUND_BOOTREASON_BLACKLIST {
 
 // ---------------------------------------------------------------------------
 
-#ifdef MULTITHREAD_DECODE
-static const int MAX_DECODE_THREADS = 2;
-static const int MAX_DECODE_CACHE = 3;
-#endif
-
-static unsigned long getFreeMemory(void)
-{
-    int fd = open("/proc/meminfo", O_RDONLY);
-    const char* const sums[] = { "MemFree:", "Cached:", NULL };
-    const size_t sumsLen[] = { strlen("MemFree:"), strlen("Cached:"), 0 };
-    unsigned int num = 2;
-
-    if (fd < 0) {
-        ALOGW("Unable to open /proc/meminfo");
-        return -1;
-    }
-
-    char buffer[256];
-    const int len = read(fd, buffer, sizeof(buffer)-1);
-    close(fd);
-
-    if (len < 0) {
-        ALOGW("Unable to read /proc/meminfo");
-        return -1;
-    }
-    buffer[len] = 0;
-
-    size_t numFound = 0;
-    unsigned long mem = 0;
-
-    char* p = buffer;
-    while (*p && numFound < num) {
-        int i = 0;
-        while (sums[i]) {
-            if (strncmp(p, sums[i], sumsLen[i]) == 0) {
-                p += sumsLen[i];
-                while (*p == ' ') p++;
-                char* num = p;
-                while (*p >= '0' && *p <= '9') p++;
-                if (*p != 0) {
-                    *p = 0;
-                    p++;
-                    if (*p == 0) p--;
-                }
-                mem += atoll(num);
-                numFound++;
-                break;
-            }
-            i++;
-        }
-        p++;
-    }
-
-    return numFound > 0 ? mem : -1;
-}
-
 BootAnimation::BootAnimation() : Thread(false), mClockEnabled(true), mTimeIsAccurate(false),
-        mTimeCheckThread(NULL) {
+        mTimeFormat12Hour(false), mTimeCheckThread(NULL) {
     mSession = new SurfaceComposerClient();
 
     // If the system has already booted, the animation is not being used for a boot.
@@ -233,45 +187,35 @@ status_t BootAnimation::initTexture(Texture* texture, AssetManager& assets,
     glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     return NO_ERROR;
 }
 
-SkBitmap* BootAnimation::decode(const Animation::Frame& frame)
+status_t BootAnimation::initTexture(FileMap* map, int* width, int* height)
 {
-
-    SkBitmap *bitmap = NULL;
-    SkMemoryStream  stream(frame.map->getDataPtr(), frame.map->getDataLength());
+    SkBitmap bitmap;
+    SkMemoryStream  stream(map->getDataPtr(), map->getDataLength());
     SkImageDecoder* codec = SkImageDecoder::Factory(&stream);
     if (codec != NULL) {
-        bitmap = new SkBitmap();
         codec->setDitherImage(false);
-        codec->decode(&stream, bitmap,
-                #ifdef USE_565
-                kRGB_565_SkColorType,
-                #else
+        codec->decode(&stream, &bitmap,
                 kN32_SkColorType,
-                #endif
                 SkImageDecoder::kDecodePixels_Mode);
         delete codec;
     }
 
-    return bitmap;
-}
+    // FileMap memory is never released until application exit.
+    // Release it now as the texture is already loaded and the memory used for
+    // the packed resource can be released.
+    delete map;
 
-status_t BootAnimation::initTexture(const Animation::Frame& frame)
-{
-    //StopWatch watch("blah");
-    return initTexture(decode(frame));
-}
+    // ensure we can call getPixels(). No need to call unlock, since the
+    // bitmap will go out of scope when we return from this method.
+    bitmap.lockPixels();
 
-status_t BootAnimation::initTexture(SkBitmap *bitmap)
-{
-    // ensure we can call getPixels().
-    bitmap->lockPixels();
-
-    const int w = bitmap->width();
-    const int h = bitmap->height();
-    const void* p = bitmap->getPixels();
+    const int w = bitmap.width();
+    const int h = bitmap.height();
+    const void* p = bitmap.getPixels();
 
     GLint crop[4] = { 0, h, w, -h };
     int tw = 1 << (31 - __builtin_clz(w));
@@ -279,7 +223,7 @@ status_t BootAnimation::initTexture(SkBitmap *bitmap)
     if (tw < w) tw <<= 1;
     if (th < h) th <<= 1;
 
-    switch (bitmap->colorType()) {
+    switch (bitmap.colorType()) {
         case kN32_SkColorType:
             if (!mUseNpotTextures && (tw != w || th != h)) {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tw, th, 0, GL_RGBA,
@@ -309,8 +253,9 @@ status_t BootAnimation::initTexture(SkBitmap *bitmap)
 
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES, crop);
 
-    bitmap->unlockPixels();
-    delete bitmap;
+    *width = w;
+    *height = h;
+
     return NO_ERROR;
 }
 
@@ -387,33 +332,6 @@ status_t BootAnimation::readyToRun() {
     else if (access(SYSTEM_BOOTANIMATION_FILE, R_OK) == 0) {
         mZipFileName = SYSTEM_BOOTANIMATION_FILE;
     }
-
-#ifdef PRELOAD_BOOTANIMATION
-    // Preload the bootanimation zip on memory, so we don't stutter
-    // when showing the animation
-    FILE* fd;
-    if (encryptedAnimation && access(getAnimationFileName(IMG_ENC), R_OK) == 0)
-        fd = fopen(getAnimationFileName(IMG_ENC), "r");
-    else if (access(getAnimationFileName(IMG_OEM), R_OK) == 0)
-        fd = fopen(getAnimationFileName(IMG_OEM), "r");
-    else if (access(getAnimationFileName(IMG_SYS), R_OK) == 0)
-        fd = fopen(getAnimationFileName(IMG_SYS), "r");
-    else
-        return NO_ERROR;
-
-    if (fd != NULL) {
-        // Since including fcntl.h doesn't give us the wrapper, use the syscall.
-        // 32 bits takes LO/HI offset (we don't care about endianness of 0).
-#if defined(__aarch64__) || defined(__x86_64__)
-        if (syscall(__NR_readahead, fd, 0, INT_MAX))
-#else
-        if (syscall(__NR_readahead, fd, 0, 0, INT_MAX))
-#endif
-            ALOGW("Unable to cache the animation");
-        fclose(fd);
-    }
-#endif
-
     return NO_ERROR;
 }
 
@@ -503,7 +421,6 @@ bool BootAnimation::android()
     return false;
 }
 
-
 void BootAnimation::checkExit() {
     // Allow surface flinger to gracefully request shutdown
     char value[PROPERTY_VALUE_MAX];
@@ -511,6 +428,47 @@ void BootAnimation::checkExit() {
     int exitnow = atoi(value);
     if (exitnow) {
         requestExit();
+    }
+}
+
+bool BootAnimation::validClock(const Animation::Part& part) {
+    return part.clockPosX != TEXT_MISSING_VALUE && part.clockPosY != TEXT_MISSING_VALUE;
+}
+
+bool parseTextCoord(const char* str, int* dest) {
+    if (strcmp("c", str) == 0) {
+        *dest = TEXT_CENTER_VALUE;
+        return true;
+    }
+
+    char* end;
+    int val = (int) strtol(str, &end, 0);
+    if (end == str || *end != '\0' || val == INT_MAX || val == INT_MIN) {
+        return false;
+    }
+    *dest = val;
+    return true;
+}
+
+// Parse two position coordinates. If only string is non-empty, treat it as the y value.
+void parsePosition(const char* str1, const char* str2, int* x, int* y) {
+    bool success = false;
+    if (strlen(str1) == 0) {  // No values were specified
+        // success = false
+    } else if (strlen(str2) == 0) {  // we have only one value
+        if (parseTextCoord(str1, y)) {
+            *x = TEXT_CENTER_VALUE;
+            success = true;
+        }
+    } else {
+        if (parseTextCoord(str1, x) && parseTextCoord(str2, y)) {
+            success = true;
+        }
+    }
+
+    if (!success) {
+        *x = TEXT_MISSING_VALUE;
+        *y = TEXT_MISSING_VALUE;
     }
 }
 
@@ -560,30 +518,95 @@ static bool readFile(ZipFileRO* zip, const char* name, String8& outString)
     return true;
 }
 
-// The time glyphs are stored in a single image of height 64 pixels. Each digit is 40 pixels wide,
-// and the colon character is half that at 20 pixels. The glyph order is '0123456789:'.
-// We render 24 hour time.
-void BootAnimation::drawTime(const Texture& clockTex, const int yPos) {
-    static constexpr char TIME_FORMAT[] = "%H:%M";
-    static constexpr int TIME_LENGTH = sizeof(TIME_FORMAT);
+// The font image should be a 96x2 array of character images.  The
+// columns are the printable ASCII characters 0x20 - 0x7f.  The
+// top row is regular text; the bottom row is bold.
+status_t BootAnimation::initFont(Font* font, const char* fallback) {
+    status_t status = NO_ERROR;
 
-    static constexpr int DIGIT_HEIGHT = 64;
-    static constexpr int DIGIT_WIDTH = 40;
-    static constexpr int COLON_WIDTH = DIGIT_WIDTH / 2;
-    static constexpr int TIME_WIDTH = (DIGIT_WIDTH * 4) + COLON_WIDTH;
+    if (font->map != nullptr) {
+        glGenTextures(1, &font->texture.name);
+        glBindTexture(GL_TEXTURE_2D, font->texture.name);
 
-    if (clockTex.h < DIGIT_HEIGHT || clockTex.w < (10 * DIGIT_WIDTH + COLON_WIDTH)) {
-        ALOGE("Clock texture is too small; abandoning boot animation clock");
-        mClockEnabled = false;
-        return;
+        status = initTexture(font->map, &font->texture.w, &font->texture.h);
+
+        glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    } else if (fallback != nullptr) {
+        status = initTexture(&font->texture, mAssets, fallback);
+    } else {
+        return NO_INIT;
     }
+
+    if (status == NO_ERROR) {
+        font->char_width = font->texture.w / FONT_NUM_COLS;
+        font->char_height = font->texture.h / FONT_NUM_ROWS / 2;  // There are bold and regular rows
+    }
+
+    return status;
+}
+
+void BootAnimation::drawText(const char* str, const Font& font, bool bold, int* x, int* y) {
+    glEnable(GL_BLEND);  // Allow us to draw on top of the animation
+    glBindTexture(GL_TEXTURE_2D, font.texture.name);
+
+    const int len = strlen(str);
+    const int strWidth = font.char_width * len;
+
+    if (*x == TEXT_CENTER_VALUE) {
+        *x = (mWidth - strWidth) / 2;
+    } else if (*x < 0) {
+        *x = mWidth + *x - strWidth;
+    }
+    if (*y == TEXT_CENTER_VALUE) {
+        *y = (mHeight - font.char_height) / 2;
+    } else if (*y < 0) {
+        *y = mHeight + *y - font.char_height;
+    }
+
+    int cropRect[4] = { 0, 0, font.char_width, -font.char_height };
+
+    for (int i = 0; i < len; i++) {
+        char c = str[i];
+
+        if (c < FONT_BEGIN_CHAR || c > FONT_END_CHAR) {
+            c = '?';
+        }
+
+        // Crop the texture to only the pixels in the current glyph
+        const int charPos = (c - FONT_BEGIN_CHAR);  // Position in the list of valid characters
+        const int row = charPos / FONT_NUM_COLS;
+        const int col = charPos % FONT_NUM_COLS;
+        cropRect[0] = col * font.char_width;  // Left of column
+        cropRect[1] = row * font.char_height * 2; // Top of row
+        // Move down to bottom of regular (one char_heigh) or bold (two char_heigh) line
+        cropRect[1] += bold ? 2 * font.char_height : font.char_height;
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES, cropRect);
+
+        glDrawTexiOES(*x, *y, 0, font.char_width, font.char_height);
+
+        *x += font.char_width;
+    }
+
+    glDisable(GL_BLEND);  // Return to the animation's default behaviour
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+// We render 12 or 24 hour time.
+void BootAnimation::drawClock(const Font& font, const int xPos, const int yPos) {
+    static constexpr char TIME_FORMAT_12[] = "%l:%M";
+    static constexpr char TIME_FORMAT_24[] = "%H:%M";
+    static constexpr int TIME_LENGTH = 6;
 
     time_t rawtime;
     time(&rawtime);
     struct tm* timeInfo = localtime(&rawtime);
 
     char timeBuff[TIME_LENGTH];
-    size_t length = strftime(timeBuff, TIME_LENGTH, TIME_FORMAT, timeInfo);
+    const char* timeFormat = mTimeFormat12Hour ? TIME_FORMAT_12 : TIME_FORMAT_24;
+    size_t length = strftime(timeBuff, TIME_LENGTH, timeFormat, timeInfo);
 
     if (length != TIME_LENGTH - 1) {
         ALOGE("Couldn't format time; abandoning boot animation clock");
@@ -591,36 +614,10 @@ void BootAnimation::drawTime(const Texture& clockTex, const int yPos) {
         return;
     }
 
-    glEnable(GL_BLEND);  // Allow us to draw on top of the animation
-    glBindTexture(GL_TEXTURE_2D, clockTex.name);
-
-    int xPos = (mWidth - TIME_WIDTH) / 2;
-    int cropRect[4] = { 0, DIGIT_HEIGHT, DIGIT_WIDTH, -DIGIT_HEIGHT };
-
-    for (int i = 0; i < TIME_LENGTH - 1; i++) {
-        char c = timeBuff[i];
-        int width = DIGIT_WIDTH;
-        int pos = c - '0';  // Position in the character list
-        if (pos < 0 || pos > 10) {
-            continue;
-        }
-        if (c == ':') {
-            width = COLON_WIDTH;
-        }
-
-        // Crop the texture to only the pixels in the current glyph
-        int left = pos * DIGIT_WIDTH;
-        cropRect[0] = left;
-        cropRect[2] = width;
-        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_CROP_RECT_OES, cropRect);
-
-        glDrawTexiOES(xPos, yPos, 0, width, DIGIT_HEIGHT);
-
-        xPos += width;
-    }
-
-    glDisable(GL_BLEND);  // Return to the animation's default behaviour
-    glBindTexture(GL_TEXTURE_2D, 0);
+    char* out = timeBuff[0] == ' ' ? &timeBuff[1] : &timeBuff[0];
+    int x = xPos;
+    int y = yPos;
+    drawText(out, font, false, &x, &y);
 }
 
 bool BootAnimation::parseAnimationDesc(Animation& animation)
@@ -643,9 +640,10 @@ bool BootAnimation::parseAnimationDesc(Animation& animation)
         int height = 0;
         int count = 0;
         int pause = 0;
-        int clockPosY = -1;
         char path[ANIM_ENTRY_NAME_MAX];
         char color[7] = "000000"; // default to black if unspecified
+        char clockPos1[TEXT_POS_LEN_MAX + 1] = "";
+        char clockPos2[TEXT_POS_LEN_MAX + 1] = "";
 
         char pathType;
         if (sscanf(l, "%d %d %d", &width, &height, &fps) == 3) {
@@ -653,15 +651,15 @@ bool BootAnimation::parseAnimationDesc(Animation& animation)
             animation.width = width;
             animation.height = height;
             animation.fps = fps;
-        } else if (sscanf(l, " %c %d %d %s #%6s %d",
-                          &pathType, &count, &pause, path, color, &clockPosY) >= 4) {
-            // ALOGD("> type=%c, count=%d, pause=%d, path=%s, color=%s, clockPosY=%d", pathType, count, pause, path, color, clockPosY);
+        } else if (sscanf(l, " %c %d %d %s #%6s %16s %16s",
+                          &pathType, &count, &pause, path, color, clockPos1, clockPos2) >= 4) {
+            //ALOGD("> type=%c, count=%d, pause=%d, path=%s, color=%s, clockPos1=%s, clockPos2=%s",
+            //    pathType, count, pause, path, color, clockPos1, clockPos2);
             Animation::Part part;
             part.playUntilComplete = pathType == 'c';
             part.count = count;
             part.pause = pause;
             part.path = path;
-            part.clockPosY = clockPosY;
             part.audioData = NULL;
             part.animation = NULL;
             if (!parseColor(color, part.backgroundColor)) {
@@ -670,6 +668,7 @@ bool BootAnimation::parseAnimationDesc(Animation& animation)
                 part.backgroundColor[1] = 0.0f;
                 part.backgroundColor[2] = 0.0f;
             }
+            parsePosition(clockPos1, clockPos2, &part.clockPosX, &part.clockPosY);
             animation.parts.add(part);
         }
         else if (strcmp(l, "$SYSTEM") == 0) {
@@ -713,6 +712,14 @@ bool BootAnimation::preloadZip(Animation& animation)
         const String8 path(entryName.getPathDir());
         const String8 leaf(entryName.getPathLeaf());
         if (leaf.size() > 0) {
+            if (entryName == CLOCK_FONT_ZIP_NAME) {
+                FileMap* map = zip->createEntryFileMap(entry);
+                if (map) {
+                    animation.clockFont.map = map;
+                }
+                continue;
+            }
+
             for (size_t j = 0; j < pcount; j++) {
                 if (path == animation.parts[j].path) {
                     uint16_t method;
@@ -797,7 +804,7 @@ bool BootAnimation::movie()
 
     bool anyPartHasClock = false;
     for (size_t i=0; i < animation->parts.size(); i++) {
-        if(animation->parts[i].clockPosY >= 0) {
+        if(validClock(animation->parts[i])) {
             anyPartHasClock = true;
             break;
         }
@@ -835,10 +842,11 @@ bool BootAnimation::movie()
     glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    bool clockTextureInitialized = false;
+    bool clockFontInitialized = false;
     if (mClockEnabled) {
-        clockTextureInitialized = (initTexture(&mClock, mAssets, "images/clock64.png") == NO_ERROR);
-        mClockEnabled = clockTextureInitialized;
+        clockFontInitialized =
+            (initFont(&animation->clockFont, CLOCK_FONT_ASSET) == NO_ERROR);
+        mClockEnabled = clockFontInitialized;
     }
 
     if (mClockEnabled && !updateIsTimeAccurate()) {
@@ -855,8 +863,8 @@ bool BootAnimation::movie()
 
     releaseAnimation(animation);
 
-    if (clockTextureInitialized) {
-        glDeleteTextures(1, &mClock.name);
+    if (clockFontInitialized) {
+        glDeleteTextures(1, &animation->clockFont.texture.name);
     }
 
     return false;
@@ -872,33 +880,7 @@ bool BootAnimation::playAnimation(const Animation& animation)
     for (size_t i=0 ; i<pcount ; i++) {
         const Animation::Part& part(animation.parts[i]);
         const size_t fcount = part.frames.size();
-
-        // can be 1, 0, or not set
-        #ifdef NO_TEXTURE_CACHE
-        const int noTextureCache = NO_TEXTURE_CACHE;
-        #else
-        const int noTextureCache =
-                ((animation.width * animation.height * fcount) > 48 * 1024 * 1024) ? 1 : 0;
-        #endif
-
         glBindTexture(GL_TEXTURE_2D, 0);
-
-        // Calculate if we need to save memory by disabling texture cache
-        // If free memory is less than the max texture size, cache will be disabled
-        GLint mMaxTextureSize;
-        bool needSaveMem = false;
-        GLuint mTextureid;
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &mMaxTextureSize);
-        ALOGD("Free memory: %ld, max texture size: %d", getFreeMemory(), mMaxTextureSize);
-        if (getFreeMemory() < mMaxTextureSize * mMaxTextureSize * fcount / 1024 ||
-                noTextureCache) {
-            ALOGD("Disabled bootanimation texture cache, FPS drops might occur.");
-            needSaveMem = true;
-            glGenTextures(1, &mTextureid);
-            glBindTexture(GL_TEXTURE_2D, mTextureid);
-            glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        }
 
         // Handle animation package
         if (part.animation != NULL) {
@@ -925,32 +907,21 @@ bool BootAnimation::playAnimation(const Animation& animation)
                     part.backgroundColor[2],
                     1.0f);
 
-#ifdef MULTITHREAD_DECODE
-            FrameManager *frameManager = NULL;
-            if (r == 0 || needSaveMem) {
-                frameManager = new FrameManager(MAX_DECODE_THREADS,
-                    MAX_DECODE_CACHE, part.frames);
-            }
-#endif
-
             for (size_t j=0 ; j<fcount && (!exitPending() || part.playUntilComplete) ; j++) {
                 const Animation::Frame& frame(part.frames[j]);
                 nsecs_t lastFrame = systemTime();
 
-                if (r > 0 && !needSaveMem) {
+                if (r > 0) {
                     glBindTexture(GL_TEXTURE_2D, frame.tid);
                 } else {
-                    if (!needSaveMem && part.count != 1) {
+                    if (part.count != 1) {
                         glGenTextures(1, &frame.tid);
                         glBindTexture(GL_TEXTURE_2D, frame.tid);
                         glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                         glTexParameterx(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                     }
-#ifdef MULTITHREAD_DECODE
-                    initTexture(frameManager->next());
-#else
-                    initTexture(frame);
-#endif
+                    int w, h;
+                    initTexture(frame.map, &w, &h);
                 }
 
                 const int xc = animationX + frame.trimX;
@@ -972,8 +943,8 @@ bool BootAnimation::playAnimation(const Animation& animation)
                 // which is equivalent to mHeight - (yc + frame.trimHeight)
                 glDrawTexiOES(xc, mHeight - (yc + frame.trimHeight),
                               0, frame.trimWidth, frame.trimHeight);
-                if (mClockEnabled && mTimeIsAccurate && part.clockPosY >= 0) {
-                    drawTime(mClock, part.clockPosY);
+                if (mClockEnabled && mTimeIsAccurate && validClock(part)) {
+                    drawClock(animation.clockFont, part.clockPosX, part.clockPosY);
                 }
 
                 eglSwapBuffers(mDisplay, mSurface);
@@ -996,31 +967,13 @@ bool BootAnimation::playAnimation(const Animation& animation)
                 checkExit();
             }
 
-            // part.pause is the number of frames to pause for so total sleep will be
-            // part.pause * frameDuration.  Instead of a single sleep call, sleep for
-            // frameDuration and then check if surface flinger is done.
-            const nsecs_t frameDurationUs = ns2us(frameDuration);
-            for (int k = 0; k < part.pause; k++) {
-                usleep(frameDurationUs);
-                checkExit();
-                if(exitPending())
-                    break;
-            }
-
-#ifdef MULTITHREAD_DECODE
-            if (frameManager) {
-                delete frameManager;
-            }
-#endif
+            usleep(part.pause * ns2us(frameDuration));
 
             // For infinite parts, we've now played them at least once, so perhaps exit
             if(exitPending() && !part.count)
                 break;
         }
 
-        if (needSaveMem) {
-            glDeleteTextures(1, &mTextureid);
-        }
     }
 
     // Free textures created for looping parts now that the animation is done.
@@ -1070,6 +1023,7 @@ BootAnimation::Animation* BootAnimation::loadAnimation(const String8& fn)
     Animation *animation =  new Animation;
     animation->fileName = fn;
     animation->zip = zip;
+    animation->clockFont.map = nullptr;
     mLoadedFiles.add(animation->fileName);
 
     parseAnimationDesc(*animation);
@@ -1115,6 +1069,11 @@ bool BootAnimation::updateIsTimeAccurate() {
     }
 
     struct stat statResult;
+
+    if(stat(TIME_FORMAT_12_HOUR_FLAG_FILE_PATH, &statResult) == 0) {
+        mTimeFormat12Hour = true;
+    }
+
     if(stat(ACCURATE_TIME_FLAG_FILE_PATH, &statResult) == 0) {
         mTimeIsAccurate = true;
         return true;
@@ -1231,117 +1190,6 @@ status_t BootAnimation::TimeCheckThread::readyToRun() {
 
     return NO_ERROR;
 }
-
-#ifdef MULTITHREAD_DECODE
-FrameManager::FrameManager(int numThreads, size_t maxSize, const SortedVector<BootAnimation::Animation::Frame>& frames) :
-    mMaxSize(maxSize),
-    mFrameCounter(0),
-    mNextIdx(0),
-    mFrames(frames),
-    mExit(false)
-{
-    pthread_mutex_init(&mBitmapsMutex, NULL);
-    pthread_cond_init(&mSpaceAvailableCondition, NULL);
-    pthread_cond_init(&mBitmapReadyCondition, NULL);
-    for (int i = 0; i < numThreads; i++) {
-        DecodeThread *thread = new DecodeThread(this);
-        thread->run("bootanimation", PRIORITY_URGENT_DISPLAY);
-        mThreads.add(thread);
-    }
-}
-
-FrameManager::~FrameManager()
-{
-    mExit = true;
-    pthread_cond_broadcast(&mSpaceAvailableCondition);
-    pthread_cond_broadcast(&mBitmapReadyCondition);
-    for (size_t i = 0; i < mThreads.size(); i++) {
-        mThreads.itemAt(i)->requestExitAndWait();
-    }
-
-    // Any bitmap left in the queue won't get cleaned up by
-    // the consumer.  Clean up now.
-    for (size_t i = 0; i < mDecodedFrames.size(); i++) {
-        delete mDecodedFrames[i].bitmap;
-    }
-}
-
-SkBitmap* FrameManager::next()
-{
-    pthread_mutex_lock(&mBitmapsMutex);
-
-    while (mDecodedFrames.size() == 0 ||
-            mDecodedFrames.itemAt(0).idx != mNextIdx) {
-        pthread_cond_wait(&mBitmapReadyCondition, &mBitmapsMutex);
-    }
-    DecodeWork work = mDecodedFrames.itemAt(0);
-    mDecodedFrames.removeAt(0);
-    mNextIdx++;
-    pthread_cond_signal(&mSpaceAvailableCondition);
-    pthread_mutex_unlock(&mBitmapsMutex);
-    // The caller now owns the bitmap
-    return work.bitmap;
-}
-
-FrameManager::DecodeWork FrameManager::getWork()
-{
-    DecodeWork work = {
-        .frame = NULL,
-        .bitmap = NULL,
-        .idx = 0
-    };
-
-    pthread_mutex_lock(&mBitmapsMutex);
-
-    while (mDecodedFrames.size() >= mMaxSize && !mExit) {
-        pthread_cond_wait(&mSpaceAvailableCondition, &mBitmapsMutex);
-    }
-
-    if (!mExit) {
-        work.frame = &mFrames.itemAt(mFrameCounter % mFrames.size());
-        work.idx = mFrameCounter;
-        mFrameCounter++;
-    }
-
-    pthread_mutex_unlock(&mBitmapsMutex);
-    return work;
-}
-
-void FrameManager::completeWork(DecodeWork work) {
-    size_t insertIdx;
-    pthread_mutex_lock(&mBitmapsMutex);
-
-    for (insertIdx = 0; insertIdx < mDecodedFrames.size(); insertIdx++) {
-        if (work.idx < mDecodedFrames.itemAt(insertIdx).idx) {
-            break;
-        }
-    }
-
-    mDecodedFrames.insertAt(work, insertIdx);
-    pthread_cond_signal(&mBitmapReadyCondition);
-
-    pthread_mutex_unlock(&mBitmapsMutex);
-}
-
-FrameManager::DecodeThread::DecodeThread(FrameManager* manager) :
-    Thread(false),
-    mManager(manager)
-{
-
-}
-
-bool FrameManager::DecodeThread::threadLoop()
-{
-    DecodeWork work = mManager->getWork();
-    if (work.frame != NULL) {
-        work.bitmap = BootAnimation::decode(*work.frame);
-        mManager->completeWork(work);
-        return true;
-    }
-
-    return false;
-}
-#endif
 
 // ---------------------------------------------------------------------------
 

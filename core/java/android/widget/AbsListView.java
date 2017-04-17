@@ -22,6 +22,7 @@ import android.annotation.DrawableRes;
 import android.annotation.NonNull;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -635,6 +636,8 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     private int mTouchSlop;
     private float mDensityScale;
 
+    private float mScrollFactor;
+
     private InputConnection mDefInputConnection;
     private InputConnectionWrapper mPublicInputConnection;
 
@@ -900,6 +903,10 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 R.styleable.AbsListView_fastScrollAlwaysVisible, false));
 
         a.recycle();
+
+        if (context.getResources().getConfiguration().uiMode == Configuration.UI_MODE_TYPE_WATCH) {
+            setRevealOnFocusHint(false);
+        }
     }
 
     private void initAbsListView() {
@@ -913,6 +920,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
         final ViewConfiguration configuration = ViewConfiguration.get(mContext);
         mTouchSlop = configuration.getScaledTouchSlop();
+        mScrollFactor = configuration.getScaledScrollFactor();
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         mOverscrollDistance = configuration.getScaledOverscrollDistance();
@@ -2207,7 +2215,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
 
         layoutChildren();
-        mInLayout = false;
 
         mOverscrollMax = (b - t) / OVERSCROLL_LIMIT_DIVISOR;
         mHeight = getHeight();
@@ -2217,6 +2224,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         if (mFastScroll != null) {
             mFastScroll.onItemCountChanged(getChildCount(), mItemCount);
         }
+        mInLayout = false;
     }
 
     /**
@@ -2863,6 +2871,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
      * fail to relayout them properly to accommodate for new bounds.
      */
     void handleBoundsChange() {
+        if (mInLayout) {
+            return;
+        }
         final int childCount = getChildCount();
         if (childCount > 0) {
             mDataChanged = true;
@@ -4375,21 +4386,26 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) != 0) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_SCROLL:
-                    if (mTouchMode == TOUCH_MODE_REST) {
-                        final float vscroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
-                        if (vscroll != 0) {
-                            final int delta = (int) (vscroll * getVerticalScrollFactor());
-                            if (!trackMotionScroll(delta, delta)) {
-                                return true;
-                            }
-                        }
-                    }
-                    break;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_SCROLL:
+                final float axisValue;
+                if (event.isFromSource(InputDevice.SOURCE_CLASS_POINTER)) {
+                    axisValue = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                } else if (event.isFromSource(InputDevice.SOURCE_ROTARY_ENCODER)) {
+                    axisValue = event.getAxisValue(MotionEvent.AXIS_SCROLL);
+                } else {
+                    axisValue = 0;
+                }
 
-                case MotionEvent.ACTION_BUTTON_PRESS:
+                final int delta = Math.round(axisValue * mScrollFactor);
+                if (delta != 0) {
+                    if (!trackMotionScroll(delta, delta)) {
+                        return true;
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_BUTTON_PRESS:
+                if (event.isFromSource(InputDevice.SOURCE_CLASS_POINTER)) {
                     int actionButton = event.getActionButton();
                     if ((actionButton == MotionEvent.BUTTON_STYLUS_PRIMARY
                             || actionButton == MotionEvent.BUTTON_SECONDARY)
@@ -4399,8 +4415,8 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                             removeCallbacks(mPendingCheckForTap);
                         }
                     }
-                    break;
-            }
+                }
+                break;
         }
 
         return super.onGenericMotionEvent(event);
