@@ -399,8 +399,10 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
 
     @Override
     public void setMobileDataIndicators(IconState statusIcon, IconState qsIcon, int statusType,
-            int qsType, boolean activityIn, boolean activityOut, String typeContentDescription,
-            String description, boolean isWide, int subId, boolean roaming) {
+            int qsType, boolean activityIn, boolean activityOut, int dataActivityId,
+            int mobileActivityId, int stackedDataIcon, int stackedVoiceIcon,
+            String typeContentDescription, String description, boolean isWide, int subId,
+            boolean roaming) {
         mRoamingsBySubId.put(subId, roaming);
         boolean isRoaming = calculateRoaming();
         if (mIsRoaming != isRoaming) {

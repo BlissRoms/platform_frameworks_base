@@ -321,7 +321,8 @@ public class SignalClusterView
             int qsType, boolean activityIn, boolean activityOut, int dataActivityId,
             int mobileActivityId, int stackedDataId, int stackedVoiceId,
             String typeContentDescription, String description, boolean isWide, int subId,
-            int dataNetworkTypeId, int embmsIconId, boolean isMobileIms, boolean isImsOverWifi) {
+            int dataNetworkTypeId, int embmsIconId, boolean isMobileIms, boolean isImsOverWifi,
+            boolean roaming) {
         PhoneState state = getState(subId);
         if (state == null) {
             return;
@@ -332,7 +333,7 @@ public class SignalClusterView
         mMobileIms = isMobileIms;
         this.setMobileDataIndicators(statusIcon, qsIcon, statusType, qsType, activityIn,
                 activityOut, dataActivityId, mobileActivityId, stackedDataId,
-                stackedVoiceId, typeContentDescription, description, isWide, subId);
+                stackedVoiceId, typeContentDescription, description, isWide, subId, roaming);
     }
 
     @Override
@@ -756,7 +757,6 @@ public class SignalClusterView
 
             mMobileSingleGroup = (ViewGroup) root.findViewById(R.id.mobile_signal_single);
             mMobileStackedGroup = (ViewGroup) root.findViewById(R.id.mobile_signal_stacked);
-            mRoaming        = (ImageView) root.findViewById(R.id.mobile_roaming);
             mMobileRoaming  = (ImageView) root.findViewById(R.id.mobile_roaming);
         }
 

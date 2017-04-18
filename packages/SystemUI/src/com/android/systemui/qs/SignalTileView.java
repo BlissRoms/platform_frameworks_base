@@ -73,7 +73,7 @@ public final class SignalTileView extends QSIconView {
         if (getContext().getResources().getBoolean(R.bool.show_roaming_and_network_icons)
                 || mStyle == STATUS_BAR_STYLE_EXTENDED) {
             mRoaming = new ImageView(mContext);
-            mRoaming.setImageResource(R.drawable.ic_qs_signal_r);
+            mRoaming.setImageResource(R.drawable.stat_sys_roaming);
             mRoaming.setVisibility(View.GONE);
             LinearLayout iconLayout = new LinearLayout(mContext);
             if (getContext().getResources().getBoolean(R.bool.show_roaming_and_network_icons)) {
