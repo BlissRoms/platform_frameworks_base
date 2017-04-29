@@ -551,6 +551,9 @@ public class ViewConfiguration {
                 com.android.internal.R.bool.config_preferKeepClearForFocus);
     }
 
+    /**
+     * @hide
+     */
     public static boolean isNumeric(String string) {
         try {
             Integer.parseInt(string);
