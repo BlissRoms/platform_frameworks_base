@@ -1518,7 +1518,7 @@ public final class PowerManagerService extends SystemService
             final int oldBrightness = mButtonsLight.getBrightness();
             final boolean wasOn = mButtonsLight.getBrightness() > 0;
             final boolean awake = mWakefulness == WAKEFULNESS_AWAKE;
-            final boolean turnOffByTimeout = now >= mLastUserActivityTime  BUTTON_ON_DURATION;
+            final boolean turnOffByTimeout = now >= mLastUserActivityTime + BUTTON_ON_DURATION;
             final boolean screenBright = (mUserActivitySummary & USER_ACTIVITY_SCREEN_BRIGHT) != 0;
             if (awake && wasOn) {
                 if (turnOffByTimeout || !screenBright || !mButtonBrightnessEnabled) {
