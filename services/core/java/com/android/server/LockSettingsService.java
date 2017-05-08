@@ -242,6 +242,17 @@ public class LockSettingsService extends ILockSettings.Stub {
             if (DEBUG) Slog.v(TAG, "Parent does not have a screen lock");
             return;
         }
+        // Do not tie when the parent has no SID (but does have a screen lock).
+        // This can only happen during an upgrade path where SID is yet to be
+        // generated when the user unlocks for the first time.
+        try {
+            if (getGateKeeperService().getSecureUserId(parentId) == 0) {
+                return;
+            }
+        } catch (RemoteException e) {
+            Slog.e(TAG, "Failed to talk to GateKeeper service", e);
+            return;
+        }
         if (DEBUG) Slog.v(TAG, "Tie managed profile to parent now!");
         byte[] randomLockSeed = new byte[] {};
         try {
@@ -585,6 +596,20 @@ public class LockSettingsService extends ILockSettings.Stub {
                         CertificateException | IOException e) {
                     Slog.e(TAG, "Unable to remove tied profile key", e);
                 }
+            }
+
+            boolean isWatch = mContext.getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_WATCH);
+            // Wear used to set DISABLE_LOCKSCREEN to 'true', but because Wear now allows accounts
+            // and device management the lockscreen must be re-enabled now for users that upgrade.
+            if (isWatch && getString("migrated_wear_lockscreen_disabled", null, 0) == null) {
+                final int userCount = users.size();
+                for (int i = 0; i < userCount; i++) {
+                    int id = users.get(i).id;
+                    setBoolean(LockPatternUtils.DISABLE_LOCKSCREEN_KEY, false, id);
+                }
+                setString("migrated_wear_lockscreen_disabled", "true", 0);
+                Slog.i(TAG, "Migrated lockscreen_disabled for Wear devices");
             }
         } catch (RemoteException re) {
             Slog.e(TAG, "Unable to migrate old data", re);
@@ -943,6 +968,7 @@ public class LockSettingsService extends ILockSettings.Stub {
         synchronized (mSeparateChallengeLock) {
             setLockPatternInternal(pattern, savedCredential, userId);
             setSeparateProfileChallengeEnabled(userId, true, null);
+            notifyPasswordChanged(userId);
         }
     }
 
@@ -957,6 +983,7 @@ public class LockSettingsService extends ILockSettings.Stub {
             setKeystorePassword(null, userId);
             fixateNewestUserKeyAuth(userId);
             onUserLockChanged(userId);
+            notifyActivePasswordMetricsAvailable(null, userId);
             return;
         }
 
@@ -1006,6 +1033,7 @@ public class LockSettingsService extends ILockSettings.Stub {
         synchronized (mSeparateChallengeLock) {
             setLockPasswordInternal(password, savedCredential, userId);
             setSeparateProfileChallengeEnabled(userId, true, null);
+            notifyPasswordChanged(userId);
         }
     }
 
@@ -1019,6 +1047,7 @@ public class LockSettingsService extends ILockSettings.Stub {
             setKeystorePassword(null, userId);
             fixateNewestUserKeyAuth(userId);
             onUserLockChanged(userId);
+            notifyActivePasswordMetricsAvailable(null, userId);
             return;
         }
 
@@ -1434,6 +1463,7 @@ public class LockSettingsService extends ILockSettings.Stub {
                 // migrate credential to GateKeeper
                 credentialUtil.setCredential(credential, null, userId);
                 if (!hasChallenge) {
+                    notifyActivePasswordMetricsAvailable(credential, userId);
                     return VerifyCredentialResponse.OK;
                 }
                 // Fall through to get the auth token. Technically this should never happen,
@@ -1473,6 +1503,7 @@ public class LockSettingsService extends ILockSettings.Stub {
             if (progressCallback != null) {
                 progressCallback.onCredentialVerified();
             }
+            notifyActivePasswordMetricsAvailable(credential, userId);
             unlockKeystore(credential, userId);
 
             Slog.i(TAG, "Unlocking user " + userId +
@@ -1494,6 +1525,60 @@ public class LockSettingsService extends ILockSettings.Stub {
         }
 
         return response;
+    }
+
+    private void notifyActivePasswordMetricsAvailable(final String password, int userId) {
+        final int quality = mLockPatternUtils.getKeyguardStoredPasswordQuality(userId);
+
+        // Asynchronous to avoid dead lock
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                int length = 0;
+                int letters = 0;
+                int uppercase = 0;
+                int lowercase = 0;
+                int numbers = 0;
+                int symbols = 0;
+                int nonletter = 0;
+                if (password != null) {
+                    length = password.length();
+                    for (int i = 0; i < length; i++) {
+                        char c = password.charAt(i);
+                        if (c >= 'A' && c <= 'Z') {
+                            letters++;
+                            uppercase++;
+                        } else if (c >= 'a' && c <= 'z') {
+                            letters++;
+                            lowercase++;
+                        } else if (c >= '0' && c <= '9') {
+                            numbers++;
+                            nonletter++;
+                        } else {
+                            symbols++;
+                            nonletter++;
+                        }
+                    }
+                }
+                DevicePolicyManager dpm = (DevicePolicyManager)
+                        mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
+                dpm.setActivePasswordState(quality, length, letters, uppercase, lowercase, numbers,
+                        symbols, nonletter, userId);
+            }
+        });
+    }
+
+    /**
+     * Call after {@link #notifyActivePasswordMetricsAvailable} so metrics are updated before
+     * reporting the password changed.
+     */
+    private void notifyPasswordChanged(int userId) {
+        // Same handler as notifyActivePasswordMetricsAvailable to ensure correct ordering
+        mHandler.post(() -> {
+            DevicePolicyManager dpm = (DevicePolicyManager)
+                    mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
+            dpm.reportPasswordChanged(userId);
+        });
     }
 
     @Override

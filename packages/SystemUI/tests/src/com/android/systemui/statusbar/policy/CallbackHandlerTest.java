@@ -31,6 +31,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Matchers.eq;
+
 @SmallTest
 public class CallbackHandlerTest extends AndroidTestCase {
 
@@ -102,8 +104,9 @@ public class CallbackHandlerTest extends AndroidTestCase {
         int qsType = R.drawable.ic_qs_signal_1x;
         boolean wide = true;
         int subId = 5;
+        boolean roaming = true;
         mHandler.setMobileDataIndicators(status, qs, type, qsType, in, out, 0, 0, 0, 0,
-                typeDescription, description, wide, subId);
+                typeDescription, description, wide, subId, roaming);
         waitForCallbacks();
 
         ArgumentCaptor<IconState> statusArg = ArgumentCaptor.forClass(IconState.class);
@@ -123,7 +126,7 @@ public class CallbackHandlerTest extends AndroidTestCase {
                 ArgumentCaptor.forClass(Integer.class).capture(),
                 ArgumentCaptor.forClass(Integer.class).capture(),
                 typeContentArg.capture(), descArg.capture(), wideArg.capture(),
-                subIdArg.capture());
+                subIdArg.capture(), eq(roaming));
         assertEquals(status, statusArg.getValue());
         assertEquals(qs, qsArg.getValue());
         assertEquals(type, (int) typeIconArg.getValue());
