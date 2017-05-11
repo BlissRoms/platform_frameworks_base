@@ -43,6 +43,7 @@ import android.util.Slog;
 
 import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.audio.AudioService;
 
 import java.util.ArrayList;
 
@@ -893,12 +894,16 @@ public class AudioDeviceInventory {
         switch (device) {
             case AudioSystem.DEVICE_OUT_WIRED_HEADSET:
                 connType = AudioRoutesInfo.MAIN_HEADSET;
-                startMusicPlayer();
+                if ((AudioService.mLaunchPlayer == 1 || AudioService.mLaunchPlayer == 4 || AudioService.mLaunchPlayer == 5)) {
+                     startMusicPlayer();
+                }
                 break;
             case AudioSystem.DEVICE_OUT_WIRED_HEADPHONE:
             case AudioSystem.DEVICE_OUT_LINE:
                 connType = AudioRoutesInfo.MAIN_HEADPHONES;
-                startMusicPlayer();
+                if ((AudioService.mLaunchPlayer == 1 || AudioService.mLaunchPlayer == 4 || AudioService.mLaunchPlayer == 5)) {
+                     startMusicPlayer();
+                }
                 break;
             case AudioSystem.DEVICE_OUT_HDMI:
             case AudioSystem.DEVICE_OUT_HDMI_ARC:
@@ -928,11 +933,9 @@ public class AudioDeviceInventory {
     }
 
     private void startMusicPlayer() {
-        boolean launchPlayer = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.HEADSET_CONNECT_PLAYER, 0, UserHandle.USER_CURRENT) != 0;
         TelecomManager tm = (TelecomManager) mContext.getSystemService(Context.TELECOM_SERVICE);
 
-        if (launchPlayer && !tm.isInCall()) {
+        if (!tm.isInCall()) {
             try {
                 Intent playerIntent = new Intent(Intent.ACTION_MAIN);
                 playerIntent.addCategory(Intent.CATEGORY_APP_MUSIC);

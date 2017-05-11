@@ -636,6 +636,8 @@ public class AudioService extends IAudioService.Stub
         }
     };
 
+    private int mLaunchPlayer;
+
     ///////////////////////////////////////////////////////////////////////////
     // Construction
     ///////////////////////////////////////////////////////////////////////////
@@ -658,6 +660,9 @@ public class AudioService extends IAudioService.Stub
 
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mHasVibrator = mVibrator == null ? false : mVibrator.hasVibrator();
+
+        mLaunchPlayer = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.HEADSET_CONNECT_PLAYER, 0, UserHandle.USER_CURRENT);
 
         mHasAlertSlider = mContext.getResources().getBoolean(R.bool.config_hasAlertSlider)
                 && !TextUtils.isEmpty(mContext.getResources().getString(R.string.alert_slider_state_path))
@@ -5680,6 +5685,8 @@ public class AudioService extends IAudioService.Stub
                     Settings.Secure.VOICE_INTERACTION_SERVICE), false, this);
             mContentResolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.RTT_CALLING_MODE), false, this);
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADSET_CONNECT_PLAYER), false, this);
         }
 
         @Override
@@ -5713,6 +5720,8 @@ public class AudioService extends IAudioService.Stub
                     updateStreamVolumeAlias(true, TAG);
                 }
             }
+            mLaunchPlayer = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.HEADSET_CONNECT_PLAYER, 0, UserHandle.USER_CURRENT);
         }
 
         private void updateEncodedSurroundOutput() {
