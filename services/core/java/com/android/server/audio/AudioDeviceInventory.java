@@ -23,6 +23,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHearingAid;
 import android.bluetooth.BluetoothProfile;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioDevicePort;
 import android.media.AudioFormat;
@@ -35,6 +36,7 @@ import android.os.Binder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.telecom.TelecomManager;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -43,6 +45,7 @@ import android.util.Slog;
 
 import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.audio.AudioService;
 
 import java.util.ArrayList;
 
@@ -54,6 +57,8 @@ import java.util.ArrayList;
 public class AudioDeviceInventory {
 
     private static final String TAG = "AS.AudioDeviceInventory";
+
+    private static Context mContext;
 
     // Actual list of connected devices
     // Key for map created from DeviceInfo.makeDeviceListKey()
@@ -77,6 +82,10 @@ public class AudioDeviceInventory {
     /** for mocking only */
     /*package*/ AudioDeviceInventory() {
         mDeviceBroker = null;
+    }
+
+    /*package*/ AudioDeviceInventory(Context context) {
+        mContext = context;
     }
 
     /*package*/ void setDeviceBroker(@NonNull AudioDeviceBroker broker) {
@@ -893,12 +902,16 @@ public class AudioDeviceInventory {
         switch (device) {
             case AudioSystem.DEVICE_OUT_WIRED_HEADSET:
                 connType = AudioRoutesInfo.MAIN_HEADSET;
-                startMusicPlayer();
+                if ((AudioService.mLaunchPlayer == 1 || AudioService.mLaunchPlayer == 4 || AudioService.mLaunchPlayer == 5)) {
+                     startMusicPlayer();
+                }
                 break;
             case AudioSystem.DEVICE_OUT_WIRED_HEADPHONE:
             case AudioSystem.DEVICE_OUT_LINE:
                 connType = AudioRoutesInfo.MAIN_HEADPHONES;
-                startMusicPlayer();
+                if ((AudioService.mLaunchPlayer == 1 || AudioService.mLaunchPlayer == 4 || AudioService.mLaunchPlayer == 5)) {
+                     startMusicPlayer();
+                }
                 break;
             case AudioSystem.DEVICE_OUT_HDMI:
             case AudioSystem.DEVICE_OUT_HDMI_ARC:
@@ -927,12 +940,10 @@ public class AudioDeviceInventory {
         }
     }
 
-    private void startMusicPlayer() {
-        boolean launchPlayer = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.HEADSET_CONNECT_PLAYER, 0, UserHandle.USER_CURRENT) != 0;
+    public static void startMusicPlayer() {
         TelecomManager tm = (TelecomManager) mContext.getSystemService(Context.TELECOM_SERVICE);
 
-        if (launchPlayer && !tm.isInCall()) {
+        if (!tm.isInCall()) {
             try {
                 Intent playerIntent = new Intent(Intent.ACTION_MAIN);
                 playerIntent.addCategory(Intent.CATEGORY_APP_MUSIC);
