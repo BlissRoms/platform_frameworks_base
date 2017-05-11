@@ -37,6 +37,8 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.android.internal.annotations.GuardedBy;
+import com.android.server.audio.AudioService;
+import com.android.server.audio.AudioDeviceInventory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -561,6 +563,25 @@ public class BtHelper {
                 result |= mDeviceBroker.handleDeviceConnection(
                         isActive, outDeviceType, address, btDeviceName);
             }
+        }
+
+        switch (AudioService.mLaunchPlayer) {
+            case 0:
+            case 1:
+                //do nothing
+                break;
+            case 2:
+            case 4:
+                //launch the player if bt headset is not a carkit
+                for (int outDeviceType : outDeviceTypes)
+                    if (outDeviceType != AudioSystem.DEVICE_OUT_BLUETOOTH_SCO_CARKIT)
+                        AudioDeviceInventory.startMusicPlayer();
+                break;
+            case 3:
+            case 5:
+                //launch the player for all bt headsets
+                AudioDeviceInventory.startMusicPlayer();
+                break;
         }
         // handleDeviceConnection() && result to make sure the method get executed
         result = mDeviceBroker.handleDeviceConnection(
