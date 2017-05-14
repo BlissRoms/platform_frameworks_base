@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2022 BlissRoms Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<vector android:height="24dp" android:viewportHeight="512"
+    android:viewportWidth="512" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M0.882,255.233C13.111,237.552 83.286,147.431 149.977,255.233L149.096,255.233C82.404,363.034 12.23,272.913 0,255.233L0.882,255.233Z"/>
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M74.671,73.911C95.949,69.969 209.95,55.359 180.097,178.265L179.474,177.648C55.305,207.197 70.065,94.355 74.047,73.294L74.671,73.911Z"/>
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M255.225,0.873C273.087,12.978 364.135,82.438 255.225,148.452L255.225,147.579C146.315,81.566 237.363,12.106 255.225,-0L255.225,0.873Z"/>
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M511.118,255.233C498.889,237.552 428.714,147.431 362.023,255.233L362.904,255.233C429.596,363.034 499.77,272.913 512,255.233L511.118,255.233Z"/>
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M437.33,73.911C416.051,69.969 302.05,55.359 331.903,178.265L332.526,177.648C456.695,207.197 441.935,94.355 437.953,73.294L437.33,73.911Z"/>
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M77.302,438.089C98.58,442.031 212.581,456.641 182.728,333.735L182.105,334.352C57.936,304.803 72.696,417.645 76.678,438.706L77.302,438.089Z"/>
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M257.856,511.128C275.718,499.022 366.766,429.562 257.856,363.549L257.856,364.421C148.946,430.434 239.994,499.895 257.856,512L257.856,511.128Z"/>
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M439.961,438.089C418.683,442.031 304.681,456.641 334.534,333.735L335.157,334.352C459.326,304.803 444.566,417.645 440.584,438.706L439.961,438.089Z"/>
+    <path android:fillColor="?android:attr/colorPrimary" android:fillType="evenOdd" android:pathData="M255.616,183.917L274.511,209.084L305.85,204.513L301.232,235.533L326.658,254.236L301.232,272.938L305.85,303.959L274.511,299.387L255.616,324.555L236.721,299.387L205.382,303.959L210,272.938L184.574,254.236L210,235.533L205.382,204.513L236.721,209.084L255.616,183.917Z"/>
+</vector>
