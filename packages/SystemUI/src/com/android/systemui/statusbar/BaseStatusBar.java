@@ -279,7 +279,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected AssistManager mAssistManager;
 
     protected boolean mVrMode;
-    
+
     private static final HashMap<String, Field> fieldCache = new HashMap<String, Field>();
 
     private Set<String> mNonBlockablePkgs;

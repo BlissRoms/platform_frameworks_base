@@ -380,7 +380,7 @@ public class QuickStatusBarHeader extends BaseStatusBarHeader implements
             }
         }
     }
-    
+
     @Override
     public void setMobileDataIndicators(IconState statusIcon, IconState qsIcon, int statusType,
             int qsType, boolean activityIn, boolean activityOut, String typeContentDescription,
