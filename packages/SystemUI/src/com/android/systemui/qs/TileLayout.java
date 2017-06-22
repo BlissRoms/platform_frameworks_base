@@ -13,6 +13,8 @@ import com.android.systemui.R;
 import com.android.systemui.qs.QSPanel.QSTileLayout;
 import com.android.systemui.qs.QSPanel.TileRecord;
 
+import lineageos.providers.LineageSettings;
+
 import java.util.ArrayList;
 
 public class TileLayout extends ViewGroup implements QSTileLayout {
@@ -86,7 +88,9 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
 
     public boolean updateResources() {
         final Resources res = mContext.getResources();
-        final int columns = Math.max(1, res.getInteger(R.integer.quick_settings_num_columns));
+        final int columns = LineageSettings.System.getInt(getContext().getContentResolver(),
+                LineageSettings.System.STATUS_BAR_QS_TILE_COLUMNS,
+                Math.max(1, res.getInteger(R.integer.quick_settings_num_columns)));
         final ContentResolver resolver = mContext.getContentResolver();
 
         if (Settings.System.getIntForUser(resolver,
