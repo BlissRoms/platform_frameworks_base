@@ -54,6 +54,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 
+import com.android.systemui.Dependency;
 import com.android.systemui.res.R;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.dagger.qualifiers.DisplayId;
