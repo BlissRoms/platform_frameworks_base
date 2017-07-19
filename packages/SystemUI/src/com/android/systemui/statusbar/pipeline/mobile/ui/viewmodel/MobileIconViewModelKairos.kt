@@ -17,6 +17,7 @@
 package com.android.systemui.statusbar.pipeline.mobile.ui.viewmodel
 
 import com.android.settingslib.R as settingsLibR
+import com.android.settingslib.mobile.TelephonyIcons
 import com.android.systemui.activated
 import com.android.systemui.common.shared.model.ContentDescription
 import com.android.systemui.common.shared.model.Icon
@@ -57,6 +58,7 @@ interface MobileIconViewModelKairosCommon {
     val activityInVisible: KairosState<Boolean>
     val activityOutVisible: KairosState<Boolean>
     val activityContainerVisible: KairosState<Boolean>
+    val showHd: KairosState<Boolean>
 }
 
 /**
@@ -130,6 +132,9 @@ class MobileIconViewModelKairos(
 
     override val activityContainerVisible: KairosState<Boolean> =
         vmProvider.flatMap { it.activityContainerVisible }
+
+    override val showHd: KairosState<Boolean> =
+        vmProvider.flatMap { it.showHd }
 }
 
 /** Representation of this network when it is non-terrestrial (e.g., satellite) */
@@ -188,6 +193,7 @@ private class CarrierBasedSatelliteViewModelKairosImpl(
     override val activityInVisible: KairosState<Boolean> = stateOf(false)
     override val activityOutVisible: KairosState<Boolean> = stateOf(false)
     override val activityContainerVisible: KairosState<Boolean> = stateOf(false)
+    override val showHd: KairosState<Boolean> = stateOf(false)
 }
 
 /** Terrestrial (cellular) icon. */
@@ -295,18 +301,24 @@ private class CellularIconViewModelKairos(
             }
 
     override val networkTypeIcon: KairosState<Icon.Resource?> =
-        combine(iconInteractor.networkTypeIconGroup, showNetworkTypeIcon) {
-            networkTypeIconGroup,
-            shouldShow ->
+        combine(
+            iconInteractor.networkTypeIconGroup,
+            showNetworkTypeIcon,
+            iconInteractor.shouldShowFourgIcon,
+        ) { networkTypeIconGroup, shouldShow, shouldShowFourgIcon ->
             val desc =
                 if (networkTypeIconGroup.contentDescription != 0) {
-                    ContentDescription.Resource(networkTypeIconGroup.contentDescription)
+                    var contDesc: Int = networkTypeIconGroup.contentDescription
+                    if (shouldShowFourgIcon) contDesc = convertLteToFourg(contDesc)
+                    ContentDescription.Resource(contDesc)
                 } else {
                     null
                 }
             val icon =
                 if (networkTypeIconGroup.iconId != 0) {
-                    Icon.Resource(networkTypeIconGroup.iconId, desc)
+                    var contIcon: Int = networkTypeIconGroup.iconId
+                    if (shouldShowFourgIcon) contIcon = convertLteToFourg(contIcon)
+                    Icon.Resource(contIcon, desc)
                 } else {
                     null
                 }
@@ -315,6 +327,37 @@ private class CellularIconViewModelKairos(
                 else -> icon
             }
         }
+
+    private fun convertLteToFourg(res: Int): Int {
+        when (res) {
+            com.android.settingslib.R.string.data_connection_lte,
+            com.android.settingslib.R.string.data_connection_4g_lte -> {
+                return com.android.settingslib.R.string.data_connection_4g as Int
+            }
+            com.android.settingslib.R.string.data_connection_lte_plus,
+            com.android.settingslib.R.string.data_connection_4g_lte_plus -> {
+                return com.android.settingslib.R.string.data_connection_4g_plus as Int
+            }
+            TelephonyIcons.ICON_LTE,
+            TelephonyIcons.ICON_4G_LTE,
+            com.android.settingslib.R.drawable.ic_lte_mobiledata,
+            com.android.settingslib.R.drawable.ic_lte_mobiledata_updated,
+            com.android.settingslib.R.drawable.ic_4g_lte_mobiledata,
+            com.android.settingslib.R.drawable.ic_4g_lte_mobiledata_updated -> {
+                return TelephonyIcons.ICON_4G as Int
+            }
+            TelephonyIcons.ICON_LTE_PLUS,
+            TelephonyIcons.ICON_4G_LTE_PLUS,
+            com.android.settingslib.R.drawable.ic_lte_plus_mobiledata,
+            com.android.settingslib.R.drawable.ic_lte_plus_mobiledata_updated,
+            com.android.settingslib.R.drawable.ic_4g_lte_plus_mobiledata,
+            com.android.settingslib.R.drawable.ic_4g_lte_plus_mobiledata_updated -> {
+                return TelephonyIcons.ICON_4G_PLUS as Int
+            }
+            else -> {}
+        }
+        return res
+    }
 
     override val networkTypeBackground: KairosState<Icon.Resource?> =
         iconInteractor.showSliceAttribution.map {
@@ -356,5 +399,15 @@ private class CellularIconViewModelKairos(
             stateOf(constants.shouldShowActivityConfig)
         } else {
             activity.map { it != null && (it.hasActivityIn || it.hasActivityOut) }
+        }
+
+    private val showVoWifi: State<Boolean> =
+        combine(iconInteractor.isVoWifi, iconInteractor.isVoWifiForceHidden) { isVoWifi, isHidden ->
+            isVoWifi && !isHidden
+        }
+
+    override val showHd: KairosState<Boolean> =
+        combine(iconInteractor.isMobileHd, iconInteractor.isMobileHdForceHidden, showVoWifi) { isHd, isHidden, voWifi ->
+            isHd && !(isHidden || voWifi)
         }
 }
