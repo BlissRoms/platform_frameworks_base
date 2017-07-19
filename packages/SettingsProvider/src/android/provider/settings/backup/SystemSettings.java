@@ -87,5 +87,6 @@ public class SystemSettings {
         Settings.System.LOCKSCREEN_BATTERY_INFO,
         Settings.System.FULLSCREEN_GESTURES,
         Settings.System.NAVIGATION_BAR_INVERSE,
+        Settings.System.SHOW_FOURG_ICON,
     };
 }
