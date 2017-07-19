@@ -90,5 +90,6 @@ public class SystemSettings {
         Settings.System.ALARM_ALERT,
         Settings.System.NOTIFICATION_LIGHT_PULSE,
         Settings.System.FULLSCREEN_GESTURES,
+        Settings.System.SHOW_FOURG_ICON,
     };
 }
