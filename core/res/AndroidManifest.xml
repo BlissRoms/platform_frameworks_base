@@ -817,6 +817,9 @@
     <protected-broadcast android:name="android.app.action.LOST_MODE_LOCATION_UPDATE" />
     <protected-broadcast android:name="bliss.intent.action.GO_TO_SLEEP" />
 
+    <!-- IMS Status -->
+    <protected-broadcast android:name="android.intent.action.IMS_REGISTRATION_CHANGED" />
+
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
     <!-- ====================================================================== -->
