@@ -208,6 +208,7 @@ android_library {
     ],
     libs: [
         "keepanno-annotations",
+        "ims-common",
     ],
     manifest: "AndroidManifest.xml",
     additional_manifests: ["BlissManifest.xml"],
@@ -366,6 +367,7 @@ android_library {
         "android.test.base",
         "android.test.mock",
         "keepanno-annotations",
+        "ims-common",
     ],
     kotlincflags: ["-Xjvm-default=all"],
     aaptflags: [
@@ -505,6 +507,10 @@ android_app {
     privileged: true,
 
     kotlincflags: ["-Xjvm-default=all"],
+
+    libs: [
+        "ims-common",
+    ],
 
     dxflags: ["--multi-dex"],
     optimize: {

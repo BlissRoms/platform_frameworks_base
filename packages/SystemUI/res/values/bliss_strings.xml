@@ -70,4 +70,7 @@
     <string name="weather_condition_wind">Windy</string>
     <string name="weather_condition_mist">Misty</string>
 
+    <!-- Status bar tuner -->
+    <string name="status_bar_ims">VoLTE/VoWiFi</string>
+
 </resources>
