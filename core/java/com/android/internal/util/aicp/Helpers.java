@@ -6,6 +6,7 @@ import android.app.IActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 public class Helpers {
     // avoids hardcoding the tag
@@ -19,6 +20,8 @@ public class Helpers {
             am.killBackgroundProcesses("com.android.systemui");
             for (ActivityManager.RunningAppProcessInfo app : am.getRunningAppProcesses()) {
                 if ("com.android.systemui".equals(app.processName)) {
+                    Toast toast = Toast.makeText(context, "Restarting Interface ...." , Toast.LENGTH_LONG);
+                    toast.show();
                     amn.killApplicationProcess(app.processName, app.uid);
                     break;
                 }
