@@ -112,6 +112,7 @@ import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
+import android.view.HapticFeedbackConstants;
 import android.view.IWindowManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -6012,6 +6013,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 if (row.isDark()) {
                     return false;
                 }
+                v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 if (row.areGutsExposed()) {
                     closeAndSaveGuts(false /* removeLeavebehind */, false /* force */,
                             true /* removeControls */, -1 /* x */, -1 /* y */,
