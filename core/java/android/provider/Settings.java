@@ -5528,6 +5528,15 @@ public final class Settings {
         public static final String FLASHLIGHT_ON_CALL_WAITING = "flashlight_on_call_waiting";
 
         /**
+         * Sensor block per-package
+         * @hide
+         */
+        public static final String SENSOR_BLOCK = "sensor_block";
+
+        private static final Validator SENSOR_BLOCK_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5627,6 +5636,7 @@ public final class Settings {
             FLASHLIGHT_ON_CALL,
             LOCK_SCREEN_CUSTOM_NOTIF,
             LOCKSCREEN_MAX_NOTIF_CONFIG,
+            SENSOR_BLOCK,
         };
 
         /**
@@ -5794,6 +5804,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(FLASHLIGHT_ON_CALL);
             PRIVATE_SETTINGS.add(LOCK_SCREEN_CUSTOM_NOTIF);
             PRIVATE_SETTINGS.add(LOCKSCREEN_MAX_NOTIF_CONFIG);
+            PRIVATE_SETTINGS.add(SENSOR_BLOCK);
         }
 
         /**
@@ -5931,6 +5942,7 @@ public final class Settings {
             VALIDATORS.put(FLASHLIGHT_ON_CALL, FLASHLIGHT_ON_CALL_VALIDATOR);
             VALIDATORS.put(LOCK_SCREEN_CUSTOM_NOTIF, LOCK_SCREEN_CUSTOM_NOTIF_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_MAX_NOTIF_CONFIG, LOCKSCREEN_MAX_NOTIF_CONFIG_VALIDATOR);
+            VALIDATORS.put(SENSOR_BLOCK, SENSOR_BLOCK_VALIDATOR);
         }
 
         /**
