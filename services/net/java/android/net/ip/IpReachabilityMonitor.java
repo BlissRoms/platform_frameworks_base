@@ -393,8 +393,8 @@ public class IpReachabilityMonitor {
         //     /proc/sys/net/ipv[46]/neigh/<ifname>/retrans_time_ms
         //
         // For now, just make some assumptions.
-        final long numUnicastProbes = 3;
-        final long retransTimeMs = 1000;
+        final long numUnicastProbes = 20;
+        final long retransTimeMs = 300;
         final long gracePeriodMs = 500;
         return (numUnicastProbes * retransTimeMs) + gracePeriodMs;
     }
@@ -557,6 +557,11 @@ public class IpReachabilityMonitor {
             if (nudState == StructNdMsg.NUD_FAILED) {
                 Log.w(TAG, "ALERT: " + eventMsg);
                 handleNeighborLost(eventMsg);
+            }
+
+            if (mWakeLock.isHeld() && (nudState == StructNdMsg.NUD_FAILED ||
+                nudState == StructNdMsg.NUD_REACHABLE)) {
+                mWakeLock.release();
             }
         }
     }
