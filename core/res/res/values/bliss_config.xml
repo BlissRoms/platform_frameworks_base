@@ -144,4 +144,10 @@
         <item>com.android.launcher3</item>
         <item>com.google.android.apps.nexuslauncher</item>
     </string-array>
+
+    <!-- Path to fast charging status file to detect whether an oem fast charger is active -->
+    <string name="config_oemFastChargerStatusPath" translatable="false"></string>
+
+    <!-- Expected value from fast charging status file  -->
+    <string name="config_oemFastChargerStatusValue" translatable="false"></string>
 </resources>
