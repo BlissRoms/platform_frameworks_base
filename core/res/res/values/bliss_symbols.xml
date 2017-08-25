@@ -223,4 +223,10 @@
   <!-- Clipboard access toast -->
   <java-symbol type="string" name="app_clipboard_access_denied" />
   <java-symbol type="string" name="app_clipboard_access_granted" />
+
+  <!-- Path to fast charging status file to detect whether an oem fast charger is active -->
+  <java-symbol type="string" name="config_oemFastChargerStatusPath" />
+  <!-- Expected value from fast charging status file -->
+  <java-symbol type="string" name="config_oemFastChargerStatusValue" />
+
 </resources>
