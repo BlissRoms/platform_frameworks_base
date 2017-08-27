@@ -331,8 +331,6 @@ public class QSFooter extends FrameLayout implements
 
     private void updateVisibilities() {
         updateAlarmVisibilities();
-        mSettingsContainer.findViewById(R.id.tuner_icon).setVisibility(
-                TunerService.isTunerEnabled(mContext) ? View.VISIBLE : View.INVISIBLE);
         final boolean isDemo = UserManager.isDeviceInDemoMode(mContext);
 
         mMultiUserSwitch.setVisibility((mExpanded || mAlwaysShowMultiUserSwitch)
