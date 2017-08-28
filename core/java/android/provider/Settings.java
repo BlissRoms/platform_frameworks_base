@@ -4121,6 +4121,15 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
+         * @hide
+         */
+        public static final String OMNI_ADVANCED_REBOOT = "advanced_reboot";
+
+        /** @hide */
+        private static final Validator OMNI_ADVANCED_REBOOT_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
@@ -4189,6 +4198,7 @@ public final class Settings {
             OMNI_NAVIGATION_BAR_RECENTS,
             OMNI_SYSTEM_PROXI_CHECK_ENABLED,
             OMNI_NAVIGATION_BAR_SHOW,
+            OMNI_ADVANCED_REBOOT,
         };
 
         /**
@@ -4306,6 +4316,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_NAVIGATION_BAR_RECENTS);
             PRIVATE_SETTINGS.add(OMNI_SYSTEM_PROXI_CHECK_ENABLED);
             PRIVATE_SETTINGS.add(OMNI_NAVIGATION_BAR_SHOW);
+            PRIVATE_SETTINGS.add(OMNI_ADVANCED_REBOOT);
         }
 
         /**
@@ -4398,6 +4409,7 @@ public final class Settings {
             VALIDATORS.put(OMNI_SYSTEM_PROXI_CHECK_ENABLED,
                     OMNI_SYSTEM_PROXI_CHECK_ENABLED_VALIDATOR);
             VALIDATORS.put(OMNI_NAVIGATION_BAR_SHOW, OMNI_NAVIGATION_BAR_SHOW_VALIDATOR);
+            VALIDATORS.put(OMNI_ADVANCED_REBOOT, OMNI_ADVANCED_REBOOT_VALIDATOR);
         }
 
         /**
