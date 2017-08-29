@@ -99,8 +99,7 @@ public class AmbientDisplayConfiguration {
     }
 
     public boolean alwaysOnAvailable() {
-        return (alwaysOnDisplayDebuggingEnabled() || alwaysOnDisplayAvailable())
-                && ambientDisplayAvailable();
+        return true;
     }
 
     public boolean alwaysOnAvailableForUser(int user) {
