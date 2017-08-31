@@ -114,4 +114,9 @@ interface IStatusBarService
     void showInDisplayFingerprintView();
     void hideInDisplayFingerprintView();
     void setAutoRotate(boolean enabled);
+    
+    /**
+     * Bliss
+     */
+    void toggleCameraFlash();
 }
