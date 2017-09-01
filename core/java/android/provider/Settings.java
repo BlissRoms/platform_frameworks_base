@@ -5870,6 +5870,13 @@ public final class Settings {
         public static final String VOLUME_ROCKER_WAKE = "volume_rocker_wake";
 
         /**
+         * Change volume up and down handlign based on rotation
+         * @hide
+         */
+        @Readable
+        public static final String SWAP_VOLUME_BUTTONS = "swap_volume_buttons";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
