@@ -114,4 +114,8 @@
   <!-- Path to warp charging status file -->
   <java-symbol type="string" name="config_WarpChargerStatusPath" />
 
+  <!-- Battery LED -->
+  <java-symbol type="bool" name="config_multiColorBatteryLed" />
+  <java-symbol type="bool" name="config_ledCanPulse" />
+
 </resources>

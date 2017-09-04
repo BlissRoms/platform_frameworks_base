@@ -16,6 +16,7 @@
 
 package android.provider.settings.validators;
 
+import static android.provider.settings.validators.SettingsValidators.ANY_INTEGER_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.ANY_STRING_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.BOOLEAN_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.COMPONENT_NAME_VALIDATOR;
@@ -213,5 +214,11 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.DOZE_ON_CHARGE, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.ACCELEROMETER_ROTATION_ANGLES, NON_NEGATIVE_INTEGER_VALIDATOR);
         VALIDATORS.put(System.FINGERPRINT_WAKE_UNLOCK, NON_NEGATIVE_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_ALLOW_ON_DND, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_LOW_BLINKING, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_LOW_COLOR, ANY_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_MEDIUM_COLOR, ANY_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_FULL_COLOR, ANY_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_REALLYFULL_COLOR, ANY_INTEGER_VALIDATOR);
     }
 }
