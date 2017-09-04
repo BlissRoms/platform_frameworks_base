@@ -92,5 +92,11 @@ public class SystemSettings {
         Settings.System.FULLSCREEN_GESTURES,
         Settings.System.TORCH_POWER_BUTTON_GESTURE,
         Settings.System.USE_OLD_MOBILETYPE,
+        Settings.System.BATTERY_LIGHT_ALLOW_ON_DND,
+        Settings.System.BATTERY_LIGHT_LOW_BLINKING,
+        Settings.System.BATTERY_LIGHT_LOW_COLOR,
+        Settings.System.BATTERY_LIGHT_MEDIUM_COLOR,
+        Settings.System.BATTERY_LIGHT_FULL_COLOR,
+        Settings.System.BATTERY_LIGHT_REALLYFULL_COLOR,
     };
 }

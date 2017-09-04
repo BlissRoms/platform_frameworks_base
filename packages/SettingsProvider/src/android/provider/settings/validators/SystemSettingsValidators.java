@@ -16,6 +16,7 @@
 
 package android.provider.settings.validators;
 
+import static android.provider.settings.validators.SettingsValidators.ANY_INTEGER_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.ANY_STRING_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.BOOLEAN_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.COMPONENT_NAME_VALIDATOR;
@@ -210,5 +211,11 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.FULLSCREEN_GESTURES, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.TORCH_POWER_BUTTON_GESTURE, new InclusiveIntegerRangeValidator(0, 2));
         VALIDATORS.put(System.USE_OLD_MOBILETYPE, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_ALLOW_ON_DND, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_LOW_BLINKING, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_LOW_COLOR, ANY_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_MEDIUM_COLOR, ANY_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_FULL_COLOR, ANY_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.BATTERY_LIGHT_REALLYFULL_COLOR, ANY_INTEGER_VALIDATOR);
     }
 }
