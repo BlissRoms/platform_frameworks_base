@@ -52,6 +52,7 @@ import com.android.systemui.qs.tiles.ProfilesTile;
 import com.android.systemui.qs.tiles.ReadingModeTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.SyncTile;
+import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.UserTile;
@@ -100,6 +101,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<VolumeTile> mVolumeTileProvider;
     private final Provider<CPUInfoTile> mCPUInfoTileProvider;
     private final Provider<LteTile> mLteTileProvider;
+    private final Provider<ScreenshotTile> mScreenshotTileProvider;
 
     private QSTileHost mHost;
 
@@ -134,7 +136,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<UsbTetherTile> usbTetherTileProvider,
             Provider<VolumeTile> volumeTileProvider,
             Provider<CPUInfoTile> cpuInfoTileProvider,
-            Provider<LteTile> lteTileProvider) {
+            Provider<LteTile> lteTileProvider,
+            Provider<ScreenshotTile> screenshotTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -166,6 +169,7 @@ public class QSFactoryImpl implements QSFactory {
         mVolumeTileProvider = volumeTileProvider;
         mCPUInfoTileProvider = cpuInfoTileProvider;
         mLteTileProvider = lteTileProvider;
+        mScreenshotTileProvider = screenshotTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -244,6 +248,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mCPUInfoTileProvider.get();
             case "lte":
                 return mLteTileProvider.get();
+            case "screenshot":
+                return mScreenshotTileProvider.get();
         }
 
         // Intent tiles.
