@@ -254,6 +254,9 @@
     <!-- Permission to change the display color -->
     <uses-permission android:name="android.permission.CONTROL_DISPLAY_COLOR_TRANSFORMS" />
 
+    <!-- Permission to access surface flinger -->
+    <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
+
     <!-- Query all packages on device on R+ -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 

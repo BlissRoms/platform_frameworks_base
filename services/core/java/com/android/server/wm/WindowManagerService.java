@@ -8273,4 +8273,9 @@ public class WindowManagerService extends IWindowManager.Stub
             Binder.restoreCallingIdentity(origId);
         }
     }
+
+    @Override
+    public void sendCustomAction(Intent intent) {
+        mPolicy.sendCustomAction(intent);
+    }
 }
