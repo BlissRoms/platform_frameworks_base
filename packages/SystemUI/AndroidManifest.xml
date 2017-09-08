@@ -387,6 +387,14 @@
             </intent-filter>
         </activity-alias>
 
+        <activity android:name=".tuner.NavBarActivity"
+                  android:theme="@style/TunerSettings"
+                  android:label="@string/nav_bar"
+                  android:process=":tuner"
+                  android:parentActivityName="com.blissroms.blissify.fragments.buttons.ButtonSettings"
+                  android:exported="true">
+        </activity>
+
         <activity
             android:name=".stackdivider.ForcedResizableInfoActivity"
             android:theme="@style/ForcedResizableTheme"
