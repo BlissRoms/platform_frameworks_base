@@ -419,6 +419,14 @@
             </intent-filter>
         </activity-alias>
 
+        <activity android:name=".tuner.StatusbarItemsActivity"
+                  android:theme="@style/BlissifyTunerSettings"
+                  android:label="@string/statusbar_items_title"
+                  android:process=":tuner"
+                  android:parentActivityName="com.blissroms.blissify.fragments.statusbar.StatusBar"
+                  android:exported="true">
+        </activity>
+
         <activity
             android:name="com.android.wm.shell.legacysplitscreen.ForcedResizableInfoActivity"
             android:theme="@style/ForcedResizableTheme"

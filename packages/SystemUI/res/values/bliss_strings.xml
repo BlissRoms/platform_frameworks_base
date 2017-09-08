@@ -73,4 +73,6 @@
     <string name="accessibility_quick_settings_heads_up_changed_off">Heads up turned off.</string>
     <string name="accessibility_quick_settings_heads_up_changed_on">Heads up turned on.</string>
 
+    <!-- Statusbar tuner -->
+    <string name="statusbar_items_title">Statusbar icon</string>
 </resources>
