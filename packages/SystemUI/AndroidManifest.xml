@@ -427,6 +427,14 @@
                   android:exported="true">
         </activity>
 
+        <activity android:name=".tuner.LockscreenActivity"
+                  android:theme="@style/BlissifyTunerSettings"
+                  android:label="@string/tuner_lock_screen"
+                  android:process=":tuner"
+                  android:parentActivityName="com.blissroms.blissify.fragments.lockscreen.Lockscreen"
+                  android:exported="true">
+        </activity>
+
         <activity
             android:name="com.android.wm.shell.legacysplitscreen.ForcedResizableInfoActivity"
             android:theme="@style/ForcedResizableTheme"
