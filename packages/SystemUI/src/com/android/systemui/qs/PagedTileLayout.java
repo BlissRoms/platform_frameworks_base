@@ -5,11 +5,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -427,7 +430,7 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
             };
 
     public static class TilePage extends TileLayout {
-
+        private int mMaxRows = 5;
         public TilePage(Context context, AttributeSet attrs) {
             super(context, attrs);
         }
@@ -441,6 +444,19 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
             // show even 1 or there are no tiles, it probably means we are in the middle of setting
             // up.
             return Math.max(mColumns * mRows, 1);
+        }
+
+        private int getRows() {
+            final Resources res = mContext.getResources();
+            final ContentResolver resolver = mContext.getContentResolver();
+            if (res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                return Settings.System.getIntForUser(resolver,
+                        Settings.System.QS_ROWS_PORTRAIT, 2,
+                        UserHandle.USER_CURRENT);
+            }
+            return Settings.System.getIntForUser(resolver,
+                        Settings.System.QS_ROWS_LANDSCAPE, 2,
+                        UserHandle.USER_CURRENT);
         }
 
         @Override
