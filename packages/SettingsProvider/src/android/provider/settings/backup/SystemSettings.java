@@ -90,5 +90,6 @@ public class SystemSettings {
         Settings.System.NETWORK_TRAFFIC_STATE,
         Settings.System.NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD,
         Settings.System.QS_SHOW_BATTERY_ESTIMATE,
+        Settings.System.LOCKSCREEN_BATTERY_INFO,
     };
 }
