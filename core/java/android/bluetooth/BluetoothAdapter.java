@@ -1037,8 +1037,8 @@ public final class BluetoothAdapter {
     public boolean factoryReset() {
         try {
             mServiceLock.readLock().lock();
-            if (mService != null) {
-                return mService.factoryReset();
+            if (mManagerService != null) {
+                return mManagerService.factoryReset();
             }
             SystemProperties.set("persist.bluetooth.factoryreset", "true");
         } catch (RemoteException e) {

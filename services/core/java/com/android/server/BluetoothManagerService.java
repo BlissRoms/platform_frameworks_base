@@ -1319,6 +1319,20 @@ class BluetoothManagerService extends IBluetoothManager.Stub {
         return mName;
     }
 
+    public boolean factoryReset() {
+        try {
+            if (mBluetooth != null) {
+                // Clear registered LE apps to force shut-off
+                clearBleApps();
+                return mBluetooth.factoryReset();
+            }
+        } catch (RemoteException e) {
+            Slog.e(TAG, "factoryReset(): Unable to do factoryReset.", e);
+            return false;
+        }
+        return true;
+    }
+
     private class BluetoothServiceConnection implements ServiceConnection {
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             String name = componentName.getClassName();
