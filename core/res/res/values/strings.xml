@@ -3444,6 +3444,7 @@
     <!-- Strings for tethered notification -->
     <!-- Shown when the device is tethered -->
     <string name="tethered_notification_title">Tethering or hotspot active</string>
+    <string name="notification_channel_hotspot">Wi-Fi Hotspot notification</string>
     <string name="tethered_notification_message">Tap to set up.</string>
 
     <!--  Strings for possible PreferenceActivity Back/Next buttons -->
