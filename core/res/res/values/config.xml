@@ -3316,6 +3316,7 @@
         <item>airplane</item>
         <item>settings</item>
         <item>lockdown</item>
+        <item>torch</item>
         <!--<item>bugreport</item>-->
     </string-array>
 
