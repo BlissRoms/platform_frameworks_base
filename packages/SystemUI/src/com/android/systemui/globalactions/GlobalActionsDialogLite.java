@@ -52,6 +52,9 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraAccessException;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
@@ -188,6 +191,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     static final String GLOBAL_ACTION_KEY_SCREENSHOT = "screenshot";
 
     private static final String GLOBAL_ACTION_KEY_ADVANCED_RESTART = "advanced";
+    private static final String GLOBAL_ACTION_KEY_TORCH = "torch";
 
     private static final int RESTART_RECOVERY_BUTTON = 1;
     private static final int RESTART_BOOTLOADER_BUTTON = 2;
@@ -260,6 +264,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     private final Optional<CentralSurfaces> mCentralSurfacesOptional;
     private final KeyguardUpdateMonitor mKeyguardUpdateMonitor;
     private final DialogLaunchAnimator mDialogLaunchAnimator;
+    private boolean mTorchEnabled = false;
 
     @VisibleForTesting
     public enum GlobalActionsEvent implements UiEventLogger.UiEventEnum {
@@ -772,6 +777,11 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                         Settings.System.POWERMENU_LOCKDOWN, 0) != 0) {
                     addIfShouldShowAction(tempActions, new LockDownAction());
                 }
+            } else if (GLOBAL_ACTION_KEY_TORCH.equals(actionKey)) {
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.POWERMENU_TORCH, 0) != 0) {
+                    addIfShouldShowAction(tempActions, getTorchToggleAction());
+                }
             } else if (GLOBAL_ACTION_KEY_VOICEASSIST.equals(actionKey)) {
                 addIfShouldShowAction(tempActions, getVoiceAssistAction());
             } else if (GLOBAL_ACTION_KEY_ASSIST.equals(actionKey)) {
@@ -1139,6 +1149,37 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     @VisibleForTesting
     ScreenshotAction makeScreenshotActionForTesting() {
         return new ScreenshotAction();
+    }
+
+    private Action getTorchToggleAction() {
+        return new SinglePressAction(com.android.systemui.R.drawable.ic_lock_torch,
+                com.android.systemui.R.string.quick_settings_flashlight_label) {
+
+            public void onPress() {
+                try {
+                    CameraManager cameraManager = (CameraManager)
+                            mContext.getSystemService(Context.CAMERA_SERVICE);
+                    for (final String cameraId : cameraManager.getCameraIdList()) {
+                        CameraCharacteristics characteristics =
+                            cameraManager.getCameraCharacteristics(cameraId);
+                        int orient = characteristics.get(CameraCharacteristics.LENS_FACING);
+                        if (orient == CameraCharacteristics.LENS_FACING_BACK) {
+                            cameraManager.setTorchMode(cameraId, !mTorchEnabled);
+                            mTorchEnabled = !mTorchEnabled;
+                        }
+                    }
+                } catch (CameraAccessException e) {
+                }
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
     }
 
     @VisibleForTesting
