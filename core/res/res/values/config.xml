@@ -3257,6 +3257,12 @@
         <item>restart</item>
         <item>logout</item>
         <item>screenshot</item>
+        <item>users</item>
+        <item>silent</item>
+        <item>screenshot</item>
+        <item>airplane</item>
+        <item>settings</item>
+        <item>lockdown</item>
         <!--<item>bugreport</item>-->
     </string-array>
 
