@@ -422,6 +422,10 @@ public class RecentsActivity extends Activity implements ViewTreeObserver.OnPreD
             onEnterAnimationComplete();
         }
         mRecentsStartRequested = false;
+
+        if (isInMultiWindowMode()) {
+            reloadTaskStack(true /* isInMultiWindowMode */, false /* sendConfigChangedEvent */);
+        }
     }
 
     @Override
