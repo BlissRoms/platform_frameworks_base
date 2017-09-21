@@ -132,4 +132,9 @@
   <!-- App lock -->
   <java-symbol type="string" name="unlock_application" />
   <java-symbol type="array" name="config_appLockAllowedSystemApps" />
+
+    <!-- HW keys binding -->
+    <java-symbol type="anim" name="custom_app_in" />
+    <java-symbol type="anim" name="custom_app_out" />
+    <java-symbol type="integer" name="config_deviceHardwareKeys" />
 </resources>
