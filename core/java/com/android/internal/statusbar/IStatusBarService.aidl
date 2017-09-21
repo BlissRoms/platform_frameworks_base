@@ -161,6 +161,10 @@ interface IStatusBarService
     void showInDisplayFingerprintView();
     void hideInDisplayFingerprintView();
 
-    void startAssist(in Bundle args);
     void triggerElmyraAction(String action);
+    void toggleRecentApps();
+    void toggleSplitScreen();
+    void preloadRecentApps();
+    void cancelPreloadRecentApps();
+    void startAssist(in Bundle args);
 }

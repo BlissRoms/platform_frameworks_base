@@ -93,4 +93,9 @@
 
   <!-- Whether key handler sends intent when changing slider position -->
   <java-symbol type="string" name="config_alertSliderIntent" />
+
+    <!-- HW keys binding -->
+    <java-symbol type="anim" name="custom_app_in" />
+    <java-symbol type="anim" name="custom_app_out" />
+    <java-symbol type="integer" name="config_deviceHardwareKeys" />
 </resources>
