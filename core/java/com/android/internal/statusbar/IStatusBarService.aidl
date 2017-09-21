@@ -232,6 +232,12 @@ interface IStatusBarService
      * Starts the default assistant app.
      */
     void startAssist(in Bundle args);
+    void toggleRecentApps();
+    void toggleSplitScreen();
+    void preloadRecentApps();
+    void cancelPreloadRecentApps();
+
+    void screenPinningStateChanged(boolean enabled);
 
     /**
      * BlissRoms additions
