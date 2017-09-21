@@ -152,4 +152,14 @@ interface IStatusBarService
      * toggle camera flash
      */
     void toggleCameraFlash();
+
+    /**
+     * Hw keys
+     */
+    void restartUI();
+    void toggleRecentApps();
+    void toggleSplitScreen();
+    void preloadRecentApps();
+    void cancelPreloadRecentApps();
+    void startAssist(in Bundle args);
 }
