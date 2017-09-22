@@ -271,4 +271,7 @@
     <string name="tuner_keyguard_show_assistant_handle_title">Show assistant handles</string>
     <string name="tuner_keyguard_show_assistant_handle_summary">Show assistant handles on screen edges</string>
 
+    <string name="lockscreen_default">Default</string>
+    <string name="lockscreen_hidden">None</string>
+
 </resources>
