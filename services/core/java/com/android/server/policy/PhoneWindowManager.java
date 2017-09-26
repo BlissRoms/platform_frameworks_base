@@ -677,6 +677,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     Intent mDeskDockIntent;
     Intent mVrHeadsetHomeIntent;
 
+    ANBIHandler mANBIHandler;
+    private boolean mANBIEnabled;
+
     // Tracks user-customisable behavior for certain key events
     private Action mBackLongPressAction;
     private Action mHomeLongPressAction;
@@ -1070,6 +1073,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_ENABLE_POWER_MENU), true, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ANBI_ENABLED), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -2621,6 +2627,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mLockPatternUtils = injector.getLockPatternUtils();
         mLogger = new MetricsLogger();
 
+        mANBIHandler = new ANBIHandler(mContext);
+
         Resources res = mContext.getResources();
         mWakeOnDpadKeyPress =
                 res.getBoolean(com.android.internal.R.bool.config_wakeOnDpadKeyPress);
@@ -3486,6 +3494,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (mWakeGestureEnabledSetting != wakeGestureEnabledSetting) {
                 mWakeGestureEnabledSetting = wakeGestureEnabledSetting;
                 updateWakeGestureListenerLp();
+            }
+
+            boolean ANBIEnabled = Settings.System.getIntForUser(resolver,
+                    Settings.System.ANBI_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+            if (mANBIHandler != null && mANBIEnabled != ANBIEnabled) {
+                mANBIEnabled = ANBIEnabled;
+                if (mANBIEnabled) {
+                    mWindowManagerFuncs.registerPointerEventListener(mANBIHandler, DEFAULT_DISPLAY);
+                } else {
+                    mWindowManagerFuncs.unregisterPointerEventListener(mANBIHandler, DEFAULT_DISPLAY);
+                }
             }
 
             updateKeyAssignments();
@@ -5056,6 +5075,19 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final int displayId = event.getDisplayId();
         final boolean isInjected = (policyFlags & WindowManagerPolicy.FLAG_INJECTED) != 0;
         final boolean longPress = (event.getFlags() & KeyEvent.FLAG_LONG_PRESS) != 0;
+
+        if (mANBIEnabled && mANBIHandler != null && mANBIHandler.isScreenTouched()) {
+            final boolean navBarKey = event.getSource() == InputDevice.SOURCE_NAVIGATION_BAR;
+            final boolean appSwitchKey = keyCode == KeyEvent.KEYCODE_APP_SWITCH;
+            final boolean homeKey = keyCode == KeyEvent.KEYCODE_HOME;
+            final boolean menuKey = keyCode == KeyEvent.KEYCODE_MENU;
+            final boolean backKey = keyCode == KeyEvent.KEYCODE_BACK;
+            final boolean assistKey = keyCode == KeyEvent.KEYCODE_ASSIST;
+
+            if (!navBarKey && (appSwitchKey || homeKey || menuKey || backKey || assistKey)) {
+                return 0;
+            }
+        }
 
         // If screen is off then we treat the case where the keyguard is open but hidden
         // the same as if it were open and in front.
