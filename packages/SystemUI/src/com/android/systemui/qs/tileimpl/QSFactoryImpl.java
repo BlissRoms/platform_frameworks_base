@@ -40,6 +40,7 @@ import com.android.systemui.qs.tiles.CastTile;
 import com.android.systemui.qs.tiles.CellularTile;
 import com.android.systemui.qs.tiles.ColorCorrectionTile;
 import com.android.systemui.qs.tiles.ColorInversionTile;
+import com.android.systemui.qs.tiles.CompassTile;
 import com.android.systemui.qs.tiles.DataSaverTile;
 import com.android.systemui.qs.tiles.DeviceControlsTile;
 import com.android.systemui.qs.tiles.DndTile;
@@ -116,6 +117,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<AODTile> mAODTileProvider;
     private final Provider<AmbientDisplayTile> mAmbientDisplayTileProvider;
     private final Provider<CPUInfoTile> mCPUInfoTileProvider;
+    private final Provider<CompassTile> mCompassTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
     private final Provider<CustomTile.Builder> mCustomTileBuilderProvider;
@@ -162,7 +164,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<DataSwitchTile> dataSwitchTileProvider,
             Provider<AODTile> aodTileProvider,
             Provider<AmbientDisplayTile> ambientDisplayTileProvider,
-            Provider<CPUInfoTile> cpuInfoTileProvider) {
+            Provider<CPUInfoTile> cpuInfoTileProvider,
+            Provider<CompassTile> compassTileProvider) {
 
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
@@ -205,6 +208,7 @@ public class QSFactoryImpl implements QSFactory {
         mAODTileProvider = aodTileProvider;
         mAmbientDisplayTileProvider = ambientDisplayTileProvider;
         mCPUInfoTileProvider = cpuInfoTileProvider;
+        mCompassTileProvider = compassTileProvider;
     }
 
     /** Creates a tile with a type based on {@code tileSpec} */
@@ -298,6 +302,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mAmbientDisplayTileProvider.get();
             case "cpuinfo":
                 return mCPUInfoTileProvider.get();
+            case "compass":
+                return mCompassTileProvider.get();
         }
 
         // Custom tiles
