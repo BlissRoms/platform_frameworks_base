@@ -4633,6 +4633,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DOUBLE_TAP_SLEEP_GESTURE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_STOPLIST_VALUES), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES), false, this);
         }
 
         @Override
@@ -4645,10 +4649,13 @@ public class StatusBar extends SystemUI implements DemoMode,
                     Settings.System.DOUBLE_TAP_SLEEP_GESTURE))) {
                 setLockscreenDoubleTapToSleep();
             }
+            update();
         }
 
         public void update() {
             setLockscreenDoubleTapToSleep();
+            setHeadsUpStoplist();
+            setHeadsUpBlacklist();
         }
     }
 
@@ -4656,6 +4663,16 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mNotificationShadeWindowViewController != null) {
             mNotificationShadeWindowViewController.setLockscreenDoubleTapToSleep();
         }
+    }
+
+    private void setHeadsUpStoplist() {
+        if (mPresenter != null)
+            mPresenter.setHeadsUpStoplist();
+    }
+
+    private void setHeadsUpBlacklist() {
+        if (mPresenter != null)
+            mPresenter.setHeadsUpBlacklist();
     }
 
     private final BroadcastReceiver mBannerActionBroadcastReceiver = new BroadcastReceiver() {
