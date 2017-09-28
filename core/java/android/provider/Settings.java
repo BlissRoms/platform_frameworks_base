@@ -4893,6 +4893,26 @@ public final class Settings {
         public static final String SMART_CHARGING_RESUME_LEVEL = "smart_charging_resume_level";
 
         /**
+         * Applications list where heasdup should't show
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_STOPLIST_VALUES = "heads_up_stoplist_values";
+        /** @hide */
+        private static final Validator HEADS_UP_STOPLIST_VALUES_VALIDATOR =
+                ANY_STRING_VALIDATOR;
+
+        /**
+         * Which applications to disable heads up notifications for
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_BLACKLIST_VALUES = "heads_up_blacklist_values";
+        /** @hide */
+        private static final Validator HEADS_UP_BLACKLIST_VALUES_VALIDATOR =
+                ANY_STRING_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4969,6 +4989,8 @@ public final class Settings {
             OMNI_LOCKSCREEN_MEDIA_BLUR,
             QS_QUICKBAR_COLUMNS,
             SCREEN_OFF_ANIMATION
+            HEADS_UP_STOPLIST_VALUES,
+            HEADS_UP_BLACKLIST_VALUES,
         };
 
         /**
@@ -5100,7 +5122,9 @@ public final class Settings {
             PRIVATE_SETTINGS.add(TOAST_ICON);
             PRIVATE_SETTINGS.add(OMNI_BACK_GESTURE_HEIGHT);
             PRIVATE_SETTINGS.add(QS_QUICKBAR_COLUMNS);
-            PRIVATE_SETTINGS.add(SCREEN_OFF_ANIMATION);            
+            PRIVATE_SETTINGS.add(SCREEN_OFF_ANIMATION);
+            PRIVATE_SETTINGS.add(HEADS_UP_STOPLIST_VALUES);
+            PRIVATE_SETTINGS.add(HEADS_UP_BLACKLIST_VALUES);
         }
 
         /**
@@ -5207,6 +5231,8 @@ public final class Settings {
             VALIDATORS.put(OMNI_LOCKSCREEN_MEDIA_BLUR, OMNI_LOCKSCREEN_MEDIA_BLUR_VALIDATOR);
             VALIDATORS.put(QS_QUICKBAR_COLUMNS, QS_QUICKBAR_COLUMNS_VALIDATOR);
             VALIDATORS.put(SCREEN_OFF_ANIMATION, SCREEN_OFF_ANIMATION_VALIDATOR);
+            VALIDATORS.put(HEADS_UP_STOPLIST_VALUES, HEADS_UP_STOPLIST_VALUES_VALIDATOR);
+            VALIDATORS.put(HEADS_UP_BLACKLIST_VALUES, HEADS_UP_BLACKLIST_VALUES_VALIDATOR);
         }
 
         /**
