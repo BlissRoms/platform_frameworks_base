@@ -125,4 +125,7 @@
     <dimen name="quick_qs_drag_handle_height">20dp</dimen>
     <dimen name="qs_header_image_offset">0dp</dimen>
     <dimen name="qs_header_image_side_margin">0dp</dimen>
+
+    <!-- Height of the status bar header bar -->
+    <dimen name="status_bar_header_height">130dp</dimen>
 </resources>
