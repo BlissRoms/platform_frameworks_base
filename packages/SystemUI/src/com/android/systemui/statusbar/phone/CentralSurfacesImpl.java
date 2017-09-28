@@ -60,6 +60,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -970,6 +971,10 @@ public class CentralSurfacesImpl extends CoreStartable implements
         } else if (DEBUG) {
             Log.v(TAG, "start(): no wallpaper service ");
         }
+
+
+        mBlissSettingsObserver.observe();
+        mBlissSettingsObserver.update();
 
         // Set up the initial notification state. This needs to happen before CommandQueue.disable()
         setUpPresenter();
@@ -4089,6 +4094,42 @@ public class CentralSurfacesImpl extends CoreStartable implements
     @Override
     public boolean isDeviceInteractive() {
         return mDeviceInteractive;
+    }
+
+    private BlissSettingsObserver mBlissSettingsObserver = new BlissSettingsObserver(mMainHandler);
+    private class BlissSettingsObserver extends ContentObserver {
+        BlissSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_STOPLIST_VALUES), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+	    update();
+        }
+
+        public void update() {
+            setHeadsUpStoplist();
+            setHeadsUpBlacklist();
+        }
+    }
+
+    private void setHeadsUpStoplist() {
+        if (mNotificationInterruptStateProvider != null)
+            mNotificationInterruptStateProvider.setHeadsUpStoplist();
+    }
+
+    private void setHeadsUpBlacklist() {
+        if (mNotificationInterruptStateProvider != null)
+            mNotificationInterruptStateProvider.setHeadsUpBlacklist();
     }
 
     private final BroadcastReceiver mBannerActionBroadcastReceiver = new BroadcastReceiver() {

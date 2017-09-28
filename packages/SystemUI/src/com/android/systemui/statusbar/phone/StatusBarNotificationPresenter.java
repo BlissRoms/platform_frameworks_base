@@ -18,14 +18,20 @@ import static com.android.systemui.statusbar.phone.CentralSurfaces.CLOSE_PANEL_W
 import static com.android.systemui.statusbar.phone.CentralSurfaces.DEBUG;
 import static com.android.systemui.statusbar.phone.CentralSurfaces.MULTIUSER_DEBUG;
 
+import android.annotation.Nullable;
+import android.app.ActivityManager;
 import android.app.KeyguardManager;
+import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.service.vr.IVrManager;
 import android.service.vr.IVrStateCallbacks;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.view.View;
@@ -67,6 +73,9 @@ import com.android.systemui.statusbar.notification.stack.NotificationStackScroll
 import com.android.systemui.statusbar.phone.LockscreenGestureLogger.LockscreenUiEvent;
 import com.android.systemui.statusbar.phone.dagger.CentralSurfacesComponent;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
