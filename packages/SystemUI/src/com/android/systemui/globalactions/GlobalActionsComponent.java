@@ -81,4 +81,12 @@ public class GlobalActionsComponent extends SystemUI implements Callbacks, Globa
         } catch (RemoteException e) {
         }
     }
+
+    @Override
+    public void rebootSafeMode(boolean confirm) {
+        try {
+            mBarService.rebootSafeMode(confirm);
+        } catch (RemoteException e) {
+        }
+    }
 }

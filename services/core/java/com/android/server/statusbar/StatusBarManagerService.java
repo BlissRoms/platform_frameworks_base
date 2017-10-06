@@ -788,6 +788,22 @@ public class StatusBarManagerService extends IStatusBarService.Stub {
         }
     }
 
+    /**
+     * Allows the status bar to reboot to safe mode.
+     */
+    @Override
+    public void rebootSafeMode(boolean confirm) {
+        enforceStatusBarService();
+        long identity = Binder.clearCallingIdentity();
+        try {
+            // ShutdownThread displays UI, so give it a UI context.
+            mHandler.post(() ->
+                    ShutdownThread.rebootSafeMode(getUiContext(), confirm));
+        } finally {
+            Binder.restoreCallingIdentity(identity);
+        }
+    }
+
     @Override
     public void onGlobalActionsShown() {
         enforceStatusBarService();
