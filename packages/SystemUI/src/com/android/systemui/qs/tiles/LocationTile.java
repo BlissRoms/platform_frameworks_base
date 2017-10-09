@@ -86,6 +86,7 @@ public class LocationTile extends QSTileImpl<BooleanState> {
         }
         final boolean wasEnabled = mState.value;
         mController.setLocationEnabled(!wasEnabled);
+        refreshState();
     }
 
     @Override
