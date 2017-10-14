@@ -41,4 +41,15 @@
     <dimen name="right_tri_state_up_bottom_right_radius">0.0dip</dimen>
     <dimen name="right_tri_state_up_top_left_radius">24.0dip</dimen>
     <dimen name="right_tri_state_up_top_right_radius">24.0dip</dimen>
+
+    <!-- QQS Brightness slider -->
+    <dimen name="qqs_top_brightness_margin_top">4dp</dimen>
+    <dimen name="qqs_top_brightness_margin_bottom">12dp</dimen>
+    <dimen name="qqs_bottom_brightness_margin_top">12dp</dimen>
+
+    <!-- QS Brightness slider -->
+    <dimen name="qs_top_brightness_margin_top">8dp</dimen>
+    <dimen name="qs_top_brightness_margin_bottom">10dp</dimen>
+    <dimen name="qs_bottom_brightness_margin_top">10dp</dimen>
+
 </resources>
