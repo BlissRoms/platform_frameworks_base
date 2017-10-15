@@ -108,4 +108,9 @@
   <java-symbol type="style" name="Animation.Toast.SlideRightLeft" />
   <java-symbol type="style" name="Animation.Toast.SlideLeftRight" />
 
+    <!-- ADB notification -->
+    <java-symbol type="string" name="adb_net_active_notification_title" />
+    <java-symbol type="string" name="adb_both_active_notification_title" />
+    <java-symbol type="string" name="adb_active_generic_notification_message" />
+
 </resources>
