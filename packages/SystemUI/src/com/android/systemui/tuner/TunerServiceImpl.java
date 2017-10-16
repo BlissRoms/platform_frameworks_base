@@ -39,6 +39,7 @@ import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.qs.QSTileHost;
 import com.android.systemui.settings.CurrentUserTracker;
 import com.android.systemui.statusbar.phone.StatusBarIconController;
+import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.util.leak.LeakDetector;
 
 import java.util.HashSet;
@@ -63,7 +64,9 @@ public class TunerServiceImpl extends TunerService {
     private static final String[] RESET_BLACKLIST = new String[] {
             QSTileHost.TILES_SETTING,
             Settings.Secure.DOZE_ALWAYS_ON,
-            Settings.Secure.MEDIA_CONTROLS_RESUME
+            Settings.Secure.MEDIA_CONTROLS_RESUME,
+            StatusBar.SCREEN_BRIGHTNESS_MODE,
+            StatusBar.STATUS_BAR_BRIGHTNESS_CONTROL
     };
 
     private final Observer mObserver = new Observer();
