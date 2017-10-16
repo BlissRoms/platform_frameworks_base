@@ -6977,6 +6977,12 @@ public final class Settings {
          */
         public static final String NAVIGATION_BAR_IME_SPACE = "navigation_bar_ime_space";
 
+        /**
+         * Whether to control brightness from status bar
+         * 0 = 0ff, 1 = on
+         * @hide
+         */
+        public static final String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
 
         /**
          * These are all public system settings
