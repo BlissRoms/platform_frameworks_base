@@ -75,8 +75,11 @@ public class TunerActivity extends Activity implements
             final String action = getIntent().getAction();
             boolean showDemoMode = action != null && action.equals(
                     "com.android.settings.action.DEMO_MODE");
+            boolean showSbTuner = action != null && action.equals(
+                    "com.android.settings.action.STATUS_BAR_TUNER");
             final PreferenceFragment fragment = showDemoMode
                     ? new DemoModeFragment(mDemoModeController, mGlobalSettings)
+		    : showSbTuner ? new StatusBarTuner()
                     : new TunerFragment(mTunerService);
             getFragmentManager().beginTransaction().replace(R.id.content_frame,
                     fragment, TAG_TUNER).commit();
