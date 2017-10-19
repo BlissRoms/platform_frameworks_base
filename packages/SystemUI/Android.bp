@@ -179,6 +179,7 @@ android_library {
         "motion_tool_lib",
     ],
     manifest: "AndroidManifest.xml",
+    additional_manifests: ["BlissManifest.xml"],
 
     kotlincflags: ["-Xjvm-default=enable"],
 
