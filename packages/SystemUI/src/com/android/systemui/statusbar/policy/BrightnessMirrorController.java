@@ -56,6 +56,7 @@ public class BrightnessMirrorController
             @NonNull Consumer<Boolean> visibilityCallback) {
         mStatusBarWindow = statusBarWindow;
         mBrightnessMirror = statusBarWindow.findViewById(R.id.brightness_mirror);
+        setPadding();
         mNotificationPanel = notificationPanelViewController;
         mDepthController = notificationShadeDepthController;
         mNotificationPanel.setPanelAlphaEndAction(() -> {
@@ -122,6 +123,7 @@ public class BrightnessMirrorController
         mStatusBarWindow.removeView(mBrightnessMirror);
         mBrightnessMirror = LayoutInflater.from(mBrightnessMirror.getContext()).inflate(
                 R.layout.brightness_mirror, mStatusBarWindow, false);
+        setPadding();
         mStatusBarWindow.addView(mBrightnessMirror, index);
 
         for (int i = 0; i < mBrightnessMirrorListeners.size(); i++) {
@@ -146,6 +148,12 @@ public class BrightnessMirrorController
 
     public interface BrightnessMirrorListener {
         void onBrightnessMirrorReinflated(View brightnessMirror);
+    }
+
+    private void setPadding(){
+        mBrightnessMirror.setPadding(mBrightnessMirror.getPaddingLeft(),
+                    mBrightnessMirror.getPaddingTop(), mBrightnessMirror.getPaddingRight(),
+                    mContext.getResources().getDimensionPixelSize(R.dimen.qs_brightness_footer_padding));
     }
 
     private void updateIcon() {
