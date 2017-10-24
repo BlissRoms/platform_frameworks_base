@@ -23,6 +23,7 @@
     <string name="reboot_system" product="tablet">Reboot tablet</string>
     <string name="reboot_system" product="default">Reboot phone</string>
     <string name="reboot_reboot">Reboot</string>
+    <string name="reboot_hot">Hot reboot</string>
     <string name="reboot_to_recovery_title">Recovery</string>
     <string name="reboot_recovery_progress">Rebooting to recovery\u2026</string>
     <string name="reboot_recovery">Recovery</string>

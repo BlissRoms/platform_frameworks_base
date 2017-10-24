@@ -85,9 +85,13 @@ public final class ShutdownThread extends Thread {
     private static boolean sIsStarted = false;
 
     private static boolean mReboot;
+    private static boolean mRebootHot;
     private static boolean mRebootSafeMode;
     private static boolean mRebootHasProgressBar;
     private static String mReason;
+
+    // Hot reboot
+    public static final String HOT_REBOOT = "hot_reboot";
 
     // Provides shutdown assurance in case the system_server is killed
     public static final String SHUTDOWN_ACTION_PROPERTY = "sys.shutdown.requested";
@@ -178,14 +182,22 @@ public final class ShutdownThread extends Thread {
 
                                 if (actions != null && which < actions.length) {
                                     mReason = actions[which];
+                                    if (actions[which].equals(HOT_REBOOT)) {
+                                        mRebootHot = true;
+                                    }
                                 }
                             }
                         })
                         .setPositiveButton(com.android.internal.R.string.yes,
                                 new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                mReboot = true;
-                                beginShutdownSequence(context);
+                                if (mRebootHot) {
+                                    mRebootHot = false;
+                                    doHotReboot();
+                                } else {
+                                    mReboot = true;
+                                    beginShutdownSequence(context);
+                                }
                             }
                         })
                         .setNegativeButton(com.android.internal.R.string.no,
@@ -201,6 +213,7 @@ public final class ShutdownThread extends Thread {
                                     KeyEvent event) {
                                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                                     mReboot = false;
+                                    mRebootHot = false;
                                     dialog.cancel();
                                 }
                                 return true;
@@ -227,6 +240,18 @@ public final class ShutdownThread extends Thread {
             sConfirmDialog.show();
         } else {
             beginShutdownSequence(context);
+        }
+    }
+
+    private static void doHotReboot() {
+        try {
+            final IActivityManager am =
+                  ActivityManagerNative.asInterface(ServiceManager.checkService("activity"));
+            if (am != null) {
+                am.restart();
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "failure trying to perform hot reboot", e);
         }
     }
 
