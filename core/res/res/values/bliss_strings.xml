@@ -19,4 +19,15 @@
     <!-- Wheter to enable doze always on -->
     <bool name="config_enableDozeAlwaysOn">false</bool>
 
+    <!-- Power menu -->
+    <string name="reboot_system" product="tablet">Reboot tablet</string>
+    <string name="reboot_system" product="default">Reboot phone</string>
+    <string name="reboot_reboot">Reboot</string>
+    <string name="reboot_to_recovery_title">Recovery</string>
+    <string name="reboot_recovery_progress">Rebooting to recovery\u2026</string>
+    <string name="reboot_recovery">Recovery</string>
+    <string name="reboot_bootloader">Bootloader</string>
+    <string name="reboot_progress">Rebooting\u2026</string>
+    <string name="global_action_reboot">Reboot</string>
+
 </resources>
