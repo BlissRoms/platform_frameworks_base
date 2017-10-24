@@ -67,17 +67,17 @@ public class GlobalActionsComponent extends SystemUI implements Callbacks, Globa
     }
 
     @Override
-    public void shutdown() {
+    public void shutdown(boolean confirm) {
         try {
-            mBarService.shutdown();
+            mBarService.shutdown(confirm);
         } catch (RemoteException e) {
         }
     }
 
     @Override
-    public void reboot(boolean safeMode) {
+    public void reboot(boolean confirm) {
         try {
-            mBarService.reboot(safeMode);
+            mBarService.reboot(confirm);
         } catch (RemoteException e) {
         }
     }
