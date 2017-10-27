@@ -382,6 +382,11 @@ public final class ShutdownThread extends Thread {
             pd.setMessage(context.getText(com.android.internal.R.string.shutdown_progress));
             pd.setIndeterminate(true);
         }
+        if (mReason != null && mReason.equals(PowerManager.REBOOT_BOOTLOADER)) {
+            pd.setTitle(context.getText(com.android.internal.R.string.reboot_to_bootloader_title));
+            pd.setMessage(context.getText(com.android.internal.R.string.reboot_to_bootloader_message));
+            pd.setIndeterminate(true);
+        }
         pd.setCancelable(false);
         pd.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
 
