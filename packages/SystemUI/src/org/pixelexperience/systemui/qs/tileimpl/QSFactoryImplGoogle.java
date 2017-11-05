@@ -44,6 +44,7 @@ import com.android.systemui.qs.tiles.GamingModeTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.InternetTile;
+import com.android.systemui.qs.tiles.LiveDisplayTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.MicrophoneToggleTile;
 import com.android.systemui.qs.tiles.MonoToggleTile;
@@ -133,7 +134,8 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
             Provider<CPUInfoTile> cpuInfoTileProvider,
             Provider<SoundSearchTile> soundSearchTileProvider,
             Provider<MonoToggleTile> monoToggleTileProvider,
-            Provider<VpnTile> vpnTileProvider) {
+            Provider<VpnTile> vpnTileProvider,
+            Provider<LiveDisplayTile> liveDisplayTileProvider) {
         super(qsHostLazy,
                 customTileBuilderProvider,
                 wifiTileProvider,
@@ -182,7 +184,8 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
                 cpuInfoTileProvider,
                 soundSearchTileProvider,
                 monoToggleTileProvider,
-                vpnTileProvider);
+                vpnTileProvider,
+                liveDisplayTileProvider);
         mReverseChargingTileProvider = reverseChargingTileProvider;
         mBatterySaverTileGoogleProvider = batterySaverTileGoogleProvider;
     }
