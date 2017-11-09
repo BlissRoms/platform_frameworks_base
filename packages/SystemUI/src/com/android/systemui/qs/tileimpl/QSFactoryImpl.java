@@ -66,6 +66,7 @@ import com.android.systemui.qs.tiles.SleepScreenTile;
 import com.android.systemui.qs.tiles.SoundSearchTile;
 import com.android.systemui.qs.tiles.SoundTile;
 import com.android.systemui.qs.tiles.UiModeNightTile;
+import com.android.systemui.qs.tiles.ScreenStabilizationTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.VolumeTile;
@@ -129,6 +130,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
     private final Provider<ImmersiveTile> mImmersiveTileProvider;
     private final Provider<MonoToggleTile> mMonoToggleTileProvider;
+    private final Provider<ScreenStabilizationTile> mScreenStabilizationTileProvider;
 
     private QSTileHost mHost;
 
@@ -177,7 +179,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<GamingModeTile> GamingModeTileProvider,
             Provider<DataSwitchTile> dataSwitchTileProvider,
             Provider<ImmersiveTile> immersiveTileProvider,
-            Provider<MonoToggleTile> monoToggleTileProvider) {
+            Provider<MonoToggleTile> monoToggleTileProvider,
+            Provider<ScreenStabilizationTile> screenStabilizationTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -223,6 +226,7 @@ public class QSFactoryImpl implements QSFactory {
         mDataSwitchTileProvider = dataSwitchTileProvider;
         mImmersiveTileProvider = immersiveTileProvider;
         mMonoToggleTileProvider = monoToggleTileProvider;
+        mScreenStabilizationTileProvider = screenStabilizationTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -331,6 +335,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mImmersiveTileProvider.get();
             case "mono":
                 return mMonoToggleTileProvider.get();
+            case "screenstabilization":
+                return mScreenStabilizationTileProvider.get();
         }
 
         // Intent tiles.
