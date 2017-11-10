@@ -440,6 +440,21 @@ public final class BluetoothLeAdvertiser {
      * BluetoothLeAdvertiser#startAdvertisingSet}.
      */
     public void stopAdvertisingSet(AdvertisingSetCallback callback) {
+        try {
+            final int state = mBluetoothAdapter.getLeState();
+            Log.d(TAG, "stopAdvertisingSet(): " + BluetoothAdapter.nameForState(state));
+
+            if (mBluetoothAdapter == null || !(state == BluetoothAdapter.STATE_ON
+                || state == BluetoothAdapter.STATE_BLE_ON
+                || state == BluetoothAdapter.STATE_TURNING_OFF
+                || state == BluetoothAdapter.STATE_TURNING_ON)) {
+                throw new IllegalStateException("BT Adapter is not turned ON");
+            }
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Failed to stop Advertisement:",e);
+            return;
+        }
+
         if (callback == null) {
           throw new IllegalArgumentException("callback cannot be null");
         }
