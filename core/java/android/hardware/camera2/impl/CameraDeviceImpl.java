@@ -70,7 +70,7 @@ public class CameraDeviceImpl extends CameraDevice
     private final boolean DEBUG = false;
 
     private static final int REQUEST_ID_NONE = -1;
-
+    private int customOpMode = 0;
     // TODO: guard every function with if (!mRemoteDevice) check (if it was closed)
     private ICameraDeviceUserWrapper mRemoteDevice;
 
@@ -350,6 +350,10 @@ public class CameraDeviceImpl extends CameraDevice
         }
     }
 
+    public void setVendorStreamConfigMode(int fpsrange) {
+        customOpMode = fpsrange;
+    }
+
     @Override
     public String getId() {
         return mCameraId;
@@ -462,7 +466,7 @@ public class CameraDeviceImpl extends CameraDevice
                         mConfiguredOutputs.put(streamId, outConfig);
                     }
                 }
-
+                operatingMode = (operatingMode | (customOpMode << 16));
                 mRemoteDevice.endConfigure(operatingMode);
 
                 success = true;
