@@ -53,6 +53,7 @@ import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.ProfilesTile;
 import com.android.systemui.qs.tiles.ReadingModeTile;
+import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
@@ -118,6 +119,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<SleepScreenTile> mSleepScreenTileProvider;
     private final Provider<VpnTile> mVpnTileProvider;
     private final Provider<ScreenRecordTile> mScreenRecordTileProvider;
+    private final Provider<RebootTile> mRebootTileProvider;
 
     private QSTileHost mHost;
 
@@ -161,7 +163,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<CompassTile> compassTileProvider,
             Provider<SleepScreenTile> sleepScreenTileProvider,
             Provider<VpnTile> vpnTileProvider,
-            Provider<ScreenRecordTile> screenRecordTileProvider) {
+            Provider<ScreenRecordTile> screenRecordTileProvider,
+            Provider<RebootTile> RebootTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -202,6 +205,7 @@ public class QSFactoryImpl implements QSFactory {
         mSleepScreenTileProvider = sleepScreenTileProvider;
         mVpnTileProvider = vpnTileProvider;
         mScreenRecordTileProvider = screenRecordTileProvider;
+        mRebootTileProvider = RebootTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -298,6 +302,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mVpnTileProvider.get();
             case "screenrecord":
                 return mScreenRecordTileProvider.get();
+            case "reboot":
+                return mRebootTileProvider.get();
         }
 
         // Intent tiles.
