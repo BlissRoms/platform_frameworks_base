@@ -50,6 +50,7 @@ import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.OneHandedModeTile;
 import com.android.systemui.qs.tiles.QRCodeScannerTile;
 import com.android.systemui.qs.tiles.QuickAccessWalletTile;
+import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.ReduceBrightColorsTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
@@ -98,6 +99,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<QRCodeScannerTile> mQRCodeScannerTileProvider;
     private final Provider<OneHandedModeTile> mOneHandedModeTileProvider;
     private final Provider<DreamTile> mDreamTileProvider;
+    private final Provider<RebootTile> mRebootTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
     private final Provider<CustomTile.Builder> mCustomTileBuilderProvider;
@@ -135,10 +137,10 @@ public class QSFactoryImpl implements QSFactory {
             Provider<QRCodeScannerTile> qrCodeScannerTileProvider,
             Provider<OneHandedModeTile> oneHandedModeTileProvider,
             Provider<ColorCorrectionTile> colorCorrectionTileProvider,
-            Provider<DreamTile> dreamTileProvider) {
+            Provider<DreamTile> dreamTileProvider,
+            Provider<RebootTile> rebootTileProvider) {
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
-
         mWifiTileProvider = wifiTileProvider;
         mInternetTileProvider = internetTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
@@ -169,6 +171,7 @@ public class QSFactoryImpl implements QSFactory {
         mOneHandedModeTileProvider = oneHandedModeTileProvider;
         mColorCorrectionTileProvider = colorCorrectionTileProvider;
         mDreamTileProvider = dreamTileProvider;
+        mRebootTileProvider = rebootTileProvider;
     }
 
     /** Creates a tile with a type based on {@code tileSpec} */
@@ -244,6 +247,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mColorCorrectionTileProvider.get();
             case "dream":
                 return mDreamTileProvider.get();
+            case "reboot":
+                return mRebootTileProvider.get();
         }
 
         // Custom tiles
