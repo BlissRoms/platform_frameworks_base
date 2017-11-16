@@ -74,4 +74,10 @@
     <string name="onthego_service_toggle">Automatically restart service</string>
     <string name="onthego_channel_name">Main</string>
 
+    <!-- Poweroff/Reboot/Recovery tile -->
+    <string name="quick_settings_poweroff_label">Power off</string>
+    <string name="quick_settings_reboot_label">Reboot</string>
+    <string name="quick_settings_reboot_recovery_label" translatable="false">Recovery</string>
+    <string name="quick_settings_reboot_bootloader_label" translatable="false">Bootloader</string>
+
 </resources>
