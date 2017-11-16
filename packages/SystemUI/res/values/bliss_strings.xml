@@ -29,4 +29,7 @@
     <string name="accessibility_quick_settings_caffeine_off">Caffeine off</string>
     <string name="accessibility_quick_settings_caffeine_on">Caffeine on</string>
 
+    <!-- QS Tiles -->
+    <string name="quick_settings_screenshot_label">Screenshot</string>
+
 </resources>

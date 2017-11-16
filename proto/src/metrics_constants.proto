@@ -4571,5 +4571,12 @@ message MetricsEvent {
 
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
+
+    // Blissify
+    BLISSIFY = 1200;
+
+    // Screenshot Tile
+    QS_SCREENSHOT_TILE = 1201;
+
   }
 }
