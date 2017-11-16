@@ -15,7 +15,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_extra" translatable="false">
-        aod,compass,cpuinfo,lte,music,screenrecord,screenshot,sleepscreen,sound,soundsearch,vpn
+        aod,compass,cpuinfo,lte,music,reboot,screenrecord,screenshot,sleepscreen,sound,soundsearch,vpn
     </string>
 
     <!-- Burn in protection -->
