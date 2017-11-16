@@ -41,6 +41,7 @@ import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.NightDisplayTile;
+import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
 import com.android.systemui.qs.tiles.SyncTile;
@@ -92,6 +93,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<CaffeineTile> mCaffeineTileProvider;
     private final Provider<AmbientDisplayTile> mAmbientDisplayTileProvider;
     private final Provider<AODTile> mAODTileProvider;
+    private final Provider<RebootTile> mRebootTileProvider;
     private final Provider<UsbTetherTile> mUsbTetherTileProvider;
     private final Provider<SyncTile> mSyncTileProvider;
     private final Provider<SoundTile> mSoundTileProvider;
@@ -128,6 +130,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<CaffeineTile> caffeineTileProvider,
             Provider<AmbientDisplayTile> ambientDisplayTileProvider,
             Provider<AODTile> aodTileProvider,
+            Provider<RebootTile> rebootTileProvider,
             Provider<UsbTetherTile> usbTetherTileProvider,
             Provider<SyncTile> syncTileProvider,
             Provider<SoundTile> soundTileProvider,
@@ -160,6 +163,7 @@ public class QSFactoryImpl implements QSFactory {
         mCaffeineTileProvider = caffeineTileProvider;
         mAmbientDisplayTileProvider = ambientDisplayTileProvider;
         mAODTileProvider = aodTileProvider;
+        mRebootTileProvider = rebootTileProvider;
         mUsbTetherTileProvider = usbTetherTileProvider;
         mSyncTileProvider = syncTileProvider;
         mSoundTileProvider = soundTileProvider;
@@ -225,6 +229,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mAmbientDisplayTileProvider.get();
             case "aod":
                 return mAODTileProvider.get();
+            case "reboot":
+                return mRebootTileProvider.get();
             case "usb_tether":
                 return mUsbTetherTileProvider.get();
             case "sync":
