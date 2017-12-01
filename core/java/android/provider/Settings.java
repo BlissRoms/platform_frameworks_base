@@ -5787,6 +5787,12 @@ public final class Settings {
          */
         public static final String SWITCH_STYLE = "switch_style";
 
+       /**
+        * Check the proximity sensor during wakeup
+        * @hide
+        */
+       public static final String PROXIMITY_ON_WAKE = "proximity_on_wake";
+
         /**
          * Whether to show the lyric on the status bar
          * @hide
@@ -5939,6 +5945,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SETTINGS_DASHBOARD_ICONS);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_NEW_TINT);
             PRIVATE_SETTINGS.add(SCREENSHOT_TYPE);
+            PRIVATE_SETTINGS.add(PROXIMITY_ON_WAKE);
         }
 
         /**
