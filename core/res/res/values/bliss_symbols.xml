@@ -26,4 +26,9 @@
     <!-- Whether device supports an alt. ambient display -->
     <java-symbol type="bool" name="config_alt_ambient_display"/>
 
+    <!-- Proximity check on wake -->
+    <java-symbol type="bool" name="config_proximityCheckOnWake" />
+    <java-symbol type="integer" name="config_proximityCheckTimeout" />
+    <java-symbol type="bool" name="config_proximityCheckOnWakeEnabledByDefault" />
+
 </resources>
