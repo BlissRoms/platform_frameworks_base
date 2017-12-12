@@ -72,6 +72,7 @@ public class StatusBarSignalPolicy implements SignalCallback,
     private boolean mHideEthernet;
     private boolean mActivityEnabled;
     private boolean mHideRoaming;
+    private boolean mHideVpn;
 
     // Track as little state as possible, and only for padding purposes
     private boolean mIsAirplaneMode = false;
@@ -128,7 +129,7 @@ public class StatusBarSignalPolicy implements SignalCallback,
     }
 
     private void updateVpn() {
-        boolean vpnVisible = mSecurityController.isVpnEnabled();
+        boolean vpnVisible = mSecurityController.isVpnEnabled() && !mHideVpn;
         int vpnIconId = currentVpnIconId(mSecurityController.isVpnBranded());
 
         mIconController.setIcon(mSlotVpn, vpnIconId,
@@ -159,14 +160,16 @@ public class StatusBarSignalPolicy implements SignalCallback,
         boolean hideWifi = hideList.contains(mSlotWifi);
         boolean hideEthernet = hideList.contains(mSlotEthernet);
         boolean hideRoaming = hideList.contains(mSlotRoaming);
+        boolean hideVpn = hideList.contains(mSlotVpn);
 
         if (hideAirplane != mHideAirplane || hideMobile != mHideMobile
-                || hideEthernet != mHideEthernet || hideWifi != mHideWifi || hideRoaming != mHideRoaming) {
+                || hideEthernet != mHideEthernet || hideWifi != mHideWifi || hideRoaming != mHideRoaming || hideVpn != mHideVpn) {
             mHideAirplane = hideAirplane;
             mHideMobile = hideMobile;
             mHideEthernet = hideEthernet;
             mHideWifi = hideWifi;
             mHideRoaming = hideRoaming;
+	    mHideVpn = hideVpn;
             // Re-register to get new callbacks.
             mNetworkController.removeCallback(this);
             mNetworkController.addCallback(this);
