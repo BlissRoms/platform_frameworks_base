@@ -87,5 +87,6 @@
 
     <!-- Status bar tuner -->
     <string name="status_bar_items_title">SB Icon Tuner</string>
+    <string name="status_bar_vpn">VPN</string>
 
 </resources>
