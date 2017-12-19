@@ -428,7 +428,8 @@ public class LongScreenshotActivity extends Activity {
         ListenableFuture<ImageExporter.Result> exportFuture = mImageExporter.export(
                 mBackgroundExecutor, UUID.randomUUID(), mOutputBitmap, ZonedDateTime.now(),
                 mFeatureFlags.isEnabled(Flags.SCREENSHOT_WORK_PROFILE_POLICY)
-                        ? mScreenshotUserHandle : Process.myUserHandle());
+                        ? mScreenshotUserHandle : Process.myUserHandle(),
+                mLongScreenshotHolder.getForegroundAppName());
         exportFuture.addListener(() -> onExportCompleted(action, exportFuture), mUiExecutor);
     }
 
