@@ -4440,6 +4440,14 @@ public final class Settings {
                 ANY_INTEGER_VALIDATOR;
 
         /**
+         * 0 - wallpaper based
+         * 1 - force light
+         * 2 - force dark
+         * @hide
+         */
+        public static final String SYSTEM_THEME_STYLE = "system_theme_style";
+
+        /**
          * @hide
          */
         public static final String OMNI_ASPECT_RATIO_APPS_LIST = "aspect_ratio_apps_list";
@@ -6239,6 +6247,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(HIDE_LOCKSCREEN_STATUS_BAR);
             PRIVATE_SETTINGS.add(OMNI_DOZE_ON_CHARGE);
             PRIVATE_SETTINGS.add(POCKET_JUDGE);
+            PRIVATE_SETTINGS.add(SYSTEM_THEME_STYLE);
 	}
 
         /**
