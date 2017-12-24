@@ -161,4 +161,7 @@
 
     <!-- VoLTE/VoWiFi -->
     <string name="status_bar_ims">VoLTE/VoWiFi</string>
+
+    <!-- CPUInfo tile -->
+    <string name="quick_settings_cpuinfo_label">CPU Info</string>
 </resources>

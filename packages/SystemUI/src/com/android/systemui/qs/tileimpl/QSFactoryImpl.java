@@ -34,6 +34,7 @@ import com.android.systemui.qs.tiles.AmbientDisplayTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.CameraToggleTile;
+import com.android.systemui.qs.tiles.CPUInfoTile;
 import com.android.systemui.qs.tiles.CaffeineTile;
 import com.android.systemui.qs.tiles.CastTile;
 import com.android.systemui.qs.tiles.CellularTile;
@@ -114,6 +115,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
     private final Provider<AODTile> mAODTileProvider;
     private final Provider<AmbientDisplayTile> mAmbientDisplayTileProvider;
+    private final Provider<CPUInfoTile> mCPUInfoTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
     private final Provider<CustomTile.Builder> mCustomTileBuilderProvider;
@@ -159,7 +161,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<UsbTetherTile> usbTetherTileProvider,
             Provider<DataSwitchTile> dataSwitchTileProvider,
             Provider<AODTile> aodTileProvider,
-            Provider<AmbientDisplayTile> ambientDisplayTileProvider) {
+            Provider<AmbientDisplayTile> ambientDisplayTileProvider,
+            Provider<CPUInfoTile> cpuInfoTileProvider) {
 
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
@@ -201,6 +204,7 @@ public class QSFactoryImpl implements QSFactory {
         mDataSwitchTileProvider = dataSwitchTileProvider;
         mAODTileProvider = aodTileProvider;
         mAmbientDisplayTileProvider = ambientDisplayTileProvider;
+        mCPUInfoTileProvider = cpuInfoTileProvider;
     }
 
     /** Creates a tile with a type based on {@code tileSpec} */
@@ -292,6 +296,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mAODTileProvider.get();
             case "ambient_display":
                 return mAmbientDisplayTileProvider.get();
+            case "cpuinfo":
+                return mCPUInfoTileProvider.get();
         }
 
         // Custom tiles
