@@ -26,6 +26,7 @@ import android.os.Environment;
 import android.os.Process;
 import android.os.storage.StorageManager;
 import android.text.TextUtils;
+import android.os.SystemProperties;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
@@ -255,6 +256,11 @@ public class SystemConfig {
            if (mAvailableFeatures.remove("android.hardware.opengles.aep") != null) {
                Slog.d(TAG, "Removed android.hardware.opengles.aep feature for opengles 3.0");
            }
+        }
+        // Remove vulkan specific features
+        if (SystemProperties.getBoolean("persist.graphics.vulkan.disable", false)) {
+            removeFeature(PackageManager.FEATURE_VULKAN_HARDWARE_LEVEL);
+            removeFeature(PackageManager.FEATURE_VULKAN_HARDWARE_VERSION);
         }
     }
 
