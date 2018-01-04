@@ -81,4 +81,8 @@
     <!-- If this is true, key chords can be used to take a screen record on the device. -->
     <bool name="config_enableScreenrecordChord">true</bool>
 
+  <!-- Whether the device supports Smart Pixels
+       Disable if it doesn't -->
+  <bool name="config_enableSmartPixels">true</bool>
+
 </resources>
