@@ -318,4 +318,7 @@
          causes a poor experience. -->
     <bool name="config_fingerprintWakeAndUnlock">true</bool>
 
+    <!-- Whether the device supports Smart Pixels -->
+    <bool name="config_supportSmartPixels">false</bool>
+
 </resources>

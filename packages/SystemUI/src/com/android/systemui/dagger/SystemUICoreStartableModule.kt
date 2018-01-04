@@ -51,6 +51,7 @@ import com.android.systemui.settings.MultiUserUtilsModule
 import com.android.systemui.shortcut.ShortcutKeyDispatcher
 import com.android.systemui.statusbar.ImmersiveModeConfirmation
 import com.android.systemui.statusbar.gesture.GesturePointerEventListener
+import com.android.systemui.smartpixels.SmartPixelsReceiver
 import com.android.systemui.statusbar.notification.InstantAppNotifier
 import com.android.systemui.statusbar.phone.ScrimController
 import com.android.systemui.statusbar.phone.StatusBarHeadsUpChangeListener
@@ -337,4 +338,10 @@ abstract class SystemUICoreStartableModule {
     @IntoMap
     @ClassKey(HomeControlsDreamStartable::class)
     abstract fun bindHomeControlsDreamStartable(impl: HomeControlsDreamStartable): CoreStartable
+
+    /** Inject into SmartPixelsReceiver.  */
+    @Binds
+    @IntoMap
+    @ClassKey(SmartPixelsReceiver::class)
+    abstract fun bindSmartPixelsReceiver(sysui: SmartPixelsReceiver): CoreStartable
 }
