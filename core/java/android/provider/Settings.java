@@ -4872,6 +4872,13 @@ public final class Settings {
                 ANY_INTEGER_VALIDATOR;
 
         /**
+         * 0 - fullscreen
+         * 1 - partial
+         * @hide
+         */
+        public static final String SCREENSHOT_DEFAULT_MODE = "screenshot_default_mode";
+
+        /**
          * media artwork wallpaper blur level on lockscreen
          * @hide
          */
@@ -5080,6 +5087,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(ENABLE_SUGGESTIONS);
             PRIVATE_SETTINGS.add(SCREEN_OFF_ANIMATION);
             PRIVATE_SETTINGS.add(LOCKSCREEN_MEDIA_BLUR);
+            PRIVATE_SETTINGS.add(SCREENSHOT_DEFAULT_MODE);
         }
 
         /**
