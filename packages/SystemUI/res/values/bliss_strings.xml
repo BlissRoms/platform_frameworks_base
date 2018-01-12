@@ -38,6 +38,8 @@
     <string name="quick_settings_screenrecord_lq_label">Screenrecord LQ</string>
     <string name="quick_settings_screenrecord_mq_label">Screenrecord MQ</string>
     <string name="quick_settings_screenrecord_hq_label">Screenrecord HQ</string>
+    <string name="screenrecord_hide_hint">Hide hint</string>
+    <string name="screenrecord_show_hint">Show hint</string>
 
     <!-- Caffeine tile -->
     <string name="quick_settings_caffeine_label">Caffeine</string>
