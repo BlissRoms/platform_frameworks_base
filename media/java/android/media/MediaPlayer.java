@@ -3529,7 +3529,7 @@ public class MediaPlayer extends PlayerBase
                 return;
 
             case MEDIA_ERROR:
-                Log.e(TAG, "Error (" + msg.arg1 + "," + msg.arg2 + ")");
+                Log.v(TAG, "Error (" + msg.arg1 + "," + msg.arg2 + ")");
                 boolean error_was_handled = false;
                 OnErrorListener onErrorListener = mOnErrorListener;
                 if (onErrorListener != null) {
