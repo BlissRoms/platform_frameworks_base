@@ -325,9 +325,10 @@ public class NotificationMediaManager implements Dumpable {
             int N = activeNotifications.size();
             final String pkg = mMediaController.getPackageName();
 
+            boolean dontPulse = false;
             if (!mBlacklist.isEmpty() && mBlacklist.contains(pkg)) {
                 // don't play Pulse for this app
-                return;
+                dontPulse = true;
             }
 
             for (int i = 0; i < N; i++) {
@@ -336,18 +337,19 @@ public class NotificationMediaManager implements Dumpable {
                     // NotificationEntryManager onAsyncInflationFinished will get called
                     // when colors and album are loaded for the notification, then we can send
                     // those info to Pulse
-                    mEntryManager.setEntryToRefresh(entry);
+                    mEntryManager.setEntryToRefresh(entry, dontPulse);
                     break;
                 }
             }
-            if (mListener != null) {
+            if (!dontPulse && mListener != null) {
                 mListener.onMediaUpdated(true);
             }
             if (mStatusBar != null && mStatusBar.getVisualizer() != null && !mStatusBar.isKeyguardFadingAway()) {
                 mStatusBar.getVisualizer().setPlaying(true);
             }
         } else {
-            mEntryManager.setEntryToRefresh(null);
+            mEntryManager.setEntryToRefresh(null, true);
+            mPresenter.setAmbientMusicInfo(null, null);
             if (mListener != null) {
                 mListener.onMediaUpdated(false);
             }
@@ -355,6 +357,10 @@ public class NotificationMediaManager implements Dumpable {
                 mStatusBar.getVisualizer().setPlaying(false);
             }
         }
+    }
+
+    public void setMediaNotificationText(String notificationText) {
+        mPresenter.setAmbientMusicInfo(mMediaMetadata, notificationText);
     }
 
     public void setPulseColors(boolean isColorizedMEdia, int[] colors) {
