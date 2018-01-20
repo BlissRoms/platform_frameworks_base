@@ -52,4 +52,7 @@
     <!-- ATV remote custom keys handling -->
     <java-symbol type="array" name="keyhandler_keycodes" />
     <java-symbol type="array" name="keyhandler_packages" />
+
+    <!-- Power menu -->
+    <java-symbol type="array" name="config_restartActionsList" />
 </resources>
