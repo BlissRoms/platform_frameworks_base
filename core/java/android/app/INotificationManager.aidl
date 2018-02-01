@@ -255,4 +255,6 @@ interface INotificationManager
     @EnforcePermission(allOf={"INTERACT_ACROSS_USERS", "ACCESS_NOTIFICATIONS"})
     void unregisterCallNotificationEventListener(String packageName, in UserHandle userHandle, in ICallNotificationEventCallback listener);
 
+    void forceShowLedLight(int color);
+    void forcePulseLedLight(int color, int onTime, int offTime);
 }
