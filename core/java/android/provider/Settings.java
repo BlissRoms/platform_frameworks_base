@@ -4145,7 +4145,14 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
-         * Enable Gesture Haptic feedback
+         * Enable Off-Screen Gesture Haptic feedback
+         * KeyHandler
+         * @hide
+         */
+        public static final String OMNI_DEVICE_OFF_SCREEN_GESTURE_FEEDBACK_ENABLED = "device_off_screen_gesture_feedback_enabled";
+
+        /**
+         * Enable Fingerprint Gesture Haptic feedback
          * KeyHandler
          * @hide
          */
@@ -4427,6 +4434,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_BUTTON_EXTRA_KEY_MAPPING);
             PRIVATE_SETTINGS.add(OMNI_HARDWARE_KEYS_DISABLE);
             PRIVATE_SETTINGS.add(OMNI_DEVICE_PROXI_CHECK_ENABLED);
+            PRIVATE_SETTINGS.add(OMNI_DEVICE_OFF_SCREEN_GESTURE_FEEDBACK_ENABLED);
             PRIVATE_SETTINGS.add(OMNI_DEVICE_GESTURE_FEEDBACK_ENABLED);
             PRIVATE_SETTINGS.add(OMNI_DEVICE_FEATURE_SETTINGS);
             PRIVATE_SETTINGS.add(OMNI_NAVIGATION_BAR_SHOW);
