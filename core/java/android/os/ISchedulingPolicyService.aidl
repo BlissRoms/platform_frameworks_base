@@ -30,6 +30,8 @@ interface ISchedulingPolicyService {
      * There may be restrictions on who can call this.
      */
     int requestPriority(int pid, int tid, int prio, boolean isForApp);
+    int requestPriorityDL(int pid, int tid,
+        long runtime, long deadline, long period, boolean isForApp);
 
     /**
      * Move media.codec process between SP_FOREGROUND and SP_TOP_APP.

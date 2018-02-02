@@ -348,6 +348,12 @@ public class Process {
     public static final int SCHED_IDLE = 5;
 
     /**
+     * Deadline scheduling policy
+     * @hide
+     */
+    public static final int SCHED_DEADLINE = 6;
+
+    /**
      * Reset scheduler choice on fork.
      * @hide
      */
@@ -861,6 +867,26 @@ public class Process {
     public static final native void setThreadScheduler(int tid, int policy, int priority)
             throws IllegalArgumentException;
 
+    /**
+     * Set the thread's scheduling policy to Deadline, based on Linux.
+     *
+     * @param tid The identifier of the thread/process to change.
+     * @param runtime The budget time to be assigned to the task (in ns).
+     * @param deadline The relative deadline of the task (in ns).
+     * @param period The period for the budget replenishment (in ns).
+     *
+     * @throws IllegalArgumentException Throws IllegalArgumentException if
+     * <var>tid</var> does not exist, or if the parameters are invalid.
+     * @throws SecurityException Throws SecurityException if your process does
+     * not have permission to modify the given thread, or to use the Deadline
+     * policy.
+     *
+     * {@hide}
+     */
+
+    public static final native void setThreadSchedulerDL(int tid,
+                long runtime, long deadline, long period)
+            throws IllegalArgumentException;
     /**
      * Determine whether the current environment supports multiple processes.
      * 

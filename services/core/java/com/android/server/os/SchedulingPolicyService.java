@@ -201,6 +201,33 @@ public class SchedulingPolicyService extends ISchedulingPolicyService.Stub {
             }
         }
 
+         return PackageManager.PERMISSION_GRANTED;
+     }
+
+    public int requestPriorityDL(int pid, int tid, long runtime, long deadline, long period, boolean isForApp) {
+        if (!isPermitted() ||
+               deadline > period || runtime > deadline || runtime < 1024 ||
+               Process.getThreadGroupLeader(tid) != pid) {
+           return PackageManager.PERMISSION_DENIED;
+        }
+        if (Binder.getCallingUid() != Process.BLUETOOTH_UID) {
+            try {
+                // make good use of our CAP_SYS_NICE capability
+                Process.setThreadGroup(tid, !isForApp ?
+                  Process.THREAD_GROUP_AUDIO_SYS : Process.THREAD_GROUP_RT_APP);
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Failed setThreadGroup: " + e);
+                return PackageManager.PERMISSION_DENIED;
+           }
+        }
+        try {
+            // must be in this order or it fails the schedulability constraint
+            Process.setThreadSchedulerDL(tid, runtime, deadline, period);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Failed setThreadSchedulerDL: " + e);
+            return PackageManager.PERMISSION_DENIED;
+        }
+
         return PackageManager.PERMISSION_GRANTED;
     }
 

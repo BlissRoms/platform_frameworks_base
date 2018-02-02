@@ -45,6 +45,47 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+/*
+ * TODO
+ * This header cannot be included because "struct sched_param" is already
+ * defined in sched.h.
+#include <linux/sched/types.h>
+ */
+
+struct sched_attr {
+  __u32 size;
+
+  __u32 sched_policy;
+
+  __u64 sched_flags;
+
+  __s32 sched_nice;
+
+  __u32 sched_priority;
+
+  __u64 sched_runtime;
+  __u64 sched_deadline;
+  __u64 sched_period;
+};
+
+#include <linux/sched.h>
+#include <sys/syscall.h>
+
+int sched_setattr(pid_t pid,
+          const struct sched_attr *attr,
+          unsigned int flags)
+{
+       return syscall(SYS_sched_setattr, pid, attr, flags);
+}
+
+int sched_getattr(pid_t pid,
+          struct sched_attr *attr,
+          unsigned int size,
+          unsigned int flags)
+{
+       return syscall(SYS_sched_getattr, pid, attr, size, flags);
+}
+
 #define GUARD_THREAD_PRIORITY 0
 
 using namespace android;
@@ -485,6 +526,30 @@ void android_os_Process_setThreadScheduler(JNIEnv* env, jclass clazz,
     if (rc) {
         signalExceptionForPriorityError(env, errno, tid);
     }
+#else
+    signalExceptionForPriorityError(env, ENOSYS, tid);
+#endif
+}
+
+void android_os_Process_setThreadSchedulerDL(JNIEnv* env, jclass clazz,
+                                                 jint tid,
+                                                 jlong runtime,
+                                                 jlong deadline,
+                                                 jlong period)
+{
+// linux has sched_setattr(), others don't.
+#ifdef __linux__
+    sched_attr attr = {
+        .size = sizeof(attr),
+        .sched_policy = SCHED_DEADLINE,
+    };
+
+    attr.sched_runtime = runtime;
+    attr.sched_deadline = deadline;
+    attr.sched_period = period;
+
+    if (sched_setattr(tid, &attr, 0))
+        signalExceptionForPriorityError(env, errno, tid);
 #else
     signalExceptionForPriorityError(env, ENOSYS, tid);
 #endif
@@ -1214,6 +1279,7 @@ static const JNINativeMethod methods[] = {
     {"getGidForName",       "(Ljava/lang/String;)I", (void*)android_os_Process_getGidForName},
     {"setThreadPriority",   "(II)V", (void*)android_os_Process_setThreadPriority},
     {"setThreadScheduler",  "(III)V", (void*)android_os_Process_setThreadScheduler},
+    {"setThreadSchedulerDL",  "(IJJJ)V", (void*)android_os_Process_setThreadSchedulerDL},
     {"setCanSelfBackground", "(Z)V", (void*)android_os_Process_setCanSelfBackground},
     {"setThreadPriority",   "(I)V", (void*)android_os_Process_setCallingThreadPriority},
     {"getThreadPriority",   "(I)I", (void*)android_os_Process_getThreadPriority},
