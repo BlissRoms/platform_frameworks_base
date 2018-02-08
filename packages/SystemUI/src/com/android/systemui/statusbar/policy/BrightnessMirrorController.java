@@ -18,13 +18,13 @@ package com.android.systemui.statusbar.policy;
 
 import android.annotation.NonNull;
 import android.content.res.Resources;
-import android.util.ArraySet;
-import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.util.ArraySet;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.FrameLayout;

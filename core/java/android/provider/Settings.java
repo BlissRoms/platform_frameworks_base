@@ -5460,6 +5460,15 @@ public final class Settings {
         public static final String TRANSPARENT_POWER_DIALOG_DIM = "transparent_power_dialog_dim";
 
         /**
+         * Whether to show Brightness Buttons On Brightness Slider
+         * @hide
+         */
+        public static final String QS_SHOW_BRIGHTNESS_BUTTONS = "qs_show_brightness_buttons";
+
+        /** @hide */
+        private static final Validator QS_SHOW_BRIGHTNESS_BUTTONS_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5570,7 +5579,8 @@ public final class Settings {
             STATUS_BAR_SHOW_TICKER,
             STATUS_BAR_TICKER_ANIMATION_MODE,
             STATUS_BAR_TICKER_TICK_DURATION,
-            VOLUME_DIALOG_TIMEOUT
+            VOLUME_DIALOG_TIMEOUT,
+            QS_SHOW_BRIGHTNESS_BUTTONS
         };
 
         /**
@@ -5745,6 +5755,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION_NOTIFICATION);
             PRIVATE_SETTINGS.add(SWAP_VOLUME_BUTTONS);
             PRIVATE_SETTINGS.add(VOLUME_DIALOG_TIMEOUT);
+            PRIVATE_SETTINGS.add(QS_SHOW_BRIGHTNESS_BUTTONS);
         }
 
         /**
@@ -5913,6 +5924,7 @@ public final class Settings {
             VALIDATORS.put(AMBIENT_RECOGNITION_KEYGUARD, AMBIENT_RECOGNITION_KEYGUARD_VALIDATOR);
             VALIDATORS.put(AMBIENT_RECOGNITION_NOTIFICATION, AMBIENT_RECOGNITION_NOTIFICATION_VALIDATOR);
             VALIDATORS.put(VOLUME_DIALOG_TIMEOUT,VOLUME_DIALOG_TIMEOUT_VALIDATOR);
+            VALIDATORS.put(QS_SHOW_BRIGHTNESS_BUTTONS, QS_SHOW_BRIGHTNESS_BUTTONS_VALIDATOR);
         }
 
         /**

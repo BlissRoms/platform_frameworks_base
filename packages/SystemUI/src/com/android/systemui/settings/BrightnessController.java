@@ -239,7 +239,7 @@ public class BrightnessController implements ToggleSlider.Listener {
             try {
                 switch (msg.what) {
                     case MSG_UPDATE_ICON:
-                        updateIcon(msg.arg1 != 0);
+                        updateIcon();
                         break;
                     case MSG_UPDATE_SLIDER:
                         updateSlider(msg.arg1, msg.arg2 != 0);
@@ -296,14 +296,15 @@ public class BrightnessController implements ToggleSlider.Listener {
                 Context.VR_SERVICE));
 
         if (mAutomaticAvailable) {
-            mIcon.setOnClickListener(new View.OnClickListener() {
+            mIcon.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onTouch(View v, MotionEvent event) {
                     Settings.System.putIntForUser(mContext.getContentResolver(),
                         Settings.System.SCREEN_BRIGHTNESS_MODE, mAutomatic ?
                         Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL :
                         Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC,
                         UserHandle.USER_CURRENT);
+                        return false;
                 }
             });
         }
@@ -362,7 +363,8 @@ public class BrightnessController implements ToggleSlider.Listener {
     @Override
     public void onChanged(ToggleSlider toggleSlider, boolean tracking, boolean automatic,
             int value, boolean stopTracking) {
-        updateIcon(mAutomatic);
+        // icon cannot change while tracking
+        //updateIcon();
         if (mExternalChange) return;
 
         if (mSliderAnimator != null) {
@@ -435,7 +437,7 @@ public class BrightnessController implements ToggleSlider.Listener {
         mDisplayManager.setTemporaryAutoBrightnessAdjustment(adj);
     }
 
-    private void updateIcon(boolean automatic) {
+    private void updateIcon() {
         if (mIcon != null) {
             mIcon.setImageResource(mAutomatic ?
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_on :
@@ -491,4 +493,7 @@ public class BrightnessController implements ToggleSlider.Listener {
         mSliderAnimator.start();
     }
 
+    public void showSideButtons(boolean enable) {
+        mControl.showSideButtons(enable);
+    }
 }
