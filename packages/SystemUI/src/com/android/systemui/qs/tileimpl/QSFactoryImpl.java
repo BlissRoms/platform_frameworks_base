@@ -60,6 +60,7 @@ import com.android.systemui.qs.tiles.ReduceBrightColorsTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
+import com.android.systemui.qs.tiles.SoundSearchTile;
 import com.android.systemui.qs.tiles.SoundTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.UiModeNightTile;
@@ -124,6 +125,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<FPSInfoTile> mFPSInfoTileProvider;
     private final Provider<CompassTile> mCompassTileProvider;
     private final Provider<CPUInfoTile> mCPUInfoTileProvider;
+    private final Provider<SoundSearchTile> mSoundSearchTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
     private final Provider<CustomTile.Builder> mCustomTileBuilderProvider;
@@ -175,7 +177,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<DataSwitchTile> dataSwitchTileProvider,
             Provider<FPSInfoTile> fpsInfoTileProvider,
             Provider<CompassTile> compassTileProvider,
-            Provider<CPUInfoTile> cpuInfoTileProvider) {
+            Provider<CPUInfoTile> cpuInfoTileProvider,
+            Provider<SoundSearchTile> soundSearchTileProvider) {
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
 
@@ -223,6 +226,7 @@ public class QSFactoryImpl implements QSFactory {
         mFPSInfoTileProvider = fpsInfoTileProvider;
         mCompassTileProvider = compassTileProvider;
         mCPUInfoTileProvider = cpuInfoTileProvider;
+        mSoundSearchTileProvider = soundSearchTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -324,6 +328,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mCompassTileProvider.get();
             case "cpuinfo":
                 return mCPUInfoTileProvider.get();
+            case "soundsearch":
+                return mSoundSearchTileProvider.get();
         }
         // Custom tiles
         if (tileSpec.startsWith(CustomTile.PREFIX)) {
