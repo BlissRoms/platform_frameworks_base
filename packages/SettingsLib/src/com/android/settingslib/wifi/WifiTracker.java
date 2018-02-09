@@ -540,7 +540,7 @@ public class WifiTracker {
                     // UNREACHABLE_RSSI
                     boolean apFound = false;
                     for (ScanResult result : results) {
-                        if (result.SSID.equals(accessPoint.getSsidStr())) {
+                        if (accessPoint.matches(result)) {
                             apFound = true;
                             break;
                         }
