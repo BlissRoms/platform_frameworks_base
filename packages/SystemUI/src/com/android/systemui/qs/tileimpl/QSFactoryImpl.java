@@ -54,6 +54,7 @@ import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.ReadingModeTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.SyncTile;
+import com.android.systemui.qs.tiles.SoundSearchTile;
 import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.UserTile;
@@ -244,6 +245,8 @@ public class QSFactoryImpl implements QSFactory {
                 return new CPUInfoTile(mHost);
             case "compass":
                 return new CompassTile(mHost);
+            case "soundsearch":
+                return new SoundSearchTile(mHost);
         }
 
         // Intent tiles.
