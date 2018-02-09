@@ -142,4 +142,6 @@
 
     <!-- Running service button -->
     <string name="accessibility_quick_settings_running_services">Open Running Services screen.</string>
+
+    <string name="quick_settings_sound_search">Sound search</string>
 </resources>
