@@ -246,13 +246,13 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
             mLevel = level;
             mAccessorizedDrawable.setBatteryLevel(mLevel);
             mCircleDrawable.setBatteryLevel(mLevel);
+            updatePercentText();
         }
         if (mCharging != pluggedIn) {
             mCharging = pluggedIn;
             mAccessorizedDrawable.setCharging(mCharging);
             mCircleDrawable.setCharging(mCharging);
             updateShowPercent();
-        } else {
             updatePercentText();
         }
     }
@@ -340,6 +340,12 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
                 }
             });
         } else {
+            // Use the high voltage symbol ⚡ (u26A1 unicode) but prevent the system
+            // to load its emoji colored variant with the uFE0E flag
+            String bolt = "\u26A1\uFE0E";
+            CharSequence mChargeIndicator = mCharging && (mBatteryStyle == BATTERY_STYLE_HIDDEN ||
+                    mBatteryStyle == BATTERY_STYLE_TEXT) ? (bolt + " ") : "";
+            String percentText = mChargeIndicator + text;
             // Setting text actually triggers a layout pass (because the text view is set to
             // wrap_content width and TextView always relayouts for this). Avoid needless
             // relayout if the text didn't actually change.
