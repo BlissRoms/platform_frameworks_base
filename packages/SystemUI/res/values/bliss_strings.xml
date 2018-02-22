@@ -229,4 +229,14 @@
     <string name="quick_settings_powershare_off_low_battery_label">Wireless PowerShare off\nBattery too low</string>
     <string name="quick_settings_powershare_enabled_label">Wireless PowerShare is enabled</string>
 
+    <!-- Theme tile -->
+    <string name="system_theme_style_title">System Themes</string>
+    <string name="quick_settings_theme_tile_title">Themes</string>
+    <string name="quick_settings_theme_tile_style_detail_title">Select Theme</string>
+    <string name="system_theme_style_light">Light</string>
+    <string name="system_theme_style_dark">Google Dark</string>
+    <string name="system_theme_style_solarized_dark">Solarized Dark</string>
+    <string name="system_theme_style_pitch_black">Pitch Black</string>
+    <string name="system_theme_style_dark_grey">Dark Grey</string>
+
 </resources>

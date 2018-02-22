@@ -27,10 +27,5 @@ public class ThemesUtils {
             "com.android.theme.pitchblack.system",
             "com.android.theme.pitchblack.systemui",
     };
-
-    public static final String[] DARK_GREY = {
-            "com.android.theme.darkgrey.system",
-            "com.android.theme.darkgrey.systemui",
-    };
 }
 
