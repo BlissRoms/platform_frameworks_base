@@ -62,6 +62,7 @@ import com.android.systemui.qs.tiles.ProfilesTile;
 import com.android.systemui.qs.tiles.ReadingModeTile;
 import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
+import com.android.systemui.qs.tiles.ThemeTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
@@ -137,6 +138,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<ScreenStabilizationTile> mScreenStabilizationTileProvider;
     private final Provider<LocaleTile> mLocaleTileProvider;
     private final Provider<FPSInfoTile> mFPSInfoTileProvider;
+    private final Provider<ThemeTile> mThemeTileProvider;
 
     private QSTileHost mHost;
 
@@ -189,6 +191,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<MonoToggleTile> monoToggleTileProvider,
             Provider<ScreenStabilizationTile> screenStabilizationTileProvider,
             Provider<LocaleTile> localeTileProvider,
+            Provider<ThemeTile> ThemeTileProvider,
             Provider<FPSInfoTile> fpsInfoTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
@@ -239,6 +242,7 @@ public class QSFactoryImpl implements QSFactory {
         mScreenStabilizationTileProvider = screenStabilizationTileProvider;
         mLocaleTileProvider = localeTileProvider;
         mFPSInfoTileProvider = fpsInfoTileProvider;
+        mThemeTileProvider = ThemeTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -355,6 +359,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mLocaleTileProvider.get();
             case "fpsinfo":
                 return mFPSInfoTileProvider.get();
+            case "theme":
+                return mThemeTileProvider.get();
         }
 
         // Intent tiles.
