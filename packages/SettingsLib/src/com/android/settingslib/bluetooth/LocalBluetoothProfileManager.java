@@ -461,11 +461,12 @@ public class LocalBluetoothProfileManager {
             removedProfiles.remove(mHfpClientProfile);
         }
 
-        if ((BluetoothUuid.containsAnyUuid(uuids, A2dpProfile.SINK_UUIDS) &&
-            mA2dpProfile != null) ||
-            (mA2dpProfile.getConnectionStatus(device) == BluetoothProfile.STATE_CONNECTED)) {
-            profiles.add(mA2dpProfile);
-            removedProfiles.remove(mA2dpProfile);
+        if (mA2dpProfile != null) {
+            if (BluetoothUuid.containsAnyUuid(uuids, A2dpProfile.SINK_UUIDS) ||
+                (mA2dpProfile.getConnectionStatus(device) == BluetoothProfile.STATE_CONNECTED)) {
+                profiles.add(mA2dpProfile);
+                removedProfiles.remove(mA2dpProfile);
+            }
         }
 
         if (BluetoothUuid.containsAnyUuid(uuids, A2dpSinkProfile.SRC_UUIDS) &&
