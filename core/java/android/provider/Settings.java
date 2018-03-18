@@ -5220,6 +5220,13 @@ public final class Settings {
          */
         public static final String TEXT_CHARGING_SYMBOL = "text_charging_symbol";
 
+       /**
+         * Blur personalization settings
+         * @hide
+         */
+        public static final String BLUR_QUICKSETTINGS_ENABLED = "blur_quicksettings_enabled";
+        public static final String BLUR_QUICKSETTINGS_PERCENTAGE = "blur_quicksettings_percentage";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.

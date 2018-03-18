@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -47,13 +48,14 @@ import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.notification.stack.StackStateAnimator;
 import com.android.systemui.statusbar.phone.NotificationsQuickSettingsContainer;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.InjectionInflationController;
 import com.android.systemui.util.LifecycleFragment;
 
 import javax.inject.Inject;
 
 public class QSFragment extends LifecycleFragment implements QS, CommandQueue.Callbacks,
-        StatusBarStateController.StateListener {
+        StatusBarStateController.StateListener, TunerService.Tunable  {
     private static final String TAG = "QS";
     private static final boolean DEBUG = false;
     private static final String EXTRA_EXPANDED = "expanded";
@@ -79,6 +81,14 @@ public class QSFragment extends LifecycleFragment implements QS, CommandQueue.Ca
     private QSFooter mFooter;
     private float mLastQSExpansion = -1;
     private boolean mQsDisabled;
+
+    private static boolean mTranslucentQuickSettings;
+    private static int mQSTranslucencyPercentage;
+
+    private static final String BLUR_QUICKSETTINGS_ENABLED =
+            "system:" + Settings.System.BLUR_QUICKSETTINGS_ENABLED;
+    private static final String BLUR_QUICKSETTINGS_PERCENTAGE =
+            "system:" + Settings.System.BLUR_QUICKSETTINGS_PERCENTAGE;
 
     private final RemoteInputQuickSettingsDisabler mRemoteInputQuickSettingsDisabler;
     private final InjectionInflationController mInjectionInflater;
@@ -141,10 +151,15 @@ public class QSFragment extends LifecycleFragment implements QS, CommandQueue.Ca
         setHost(mHost);
         mStatusBarStateController.addCallback(this);
         onStateChanged(mStatusBarStateController.getState());
+
+        Dependency.get(TunerService.class).addTunable(this,
+                BLUR_QUICKSETTINGS_ENABLED,
+                BLUR_QUICKSETTINGS_PERCENTAGE);
     }
 
     @Override
     public void onDestroy() {
+	    Dependency.get(TunerService.class).removeTunable(this);
         super.onDestroy();
         mStatusBarStateController.removeCallback(this);
         if (mListening) {
@@ -266,6 +281,35 @@ public class QSFragment extends LifecycleFragment implements QS, CommandQueue.Ca
         mFooter.setExpanded((keyguardShowing && !mHeaderAnimating && !mShowCollapsedOnKeyguard)
                 || (mQsExpanded && !mStackScrollerOverscrolling));
         mQSPanel.setVisibility(!mQsDisabled && expandVisually ? View.VISIBLE : View.INVISIBLE);
+        handleQuickSettingsBackround();
+    }
+
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case BLUR_QUICKSETTINGS_ENABLED:
+                mTranslucentQuickSettings =
+                        TunerService.parseIntegerSwitch(newValue, false);
+                handleQuickSettingsBackround();
+                break;
+            case BLUR_QUICKSETTINGS_PERCENTAGE:
+                int value =
+                        newValue == null ? 60 : Integer.parseInt(newValue);
+                mQSTranslucencyPercentage = 255 - ((value * 255) / 100);
+                handleQuickSettingsBackround();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleQuickSettingsBackround() {
+        if (mKeyguardShowing) {
+            mContainer.setBackgroundAlpha(255);
+        } else {
+            mContainer.setBackgroundAlpha(mTranslucentQuickSettings ? mQSTranslucencyPercentage : 255);
+        }
     }
 
     private boolean isKeyguardShowing() {
