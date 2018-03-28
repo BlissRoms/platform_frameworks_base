@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!-- Copyright (C) 2014-2017 BlissRoms Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +22,8 @@
   <!-- The list of components which should be automatically disabled. -->
   <string-array name="config_disabledComponents" translatable="false"/>
 
-    <!-- Allows an application to authorize outgoing SMS messages.
-         @hide -->
-    <permission android:name="com.qti.permission.AUTHORIZE_OUTGOING_SMS" android:protectionLevel="signature" />
-</resources>
+  <java-symbol type="string" name="config_optionalPackageVerifierName" />
+  <java-symbol type="array" name="config_vendorPlatformSignatures" />
+  <java-symbol type="bool" name="config_sms_authorization_enabled" />
 
+</resources>
