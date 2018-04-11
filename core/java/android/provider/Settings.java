@@ -5202,6 +5202,16 @@ public final class Settings {
         */
         public static final String LOCKSCREEN_WEATHER_STYLE = "lockscreen_weather_style";
 
+        /**
+         * Whether to change the transparency of the qs panel
+         * @hide
+         */
+        public static final String OMNI_QS_PANEL_BG_ALPHA = "qs_panel_bg_alpha";
+
+        /** @hide */
+        private static final Validator OMNI_QS_PANEL_BG_ALPHA_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
         /** @hide */
         private static final Validator LOCKSCREEN_WEATHER_STYLE_VALIDATOR =
                new SettingsValidators.InclusiveIntegerRangeValidator(0, 1);;
@@ -5302,6 +5312,7 @@ public final class Settings {
             OMNIJAWS_WEATHER_ICON_PACK,
             OMNI_LOCKSCREEN_WEATHER_ENABLED,
             LOCKSCREEN_WEATHER_STYLE,
+            OMNI_QS_PANEL_BG_ALPHA,
         };
 
         /**
@@ -5440,6 +5451,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNIJAWS_WEATHER_ICON_PACK);
             PRIVATE_SETTINGS.add(OMNI_LOCKSCREEN_WEATHER_ENABLED);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_STYLE);
+            PRIVATE_SETTINGS.add(OMNI_QS_PANEL_BG_ALPHA);
         }
 
         /**
@@ -5552,6 +5564,7 @@ public final class Settings {
             VALIDATORS.put(OMNIJAWS_WEATHER_ICON_PACK,OMNIJAWS_WEATHER_ICON_PACK_VALIDATOR);
             VALIDATORS.put(OMNI_LOCKSCREEN_WEATHER_ENABLED,OMNI_LOCKSCREEN_WEATHER_ENABLED_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_STYLE,LOCKSCREEN_WEATHER_STYLE_VALIDATOR);
+            VALIDATORS.put(OMNI_QS_PANEL_BG_ALPHA, OMNI_QS_PANEL_BG_ALPHA_VALIDATOR);
         }
 
         /**
