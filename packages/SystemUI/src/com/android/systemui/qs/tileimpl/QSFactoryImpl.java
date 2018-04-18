@@ -28,6 +28,7 @@ import com.android.systemui.plugins.qs.QSTileView;
 import com.android.systemui.qs.QSTileHost;
 import com.android.systemui.qs.external.CustomTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
+import com.android.systemui.qs.tiles.AODTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.CaffeineTile;
@@ -80,6 +81,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<UiModeNightTile> mUiModeNightTileProvider;
     private final Provider<LteTile> mLteTileProvider;
     private final Provider<CaffeineTile> mCaffeineTileProvider;
+    private final Provider<AODTile> mAODTileProvider;
 
     private QSTileHost mHost;
 
@@ -104,7 +106,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<GarbageMonitor.MemoryTile> memoryTileProvider,
             Provider<UiModeNightTile> uiModeNightTileProvider,
             Provider<LteTile> lteTileProvider),
-            Provider<CaffeineTile> CaffeineTileProvider) {
+            Provider<CaffeineTile> CaffeineTileProvider,
+            Provider<AODTile> AODTileProvider)  {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -126,6 +129,7 @@ public class QSFactoryImpl implements QSFactory {
         mUiModeNightTileProvider = uiModeNightTileProvider;
         mLteTileProvider = lteTileProvider;
         mCaffeineTileProvider = CaffeineTileProvider;
+        mAODTileProvider = AODTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -183,6 +187,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mLteTileProvider.get();
             case "caffeine":
                 return mCaffeineTileProvider.get();
+            case "aod":
+                return AODTileProvider.get();
         }
 
         // Intent tiles.
