@@ -27,6 +27,7 @@ import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.plugins.qs.QSTileView;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.external.CustomTile;
+import com.android.systemui.qs.tiles.AODTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 
 import java.util.Map;
@@ -53,6 +54,7 @@ public class QSFactoryImpl implements QSFactory {
     private static final String TAG = "QSFactory";
 
     protected final Map<String, Provider<QSTileImpl<?>>> mTileMap;
+    private final Provider<AODTile> mAODTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
     private final Provider<CustomTile.Builder> mCustomTileBuilderProvider;
@@ -61,10 +63,12 @@ public class QSFactoryImpl implements QSFactory {
     public QSFactoryImpl(
             Lazy<QSHost> qsHostLazy,
             Provider<CustomTile.Builder> customTileBuilderProvider,
-            Map<String, Provider<QSTileImpl<?>>> tileMap) {
+            Map<String, Provider<QSTileImpl<?>>> tileMap,
+            Provider<AODTile> aodTileProvider) {
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
         mTileMap = tileMap;
+        mAODTileProvider = aodTileProvider;
     }
 
     /** Creates a tile with a type based on {@code tileSpec} */
@@ -85,6 +89,11 @@ public class QSFactoryImpl implements QSFactory {
                 // We should not return a Garbage Monitory Tile if the build is not Debuggable
                 && (!tileSpec.equals(GarbageMonitor.MemoryTile.TILE_SPEC) || Build.IS_DEBUGGABLE)) {
             return mTileMap.get(tileSpec).get();
+        }
+
+        switch (tileSpec) {
+            case "aod":
+                return mAODTileProvider.get();
         }
 
         // Custom tiles
