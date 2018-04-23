@@ -684,7 +684,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface, Tunable {
         int intHomeDrawable = R.drawable.ic_sysbar_home;
         Drawable drawHomeIcon = getResources().getDrawable(intHomeDrawable);
         drawHomeIcon.setColorFilter(null);
-        drawHomeIcon.setColorFilter(homeColor, PorterDuff.Mode.SRC_IN);
+        drawHomeIcon.setColorFilter(homeColor, PorterDuff.Mode.SRC_ATOP);
         setImageDrawable(drawHomeIcon);
     }
 }
