@@ -239,4 +239,7 @@
     <string name="accessibility_quick_settings_animations_on">Animations On</string>
     <string name="accessibility_quick_settings_animations_off">Animations Off</string>
 
+    <!-- HW Keys Tile -->
+    <string name="quick_settings_hw_keys_label">HW Keys</string>
+
 </resources>
