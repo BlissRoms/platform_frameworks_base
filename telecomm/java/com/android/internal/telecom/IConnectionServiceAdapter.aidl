@@ -114,6 +114,4 @@ oneway interface IConnectionServiceAdapter {
     void onRttSessionRemotelyTerminated(String callId, in Session.Info sessionInfo);
 
     void onRemoteRttRequest(String callId, in Session.Info sessionInfo);
-
-    void resetCdmaConnectionTime(String callIdi, in Session.Info sessionInfo);
 }

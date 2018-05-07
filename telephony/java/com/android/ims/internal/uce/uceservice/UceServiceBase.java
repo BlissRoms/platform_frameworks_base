@@ -56,14 +56,6 @@ public abstract class UceServiceBase {
             return onCreateOptionsService(optionsListener, optionsServiceListenerHdl);
         }
 
-        @Override
-        public int createOptionsServiceForSubscription(IOptionsListener optionsListener,
-                                      UceLong optionsServiceListenerHdl,
-                                      String iccId) {
-            return onCreateOptionsService(optionsListener, optionsServiceListenerHdl,
-                                          iccId);
-        }
-
 
         @Override
         public void destroyOptionsService(int optionsServiceHandle) {
@@ -75,14 +67,6 @@ public abstract class UceServiceBase {
             IPresenceListener presServiceListener,
             UceLong presServiceListenerHdl) {
             return onCreatePresService(presServiceListener, presServiceListenerHdl);
-        }
-
-        @Override
-        public int createPresenceServiceForSubscription(IPresenceListener presServiceListener,
-                                         UceLong presServiceListenerHdl,
-                                         String iccId) {
-            return onCreatePresService(presServiceListener, presServiceListenerHdl,
-                                       iccId);
         }
 
         @Override
@@ -101,18 +85,8 @@ public abstract class UceServiceBase {
         }
 
         @Override
-        public IPresenceService getPresenceServiceForSubscription(String iccId) {
-            return onGetPresenceService(iccId);
-        }
-
-        @Override
         public IOptionsService getOptionsService() {
             return onGetOptionsService();
-        }
-
-        @Override
-        public IOptionsService getOptionsServiceForSubscription(String iccId) {
-            return onGetOptionsService(iccId);
         }
     }
 
@@ -146,13 +120,6 @@ public abstract class UceServiceBase {
         return 0;
     }
 
-    protected int onCreateOptionsService(IOptionsListener optionsListener,
-                                         UceLong optionsServiceListenerHdl,
-                                         String iccId) {
-        //no-op
-        return 0;
-    }
-
     protected void onDestroyOptionsService(int cdServiceHandle) {
         //no-op
         return;
@@ -160,13 +127,6 @@ public abstract class UceServiceBase {
 
     protected int onCreatePresService(IPresenceListener presServiceListener,
             UceLong presServiceListenerHdl) {
-        //no-op
-        return 0;
-    }
-
-    protected int onCreatePresService(IPresenceListener presServiceListener,
-                                      UceLong presServiceListenerHdl,
-                                      String iccId) {
         //no-op
         return 0;
     }
@@ -186,17 +146,7 @@ public abstract class UceServiceBase {
         return null;
     }
 
-    protected IPresenceService onGetPresenceService(String iccId) {
-        //no-op
-        return null;
-    }
-
     protected IOptionsService onGetOptionsService () {
-        //no-op
-        return null;
-    }
-
-    protected IOptionsService onGetOptionsService (String iccId) {
         //no-op
         return null;
     }

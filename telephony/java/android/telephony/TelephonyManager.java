@@ -849,17 +849,6 @@ public class TelephonyManager {
             "android.telephony.event.EVENT_HANDOVER_TO_WIFI_FAILED";
 
     /**
-     * {@link android.telecom.Connection} event used to indicate when in
-     * emergency redial if phone account changed then inform InCallService
-     * with new phone account to update InCallUI,
-     * Sent via {@link android.telecom.Connection#sendConnectionEvent(String, Bundle)}.
-     * The {@link Bundle} parameter is expected to be null when this connection event is used.
-     * @hide
-     */
-    public static final String EVENT_PHONE_ACCOUNT_CHANGED =
-            "org.codeaurora.event.PHONE_ACCOUNT_CHANGED";
-
-    /**
      * {@link android.telecom.Connection} event used to indicate that a video call was downgraded to
      * audio because the data limit was reached.
      * <p>
@@ -973,9 +962,6 @@ public class TelephonyManager {
      * TelephonyManager, String, int)}.
      */
     public static final int USSD_ERROR_SERVICE_UNAVAIL = -2;
-
-    /** {@hide} */
-    public static final String EMR_DIAL_ACCOUNT = "emr_dial_account";
 
     //
     //
@@ -1838,7 +1824,7 @@ public class TelephonyManager {
      */
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public int getDataNetworkType() {
-        return getDataNetworkType(getDefaultDataSubscriptionId());
+        return getDataNetworkType(getSubId(SubscriptionManager.getDefaultDataSubscriptionId()));
     }
 
     /**
@@ -4292,13 +4278,6 @@ public class TelephonyManager {
     }
 
     /**
-     * Returns Default Data subscription.
-     */
-    private static int getDefaultDataSubscriptionId() {
-        return SubscriptionManager.getDefaultDataSubscriptionId();
-    }
-
-    /**
      * Return an appropriate slot index for any situation.
      *
      * if this object has been created with {@link #createForSubscriptionId}, then the slot index
@@ -5634,7 +5613,7 @@ public class TelephonyManager {
      */
     @RequiresPermission(android.Manifest.permission.MODIFY_PHONE_STATE)
     public void setDataEnabled(boolean enable) {
-        setDataEnabled(getDefaultDataSubscriptionId(), enable);
+        setDataEnabled(getSubId(SubscriptionManager.getDefaultDataSubscriptionId()), enable);
     }
 
     /** @hide */
@@ -5683,7 +5662,7 @@ public class TelephonyManager {
      */
     @SuppressWarnings("deprecation")
     public boolean isDataEnabled() {
-        return getDataEnabled(getDefaultDataSubscriptionId());
+        return getDataEnabled(getSubId(SubscriptionManager.getDefaultDataSubscriptionId()));
     }
 
     /**
