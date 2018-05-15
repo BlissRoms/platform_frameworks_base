@@ -132,4 +132,9 @@
     <!-- Whether device has a big physical display cutout -->
     <java-symbol type="bool" name="config_bigPhysicalDisplayCutout" />
 
+    <!-- Alert slider. -->
+    <java-symbol type="string" name="alert_slider_state_path" />
+    <java-symbol type="string" name="alert_slider_uevent_match_path" />
+    <java-symbol type="bool" name="config_hasAlertSlider" />
+
 </resources>
