@@ -15,7 +15,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_extra" translatable="false">
-        ambient_display,caffeine,heads_up,livedisplay,sync,usb_tether,volume_panel
+        ambient_display,caffeine,heads_up,livedisplay,reading_mode,sync,usb_tether,volume_panel
     </string>
 
 </resources>
