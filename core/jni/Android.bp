@@ -31,6 +31,7 @@ cc_library_shared_for_libandroid_runtime {
     name: "libandroid_runtime",
     host_supported: true,
     cflags: [
+        "-O3",
         "-Wno-unused-parameter",
         "-Wno-non-virtual-dtor",
         "-Wno-maybe-uninitialized",
@@ -51,7 +52,7 @@ cc_library_shared_for_libandroid_runtime {
         "-Wunreachable-code",
     ],
 
-    cppflags: ["-Wno-conversion-null"],
+    cppflags: ["-Wno-conversion-null", "-O3"],
 
     product_variables: {
         eng: {
