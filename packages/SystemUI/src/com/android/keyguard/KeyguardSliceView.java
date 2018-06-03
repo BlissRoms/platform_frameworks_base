@@ -154,6 +154,10 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         mTitle.setOnClickListener(this);
     }
 
+    public View getTitleView() {
+        return mTitle;
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
