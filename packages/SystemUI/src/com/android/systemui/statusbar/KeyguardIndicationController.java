@@ -381,13 +381,13 @@ public class KeyguardIndicationController implements StateListener,
                 // colors can be hard to read in low brightness.
                 mTextView.setTextColor(Color.WHITE);
                 if (!TextUtils.isEmpty(mTransientIndication)) {
-                    mTextView.switchIndication(mTransientIndication);
+                    mTextView.switchIndication(mTransientIndication, false /* animate */);
                 } else if (mPowerPluggedIn) {
                     String indication = computePowerIndication();
                     if (animate) {
                         animateText(mTextView, indication);
                     } else {
-                        mTextView.switchIndication(indication);
+                        mTextView.switchIndication(indication, false /* animate */);
                     }
                 } else {
                     // Use the high voltage symbol ⚡ (u26A1 unicode) but prevent the system
