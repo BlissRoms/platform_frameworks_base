@@ -29,4 +29,9 @@
        and in layout xml as: "@*android:<type>/<name>"
   -->
   <java-symbol type="array" name="config_customPermissionsList" />
+
+    <!-- App error dialog -->
+    <java-symbol type="id" name="aerr_copy" />
+    <java-symbol type="string" name="url_copy_success" />
+    <java-symbol type="string" name="url_copy_failed" />
 </resources>
