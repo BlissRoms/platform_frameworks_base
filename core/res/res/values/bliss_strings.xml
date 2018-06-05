@@ -29,4 +29,9 @@
 
     <!-- Parallel space badge -->
     <string name="parallel_space_badge_label">%1$s</string>
+
+    <!-- Button that copies the url to the log of a crashed application -->
+    <string name="aerr_copy">Copy crash log URL</string>
+    <string name="url_copy_success">URL copied successfully</string>
+    <string name="url_copy_failed">An error occured while uploading the log to dogbin</string>
 </resources>

@@ -120,4 +120,9 @@
 
   <!-- Wether to handle audio direction changes between major call states -->
   <java-symbol type="bool" name="config_handleAudioDirectionChangesBetweenCallStateChanges" />
+
+  <!-- App error dialog -->
+  <java-symbol type="id" name="aerr_copy" />
+  <java-symbol type="string" name="url_copy_success" />
+  <java-symbol type="string" name="url_copy_failed" />
 </resources>
