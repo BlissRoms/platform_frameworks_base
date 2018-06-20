@@ -68,7 +68,6 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
     private boolean mBlockMobile;
     private boolean mBlockWifi;
     private boolean mBlockEthernet;
-    private boolean mActivityEnabled;
     private boolean mForceBlockWifi;
     private boolean mBlockRoaming;
     private boolean mBlockVpn;
@@ -89,7 +88,6 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
         mSlotEthernet = mContext.getString(com.android.internal.R.string.status_bar_ethernet);
         mSlotVpn      = mContext.getString(com.android.internal.R.string.status_bar_vpn);
         mSlotRoaming  = SLOT_ROAMING;
-        mActivityEnabled = mContext.getResources().getBoolean(R.bool.config_showActivity);
 
         mIconController = iconController;
         mNetworkController = Dependency.get(NetworkController.class);
@@ -162,8 +160,8 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
             String statusLabel) {
 
         boolean visible = statusIcon.visible && !mBlockWifi;
-        boolean in = activityIn && mActivityEnabled && visible;
-        boolean out = activityOut && mActivityEnabled && visible;
+        boolean in = activityIn && visible;
+        boolean out = activityOut && visible;
 
         WifiIconState newState = mWifiIconState.copy();
 
@@ -214,8 +212,8 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
         state.contentDescription = statusIcon.contentDescription;
         state.typeContentDescription = typeContentDescription;
         state.roaming = roaming && !mBlockRoaming;
-        state.activityIn = activityIn && mActivityEnabled;
-        state.activityOut = activityOut && mActivityEnabled;
+        state.activityIn = activityIn;
+        state.activityOut = activityOut;
         state.volteId = volteId;
 
       // Always send a copy to maintain value type semantics
