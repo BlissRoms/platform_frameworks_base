@@ -30,6 +30,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.AlarmClock;
 import android.provider.CalendarContract;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.DisplayCutout;
@@ -50,11 +51,13 @@ import com.android.systemui.battery.BatteryMeterView;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.qs.QSDetail.Callback;
 import com.android.systemui.statusbar.phone.StatusBarContentInsetsProvider;
+import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.phone.StatusBarIconController.TintedIconManager;
 import com.android.systemui.statusbar.phone.StatusIconContainer;
 import com.android.systemui.statusbar.policy.Clock;
 import com.android.systemui.statusbar.policy.VariableDateView;
 import com.android.systemui.statusbar.policy.NetworkTraffic;
+import com.android.systemui.tuner.TunerService;
 
 import java.util.List;
 
@@ -62,8 +65,13 @@ import java.util.List;
  * View that contains the top-most bits of the QS panel (primarily the status bar with date, time,
  * battery, carrier info and privacy icons) and also contains the {@link QuickQSPanel}.
  */
-public class QuickStatusBarHeader extends FrameLayout implements
+public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tunable,
         View.OnClickListener, View.OnLongClickListener {
+
+    private static final String SHOW_QS_CLOCK =
+            "system:" + Settings.System.SHOW_QS_CLOCK;
+    private static final String SHOW_QS_DATE =
+            "system:" + Settings.System.SHOW_QS_DATE;
 
     private boolean mExpanded;
     private boolean mQsDisabled;
@@ -117,6 +125,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
     private boolean mConfigShowBatteryEstimate;
 
     private boolean mUseCombinedQSHeader;
+    private boolean mShowDate;
 
     private final ActivityStarter mActivityStarter;
     private final Vibrator mVibrator;
@@ -150,6 +159,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
         mDateView = findViewById(R.id.date);
         mDateView.setOnClickListener(this);
         mClockDateView = findViewById(R.id.date_clock);
+        mClockDateView.setOnClickListener(this);
         mSecurityHeaderView = findViewById(R.id.header_text_container);
         mClockIconsSeparator = findViewById(R.id.separator);
         mRightLayout = findViewById(R.id.rightLayout);
@@ -159,6 +169,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
 
         mClockContainer = findViewById(R.id.clock_container);
         mClockView = findViewById(R.id.clock);
+        mClockView.setQsHeader();
         mClockView.setOnClickListener(this);
         mClockView.setOnLongClickListener(this);
         mDatePrivacySeparator = findViewById(R.id.space);
@@ -180,6 +191,10 @@ public class QuickStatusBarHeader extends FrameLayout implements
                 .addFloat(mIconContainer, "alpha", 0, 1)
                 .addFloat(mBatteryRemainingIcon, "alpha", 0, 1)
                 .build();
+
+        Dependency.get(TunerService.class).addTunable(this,
+                SHOW_QS_CLOCK,
+                SHOW_QS_DATE);
     }
 
     void onAttach(TintedIconManager iconManager,
@@ -242,7 +257,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
         if (mExpanded && v == mClockView) {
             mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
                     AlarmClock.ACTION_SHOW_ALARMS), 0);
-        } else if (v == mDateView || (v == mClockView && !mExpanded)) {
+        } else if (v == mDateView || (v == mClockView && !mExpanded || v == mClockDateView)) {
             Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
             builder.appendPath("time");
             builder.appendPath(Long.toString(System.currentTimeMillis()));
@@ -256,7 +271,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
 
     @Override
     public boolean onLongClick(View v) {
-        if (v == mClockView || v == mDateView) {
+        if (v == mClockView || v == mDateView || v == mClockDateView) {
             Intent nIntent = new Intent(Intent.ACTION_MAIN);
             nIntent.setClassName("com.android.settings",
                     "com.android.settings.Settings$DateTimeSettingsActivity");
@@ -413,8 +428,10 @@ public class QuickStatusBarHeader extends FrameLayout implements
 
                     @Override
                     public void onAnimationStarted() {
-                        mClockDateView.setVisibility(View.VISIBLE);
-                        mClockDateView.setFreezeSwitching(true);
+                        if (mShowDate) {
+                            mClockDateView.setVisibility(View.VISIBLE);
+                            mClockDateView.setFreezeSwitching(true);
+                        }
                         setSeparatorVisibility(false);
                         if (!mIsSingleCarrier) {
                             mIconContainer.addIgnoredSlots(mRssiIgnoredSlots);
@@ -424,8 +441,10 @@ public class QuickStatusBarHeader extends FrameLayout implements
                     @Override
                     public void onAnimationAtStart() {
                         super.onAnimationAtStart();
-                        mClockDateView.setFreezeSwitching(false);
-                        mClockDateView.setVisibility(View.VISIBLE);
+                        if (mShowDate) {
+                            mClockDateView.setFreezeSwitching(false);
+                            mClockDateView.setVisibility(View.VISIBLE);
+                        }
                         setSeparatorVisibility(mShowClockIconsSeparator);
                         // In QQS we never ignore RSSI.
                         mIconContainer.removeIgnoredSlots(mRssiIgnoredSlots);
@@ -630,5 +649,24 @@ public class QuickStatusBarHeader extends FrameLayout implements
     private void setBatteryClickable(boolean clickable) {
         mBatteryRemainingIcon.setOnClickListener(clickable ? this : null);
         mBatteryRemainingIcon.setClickable(clickable);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case SHOW_QS_CLOCK:
+                boolean showClock =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                mClockView.setClockVisibleByUser(showClock);
+                break;
+            case SHOW_QS_DATE:
+                mShowDate =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                mDateContainer.setVisibility(mShowDate ? View.VISIBLE : View.GONE);
+                mClockDateView.setVisibility(mShowDate ? View.VISIBLE : View.GONE);
+                break;
+            default:
+                break;
+        }
     }
 }
