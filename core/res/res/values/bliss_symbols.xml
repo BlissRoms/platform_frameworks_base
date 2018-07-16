@@ -25,4 +25,8 @@
 
     <!-- Whether device supports internal audio recording -->
     <java-symbol type="bool" name="config_hasInternalAudioRecordingSupport" />
+
+    <!-- Whether device ignores the RSSNR signal implementation -->
+    <java-symbol type="bool" name="config_ignoreRssnrSignalLevel" />
+
 </resources>
