@@ -219,4 +219,7 @@
     <string name="pie_battery_level">"BATTERY LEVEL "</string>
     <string name="quick_settings_pie">Pie Control</string>
 
+    <!-- Ambient Display Pixel-Like string -->
+    <string name="ambientmusic_songinfo">%s by %s</string>
+
 </resources>
