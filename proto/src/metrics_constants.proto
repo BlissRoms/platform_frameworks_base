@@ -5447,11 +5447,6 @@ message MetricsEvent {
     // OS: P
     PACKAGE_OPTIMIZATION_COMPILATION_REASON = 1321;
 
-    // FIELD: The camera API level used.
-    // CATEGORY: CAMERA
-    // OS: P
-    FIELD_CAMERA_API_LEVEL = 1322;
-
     // OPEN: Settings > Battery > Battery tip > Battery tip Dialog
     // CATEGORY: SETTINGS
     // OS: P
