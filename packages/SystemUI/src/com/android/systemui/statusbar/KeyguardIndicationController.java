@@ -44,6 +44,7 @@ import android.content.IntentFilter;
 import android.content.pm.UserInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.hardware.biometrics.BiometricSourceType;
 import android.hardware.face.FaceManager;
@@ -54,6 +55,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -85,6 +87,7 @@ import com.android.systemui.statusbar.phone.KeyguardIndicationTextView;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
+import com.android.systemui.util.settings.SystemSettings;
 import com.android.systemui.util.wakelock.SettableWakeLock;
 import com.android.systemui.util.wakelock.WakeLock;
 
@@ -159,6 +162,9 @@ public class KeyguardIndicationController {
     private int mBatteryLevel;
     private boolean mBatteryPresent = true;
     private long mChargingTimeRemaining;
+    private int mChargingCurrent;
+    private double mChargingVoltage;
+    private int mTemperature;
     private String mMessageToShowOnScreenOn;
     private boolean mInited;
 
@@ -172,6 +178,8 @@ public class KeyguardIndicationController {
                     return view == mIndicationArea;
                 }
             };
+
+    private boolean mShowBatteryInfo = false;
 
     /**
      * Creates a new KeyguardIndicationController and registers callbacks.
@@ -191,7 +199,8 @@ public class KeyguardIndicationController {
             FalsingManager falsingManager,
             LockPatternUtils lockPatternUtils,
             IActivityManager iActivityManager,
-            KeyguardBypassController keyguardBypassController) {
+            KeyguardBypassController keyguardBypassController,
+            SystemSettings systemSettings) {
         mContext = context;
         mBroadcastDispatcher = broadcastDispatcher;
         mDevicePolicyManager = devicePolicyManager;
@@ -208,7 +217,24 @@ public class KeyguardIndicationController {
         mIActivityManager = iActivityManager;
         mFalsingManager = falsingManager;
         mKeyguardBypassController = keyguardBypassController;
-
+        mShowBatteryInfo = systemSettings.getIntForUser(
+            Settings.System.LOCKSCREEN_BATTERY_INFO, 1,
+            UserHandle.USER_CURRENT
+        ) == 1;
+        final ContentObserver settingsObserver = new ContentObserver(mHandler) {
+            @Override
+            public void onChange(boolean selfChange) {
+                mShowBatteryInfo = systemSettings.getIntForUser(
+                    Settings.System.LOCKSCREEN_BATTERY_INFO, 1,
+                    UserHandle.USER_CURRENT
+                ) == 1;
+            }
+        };
+        systemSettings.registerContentObserverForUser(
+            Settings.System.LOCKSCREEN_BATTERY_INFO,
+            settingsObserver,
+            UserHandle.USER_ALL
+        );
     }
 
     /** Call this after construction to finish setting up the instance. */
@@ -830,14 +856,21 @@ public class KeyguardIndicationController {
                     : R.string.keyguard_plugged_in;
         }
 
-        String percentage = NumberFormat.getPercentInstance().format(mBatteryLevel / 100f);
+        final String percentage = NumberFormat.getPercentInstance().format(mBatteryLevel / 100f);
+        String batteryInfo = "\n";
+        if (mShowBatteryInfo) {
+            batteryInfo += (mChargingCurrent / 1000) + "mA";
+            batteryInfo += " · " + String.format("%.1f", (mChargingVoltage / 1000000)) + "V";
+            batteryInfo += " · " +  mTemperature / 10 + "°C";
+        }
+
         if (hasChargingTime) {
             String chargingTimeFormatted = Formatter.formatShortElapsedTimeRoundingUpToMinutes(
                     mContext, mChargingTimeRemaining);
             return mContext.getResources().getString(chargingId, chargingTimeFormatted,
-                    percentage);
+                    percentage) + batteryInfo;
         } else {
-            return mContext.getResources().getString(chargingId, percentage);
+            return mContext.getResources().getString(chargingId, percentage) + batteryInfo;
         }
     }
 
@@ -951,8 +984,11 @@ public class KeyguardIndicationController {
             mPowerPluggedInWireless = status.isPluggedInWireless() && isChargingOrFull;
             mPowerPluggedIn = status.isPluggedIn() && isChargingOrFull;
             mPowerCharged = status.isCharged();
+            mChargingCurrent = status.maxChargingCurrent;
+            mChargingVoltage = status.maxChargingVoltage;
             mChargingWattage = status.maxChargingWattage;
             mChargingSpeed = status.getChargingSpeed(mContext);
+            mTemperature = status.temperature;
             mBatteryLevel = status.level;
             mBatteryPresent = status.present;
             mBatteryOverheated = status.isOverheated();
