@@ -431,11 +431,6 @@ public class BlissUtils {
         return displayCutoutExists;
     }
 
-    // Method to hide/show navbar
-    public static boolean deviceSupportNavigationBar(Context context) {
-        return deviceSupportNavigationBarForUser(context, UserHandle.USER_CURRENT);
-    }
-
     // Method to detect whether an overlay is enabled or not
     public static boolean isThemeEnabled(String packageName) {
         mOverlayService = new OverlayManager();
@@ -469,6 +464,30 @@ public class BlissUtils {
         public List<OverlayInfo> getOverlayInfosForTarget(String target, int userId)
                 throws RemoteException {
             return mService.getOverlayInfosForTarget(target, userId);
+        }
+    }
+
+    // Method to hide/show navbar
+    public static boolean deviceSupportNavigationBar(Context context) {
+        return deviceSupportNavigationBarForUser(context, UserHandle.USER_CURRENT);
+    }
+    public static boolean deviceSupportNavigationBarForUser(Context context, int userId) {
+        final boolean showByDefault = context.getResources().getBoolean(
+                com.android.internal.R.bool.config_showNavigationBar);
+        final int hasNavigationBar = Settings.System.getIntForUser(
+                context.getContentResolver(),
+                Settings.System.FORCE_SHOW_NAVBAR, -1, userId);
+        if (hasNavigationBar == -1) {
+            String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
+            if ("1".equals(navBarOverride)) {
+                return false;
+            } else if ("0".equals(navBarOverride)) {
+                return true;
+            } else {
+                return showByDefault;
+            }
+        } else {
+            return hasNavigationBar == 1;
         }
     }
 }
