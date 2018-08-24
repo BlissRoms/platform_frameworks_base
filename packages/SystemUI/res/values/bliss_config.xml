@@ -18,4 +18,8 @@
         ambient_display,aod,caffeine,heads_up,livedisplay,powershare,profiles,reading_mode,sync,usb_tether,volume_panel,vpn
     </string>
 
+    <!-- Max visible notification icons -->
+    <integer name="config_maxVisibleNotificationIcons">4</integer>
+    <integer name="config_maxVisibleNotificationIconsOnLock">5</integer>
+
 </resources>
