@@ -53,4 +53,8 @@
     <!-- StatusBar burn-in protection -->
     <bool name="config_statusBarBurnInProtection">false</bool>
 
+    <!-- Max visible notification icons -->
+    <integer name="config_maxVisibleNotificationIcons">4</integer>
+    <integer name="config_maxVisibleNotificationIconsOnLock">3</integer>
+
 </resources>
