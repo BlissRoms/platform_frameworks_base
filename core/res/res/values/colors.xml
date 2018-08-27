@@ -164,10 +164,12 @@
     <color name="accessibility_focus_highlight">#bf39b500</color>
     <color name="autofilled_highlight">#4dffeb3b</color>
 
-    <color name="system_notification_accent_color">@color/material_pixel_blue_bright</color>
 
     <!-- Default user icon colors -->
     <color name="user_icon_1">@android:color/accent_device_default_light</color>
+
+    <color name="system_notification_accent_color">@android:color/accent_device_default</color>
+
     <color name="user_icon_2">#ff5c6bc0</color>
     <color name="user_icon_3">#ff26a69a</color>
     <color name="user_icon_4">#ffec407a</color>
