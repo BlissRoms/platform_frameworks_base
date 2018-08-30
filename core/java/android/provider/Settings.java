@@ -5146,10 +5146,18 @@ public final class Settings {
         public static final String GAMING_MODE_HW_KEYS_TOGGLE = "gaming_mode_hw_keys_toggle";
 
         /**
+<<<<<<< HEAD
          * Whether to disable heads up gaming mode
          * @hide
          */
         public static final String GAMING_MODE_HEADSUP_TOGGLE = "gaming_mode_headsup_toggle";
+=======
+
+
+        /***************************
+         * AICP System Settings end
+         ***************************/
+>>>>>>> a5a47d934041... base: add back weather parts [1/3]
 
         /**
          * Ringer in gaming mode (0:OFF, 1:Vibrate, 2:DND, 3:Silent)
@@ -5175,6 +5183,15 @@ public final class Settings {
          * @hide
          */
         public static final String GAMING_MODE_DYNAMIC_STATE = "gaming_mode_dynamic_state";
+
+        /**
+         * @hide
+         */
+        public static final String OMNIJAWS_WEATHER_ICON_PACK = "omnijaws_weather_icon_pack";
+
+        /** @hide */
+        private static final Validator OMNIJAWS_WEATHER_ICON_PACK_VALIDATOR =
+               ANY_STRING_VALIDATOR;
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -5255,6 +5272,7 @@ public final class Settings {
             LESS_BORING_HEADS_UP,
             NOTIFICATION_GUTS_KILL_APP_BUTTON,
             LOCK_SHOW_STATUS_BAR,
+            OMNIJAWS_WEATHER_ICON_PACK,
         };
 
         /**
@@ -5390,6 +5408,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LESS_BORING_HEADS_UP);
             PRIVATE_SETTINGS.add(NOTIFICATION_GUTS_KILL_APP_BUTTON);
             PRIVATE_SETTINGS.add(LOCK_SHOW_STATUS_BAR);
+            PRIVATE_SETTINGS.add(OMNIJAWS_WEATHER_ICON_PACK);
         }
 
         /**
@@ -5499,6 +5518,7 @@ public final class Settings {
             VALIDATORS.put(LESS_BORING_HEADS_UP, LESS_BORING_HEADS_UP_VALIDATOR);
             VALIDATORS.put(NOTIFICATION_GUTS_KILL_APP_BUTTON, NOTIFICATION_GUTS_KILL_APP_BUTTON_VALIDATOR);
             VALIDATORS.put(LOCK_SHOW_STATUS_BAR,LOCK_SHOW_STATUS_BAR_VALIDATOR);
+            VALIDATORS.put(OMNIJAWS_WEATHER_ICON_PACK,OMNIJAWS_WEATHER_ICON_PACK_VALIDATOR);
         }
 
         /**
