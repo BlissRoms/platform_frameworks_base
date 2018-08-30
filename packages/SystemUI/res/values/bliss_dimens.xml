@@ -134,4 +134,6 @@
     <!-- Media Player -->
     <dimen name="quick_settings_top_margin_media">4dp</dimen>
     <dimen name="quick_settings_top_margin_media_extra">8dp</dimen>
+
+    <dimen name="current_weather_image_size">42dp</dimen>
 </resources>
