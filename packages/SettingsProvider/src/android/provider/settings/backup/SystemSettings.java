@@ -98,5 +98,6 @@ public class SystemSettings {
         Settings.System.LOCKSCREEN_BATTERY_INFO,
         Settings.System.LOCKSCREEN_BATTERY_INFO_TEMP_UNIT,
         Settings.System.LOCKSCREEN_ROTATION,
+        Settings.System.OMNIJAWS_WEATHER_ICON_PACK,
     };
 }
