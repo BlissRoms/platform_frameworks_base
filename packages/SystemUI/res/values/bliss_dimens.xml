@@ -65,4 +65,7 @@
     <!-- Udfps fingerprint animation -->
     <dimen name="udfps_animation_size">280dp</dimen>
     <dimen name="udfps_animation_offset">0dp</dimen>
+
+    <!-- OmniWeather image size -->
+    <dimen name="current_weather_image_size">42dp</dimen>
 </resources>
