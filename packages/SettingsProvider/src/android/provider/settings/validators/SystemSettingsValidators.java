@@ -221,5 +221,6 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.FLASHLIGHT_ON_CALL_IGNORE_DND, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.FLASHLIGHT_ON_CALL_RATE, new InclusiveIntegerRangeValidator(1, 5));
         VALIDATORS.put(System.OMNIJAWS_WEATHER_ICON_PACK, ANY_STRING_VALIDATOR);
+        VALIDATORS.put(System.OMNI_LOCKSCREEN_WEATHER_ENABLED, BOOLEAN_VALIDATOR);
     }
 }

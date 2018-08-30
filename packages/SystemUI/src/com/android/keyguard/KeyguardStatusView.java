@@ -20,12 +20,17 @@ import static java.util.Collections.emptySet;
 
 import android.content.Context;
 import android.os.Trace;
+import android.content.ContentResolver;
+import android.content.res.Resources;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 
 import com.android.systemui.R;
+import com.android.systemui.omni.CurrentWeatherView;
 import com.android.systemui.statusbar.CrossFadeHelper;
 
 import java.io.PrintWriter;
@@ -44,6 +49,7 @@ public class KeyguardStatusView extends GridLayout {
     private KeyguardClockSwitch mClockView;
     private KeyguardSliceView mKeyguardSlice;
     private View mMediaHostContainer;
+    private CurrentWeatherView mWeatherView;
 
     private float mDarkAmount = 0;
 
@@ -70,6 +76,9 @@ public class KeyguardStatusView extends GridLayout {
         }
 
         mKeyguardSlice = findViewById(R.id.keyguard_slice_view);
+
+        mWeatherView = (CurrentWeatherView) findViewById(R.id.weather_container);
+
 
         mMediaHostContainer = findViewById(R.id.status_view_media_container);
 
@@ -122,5 +131,24 @@ public class KeyguardStatusView extends GridLayout {
         Trace.beginSection("KeyguardStatusView#onMeasure");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         Trace.endSection();
+   }
+
+    protected void updateSettings() {
+        final ContentResolver resolver = getContext().getContentResolver();
+        final Resources res = getContext().getResources();
+        boolean showWeather = Settings.System.getIntForUser(resolver,
+                Settings.System.OMNI_LOCKSCREEN_WEATHER_ENABLED, 0,
+                UserHandle.USER_CURRENT) == 1;
+
+        if (mWeatherView != null) {
+            if (showWeather) {
+                mWeatherView.setVisibility(View.VISIBLE);
+                mWeatherView.enableUpdates();
+            }
+            if (!showWeather) {
+                mWeatherView.setVisibility(View.GONE);
+                mWeatherView.disableUpdates();
+            }
+        }
     }
 }
