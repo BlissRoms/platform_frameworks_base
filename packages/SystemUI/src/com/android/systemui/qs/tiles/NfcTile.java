@@ -22,23 +22,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.nfc.NfcAdapter;
 import android.provider.Settings;
+import android.service.quicksettings.Tile;
 import android.widget.Switch;
 
-import com.android.internal.logging.MetricsLogger;
-import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 
+import com.android.internal.logging.MetricsLogger;
+import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
+
 /** Quick settings tile: Enable/Disable NFC **/
 public class NfcTile extends QSTileImpl<BooleanState> {
 
     private NfcAdapter mAdapter;
-
     private boolean mListening;
 
     public NfcTile(QSHost host) {
@@ -96,15 +96,20 @@ public class NfcTile extends QSTileImpl<BooleanState> {
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        final Drawable mEnable = mContext.getDrawable(R.drawable.ic_qs_nfc_enabled);
-        final Drawable mDisable = mContext.getDrawable(R.drawable.ic_qs_nfc_disabled);
-
         if (getAdapter() == null) return;
         state.value = getAdapter().isEnabled();
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_nfc_enabled);
         state.label = mContext.getString(R.string.quick_settings_nfc_label);
-        state.icon = new DrawableIcon(state.value ? mEnable : mDisable);
         state.expandedAccessibilityClassName = Switch.class.getName();
-        state.contentDescription = state.label;
+        if (state.value) {
+            state.contentDescription =  mContext.getString(
+                    R.string.accessibility_quick_settings_nfc_turned_on);
+            state.state = Tile.STATE_ACTIVE;
+        } else {
+            state.contentDescription =  mContext.getString(
+                    R.string.accessibility_quick_settings_nfc_turned_off);
+            state.state = Tile.STATE_INACTIVE;
+        }
     }
 
     @Override
