@@ -93,6 +93,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_SHOW_CHARGING_ANIMATION       = 44 << MSG_SHIFT;
     private static final int MSG_SHOW_PINNING_TOAST_ENTER_EXIT = 45 << MSG_SHIFT;
     private static final int MSG_SHOW_PINNING_TOAST_ESCAPE     = 46 << MSG_SHIFT;
+    private static final int MSG_TOGGLE_CAMERA_FLASH           = 47 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -154,7 +155,7 @@ public class CommandQueue extends IStatusBar.Stub {
         default void showPinningEnterExitToast(boolean entering) { }
         default void showPinningEscapeToast() { }
         default void handleShowGlobalActionsMenu() { }
-        default void handleShowShutdownUi(boolean isReboot, String reason) { }
+        default void handleShowShutdownUi(boolean isReboot, String reason, boolean rebootCustom) { }
 
         default void showWirelessChargingAnimation(int batteryLevel) {  }
 
@@ -165,6 +166,7 @@ public class CommandQueue extends IStatusBar.Stub {
         default void onFingerprintHelp(String message) { }
         default void onFingerprintError(String error) { }
         default void hideFingerprintDialog() { }
+        default void toggleCameraFlash() { }
     }
 
     @VisibleForTesting
@@ -488,10 +490,10 @@ public class CommandQueue extends IStatusBar.Stub {
     }
 
     @Override
-    public void showShutdownUi(boolean isReboot, String reason) {
+    public void showShutdownUi(boolean isReboot, String reason, boolean rebootCustom) {
         synchronized (mLock) {
             mHandler.removeMessages(MSG_SHOW_SHUTDOWN_UI);
-            mHandler.obtainMessage(MSG_SHOW_SHUTDOWN_UI, isReboot ? 1 : 0, 0, reason)
+            mHandler.obtainMessage(MSG_SHOW_SHUTDOWN_UI, isReboot ? 1 : 0, rebootCustom ? 1 : 0, reason)
                     .sendToTarget();
         }
     }
@@ -548,6 +550,14 @@ public class CommandQueue extends IStatusBar.Stub {
     public void hideFingerprintDialog() {
         synchronized (mLock) {
             mHandler.obtainMessage(MSG_FINGERPRINT_HIDE).sendToTarget();
+        }
+    }
+
+    @Override
+    public void toggleCameraFlash() {
+        synchronized (mLock) {
+            mHandler.removeMessages(MSG_TOGGLE_CAMERA_FLASH);
+            mHandler.sendEmptyMessage(MSG_TOGGLE_CAMERA_FLASH);
         }
     }
 
@@ -739,7 +749,7 @@ public class CommandQueue extends IStatusBar.Stub {
                     break;
                 case MSG_SHOW_SHUTDOWN_UI:
                     for (int i = 0; i < mCallbacks.size(); i++) {
-                        mCallbacks.get(i).handleShowShutdownUi(msg.arg1 != 0, (String) msg.obj);
+                        mCallbacks.get(i).handleShowShutdownUi(msg.arg1 != 0, (String) msg.obj, msg.arg2 != 0);
                     }
                     break;
                 case MSG_SET_TOP_APP_HIDES_STATUS_BAR:
@@ -795,6 +805,11 @@ public class CommandQueue extends IStatusBar.Stub {
                 case MSG_SHOW_PINNING_TOAST_ESCAPE:
                     for (int i = 0; i < mCallbacks.size(); i++) {
                         mCallbacks.get(i).showPinningEscapeToast();
+                    }
+                    break;
+                case MSG_TOGGLE_CAMERA_FLASH:
+                    for (int i = 0; i < mCallbacks.size(); i++) {
+                        mCallbacks.get(i).toggleCameraFlash();
                     }
                     break;
             }

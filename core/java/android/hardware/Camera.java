@@ -1813,7 +1813,11 @@ public class Camera {
                     } catch (RemoteException e) {
                         Log.e(TAG, "Audio service is unavailable for queries");
                     }
-                    _enableShutterSound(false);
+                    try {
+                        _enableShutterSound(false);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Couldn't disable shutter sound");
+                    }
                 } else {
                     enableShutterSound(mShutterSoundEnabledFromApp);
                 }
@@ -2043,6 +2047,23 @@ public class Camera {
          * as a set. Either they are all valid, or none of them are.
          */
         public Point mouth = null;
+
+        /**
+         * {@hide}
+         */
+        public int smileDegree = 0;
+        /**
+         * {@hide}
+         */
+        public int smileScore = 0;
+        /**
+         * {@hide}
+         */
+        public int blinkDetected = 0;
+        /**
+         * {@hide}
+         */
+        public int faceRecognised = 0;
     }
 
     /**
@@ -2290,6 +2311,15 @@ public class Camera {
         native_setLongshot(enable);
     }
     private native final void native_setLongshot(boolean enable);
+
+    /** @hide
+     * Stop longshot. Available only in ZSL.
+     */
+    public final void stopLongshot()
+    {
+        native_stopLongshot();
+    }
+    private native final void native_stopLongshot();
 
      /** @hide
      * Handles the Touch Co-ordinate.

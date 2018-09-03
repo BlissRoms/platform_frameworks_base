@@ -416,6 +416,18 @@ public final class PowerManager {
     public static final String REBOOT_RECOVERY = "recovery";
 
     /**
+     * The value to pass as the 'reason' argument to reboot() to
+     * reboot into bootloader mode
+     * <p>
+     * Requires the {@link android.Manifest.permission#RECOVERY}
+     * permission (in addition to
+     * {@link android.Manifest.permission#REBOOT}).
+     * </p>
+     * @hide
+     */
+    public static final String REBOOT_BOOTLOADER = "bootloader";
+
+    /**
      * The value to pass as the 'reason' argument to reboot() to reboot into
      * recovery mode for applying system updates.
      * <p>
@@ -941,6 +953,22 @@ public final class PowerManager {
     }
 
     /**
+     * Forces the device to wake up from sleep only if
+     * nothing is blocking the proximity sensor
+     *
+     * @see #wakeUp
+     *
+     * @hide
+     */
+    public void wakeUpWithProximityCheck(long time, String reason) {
+        try {
+            mService.wakeUpWithProximityCheck(time, reason, mContext.getOpPackageName());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Forces the device to start napping.
      * <p>
      * If the device is currently awake, starts dreaming, otherwise does nothing.
@@ -1114,6 +1142,24 @@ public final class PowerManager {
             mService.rebootSafeMode(false, true);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Reboot the device with custom progress meassges.
+     * Will not return if the reboot is successful.
+     * <p>
+     * Requires the {@link android.Manifest.permission#REBOOT} permission.
+     * </p>
+     *
+     * @param reason code to pass to the kernel (e.g., "recovery") to
+     *               request special boot modes, or null.
+     * @hide
+     */
+    public void rebootCustom(String reason) {
+        try {
+            mService.rebootCustom(false, reason, true);
+        } catch (RemoteException e) {
         }
     }
 

@@ -3292,6 +3292,18 @@ public class WindowManagerService extends IWindowManager.Stub
                 confirm);
     }
 
+    // Called by window manager policy.  Not exposed externally.
+    @Override
+    public void reboot(String reason, boolean confirm) {
+        ShutdownThread.reboot(ActivityThread.currentActivityThread().getSystemUiContext(), reason, confirm);
+    }
+
+    // Called by window manager policy.  Not exposed externally.
+    @Override
+    public void rebootCustom(String reason, boolean confirm) {
+        ShutdownThread.rebootCustom(ActivityThread.currentActivityThread().getSystemUiContext(), reason, confirm);
+    }
+
     public void setCurrentProfileIds(final int[] currentProfileIds) {
         synchronized (mWindowMap) {
             mCurrentProfileIds = currentProfileIds;
@@ -7600,5 +7612,15 @@ public class WindowManagerService extends IWindowManager.Stub
                 mWindowPlacerLocked.performSurfacePlacement();
             }
         }
+    }
+
+    @Override
+    public boolean isGestureButtonEnabled() {
+        return this.mPolicy.isGestureButtonEnabled();
+    }
+
+    @Override
+    public boolean isGestureButtonRegion(int i, int i2) {
+        return this.mPolicy.isGestureButtonRegion(i, i2);
     }
 }

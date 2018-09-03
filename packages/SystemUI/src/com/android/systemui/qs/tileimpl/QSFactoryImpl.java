@@ -23,9 +23,12 @@ import com.android.systemui.R;
 import com.android.systemui.plugins.qs.*;
 import com.android.systemui.plugins.qs.QSTileView;
 import com.android.systemui.qs.external.CustomTile;
+import com.android.systemui.qs.tiles.AdbOverNetworkTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
+import com.android.systemui.qs.tiles.AODTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
+import com.android.systemui.qs.tiles.CaffeineTile;
 import com.android.systemui.qs.tiles.CastTile;
 import com.android.systemui.qs.tiles.CellularTile;
 import com.android.systemui.qs.tiles.ColorInversionTile;
@@ -98,6 +101,13 @@ public class QSFactoryImpl implements QSFactory {
                 return new NightDisplayTile(mHost);
             case "nfc":
                 return new NfcTile(mHost);
+            // Omni tiles
+            case "aod":
+                return new AODTile(mHost);
+            case "caffeine":
+                return new CaffeineTile(mHost);
+            case "adb_network":
+                return new AdbOverNetworkTile(mHost);
         }
 
         // Intent tiles.
@@ -105,11 +115,11 @@ public class QSFactoryImpl implements QSFactory {
         if (tileSpec.startsWith(CustomTile.PREFIX)) return CustomTile.create(mHost, tileSpec);
 
         // Debug tiles.
-        if (Build.IS_DEBUGGABLE) {
-            if (tileSpec.equals(GarbageMonitor.MemoryTile.TILE_SPEC)) {
-                return new GarbageMonitor.MemoryTile(mHost);
-            }
-        }
+        //if (Build.IS_DEBUGGABLE) {
+        //    if (tileSpec.equals(GarbageMonitor.MemoryTile.TILE_SPEC)) {
+        //        return new GarbageMonitor.MemoryTile(mHost);
+        //    }
+        //}
 
         // Broken tiles.
         Log.w(TAG, "Bad tile spec: " + tileSpec);

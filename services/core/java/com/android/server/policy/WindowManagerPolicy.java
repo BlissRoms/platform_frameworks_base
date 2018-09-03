@@ -579,6 +579,12 @@ public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
         public void reboot(boolean confirm);
         public void rebootSafeMode(boolean confirm);
 
+        /** @hide */
+        void reboot(String reason, boolean confirm);
+
+        /** @hide */
+        void rebootCustom(String reason, boolean confirm);
+
         /**
          * Return the window manager lock needed to correctly call "Lw" methods.
          */
@@ -1781,4 +1787,18 @@ public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
      * @return whether the value was changed.
      */
     boolean setAodShowing(boolean aodShowing);
+
+    /**
+     * Check if gesture navigation is enable.
+     *
+     * @return true if enable; false otherwise.
+     */
+    boolean isGestureButtonEnabled();
+
+    /**
+     * Check if current touch move is in gestu.
+     *
+     * @return true if enable; false otherwise.
+     */
+    boolean isGestureButtonRegion(int i, int i2);
 }

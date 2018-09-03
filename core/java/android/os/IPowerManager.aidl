@@ -53,6 +53,7 @@ interface IPowerManager
 
     void reboot(boolean confirm, String reason, boolean wait);
     void rebootSafeMode(boolean confirm, boolean wait);
+    void rebootCustom(boolean confirm, String reason, boolean wait);
     void shutdown(boolean confirm, String reason, boolean wait);
     void crash(String message);
     int getLastShutdownReason();
@@ -68,4 +69,9 @@ interface IPowerManager
 
     // controls whether PowerManager should doze after the screen turns off or not
     void setDozeAfterScreenOff(boolean on);
+
+    void wakeUpWithProximityCheck(long time, String reason, String opPackageName);
+
+    // update the uids being synchronized by network socket request manager
+    void updateBlockedUids(int uid, boolean isBlocked);
 }
