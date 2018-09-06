@@ -282,7 +282,7 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
         View brightness = mQsPanel.getBrightnessView();
         if (mAllowFancy) {
             // Make brightness appear static position and alpha in through second half.
-            if (brightness != null) {
+            if (brightness != null && !mQsPanel.isBrightnessViewBottom()) {
                 firstPageBuilder.addFloat(brightness, "translationY", heightDiff, 0);
                 mBrightnessAnimator = new TouchAnimator.Builder()
                         .addFloat(brightness, "alpha", mIsQuickQsBrightnessEnabled ? 1 : 0, 1)
@@ -303,9 +303,9 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
                     .addFloat(mQsPanel.getFooter().getView(), "alpha", 0, 1);
             mAllViews.add(mQsPanel.getDivider());
             mAllViews.add(mQsPanel.getFooter().getView());
-            if (brightness != null) {
-                builder.addFloat(mQsPanel.getBrightnessView(), "alpha", 0, 1);
-                mAllViews.add(mQsPanel.getBrightnessView());
+            if (brightness != null && mQsPanel.isBrightnessViewBottom()) {
+                builder.addFloat(brightness, "alpha", 0, 1);
+                mAllViews.add(brightness);
             }
             mFirstPageDelayedAnimator = builder.build();
             float px = 0;
@@ -326,8 +326,8 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
                 .addFloat(mQsPanel.getDivider(), "alpha", 0, 1)
                 .setListener(mNonFirstPageListener)
                 .setEndDelay(.5f);
-        if (brightness != null) {
-            builder.addFloat(mQsPanel.getBrightnessView(), "alpha", 0, 1);
+        if (brightness != null && mQsPanel.isBrightnessViewBottom()) {
+            builder.addFloat(brightness, "alpha", 0, 1);
         }
         mNonfirstPageAnimator = builder.build();
         mNonfirstPageDelayedAnimator = new TouchAnimator.Builder()
