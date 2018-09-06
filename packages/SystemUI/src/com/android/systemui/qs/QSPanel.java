@@ -140,6 +140,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private int animStyle, animDuration, interpolatorType;
 
     private final Vibrator mVibrator;
+    private boolean mBrightnessBottom;
 
     public QSPanel(Context context) {
         this(context, null);
@@ -235,9 +236,11 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         if (mBrightnessSlider == 1 || mBrightnessSlider == 3) {
             addView(mBrightnessView);
             addView((View) mTileLayout);
+            mBrightnessBottom = false;
         } else {
             addView((View) mTileLayout);
             addView(mBrightnessView);
+            mBrightnessBottom = true;
         }
 
         addDivider();
@@ -931,5 +934,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
     public int getNumColumns() {
         return mTileLayout.getNumColumns();
+    }
+
+    public boolean isBrightnessViewBottom() {
+        return mBrightnessBottom;
     }
 }
