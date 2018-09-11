@@ -16,9 +16,13 @@
 
 package com.android.internal.util.bliss;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.os.SystemProperties;
+
+import com.android.internal.R;
 
 /**
  * Some custom utilities
@@ -30,5 +34,10 @@ public class BlissUtils {
         if (pm!= null) {
             pm.goToSleep(SystemClock.uptimeMillis());
         }
+    }
+
+    // Check to see if device supports an alterative ambient display package
+    public static boolean hasAltAmbientDisplay(Context context) {
+        return context.getResources().getBoolean(com.android.internal.R.bool.config_alt_ambient_display);
     }
 }
