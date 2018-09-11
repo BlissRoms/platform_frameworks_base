@@ -65,5 +65,8 @@
         <item>com.google.android.systemui.GoogleServices</item>
     </string-array>
 
+    <!-- Whether device supports an alt. ambient display -->
+    <java-symbol type="bool" name="config_alt_ambient_display"/>
+
 </resources>
 
