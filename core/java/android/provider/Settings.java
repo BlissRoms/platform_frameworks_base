@@ -5446,6 +5446,12 @@ public final class Settings {
                 ANY_INTEGER_VALIDATOR;
 
         /**
+         * Change font style for the system lockscreen clock widget
+         * @hide
+         */
+        public static final String LOCK_CLOCK_FONT_STYLE = "lock_clock_font_style";
+
+        /**
          * User definable value of pulse notification screen brightness
          *
          * @hide
