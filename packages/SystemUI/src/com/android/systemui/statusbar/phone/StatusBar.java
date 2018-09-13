@@ -251,6 +251,7 @@ import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.OnHeadsUpChangedListener;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
+import com.android.systemui.statusbar.policy.TelephonyIcons;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.tuner.TunerService;
@@ -352,6 +353,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     public static final boolean ENABLE_LOCKSCREEN_WALLPAPER = true;
 
     private static final UiEventLogger sUiEventLogger = new UiEventLoggerImpl();
+
+    public static boolean USE_OLD_MOBILETYPE = false;
 
     static {
         boolean onlyCoreApps;
@@ -2129,6 +2132,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SYSTEM_THEME),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.USE_OLD_MOBILETYPE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2152,6 +2158,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mQSPanel.getHost().reloadAllTiles();
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.SYSTEM_THEME))) {
                 updateSystemTheme();
+	    } else if (uri.equals(Settings.System.getUriFor(Settings.System.USE_OLD_MOBILETYPE))) {
+                setOldMobileType();
             }
             update();
         }
@@ -2163,6 +2171,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             setUseLessBoringHeadsUp();
             setFpToDismissNotifications();
             updateNavigationBar(false);
+            setOldMobileType();
         }
     }
 
@@ -2177,7 +2186,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                 Settings.System.SYSTEM_THEME, 0, UserHandle.USER_CURRENT);
                switchThemes(mSystemTheme);
     }
-
 
     public void switchThemes(int theme) {
         switch (theme) {
@@ -2227,6 +2235,13 @@ public class StatusBar extends SystemUI implements DemoMode,
            break;
           }
      }
+
+    private void setOldMobileType() {
+        USE_OLD_MOBILETYPE = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.USE_OLD_MOBILETYPE, 0,
+                UserHandle.USER_CURRENT) != 0;
+        TelephonyIcons.updateIcons(USE_OLD_MOBILETYPE);
+    }
 
     private void setLockScreenMediaBlurLevel() {
         if (mMediaManager != null) {
