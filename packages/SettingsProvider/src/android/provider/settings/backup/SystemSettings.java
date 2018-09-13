@@ -88,5 +88,6 @@ public class SystemSettings {
         Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN,
         Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
         Settings.System.NOTIFICATION_HEADERS,
+        Settings.System.USE_OLD_MOBILETYPE,
     };
 }
