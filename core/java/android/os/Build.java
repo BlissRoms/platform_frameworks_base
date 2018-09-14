@@ -1002,6 +1002,19 @@ public class Build {
     public static final String FINGERPRINT = deriveFingerprint();
 
     /**
+     * Bliss fingerprint
+     * @hide
+     */
+    public static final String PROP_BLISS_FINGERPRINT = "ro.bliss.fingerprint";
+
+    /**
+     * Custom fingerprint
+     * @hide
+     */
+    public static final String BLISS_FINGERPRINT = SystemProperties.get(PROP_BLISS_FINGERPRINT,
+            deriveFingerprint());
+
+    /**
      * Some devices split the fingerprint components between multiple
      * partitions, so we might derive the fingerprint at runtime.
      */
