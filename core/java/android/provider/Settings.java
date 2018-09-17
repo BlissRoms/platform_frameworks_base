@@ -4555,6 +4555,22 @@ public final class Settings {
         public static final Validator INCREASING_RING_RAMP_UP_TIME_VALIDATOR = ANY_STRING_VALIDATOR;
 
         /**
+         * @hide
+         */
+        public static final String BURN_IN_PROTECTION = "burn_in_protection";
+
+        /** @hide */
+        public static final Validator BURN_IN_PROTECTION_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
+         * @hide
+         */
+        public static final String BURN_IN_PROTECTION_INTERVAL = "burn_in_protection_interval";
+
+        /** @hide */
+        private static final Validator BURN_IN_PROTECTION_INTERVAL_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4653,7 +4669,9 @@ public final class Settings {
             STATUSBAR_CLOCK_AM_PM_STYLE,
             STATUSBAR_CLOCK_DATE_DISPLAY,
             STATUSBAR_CLOCK_DATE_STYLE,
-            STATUSBAR_CLOCK_DATE_FORMAT
+            STATUSBAR_CLOCK_DATE_FORMAT,
+            BURN_IN_PROTECTION,
+            BURN_IN_PROTECTION_INTERVAL
         };
 
         /**
@@ -4809,6 +4827,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_DATE_DISPLAY);
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_DATE_STYLE);
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_DATE_FORMAT);
+            PRIVATE_SETTINGS.add(BURN_IN_PROTECTION);
+            PRIVATE_SETTINGS.add(BURN_IN_PROTECTION_INTERVAL);
         }
 
         /**
@@ -4959,6 +4979,8 @@ public final class Settings {
             VALIDATORS.put(STATUSBAR_CLOCK_DATE_DISPLAY, STATUSBAR_CLOCK_DATE_DISPLAY_VALIDATOR);
             VALIDATORS.put(STATUSBAR_CLOCK_DATE_STYLE, STATUSBAR_CLOCK_DATE_STYLE_VALIDATOR);
             VALIDATORS.put(STATUSBAR_CLOCK_DATE_FORMAT, STATUSBAR_CLOCK_DATE_FORMAT_VALIDATOR);
+            VALIDATORS.put(BURN_IN_PROTECTION, BURN_IN_PROTECTION_VALIDATOR);
+            VALIDATORS.put(BURN_IN_PROTECTION_INTERVAL, BURN_IN_PROTECTION_INTERVAL_VALIDATOR);
         }
 
         /**

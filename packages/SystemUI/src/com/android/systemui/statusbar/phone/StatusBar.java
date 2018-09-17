@@ -664,6 +664,12 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.OMNI_USE_OLD_MOBILETYPE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.BURN_IN_PROTECTION),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.BURN_IN_PROTECTION_INTERVAL),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
