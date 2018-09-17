@@ -294,6 +294,9 @@ public class CentralSurfacesImpl extends CoreStartable implements
     private static final String BANNER_ACTION_SETUP =
             "com.android.systemui.statusbar.banner_action_setup";
 
+    private static final String FORCE_SHOW_NAVBAR =
+            "system:" + Settings.System.FORCE_SHOW_NAVBAR;
+
     private static final int MSG_OPEN_SETTINGS_PANEL = 1002;
     private static final int MSG_LAUNCH_TRANSITION_TIMEOUT = 1003;
     // 1020-1040 reserved for BaseStatusBar
@@ -943,6 +946,19 @@ public class CentralSurfacesImpl extends CoreStartable implements
         mColorExtractor.addOnColorsChangedListener(mOnColorsChangedListener);
         mStatusBarStateController.addCallback(mStateListener,
                 SysuiStatusBarStateController.RANK_STATUS_BAR);
+
+        mNeedsNavigationBar = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_showNavigationBar);
+        // Allow a system property to override this. Used by the emulator.
+        // See also hasNavigationBar().
+        String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
+        if ("1".equals(navBarOverride)) {
+            mNeedsNavigationBar = false;
+        } else if ("0".equals(navBarOverride)) {
+            mNeedsNavigationBar = true;
+        }
+
+        mTunerService.addTunable(this, FORCE_SHOW_NAVBAR);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 
@@ -4118,6 +4134,7 @@ public class CentralSurfacesImpl extends CoreStartable implements
 
     private final NavigationBarController mNavigationBarController;
     private final AccessibilityFloatingMenuController mAccessibilityFloatingMenuController;
+    private boolean mNeedsNavigationBar;
 
     // UI-specific methods
 
@@ -4398,7 +4415,29 @@ public class CentralSurfacesImpl extends CoreStartable implements
     public NotificationPanelViewController getPanelController() {
         return mNotificationPanelViewController;
     }
-    // End Extra BaseStatusBarMethods.
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case FORCE_SHOW_NAVBAR:
+                if (mDisplayId != Display.DEFAULT_DISPLAY || mWindowManagerService == null)
+                    return;
+                boolean forcedVisibility = mNeedsNavigationBar ||
+                        TunerService.parseIntegerSwitch(newValue, false);
+                boolean hasNavbar = getNavigationBarView() != null;
+                if (forcedVisibility) {
+                    if (!hasNavbar) {
+                        mNavigationBarController.onDisplayReady(mDisplayId);
+                    }
+                } else {
+                    if (hasNavbar) {
+                        mNavigationBarController.onDisplayRemoved(mDisplayId);
+                    }
+                }
+                break;
+         }
+
+            // End Extra BaseStatusBarMethods.
 
     @Override
     public NotificationGutsManager getGutsManager() {
