@@ -4266,15 +4266,6 @@ public final class Settings {
         /**
          * @hide
          */
-        public static final String OMNI_SHOW_BATTERY_IMAGE = "status_bar_show_battery_image";
-
-        /** @hide */
-        private static final Validator OMNI_SHOW_BATTERY_IMAGE_VALIDATOR =
-                BOOLEAN_VALIDATOR;
-
-        /**
-         * @hide
-         */
         public static final String OMNI_ASPECT_RATIO_APPS_LIST = "aspect_ratio_apps_list";
 
         /** @hide */
@@ -4508,7 +4499,6 @@ public final class Settings {
             OMNI_QS_LAYOUT_ROWS_LANDSCAPE,
             OMNI_QS_QUICKBAR_COLUMNS,
             OMNI_QS_PANEL_BG_ALPHA,
-            OMNI_SHOW_BATTERY_IMAGE,
             OMNI_ASPECT_RATIO_APPS_ENABLED,
             OMNI_ASPECT_RATIO_APPS_LIST,
             OMNI_BATTERY_LIGHT_ENABLED,
@@ -4653,7 +4643,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_ROWS_LANDSCAPE);
             PRIVATE_SETTINGS.add(OMNI_QS_QUICKBAR_COLUMNS);
             PRIVATE_SETTINGS.add(OMNI_QS_PANEL_BG_ALPHA);
-            PRIVATE_SETTINGS.add(OMNI_SHOW_BATTERY_IMAGE);
             PRIVATE_SETTINGS.add(OMNI_ASPECT_RATIO_APPS_ENABLED);
             PRIVATE_SETTINGS.add(OMNI_ASPECT_RATIO_APPS_LIST);
             PRIVATE_SETTINGS.add(OMNI_BATTERY_LIGHT_ENABLED);
@@ -4780,7 +4769,6 @@ public final class Settings {
             VALIDATORS.put(OMNI_QS_LAYOUT_ROWS_LANDSCAPE, OMNI_QS_LAYOUT_ROWS_LANDSCAPE_VALIDATOR);
             VALIDATORS.put(OMNI_QS_QUICKBAR_COLUMNS, OMNI_QS_QUICKBAR_COLUMNS_VALIDATOR);
             VALIDATORS.put(OMNI_QS_PANEL_BG_ALPHA, OMNI_QS_PANEL_BG_ALPHA_VALIDATOR);
-            VALIDATORS.put(OMNI_SHOW_BATTERY_IMAGE, OMNI_SHOW_BATTERY_IMAGE_VALIDATOR);
             VALIDATORS.put(OMNI_ASPECT_RATIO_APPS_ENABLED,
                     OMNI_ASPECT_RATIO_APPS_ENABLED_VALIDATOR);
             VALIDATORS.put(OMNI_ASPECT_RATIO_APPS_LIST,
