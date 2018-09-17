@@ -16,10 +16,13 @@
 
 package com.android.systemui.statusbar.policy;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -62,14 +65,26 @@ public class BurnInProtectionController {
 
         mPhoneStatusBarView = phoneStatusBarView;
 
-        mShiftEnabled = mContext.getResources().getBoolean(
-                R.bool.config_statusBarBurnInProtection);
         mHorizontalMaxShift = mContext.getResources()
                 .getDimensionPixelSize(R.dimen.horizontal_max_shift);
         // total of ((vertical_max_shift - 1) * 2) pixels can be moved
         mVerticalMaxShift = mContext.getResources()
                 .getDimensionPixelSize(R.dimen.vertical_max_shift) - 1;
-        mShiftInterval = (long) mContext.getResources().getInteger(R.integer.config_shift_interval);
+
+        updateSettings();
+    }
+
+    public void updateSettings() {
+        final Resources res = mContext.getResources();
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mShiftEnabled = Settings.System.getIntForUser(resolver,
+                Settings.System.BURN_IN_PROTECTION, 1,
+                UserHandle.USER_CURRENT) == 1;
+
+        mShiftInterval = (long) Settings.System.getIntForUser(resolver,
+                Settings.System.BURN_IN_PROTECTION_INTERVAL, 60,
+                UserHandle.USER_CURRENT);
     }
 
     public void startShiftTimer() {
