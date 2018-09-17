@@ -274,7 +274,8 @@ public class ScreenPinningRequest implements
                     .setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
             View buttons = mLayout.findViewById(R.id.screen_pinning_buttons);
             if (!QuickStepContract.isGesturalMode(mNavBarMode)
-            	    && hasSoftNavigationBar(mContext.getDisplayId()) && !isLargeScreen(mContext)) {
+                    && hasSoftNavigationBar(mContext, mContext.getDisplayId())
+                    && !isLargeScreen(mContext)) {
                 buttons.setLayoutDirection(View.LAYOUT_DIRECTION_LOCALE);
                 swapChildrenIfRtlAndVertical(buttons);
             } else {
@@ -349,7 +350,7 @@ public class ScreenPinningRequest implements
          *
          * @return whether there is a soft nav bar on specific display.
          */
-        private boolean hasSoftNavigationBar(int displayId) {
+        private boolean hasSoftNavigationBar(Context context, int displayId) {
             try {
                 return WindowManagerGlobal.getWindowManagerService().hasNavigationBar(displayId);
             } catch (RemoteException e) {
