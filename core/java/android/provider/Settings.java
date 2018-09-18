@@ -8387,7 +8387,8 @@ public final class Settings {
          * 4: Display the battery as a big circle and show level into the icon
          * 5: Display the battery as a big dotted circle and show level into the icon
          * 6: Display the battery as text
-         * 7: Do not display the battery
+		 * 7: Display the battery as a square
+         * 8: Do not display the battery
          * default: 0
          * @hide
          */
