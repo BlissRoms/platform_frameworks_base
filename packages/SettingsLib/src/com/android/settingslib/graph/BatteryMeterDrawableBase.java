@@ -53,7 +53,8 @@ public class BatteryMeterDrawableBase extends Drawable {
     public static final int BATTERY_STYLE_BIG_CIRCLE = 4;
     public static final int BATTERY_STYLE_BIG_DOTTED_CIRCLE = 5;
     public static final int BATTERY_STYLE_SQUARE = 6;
-    public static final int BATTERY_STYLE_TEXT = 7;
+    public static final int BATTERY_STYLE_DOTTED_SQUARE = 7;
+    public static final int BATTERY_STYLE_TEXT = 8;
 
     protected final Context mContext;
     protected final Paint mFramePaint;
@@ -109,7 +110,7 @@ public class BatteryMeterDrawableBase extends Drawable {
     private final Path mOutlinePath = new Path();
     private final Path mTextPath = new Path();
 
-    private DashPathEffect mPathEffect;
+    private DashPathEffect mPathEffect, mSquarePathEffect;
 
     private boolean mCircleShowPercentInside;
 
@@ -179,6 +180,7 @@ public class BatteryMeterDrawableBase extends Drawable {
                 .getDimensionPixelSize(R.dimen.battery_powersave_outline_thickness));
 
         mPathEffect = new DashPathEffect(new float[]{3,2}, 0);
+        mSquarePathEffect = new DashPathEffect(new float[]{3,3}, 3);
 
         mIntrinsicWidth = context.getResources().getDimensionPixelSize(R.dimen.battery_width);
         mIntrinsicHeight = context.getResources().getDimensionPixelSize(R.dimen.battery_height);
@@ -359,6 +361,7 @@ public class BatteryMeterDrawableBase extends Drawable {
                 drawCircle(c, true);
                 break;
             case BATTERY_STYLE_SQUARE:
+            case BATTERY_STYLE_DOTTED_SQUARE:
                 drawSquare(c);
                 break;
             default:
@@ -570,6 +573,12 @@ public class BatteryMeterDrawableBase extends Drawable {
         mBatteryPaint.setStyle(Paint.Style.STROKE);
         mBatteryPaint.setPathEffect(null);
 
+        if (mMeterStyle == BATTERY_STYLE_DOTTED_SQUARE) {
+            mBatteryPaint.setPathEffect(mSquarePathEffect);
+        } else {
+            mBatteryPaint.setPathEffect(null);
+        }
+
         mFrame.set(
                 strokeWidth/2,
                 strokeWidth/2,
@@ -594,16 +603,16 @@ public class BatteryMeterDrawableBase extends Drawable {
         c.drawPath(mShapePath, mFramePaint);
 
         // draw the battery shape, clipped to charging level
-        mClipPath.reset();
+        mOutlinePath.reset();
         if (padLevel == 100) {
-            mClipPath.addArc(mSquareFrame, 270, 360);
+            mOutlinePath.addArc(mSquareFrame, 270, 360);
         } else {
-            mClipPath.arcTo(mSquareFrame, 270, 3.6f * padLevel);
-            mClipPath.lineTo(mWidth/2, mHeight/2);
-            mClipPath.close();
+            mOutlinePath.arcTo(mSquareFrame, 270, 3.6f * padLevel);
+            mOutlinePath.lineTo(mWidth/2, mHeight/2);
+            mOutlinePath.close();
         }
 
-        mShapePath.op(mClipPath, Path.Op.REVERSE_DIFFERENCE);
+        mShapePath.op(mOutlinePath, Path.Op.REVERSE_DIFFERENCE);
         c.drawPath(mShapePath, mBatteryPaint);
 
         if (mCharging) {
