@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -110,6 +111,85 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     private static final int SHOW_DURATION = 5; // 5 seconds
 
     private int mAmPmStyle = AM_PM_STYLE_GONE;
+
+    private int mClockFontStyle = FONT_NORMAL;
+    private static final int FONT_NORMAL = 0;
+    private static final int FONT_ITALIC = 1;
+    private static final int FONT_BOLD = 2;
+    private static final int FONT_BOLD_ITALIC = 3;
+    private static final int FONT_LIGHT = 4;
+    private static final int FONT_LIGHT_ITALIC = 5;
+    private static final int FONT_THIN = 6;
+    private static final int FONT_THIN_ITALIC = 7;
+    private static final int FONT_CONDENSED = 8;
+    private static final int FONT_CONDENSED_ITALIC = 9;
+    private static final int FONT_CONDENSED_LIGHT = 10;
+    private static final int FONT_CONDENSED_LIGHT_ITALIC = 11;
+    private static final int FONT_CONDENSED_BOLD = 12;
+    private static final int FONT_CONDENSED_BOLD_ITALIC = 13;
+    private static final int FONT_MEDIUM = 14;
+    private static final int FONT_MEDIUM_ITALIC = 15;
+    private static final int FONT_BLACK = 16;
+    private static final int FONT_BLACK_ITALIC = 17;
+    private static final int FONT_ACLONICA = 25;
+    private static final int FONT_AMARANTE = 26;
+    private static final int FONT_BARIOL = 27;
+    private static final int FONT_CAGLIOSTRO = 28;
+    private static final int FONT_COOLSTORY = 29;
+    private static final int FONT_LGSMARTGOTHIC = 30;
+    private static final int FONT_ROSEMARY = 31;
+    private static final int FONT_SONYSKETCH = 32;
+    private static final int FONT_SURFER = 33;
+    private static final int FONT_COMICSANS = 34;
+    private static final int FONT_GOOGLESANS = 35;
+    private static final int FONT_ONEPLUSSLATE = 36;
+    private static final int FONT_SAMSUNGONE = 37;
+    private static final int FONT_COMFORTAA = 38;
+    private static final int FONT_EXOTWO = 39;
+    private static final int FONT_STOROPIA = 40;
+    private static final int FONT_UBUNTU = 41;
+    private static final int FONT_NOKIAPURE = 42;
+    private static final int FONT_FIFA2018 = 43;
+    private static final int FONT_ROADRAGE = 44;
+    private static final int FONT_20SEVEN = 45;
+    private static final int FONT_COCON = 46;
+    private static final int FONT_QUANDO = 47;
+    private static final int FONT_GRANDHOTEL = 48;
+    private static final int FONT_REDRESSED = 49;
+    private static final int FONT_SANFRANSISCO = 50;
+    private static final int FONT_BIGNOODLE_ITALIC = 51;
+    private static final int FONT_BIGNOODLE_REGULAR = 52;
+    private static final int FONT_HANKEN = 53;
+    private static final int FONT_MITTELSCHRIFT = 54;
+    private static final int FONT_REEMKUFI = 55;
+    private static final int FONT_COMIC_NEUE_BOLD = 56;
+    private static final int FONT_COMIC_NEUE = 57;
+    private static final int FONT_EXO2_REGULAR = 58;
+    private static final int FONT_EXO2_SEMIBOLD = 59;
+    private static final int FONT_FINLANDICA = 60;
+    private static final int FONT_GOODLIGHT = 61;
+    private static final int FONT_GRAVITY_REGULAR = 62;
+    private static final int FONT_INTER_REGULAR = 63;
+    private static final int FONT_INTER_MEDIUM_ITALIC = 64;
+    private static final int FONT_LEAGUE_MONO_N_REGULAR = 65;
+    private static final int FONT_LEAGUE_MONO_N_MEDIUM = 66;
+    private static final int FONT_LEAGUE_MONO_N_BOLD = 67;
+    private static final int FONT_LEAGUE_MONO_N_SEMIBOLD = 68;
+    private static final int FONT_LEONSANS_REGULAR = 69;
+    private static final int FONT_MESCLA_REGULAR = 70;
+    private static final int FONT_ODIBEE_SANS = 71;
+    private static final int FONT_PANAMERICANA = 72;
+    private static final int FONT_PT_SANS = 73;
+    private static final int FONT_PT_MONO = 74;
+    private static final int FONT_ROUNDED_GOTHIC_NARROW = 75;
+    private static final int FONT_ROUNDED_GOTHIC_NARROW_HALF_ITALIC = 76;
+    private static final int FONT_SOFIA_SANS_REGULAR = 77;
+    private static final int FONT_SOFIA_SANS_MEDIUM = 78;
+    private static final int FONT_SOFIA_SEMICONDENSED_REGULAR = 79;
+    private static final int FONT_SOFIA_SEMICONDENSED_MEDIUM = 80;
+    public int DEFAULT_CLOCK_SIZE = 14;
+    public int DEFAULT_CLOCK_COLOR = 0xffffffff;
+
     private final boolean mShowDark;
     private boolean mShowSeconds;
     private Handler mSecondsHandler;
@@ -121,6 +201,8 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     private int mHideDuration = HIDE_DURATION, mShowDuration = SHOW_DURATION;
     private Handler mHandler = new Handler();
     private boolean mQsHeader;
+    private int mClockColor = 0xffffffff;
+    private int mClockSize = 14;
 
     public static final String STATUS_BAR_CLOCK_SECONDS =
             "system:" + Settings.System.STATUS_BAR_CLOCK_SECONDS;
@@ -140,6 +222,12 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
             "system:" + Settings.System.STATUS_BAR_CLOCK_AUTO_HIDE_HDURATION;
     public static final String STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION =
             "system:" + Settings.System.STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION;
+    public static final String STATUS_BAR_CLOCK_SIZE =
+            "system:" + Settings.System.STATUS_BAR_CLOCK_SIZE;
+    public static final String STATUS_BAR_CLOCK_COLOR =
+            "system:" + Settings.System.STATUS_BAR_CLOCK_COLOR;
+    public static final String STATUS_BAR_CLOCK_FONT_STYLE =
+            "system:" + Settings.System.STATUS_BAR_CLOCK_FONT_STYLE;
 
     /**
      * Whether we should use colors that adapt based on wallpaper/the scrim behind quick settings
@@ -244,7 +332,10 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
                     STATUS_BAR_CLOCK_DATE_FORMAT,
                     STATUS_BAR_CLOCK_AUTO_HIDE,
                     STATUS_BAR_CLOCK_AUTO_HIDE_HDURATION,
-                    STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION);
+                    STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION,
+                    STATUS_BAR_CLOCK_SIZE,
+                    STATUS_BAR_CLOCK_COLOR,
+                    STATUS_BAR_CLOCK_FONT_STYLE);
             SysUiServiceProvider.getComponent(getContext(), CommandQueue.class).addCallback(this);
             if (mShowDark) {
                 Dependency.get(DarkIconDispatcher.class).addDarkReceiver(this);
@@ -365,6 +456,17 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
         autoHideHandler.postDelayed(()->updateClockVisibility(), mHideDuration * 1000);
     }
 
+    private void updateClockStyle() {
+        setTextSize(mClockSize);
+        if (mClockColor == 0xFFFFFFFF) {
+            setTextColor(mNonAdaptedColor);
+        } else {
+            setTextColor(mClockColor);
+        }
+        getFontStyle(mClockFontStyle);
+        updateClock();
+    }
+
     final void updateClock() {
         if (mDemoMode || mCalendar == null) return;
         mCalendar.setTimeInMillis(System.currentTimeMillis());
@@ -411,10 +513,23 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
                 mShowDuration =
                         TunerService.parseInteger(newValue, SHOW_DURATION);
                 break;
+            case STATUS_BAR_CLOCK_SIZE:
+                mClockSize =
+                        TunerService.parseInteger(newValue, 14);
+                break;
+            case STATUS_BAR_CLOCK_COLOR:
+                mClockColor =
+                        TunerService.parseInteger(newValue, DEFAULT_CLOCK_COLOR);
+                break;
+            case STATUS_BAR_CLOCK_FONT_STYLE:
+                mClockFontStyle =
+                        TunerService.parseInteger(newValue, 28);
+                break;
             default:
                 break;
         }
         mClockFormatString = ""; // force refresh
+        updateClockStyle();
         updateClock();
         updateClockVisibility();
     }
@@ -433,8 +548,10 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     @Override
     public void onDarkChanged(Rect area, float darkIntensity, int tint) {
         mNonAdaptedColor = DarkIconDispatcher.getTint(area, this, tint);
-        if (!mUseWallpaperTextColor) {
+        if (mClockColor == DEFAULT_CLOCK_COLOR) {
             setTextColor(mNonAdaptedColor);
+        } else {
+            setTextColor(mClockColor);
         }
     }
 
@@ -457,16 +574,7 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
      * @param shouldUseWallpaperTextColor whether we should use wallpaperTextColor for text color
      */
     public void useWallpaperTextColor(boolean shouldUseWallpaperTextColor) {
-        if (shouldUseWallpaperTextColor == mUseWallpaperTextColor) {
-            return;
-        }
-        mUseWallpaperTextColor = shouldUseWallpaperTextColor;
-
-        if (mUseWallpaperTextColor) {
-            setTextColor(Utils.getColorAttr(mContext, R.attr.wallpaperTextColor));
-        } else {
-            setTextColor(mNonAdaptedColor);
-        }
+        setTextColor(mClockColor);
     }
 
     private void updateShowSeconds() {
@@ -668,5 +776,233 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
             mSecondsHandler.postAtTime(this, SystemClock.uptimeMillis() / 1000 * 1000 + 1000);
         }
     };
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FONT_NORMAL:
+            default:
+                setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FONT_ITALIC:
+                setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FONT_BOLD:
+                setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FONT_BOLD_ITALIC:
+                setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_LIGHT:
+                setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FONT_LIGHT_ITALIC:
+                setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FONT_THIN:
+                setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FONT_THIN_ITALIC:
+                setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FONT_CONDENSED_ITALIC:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED_LIGHT:
+                setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FONT_CONDENSED_LIGHT_ITALIC:
+                setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED_BOLD:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FONT_CONDENSED_BOLD_ITALIC:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_MEDIUM:
+                setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FONT_MEDIUM_ITALIC:
+                setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FONT_BLACK:
+                setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FONT_BLACK_ITALIC:
+                setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FONT_ACLONICA:
+                setTypeface(Typeface.create("aclonica", Typeface.NORMAL));
+                break;
+            case FONT_AMARANTE:
+                setTypeface(Typeface.create("amarante", Typeface.NORMAL));
+                break;
+            case FONT_BARIOL:
+                setTypeface(Typeface.create("bariol", Typeface.NORMAL));
+                break;
+            case FONT_CAGLIOSTRO:
+                setTypeface(Typeface.create("cagliostro", Typeface.NORMAL));
+                break;
+            case FONT_COOLSTORY:
+                setTypeface(Typeface.create("coolstory", Typeface.NORMAL));
+                break;
+            case FONT_LGSMARTGOTHIC:
+                setTypeface(Typeface.create("lgsmartgothic", Typeface.NORMAL));
+                break;
+            case FONT_ROSEMARY:
+                setTypeface(Typeface.create("rosemary", Typeface.NORMAL));
+                break;
+            case FONT_SONYSKETCH:
+                setTypeface(Typeface.create("sonysketch", Typeface.NORMAL));
+                break;
+            case FONT_SURFER:
+                setTypeface(Typeface.create("surfer", Typeface.NORMAL));
+                break;
+            case FONT_COMICSANS:
+                setTypeface(Typeface.create("comicsans", Typeface.NORMAL));
+                break;
+            case FONT_GOOGLESANS:
+                setTypeface(Typeface.create("googlesans", Typeface.NORMAL));
+                break;
+            case FONT_ONEPLUSSLATE:
+                setTypeface(Typeface.create("oneplusslate", Typeface.NORMAL));
+                break;
+            case FONT_SAMSUNGONE:
+                setTypeface(Typeface.create("samsungone", Typeface.NORMAL));
+                break;
+            case FONT_COMFORTAA:
+                setTypeface(Typeface.create("comfortaa", Typeface.NORMAL));
+                break;
+            case FONT_EXOTWO:
+                setTypeface(Typeface.create("exotwo", Typeface.NORMAL));
+                break;
+            case FONT_STOROPIA:
+                setTypeface(Typeface.create("storopia", Typeface.NORMAL));
+                break;
+            case FONT_UBUNTU:
+                setTypeface(Typeface.create("ubuntu", Typeface.NORMAL));
+                break;
+            case FONT_NOKIAPURE:
+                setTypeface(Typeface.create("nokiapure", Typeface.NORMAL));
+                break;
+            case FONT_FIFA2018:
+                setTypeface(Typeface.create("fifa2018", Typeface.NORMAL));
+                break;
+            case FONT_ROADRAGE:
+                setTypeface(Typeface.create("roadrage", Typeface.NORMAL));
+                break;
+            case FONT_20SEVEN:
+                setTypeface(Typeface.create("20seven", Typeface.NORMAL));
+                break;
+            case FONT_COCON:
+                setTypeface(Typeface.create("cocon", Typeface.NORMAL));
+                break;
+            case FONT_QUANDO:
+                setTypeface(Typeface.create("quando", Typeface.NORMAL));
+                break;
+            case FONT_GRANDHOTEL:
+                setTypeface(Typeface.create("grandhotel", Typeface.NORMAL));
+                break;
+            case FONT_REDRESSED:
+                setTypeface(Typeface.create("redressed", Typeface.NORMAL));
+                break;
+            case FONT_SANFRANSISCO:
+                setTypeface(Typeface.create("sanfransisco", Typeface.NORMAL));
+                break;
+            case FONT_BIGNOODLE_ITALIC:
+                setTypeface(Typeface.create("bignoodle-italic", Typeface.NORMAL));
+                break;
+            case FONT_BIGNOODLE_REGULAR:
+                setTypeface(Typeface.create("bignoodle-regular", Typeface.NORMAL));
+                break;
+            case FONT_HANKEN:
+                setTypeface(Typeface.create("hanken", Typeface.NORMAL));
+                break;
+            case FONT_MITTELSCHRIFT:
+                setTypeface(Typeface.create("mittelschrift", Typeface.NORMAL));
+                break;
+            case FONT_REEMKUFI:
+                setTypeface(Typeface.create("reemkufi", Typeface.NORMAL));
+                break;
+            case FONT_COMIC_NEUE_BOLD:
+                setTypeface(Typeface.create("comic-neue-bold", Typeface.NORMAL));
+                break;
+            case FONT_COMIC_NEUE:
+                setTypeface(Typeface.create("comic-neue", Typeface.NORMAL));
+                break;
+            case FONT_EXO2_REGULAR:
+                setTypeface(Typeface.create("exo2-regular", Typeface.NORMAL));
+                break;
+            case FONT_EXO2_SEMIBOLD:
+                setTypeface(Typeface.create("exo2-semibold", Typeface.NORMAL));
+                break;
+            case FONT_FINLANDICA:
+                setTypeface(Typeface.create("finlandica", Typeface.NORMAL));
+                break;
+            case FONT_GOODLIGHT:
+                setTypeface(Typeface.create("goodlight", Typeface.NORMAL));
+                break;
+            case FONT_GRAVITY_REGULAR:
+                setTypeface(Typeface.create("gravity-regular", Typeface.NORMAL));
+                break;
+            case FONT_INTER_REGULAR:
+                setTypeface(Typeface.create("inter-regular", Typeface.NORMAL));
+                break;
+            case FONT_INTER_MEDIUM_ITALIC:
+                setTypeface(Typeface.create("inter-medium-italic", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE_MONO_N_REGULAR:
+                setTypeface(Typeface.create("league-mono-n-regular", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE_MONO_N_MEDIUM:
+                setTypeface(Typeface.create("league-mono-n-medium", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE_MONO_N_BOLD:
+                setTypeface(Typeface.create("league-mono-n-bold", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE_MONO_N_SEMIBOLD:
+                setTypeface(Typeface.create("league-mono-n-semibold", Typeface.NORMAL));
+                break;
+            case FONT_LEONSANS_REGULAR:
+                setTypeface(Typeface.create("leonsans-regular", Typeface.NORMAL));
+                break;
+            case FONT_MESCLA_REGULAR:
+                setTypeface(Typeface.create("mescla-regular", Typeface.NORMAL));
+                break;
+            case FONT_ODIBEE_SANS:
+                setTypeface(Typeface.create("odibee-sans", Typeface.NORMAL));
+                break;
+            case FONT_PANAMERICANA:
+                setTypeface(Typeface.create("panamericana", Typeface.NORMAL));
+                break;
+            case FONT_PT_SANS:
+                setTypeface(Typeface.create("pt-sans", Typeface.NORMAL));
+                break;
+            case FONT_PT_MONO:
+                setTypeface(Typeface.create("pt-mono", Typeface.NORMAL));
+                break;
+            case FONT_ROUNDED_GOTHIC_NARROW:
+                setTypeface(Typeface.create("rounded-gothic-narrow", Typeface.NORMAL));
+                break;
+            case FONT_ROUNDED_GOTHIC_NARROW_HALF_ITALIC:
+                setTypeface(Typeface.create("rounded-gothic-narrow-half-italic", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA_SANS_REGULAR:
+                setTypeface(Typeface.create("sofia-sans-regular", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA_SANS_MEDIUM:
+                setTypeface(Typeface.create("sofia-sans-medium", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA_SEMICONDENSED_REGULAR:
+                setTypeface(Typeface.create("sofia-semicondensed-regular", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA_SEMICONDENSED_MEDIUM:
+                setTypeface(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
+                break;
+        }
+    }
 }
 
