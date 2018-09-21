@@ -556,6 +556,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     DisplayRotation mDefaultDisplayRotation;
     DisplayPolicy mDefaultDisplayPolicy;
 
+    // The home button wake
+    boolean mHomeWakeButton;
+
     // What we do when the user long presses on home
     private int mLongPressOnHomeBehavior;
 
@@ -808,6 +811,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCK_POWER_MENU_DISABLED), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HOME_WAKE_BUTTON), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -2258,6 +2264,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // volume rocker wake
             mVolumeRockerWake = Settings.System.getIntForUser(resolver,
                     Settings.System.VOLUME_ROCKER_WAKE, 0, UserHandle.USER_CURRENT) != 0;
+
+	    // home wake button
+            mHomeWakeButton = Settings.System.getIntForUser(resolver,
+                    Settings.System.HOME_WAKE_BUTTON, 0, UserHandle.USER_CURRENT) != 0;
 
             // Configure wake gesture.
             boolean wakeGestureEnabledSetting = Settings.Secure.getIntForUser(resolver,
@@ -3875,7 +3885,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             case KeyEvent.KEYCODE_HOME:
-                if (down && !interactive) {
+                if (down && !interactive && mHomeWakeButton) {
                     isWakeKey = true;
                 }
                 break;
