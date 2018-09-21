@@ -4904,6 +4904,12 @@ public final class Settings {
          */
         public static final String QS_QUICKBAR_COLUMNS = "qs_quickbar_columns";
 
+	/**
+         * Home wake button
+         * @hide
+         */
+        public static final String HOME_WAKE_BUTTON = "home_wake_button";
+
         /**
          * Change volume up and down handlign based on rotation
          * @hide
