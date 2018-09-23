@@ -40,4 +40,9 @@
 
     <dimen name="quick_status_bar_system_icons_margin_top">8dp</dimen>
     <dimen name="qs_brightness_slider_height">48dp</dimen>
+
+    <!-- Burn-in protection -->
+    <dimen name="horizontal_max_swift">3.0dp</dimen>
+    <dimen name="vertical_max_swift">1.0dp</dimen>
+
 </resources>
