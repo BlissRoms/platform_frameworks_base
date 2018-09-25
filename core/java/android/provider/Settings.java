@@ -4411,6 +4411,13 @@ public final class Settings {
         public static final String AUDIO_PANEL_VIEW_BT_SCO = "audio_panel_view_bt_sco";
 
         /**
+         * Select various accents to go along with system themes
+         *
+         * @hide
+         */
+        public static final String ACCENT_PICKER = "accent_picker";
+
+        /**
          * Whether to change the transparency of the qs panel
          * @hide
          */
