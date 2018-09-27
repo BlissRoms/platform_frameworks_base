@@ -60,10 +60,6 @@ public class Build {
     /** The name of the underlying board, like "goldfish". */
     public static final String BOARD = getString("ro.product.board");
 
-    /** The Bliss build version
-      @hide */
-    public static final String BLISS = getString("ro.bliss.version");
-
     /**
      * The name of the instruction set (CPU type + ABI convention) of native code.
      *

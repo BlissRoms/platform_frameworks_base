@@ -2573,7 +2573,7 @@ public class PackageManagerService extends IPackageManager.Stub
             File frameworkDir = new File(Environment.getRootDirectory(), "framework");
 
             final VersionInfo ver = mSettings.getInternalVersion();
-            mIsUpgrade = !Build.BLISS.equals(ver.fingerprint);
+            mIsUpgrade = !Build.FINGERPRINT.equals(ver.fingerprint);
             if (mIsUpgrade) {
                 logCriticalInfo(Log.INFO,
                         "Upgrading from " + ver.fingerprint + " to " + Build.FINGERPRINT);
@@ -3207,7 +3207,7 @@ public class PackageManagerService extends IPackageManager.Stub
                                         | Installer.FLAG_CLEAR_CODE_CACHE_ONLY);
                     }
                 }
-                ver.fingerprint = Build.BLISS;
+                ver.fingerprint = Build.FINGERPRINT;
             }
 
             checkDefaultBrowser();
@@ -22220,7 +22220,7 @@ Slog.v(TAG, ":: stepped forward, applying functor at tag " + parser.getName());
                     Slog.w(TAG, "Failed to scan " + ps.codePath + ": " + e.getMessage());
                 }
 
-                if (!Build.BLISS.equals(ver.fingerprint)) {
+                if (!Build.FINGERPRINT.equals(ver.fingerprint)) {
                     clearAppDataLIF(ps.pkg, UserHandle.USER_ALL,
                             StorageManager.FLAG_STORAGE_DE | StorageManager.FLAG_STORAGE_CE
                                     | Installer.FLAG_CLEAR_CODE_CACHE_ONLY);
