@@ -98,6 +98,9 @@ public class KeyguardStatusView extends GridLayout {
 
     void updateDark() {
         mKeyguardSlice.setDarkAmount(mDarkAmount);
+        if (mWeatherView != null) {
+            mWeatherView.blendARGB(mDarkAmount);
+        }
     }
 
     /** Sets a translationY value on every child view except for the media view. */
