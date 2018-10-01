@@ -4704,6 +4704,18 @@ public final class Settings {
         public static final String LISTVIEW_INTERPOLATOR = "listview_interpolator";
 
         /**
+         * Disable dashboard conditions in settings
+         * @hide
+         */
+        public static final String ENABLE_CONDITIONS = "enable_conditions";
+
+        /**
+         * Disable dashboard suggestions in settings
+         * @hide
+         */
+        public static final String ENABLE_SUGGESTIONS = "enable_suggestions";
+
+        /**
          * Status bar carrier label
          * 0: Hide
          * 1: Display on keyguard status bar
