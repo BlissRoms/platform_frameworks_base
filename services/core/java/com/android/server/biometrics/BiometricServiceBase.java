@@ -84,6 +84,7 @@ public abstract class BiometricServiceBase extends SystemService
     private final UserManager mUserManager;
     private final MetricsLogger mMetricsLogger;
     private final boolean mPostResetRunnableForAllClients;
+    private final boolean mCleanupUnusedFingerprints;
     private final BiometricTaskStackListener mTaskStackListener = new BiometricTaskStackListener();
     private final ResetClientStateRunnable mResetClientState = new ResetClientStateRunnable();
     private final ArrayList<LockoutResetMonitor> mLockoutMonitors = new ArrayList<>();
@@ -662,6 +663,8 @@ public abstract class BiometricServiceBase extends SystemService
                 com.android.internal.R.bool.config_cleanupUnusedFingerprints);
         mPostResetRunnableForAllClients = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_fingerprintPostResetRunnableForAllClients);
+        mCleanupUnusedFingerprints = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_cleanupUnusedFingerprints);
     }
 
     @Override
