@@ -4556,12 +4556,6 @@ public final class Settings {
         };  
         public static final String ANIMATION_CONTROLS_DURATION = "animation_controls_duration";
 
-        /** Whether to vibrate when quick settings tile is pressed.
-          *
-          * @hide
-          */
-         public static final String QUICK_SETTINGS_TILES_VIBRATE = "quick_settings_vibrate";
-
         /**
          * Change quick settings tiles animation style
          *
@@ -4574,6 +4568,13 @@ public final class Settings {
          * @hide
          */
         public static final String ANIM_TILE_DURATION = "anim_tile_duration";
+
+        /**
+         * Change quick settings tiles interpolator
+         *
+         * @hide
+         */
+        public static final String ANIM_TILE_INTERPOLATOR = "anim_tile_interpolator";
 
         /**
          *  Weather to use a custom color for the visualizer on the lock screen
