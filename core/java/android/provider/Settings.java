@@ -4589,6 +4589,12 @@ public final class Settings {
         public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
 
         /**
+         * Whether to show Brightness Icon On Brightness Slider
+         * @hide
+         */
+        public static final String QS_SHOW_BRIGHTNESS_ICON = "qs_show_brightness_icon";
+
+        /**
          *  Weather to use a custom color for the visualizer on the lock screen
          * @hide
          */
@@ -8577,6 +8583,12 @@ public final class Settings {
          * @hide.
          */
         public static final int VR_DISPLAY_MODE_OFF = 1;
+
+        /**
+         * Whether to show the brightness slider in quick settings panel
+         * @hide
+         */
+        public static final String QS_SHOW_BRIGHTNESS_SLIDER = "qs_show_brightness_slider";
 
         /** Whether to vibrate when quick settings tile is pressed.
           *
