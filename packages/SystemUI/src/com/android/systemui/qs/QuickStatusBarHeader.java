@@ -166,6 +166,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             "system:" + Settings.System.STATUS_BAR_BATTERY_STYLE;
     public static final String OMNI_STATUS_BAR_CUSTOM_HEADER =
             "system:" + Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER;
+    private boolean mHideDragHandle;
 
     private final BroadcastReceiver mRingerReceiver = new BroadcastReceiver() {
         @Override
@@ -403,7 +404,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 com.android.internal.R.dimen.status_bar_height);
         int qqsHeight = mContext.getResources().getDimensionPixelSize(
                 R.dimen.qs_quick_header_panel_height);
-
+        if (mHideDragHandle) {
+            qqsHeight -= mContext.getResources().getDimensionPixelSize(
+                    R.dimen.quick_qs_drag_handle_height);
+        }
         setMinimumHeight(sbHeight + qqsHeight);
     }
 
@@ -440,6 +444,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
             // always add the margin below the statusbar with or without image
             qsHeight += statusBarBottomMargin;
+
+            if (mHideDragHandle) {
+                qsHeight -= resources.getDimensionPixelSize(
+                        R.dimen.quick_qs_drag_handle_height);
+            }
 
             lp.height = Math.max(getMinimumHeight(), qsHeight);
         }
@@ -528,6 +537,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         super.onAttachedToWindow();
         mStatusBarIconController.addIconGroup(mIconManager);
         requestApplyInsets();
+
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, QSFooterImpl.QS_SHOW_DRAG_HANDLE);
     }
 
     @Override
@@ -745,6 +757,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 mHeaderImageEnabled =
                         TunerService.parseIntegerSwitch(newValue, true);
                 updateStatusbarProperties();
+                break;
+            case QSFooterImpl.QS_SHOW_DRAG_HANDLE:
+                mHideDragHandle =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                updateResources();
                 break;
             default:
                 break;
