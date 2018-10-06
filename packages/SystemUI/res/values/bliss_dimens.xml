@@ -22,4 +22,7 @@
 
     <!-- the padding on the start and the end of the statusbar -->
     <dimen name="status_bar_extra_padding">0dp</dimen>
+
+    <dimen name="quick_qs_drag_handle_height">20dp</dimen>
+
 </resources>

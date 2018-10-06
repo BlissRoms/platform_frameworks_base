@@ -152,6 +152,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private static final String SHOW_QS_CLOCK =
             "system:" + Settings.System.SHOW_QS_CLOCK;
+    private boolean mHideDragHandle;
 
     private final BroadcastReceiver mRingerReceiver = new BroadcastReceiver() {
         @Override
@@ -408,9 +409,13 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             lp.height = resources.getDimensionPixelSize(
                     com.android.internal.R.dimen.quick_qs_offset_height);
         } else {
-            lp.height = Math.max(getMinimumHeight(),
-                    resources.getDimensionPixelSize(
-                            com.android.internal.R.dimen.quick_qs_total_height));
+            int qsHeight = resources.getDimensionPixelSize(
+                    com.android.internal.R.dimen.quick_qs_total_height);
+            if (mHideDragHandle) {
+                qsHeight -= resources.getDimensionPixelSize(
+                        R.dimen.quick_qs_drag_handle_height);
+            }
+            lp.height = Math.max(getMinimumHeight(), qsHeight);
         }
 
         setLayoutParams(lp);
@@ -497,6 +502,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         super.onAttachedToWindow();
         mStatusBarIconController.addIconGroup(mIconManager);
         requestApplyInsets();
+
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, QSFooterImpl.QS_SHOW_DRAG_HANDLE);
     }
 
     @Override
@@ -671,5 +679,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     public void onTuningChanged(String key, String newValue) {
         mClockView.setClockVisibleByUser(newValue == null ? true :
                 Integer.valueOf(newValue) != 0);
+
+        if (QSFooterImpl.QS_SHOW_DRAG_HANDLE.equals(key)) {
+            mHideDragHandle = newValue != null && Integer.parseInt(newValue) == 0;
+            updateResources();
+        }
     }
 }
