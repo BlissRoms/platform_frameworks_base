@@ -85,4 +85,6 @@
     <dimen name="status_bar_mobile_signal_width">16dp</dimen>
     <dimen name="status_bar_mobile_type_height">10dp</dimen>
 
+    <dimen name="quick_qs_drag_handle_height">20dp</dimen>
+
 </resources>
