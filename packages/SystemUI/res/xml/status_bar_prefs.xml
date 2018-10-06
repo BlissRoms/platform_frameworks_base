@@ -103,4 +103,9 @@
         android:title="@string/tuner_low_priority"
         sysui:defValue="false" />
 
+    <com.android.systemui.tuner.TunerSwitch
+        android:key="qs_show_drag_handle"
+        android:title="@string/tuner_show_drag_handle"
+        sysui:defValue="true" />
+
 </PreferenceScreen>

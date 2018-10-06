@@ -33,4 +33,6 @@
     <!-- LTE QS Tile -->
     <string name="qs_lte_label">LTE</string>
 
+    <string name="tuner_show_drag_handle">Show drag handle</string>
+
 </resources>
