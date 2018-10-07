@@ -233,7 +233,7 @@ public class OmniJawsClient {
     public Intent getSettingsIntent() {
         if (isOmniJawsServiceInstalled()) {
             Intent settings = new Intent(Intent.ACTION_MAIN)
-                    .setClassName("com.blissroms.blissify", "com.blissroms.blissify.Blissify$OmniJawsSettingsActivity");
+                    .setClassName("com.android.settings", "com.android.settings.Settings$OmniJawsSettingsActivity");
             return settings;
         }
         return null;
