@@ -313,7 +313,7 @@
                   android:theme="@style/TunerSettings"
                   android:label="@string/statusbar_icons_blacklist"
                   android:process=":tuner"
-                  android:parentActivityName="com.blissroms.blissify.fragments.statusbar.Icons"
+                  android:parentActivityName="com.blissroms.blissify.fragments.statusbar.Battery"
                   android:exported="true">
         </activity>
 
