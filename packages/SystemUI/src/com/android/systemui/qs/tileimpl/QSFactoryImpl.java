@@ -38,9 +38,12 @@ import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LocationTile;
+import com.android.systemui.qs.tiles.NavBarTile;
 import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
+import com.android.systemui.qs.tiles.ScreenrecordTile;
+import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.WeatherTile;
 import com.android.systemui.qs.tiles.WifiTile;
@@ -102,7 +105,7 @@ public class QSFactoryImpl implements QSFactory {
                 return new NightDisplayTile(mHost);
             case "nfc":
                 return new NfcTile(mHost);
-            // Omni tiles
+            // Bliss tiles
             case "aod":
                 return new AODTile(mHost);
             case "caffeine":
@@ -111,6 +114,12 @@ public class QSFactoryImpl implements QSFactory {
                 return new AdbOverNetworkTile(mHost);
             case "weather":
                 return new WeatherTile(mHost);
+            case "sync":
+                return new SyncTile(mHost);
+            case "navbar":
+                return new NavBarTile(mHost);
+            case "screenrecord":
+                return new ScreenrecordTile(mHost);
         }
 
         // Intent tiles.

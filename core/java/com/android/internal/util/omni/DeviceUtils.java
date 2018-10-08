@@ -29,13 +29,16 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
+import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.os.Vibrator;
 import android.os.UserHandle;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.DisplayInfo;
+import android.view.IWindowManager;
 import android.view.WindowManager;
+import android.view.WindowManagerGlobal;
 import android.provider.Settings;
 
 import com.android.internal.telephony.PhoneConstants;
@@ -208,5 +211,14 @@ public class DeviceUtils {
     }
      public static boolean isPackageInstalled(Context context, String pkg) {
         return isPackageInstalled(context, pkg, true);
+    }
+
+    public static void takeScreenrecord(int mode) {
+        IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+        try {
+            wm.screenRecordAction(mode);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 }
