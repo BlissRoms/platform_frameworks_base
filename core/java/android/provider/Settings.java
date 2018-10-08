@@ -4719,12 +4719,6 @@ public final class Settings {
         public static final String TOAST_ANIMATION = "toast_animation";
 
         /**
-         * Toast icon
-         * @hide
-         */
-        public static final String TOAST_ICON = "toast_icon";
-
-        /**
          * ListView Animations
          * 0 == None
          * 1 == Wave (Left)
@@ -4752,6 +4746,12 @@ public final class Settings {
          * @hide
          */
         public static final String LISTVIEW_INTERPOLATOR = "listview_interpolator";
+
+        /**
+         * Toast icon
+         * @hide
+         */
+        public static final String TOAST_ICON = "toast_icon";
 
         /**
          * Disable dashboard conditions in settings
@@ -12921,6 +12921,17 @@ public final class Settings {
          */
         public static final String LOCATION_SETTINGS_LINK_TO_PERMISSIONS_ENABLED =
                 "location_settings_link_to_permissions_enabled";
+
+        /**
+         * Defines the screen-off animation to display
+         * @hide
+         */
+        public static final String SCREEN_OFF_ANIMATION = "screen_off_animation";
+         /**
+         * Whether to show a screen-on animation
+         * @hide
+         */
+        public static final String SCREEN_ON_ANIMATION = "screen_on_animation";
 
         /**
          * Flag to set the waiting time for euicc factory reset inside System > Settings
