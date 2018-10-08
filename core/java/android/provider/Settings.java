@@ -4719,6 +4719,12 @@ public final class Settings {
         public static final String TOAST_ANIMATION = "toast_animation";
 
         /**
+         * Toast icon
+         * @hide
+         */
+        public static final String TOAST_ICON = "toast_icon";
+
+        /**
          * ListView Animations
          * 0 == None
          * 1 == Wave (Left)
@@ -5129,6 +5135,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(BURN_IN_PROTECTION_INTERVAL);
             PRIVATE_SETTINGS.add(MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD);
             PRIVATE_SETTINGS.add(OMNI_LOCK_POWER_MENU_DISABLED);
+            PRIVATE_SETTINGS.add(TOAST_ICON);
         }
 
         /**

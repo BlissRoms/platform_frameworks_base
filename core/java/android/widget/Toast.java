@@ -35,6 +35,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,7 +43,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.provider.Settings;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -472,15 +472,17 @@ public class Toast {
                 }
 
                 ImageView appIcon = (ImageView) mView.findViewById(android.R.id.icon);
-                if (appIcon != null) {
-                    PackageManager pm = context.getPackageManager();
-                    Drawable icon = null;
-                    try {
-                        icon = pm.getApplicationIcon(packageName);
-                    } catch (PackageManager.NameNotFoundException e) {
-                        // nothing to do
+                if ((Settings.System.getInt(context.getContentResolver(), Settings.System.TOAST_ICON, 0) == 1)) {
+                    if (appIcon != null) {
+                        PackageManager pm = context.getPackageManager();
+                        Drawable icon = null;
+                        try {
+                            icon = pm.getApplicationIcon(packageName);
+                        } catch (PackageManager.NameNotFoundException e) {
+                            // nothing to do
+                        }
+                        appIcon.setImageDrawable(icon);
                     }
-                    appIcon.setImageDrawable(icon);
                 }
                 mWM = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
                 // We can resolve the Gravity here by using the Locale for getting
