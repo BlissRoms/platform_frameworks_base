@@ -4270,6 +4270,13 @@ public final class Settings {
          */
         public static final String OMNI_QS_PANEL_BG_ALPHA = "qs_panel_bg_alpha";
 
+        /**
+         * Whether to enable status and navigation bar color in battery saver mode.
+         * Heads up timeout configuration
+         * @hide
+         */
+        public static final String HEADS_UP_TIMEOUT = "heads_up_timeout";
+
         /** @hide */
         private static final Validator OMNI_QS_PANEL_BG_ALPHA_VALIDATOR =
                 ANY_INTEGER_VALIDATOR;
