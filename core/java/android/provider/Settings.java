@@ -4277,6 +4277,12 @@ public final class Settings {
          */
         public static final String HEADS_UP_TIMEOUT = "heads_up_timeout";
 
+        /**
+         * Defines the global heads up notification snooze
+         * @hide
+         */
+        public static final String HEADS_UP_NOTIFICATION_SNOOZE = "heads_up_notification_snooze";
+
         /** @hide */
         private static final Validator OMNI_QS_PANEL_BG_ALPHA_VALIDATOR =
                 ANY_INTEGER_VALIDATOR;
