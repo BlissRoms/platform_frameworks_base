@@ -674,6 +674,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_FOOTER_WARNINGS),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -691,12 +694,17 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         public void update() {
+		    ContentResolver resolver = mContext.getContentResolver();
             updateNavigationBar();
             setQsPanelOptions();
-            USE_OLD_MOBILETYPE = Settings.System.getIntForUser(mContext.getContentResolver(),
+            USE_OLD_MOBILETYPE = Settings.System.getIntForUser(resolver,
                     Settings.System.OMNI_USE_OLD_MOBILETYPE, 0,
                     UserHandle.USER_CURRENT) != 0;
             TelephonyIcons.updateIcons(USE_OLD_MOBILETYPE);
+
+            final String blackString = Settings.System.getString(resolver,
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES);
+            splitAndAddToArrayList(mBlacklist, blackString, "\\|");
         }
 
     private void updateBatterySettings() {
@@ -2045,6 +2053,11 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     @Override
     public boolean shouldPeek(Entry entry, StatusBarNotification sbn) {
+        // check if package is blacklisted first
+        if (isPackageBlacklisted(sbn.getPackageName())) {
+            return false;
+        }
+
         if (mIsOccluded && !isDozing()) {
             boolean devicePublic = mLockscreenUserManager.
                     isLockscreenPublicMode(mLockscreenUserManager.getCurrentUserId());
@@ -5224,6 +5237,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         return mDeviceInteractive;
     }
 
+    private ArrayList<String> mBlacklist = new ArrayList<String>();
+
     @Override  // NotificationData.Environment
     public boolean isDeviceProvisioned() {
         return mDeviceProvisionedController.isDeviceProvisioned();
@@ -5721,6 +5736,21 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     protected void notifyHeadsUpGoingToSleep() {
         maybeEscalateHeadsUp();
+    }
+
+    private boolean isPackageBlacklisted(String packageName) {
+        return mBlacklist.contains(packageName);
+    }
+     private void splitAndAddToArrayList(ArrayList<String> arrayList,
+            String baseString, String separator) {
+        // clear first
+        arrayList.clear();
+        if (baseString != null) {
+            final String[] array = TextUtils.split(baseString, separator);
+            for (String item : array) {
+                arrayList.add(item.trim());
+            }
+        }
     }
 
     /**
