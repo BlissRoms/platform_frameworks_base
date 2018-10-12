@@ -214,4 +214,11 @@
 
   <!-- Pocket bridge -->
   <java-symbol type="string" name="config_pocketBridgeSysfsInpocket" />
+
+  <!-- Toast text and bg colors -->
+  <java-symbol type="color" name="toast_bg_color" />
+  <java-symbol type="color" name="toast_text_color" />
+
+  <!-- Fastscroller -->
+  <java-symbol type="color" name="fastscroller_text_color" />
 </resources>
