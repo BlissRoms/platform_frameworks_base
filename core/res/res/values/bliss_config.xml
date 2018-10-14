@@ -66,4 +66,7 @@
         <item>com.snapchat.android</item>
     </string-array>
 
+    <!-- Screen off delay -->
+    <integer name="config_screen_off_delay">1000</integer>
+
 </resources>
