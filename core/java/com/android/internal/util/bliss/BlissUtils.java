@@ -83,6 +83,7 @@ public class BlissUtils {
     public static final String INTENT_REGION_SCREENSHOT = "action_take_region_screenshot";
 
     private static OverlayManager mOverlayService;
+    private static final String TAG = "BlissUtils";
 
     // Check to see if device is WiFi only
     public static boolean isWifiOnly(Context context) {
@@ -488,6 +489,34 @@ public class BlissUtils {
             }
         } else {
             return hasNavigationBar == 1;
+        }
+    }
+
+    // Switches qs tile style to user selected.
+    public static void updateTileStyle(IOverlayManager om, int userId, int qsTileStyle) {
+        if (qsTileStyle == 0) {
+            stockTileStyle(om, userId);
+        } else {
+            try {
+                om.setEnabled(ThemesUtils.QS_TILE_THEMES[qsTileStyle],
+                        true, userId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change qs tile icon", e);
+            }
+        }
+    }
+
+    // Switches qs tile style back to stock.
+    public static void stockTileStyle(IOverlayManager om, int userId) {
+        // skip index 0
+        for (int i = 0; i < ThemesUtils.QS_TILE_THEMES.length; i++) {
+            String qstiletheme = ThemesUtils.QS_TILE_THEMES[i];
+            try {
+                om.setEnabled(qstiletheme,
+                        false /*disable*/, userId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
