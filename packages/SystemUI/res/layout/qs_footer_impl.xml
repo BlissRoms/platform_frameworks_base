@@ -100,7 +100,7 @@
 
             <com.android.systemui.statusbar.AlphaOptimizedImageView
                 android:id="@android:id/edit"
-                android:layout_width="48dp"
+                android:layout_width="46dp"
                 android:layout_height="48dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
@@ -111,25 +111,27 @@
                 android:src="@drawable/ic_mode_edit"
                 android:tint="?android:attr/colorForeground"/>
 
-            <com.android.systemui.statusbar.AlphaOptimizedFrameLayout
-                android:id="@+id/settings_button_container"
-                android:layout_width="48dp"
+            <com.android.keyguard.AlphaOptimizedImageButton
+                android:id="@+id/running_services_button"
+                style="@android:style/Widget.Material.Button.Borderless"
+                android:layout_width="46dp"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/ripple_drawable"
+                android:src="@drawable/ic_settings_memory"
+                android:tint="?android:attr/colorForeground"
+                android:contentDescription="@string/accessibility_quick_settings_running_services" />
+
+            <com.android.keyguard.AlphaOptimizedImageButton
+                android:id="@+id/settings_button"
+                style="@android:style/Widget.Material.Button.Borderless"
+                android:layout_width="46dp"
                 android:layout_height="48dp"
-                android:clipChildren="false"
-                android:clipToPadding="false">
-
-                <com.android.systemui.statusbar.phone.SettingsButton
-                    android:id="@+id/settings_button"
-                    style="@android:style/Widget.Material.Button.Borderless"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/ripple_drawable"
-                    android:contentDescription="@string/accessibility_quick_settings_settings"
-                    android:padding="15dp"
-                    android:src="@drawable/ic_settings_16dp"
-                    android:tint="?android:attr/colorForeground"/>
-
-            </com.android.systemui.statusbar.AlphaOptimizedFrameLayout>
+                android:background="@drawable/ripple_drawable"
+                android:src="@drawable/ic_settings_16dp"
+                android:tint="?android:attr/colorForeground"
+                android:contentDescription="@string/accessibility_quick_settings_settings" />
         </com.android.keyguard.AlphaOptimizedLinearLayout>
     </LinearLayout>
 

@@ -172,4 +172,7 @@
     <string name="accessibility_quick_settings_heads_up_changed_off">Heads up turned off</string>
     <string name="accessibility_quick_settings_heads_up_changed_on">Heads up turned on</string>
 
+    <!-- accessibility label for button to open running apps prefscreen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_running_services">Open Running Services screen.</string>
+
 </resources>
