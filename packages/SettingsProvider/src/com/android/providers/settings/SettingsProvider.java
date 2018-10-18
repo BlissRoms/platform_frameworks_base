@@ -882,6 +882,8 @@ public class SettingsProvider extends ContentProvider {
             // which should be in the form of "content://settings/system/ringtone_cache_xxxx".
             cacheRingtoneSetting = uri.getPathSegments().get(1)
                     .replace(Settings.System.RINGTONE_CACHE, Settings.System.RINGTONE);
+        } else if (Settings.System.RINGTONE2_CACHE_URI.equals(uri)) {
+            cacheRingtoneSetting = Settings.System.RINGTONE2;
         } else if (Settings.System.NOTIFICATION_SOUND_CACHE_URI.equals(uri)) {
             cacheRingtoneSetting = Settings.System.NOTIFICATION_SOUND;
         } else if (Settings.System.ALARM_ALERT_CACHE_URI.equals(uri)) {
@@ -904,6 +906,8 @@ public class SettingsProvider extends ContentProvider {
         } else if (setting.startsWith(Settings.System.RINGTONE
                 + RingtoneManager.RINGTONE_DELIMITER_FOR_PHONE_ACCOUNT_HANDLE)) {
             return setting.replace(Settings.System.RINGTONE, Settings.System.RINGTONE_CACHE);
+        } else if (Settings.System.RINGTONE2.equals(setting)) {
+            return Settings.System.RINGTONE2_CACHE;
         } else if (Settings.System.NOTIFICATION_SOUND.equals(setting)) {
             return Settings.System.NOTIFICATION_SOUND_CACHE;
         } else if (Settings.System.ALARM_ALERT.equals(setting)) {
