@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.os.Message;
+import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.telephony.NetworkRegistrationInfo;
 import android.telephony.ims.ImsMmTelManager;
@@ -50,11 +51,13 @@ import com.android.internal.telephony.cdma.EriInfo;
 import com.android.settingslib.Utils;
 import com.android.settingslib.graph.SignalDrawable;
 import com.android.settingslib.net.SignalStrengthUtil;
+import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.NetworkController.IconState;
 import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl.Config;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl.SubscriptionDefaults;
+import com.android.systemui.tuner.TunerService;
 
 import java.io.PrintWriter;
 import java.util.BitSet;
@@ -105,6 +108,7 @@ public class MobileSignalController extends SignalController<
     private ImsManager mImsManager;
     private ImsManager.Connector mImsManagerConnector;
     private int mCallState = TelephonyManager.CALL_STATE_IDLE;
+    private boolean mVoLTEicon;
 
     public static final String ROAMING_INDICATOR_ICON =
             "system:" + Settings.System.ROAMING_INDICATOR_ICON;
@@ -114,6 +118,8 @@ public class MobileSignalController extends SignalController<
             "system:" + Settings.System.DATA_DISABLED_ICON;
     public static final String USE_OLD_MOBILETYPE =
             "system:" + Settings.System.USE_OLD_MOBILETYPE;
+    public static final String SHOW_VOLTE_ICON =
+            "system:" + Settings.System.SHOW_VOLTE_ICON;
 
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
@@ -185,6 +191,7 @@ public class MobileSignalController extends SignalController<
         Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
         Dependency.get(TunerService.class).addTunable(this, DATA_DISABLED_ICON);
         Dependency.get(TunerService.class).addTunable(this, USE_OLD_MOBILETYPE);
+        Dependency.get(TunerService.class).addTunable(this, SHOW_VOLTE_ICON);
     }
 
     @Override
@@ -201,12 +208,17 @@ public class MobileSignalController extends SignalController<
                      mapIconSets();
                 break;
             case DATA_DISABLED_ICON:
-                     mDataDisabledIcon = 
+                     mDataDisabledIcon =
                         TunerService.parseIntegerSwitch(newValue, true);
-                     updateTelephony();                
-                break; 
+                     updateTelephony();
+                break;
             case USE_OLD_MOBILETYPE:
                 notifyListeners();
+                break;
+            case SHOW_VOLTE_ICON:
+                mVoLTEicon =
+                    TunerService.parseIntegerSwitch(newValue, false);
+                updateTelephony();
                 break;
             default:
                 break;
@@ -396,7 +408,7 @@ public class MobileSignalController extends SignalController<
     private int getVolteResId() {
         int resId = 0;
         if ( (mCurrentState.voiceCapable || mCurrentState.videoCapable)
-                &&  mCurrentState.imsRegistered ) {
+                &&  mCurrentState.imsRegistered && mVoLTEicon) {
             resId = R.drawable.ic_volte;
         }
         return resId;
