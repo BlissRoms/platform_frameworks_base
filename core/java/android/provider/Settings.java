@@ -6640,6 +6640,20 @@ public final class Settings {
         private static final Validator LOCKSCREEN_WEATHER_SHOW_IMAGE_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Change the color of the lockscreen clock
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK_COLOR = "lockscreen_clock_color";
+
+        /**
+         * Change the color of the lockscreen clock
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK_TYPE = "lockscreen_clock_type";
+
+        /**
          * Change the color of the lockscreen date underneath the clock
          *
          * @hide
