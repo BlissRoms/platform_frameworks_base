@@ -16,16 +16,20 @@
 package com.android.keyguard.clock;
 
 import android.app.WallpaperManager;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.android.internal.colorextraction.ColorExtractor;
+import com.android.settingslib.Utils;
 import com.android.systemui.R;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
 import com.android.systemui.plugins.ClockPlugin;
@@ -67,6 +71,11 @@ public class DefaultClockController implements ClockPlugin {
      */
     private TextView mTextTime;
 
+    private final Context mContext;
+    private int mClockColor;
+    private int mAccentColor;
+    private int mColorType;
+
     /**
      * Create a DefaultClockController instance.
      *
@@ -76,14 +85,38 @@ public class DefaultClockController implements ClockPlugin {
      */
     public DefaultClockController(Resources res, LayoutInflater inflater,
             SysuiColorExtractor colorExtractor) {
+        this(res, inflater, colorExtractor, null);
+    }
+
+    /**
+     * Create a DefaultClockController instance.
+     *
+     * @param res Resources contains title and thumbnail.
+     * @param inflater Inflater used to inflate custom clock views.
+     * @param colorExtractor Extracts accent color from wallpaper.
+     */
+    public DefaultClockController(Resources res, LayoutInflater inflater,
+            SysuiColorExtractor colorExtractor, Context context) {
         mResources = res;
         mLayoutInflater = inflater;
         mColorExtractor = colorExtractor;
+        mContext = context;
     }
 
     private void createViews() {
         mView = mLayoutInflater.inflate(R.layout.default_clock_preview, null);
         mTextTime = mView.findViewById(R.id.time);
+
+        mColorType = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.LOCKSCREEN_CLOCK_TYPE, 0, UserHandle.USER_CURRENT);
+        if (mColorType == 0) {
+            mClockColor = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.LOCKSCREEN_CLOCK_COLOR, 0xFFFFFFFF, UserHandle.USER_CURRENT);
+            setTextColor(mClockColor);
+        } else if (mColorType == 1) {
+            mAccentColor = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
+            setTextColor(mAccentColor);
+        }
     }
 
     @Override
@@ -115,7 +148,7 @@ public class DefaultClockController implements ClockPlugin {
 
         // Initialize state of plugin before generating preview.
         setDarkAmount(1f);
-        setTextColor(Color.WHITE);
+        setTextColor(mClockColor);
         ColorExtractor.GradientColors colors = mColorExtractor.getColors(
                 WallpaperManager.FLAG_LOCK);
         setColorPalette(colors.supportsDarkText(), colors.getColorPalette());
