@@ -155,6 +155,7 @@ public class MNMLMinimalClockController implements ClockPlugin {
 
     @Override
     public void setTextColor(int color) {
+        mClock.setTextColor(color);
     }
 
     @Override

@@ -1806,7 +1806,6 @@ public class KeyguardStatusView extends GridLayout implements
         }
 
         final int blendedTextColor = ColorUtils.blendARGB(mTextColor, Color.WHITE, mDarkAmount);
-        mClockView.setTextColor(blendedTextColor);
         onDensityOrFontScaleChanged();
     }
 
