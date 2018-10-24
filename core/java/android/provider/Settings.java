@@ -6639,6 +6639,13 @@ public final class Settings {
         public static final String LOCKSCREEN_CLOCK_COLOR = "lockscreen_clock_color";
 
         /**
+         * Change the color of the lockscreen clock
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK_TYPE = "lockscreen_clock_type";
+
+        /**
          * Change the color of the lockscreen date underneath the clock
          *
          * @hide
