@@ -156,6 +156,8 @@ public class KeyguardStatusView extends GridLayout implements
     private static final int FONT_NEONEON = 87;
     private static final int FONT_CIRCULARSTD = 88;
 
+    public int DEFAULT_DATE_COLOR = 0xffffffff;
+
     private final LockPatternUtils mLockPatternUtils;
     private final IActivityManager mIActivityManager;
 
@@ -201,6 +203,8 @@ public class KeyguardStatusView extends GridLayout implements
     private int mLockDateFontSize;
     private int mOwnerInfoSize;
     private int mOwnerInfoFontStyle;
+    private int mDateColor;
+    private int mOwnerInfoColor;
 
     private static final String LOCK_CLOCK_FONT_STYLE =
             "system:" + Settings.System.LOCK_CLOCK_FONT_STYLE;
@@ -222,6 +226,10 @@ public class KeyguardStatusView extends GridLayout implements
             "system:" + Settings.System.LOCKOWNER_FONT_SIZE;
     private static final String LOCK_OWNERINFO_FONTS =
             "system:" + Settings.System.LOCK_OWNERINFO_FONTS;
+    private static final String LOCKSCREEN_DATE_COLOR =
+            "system:" + Settings.System.LOCKSCREEN_DATE_COLOR;
+    private static final String LOCKSCREEN_OWNER_INFO_COLOR =
+            "system:" + Settings.System.LOCKSCREEN_OWNER_INFO_COLOR;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -294,6 +302,8 @@ public class KeyguardStatusView extends GridLayout implements
         tunerService.addTunable(this, LOCK_DATE_FONT_SIZE);
         tunerService.addTunable(this, LOCKOWNER_FONT_SIZE);
         tunerService.addTunable(this, LOCK_OWNERINFO_FONTS);
+        tunerService.addTunable(this, LOCKSCREEN_DATE_COLOR);
+        tunerService.addTunable(this, LOCKSCREEN_OWNER_INFO_COLOR);
         onDensityOrFontScaleChanged();
     }
 
@@ -440,6 +450,7 @@ public class KeyguardStatusView extends GridLayout implements
         if (mOwnerInfo != null) {
             setOwnerInfoSize(mOwnerInfoSize);
             setOwnerInfoFontStyle(mOwnerInfoFontStyle);
+            mOwnerInfo.setTextColor(mOwnerInfoColor);
         }
         if (mWeatherView != null) {
             mWeatherView.onDensityOrFontScaleChanged();
@@ -447,6 +458,7 @@ public class KeyguardStatusView extends GridLayout implements
         if (mKeyguardSlice != null) {
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
             mKeyguardSlice.setDateSize(mLockDateFontSize);
+            mKeyguardSlice.setTextColor(mDateColor);
 
             // Dont hide slice view in doze
             mKeyguardSlice.setVisibility(mDarkAmount != 1 ? ((mLockDateHide || isDateClock()) ? View.GONE : View.VISIBLE) : View.VISIBLE);
@@ -726,6 +738,16 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case LOCK_OWNERINFO_FONTS:
                     mOwnerInfoFontStyle = TunerService.parseInteger(newValue, 36);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCKSCREEN_DATE_COLOR:
+                    mDateColor =
+                        TunerService.parseInteger(newValue, DEFAULT_DATE_COLOR);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCKSCREEN_OWNER_INFO_COLOR:
+                    mOwnerInfoColor =
+                        TunerService.parseInteger(newValue, DEFAULT_DATE_COLOR);
                 onDensityOrFontScaleChanged();
                 break;
             default:
@@ -1784,7 +1806,6 @@ public class KeyguardStatusView extends GridLayout implements
         }
 
         final int blendedTextColor = ColorUtils.blendARGB(mTextColor, Color.WHITE, mDarkAmount);
-        mKeyguardSlice.setDarkAmount(mDarkAmount);
         mClockView.setTextColor(blendedTextColor);
         onDensityOrFontScaleChanged();
     }
