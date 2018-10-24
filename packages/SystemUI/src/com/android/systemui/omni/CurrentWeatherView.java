@@ -76,6 +76,9 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
     private float mDarkAmount;
     private boolean mUpdatesEnabled;
     private SettingsObserver mSettingsObserver;
+    private int mRightTextColor;
+    private int mLeftTextColor;
+    private int mCurrentImageColor;
 
     public CurrentWeatherView(Context context) {
         this(context, null);
@@ -135,6 +138,12 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
                 Settings.System.LOCKSCREEN_WEATHER_SHOW_CITY, 0, UserHandle.USER_CURRENT) == 1;
         boolean showImage = Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.LOCKSCREEN_WEATHER_SHOW_IMAGE, 1, UserHandle.USER_CURRENT) == 1;
+        mRightTextColor = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.LOCK_SCREEN_WEATHER_TEMP_COLOR, 0xFFFFFFFF, UserHandle.USER_CURRENT);
+        mLeftTextColor = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.LOCK_SCREEN_WEATHER_CITY_COLOR, 0xFFFFFFFF, UserHandle.USER_CURRENT);
+        mCurrentImageColor = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.LOCK_SCREEN_WEATHER_ICON_COLOR, 0xFFFFFFFF, UserHandle.USER_CURRENT);
         if (DEBUG) Log.d(TAG, "updateWeatherData");
 
         if (!mWeatherClient.isOmniJawsEnabled() || weatherData == null) {
@@ -146,18 +155,21 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
         updateTint(d);
         if (showTemp) {
             mRightText.setText(weatherData.temp + " " + weatherData.tempUnits);
+            mRightText.setTextColor(mRightTextColor);
         } else {
             mRightText.setText("");
         }
         if (showCity) {
             mLeftText.setText(weatherData.city);
+            mLeftText.setTextColor(mLeftTextColor);
         } else {
             mLeftText.setText("");
         }
         if (showImage) {
             mCurrentImage.setImageDrawable(d);
+            mCurrentImage.setColorFilter(mCurrentImageColor);
         } else {
-            mCurrentImage.setImageResource(android.R.color.transparent);
+            mCurrentImage.setVisibility(View.GONE);
         }
     }
 
@@ -251,6 +263,15 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
                     false, this, UserHandle.USER_ALL);
             getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_WEATHER_SHOW_IMAGE),
+                    false, this, UserHandle.USER_ALL);
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_WEATHER_TEMP_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_WEATHER_CITY_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_WEATHER_ICON_COLOR),
                     false, this, UserHandle.USER_ALL);
         }
 
