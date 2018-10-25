@@ -47,6 +47,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.util.MathUtils;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -298,6 +299,11 @@ public class NotificationPanelView extends PanelView implements
     private int mOneFingerQuickSettingsIntercept;
     private int mQsSmartPullDown;
 
+    private boolean mDoubleTapToSleepEnabled;
+    private boolean mDoubleTapToSleepAnywhere;
+    private int mStatusBarHeaderHeight;
+    private GestureDetector mDoubleTapGesture;
+
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(!DEBUG);
@@ -309,6 +315,16 @@ public class NotificationPanelView extends PanelView implements
         setPanelAlpha(255, false /* animate */);
         mSettingsObserver = new SettingsObserver(mHandler);
         mLockPatternUtils = new LockPatternUtils(mContext);
+        mDoubleTapGesture = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+                if (pm != null) {
+                    pm.goToSleep(e.getEventTime());
+                }
+                return true;
+            }
+        });
     }
 
     public void setStatusBar(StatusBar bar) {
@@ -340,15 +356,15 @@ public class NotificationPanelView extends PanelView implements
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mSettingsObserver.observe();
         FragmentHostManager.get(this).addTagListener(QS.TAG, mFragmentListener);
+        mSettingsObserver.observe();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mSettingsObserver.unobserve();
         FragmentHostManager.get(this).removeTagListener(QS.TAG, mFragmentListener);
+        mSettingsObserver.unobserve();
     }
 
     @Override
@@ -372,6 +388,7 @@ public class NotificationPanelView extends PanelView implements
                 R.dimen.keyguard_indication_bottom_padding);
         mQsNotificationTopPadding = getResources().getDimensionPixelSize(
                 R.dimen.qs_notification_padding);
+        mStatusBarHeaderHeight = getResources().getDimensionPixelSize(R.dimen.status_bar_height);
     }
 
     public void updateResources() {
@@ -888,6 +905,15 @@ public class NotificationPanelView extends PanelView implements
     public boolean onTouchEvent(MotionEvent event) {
         if (mBlockTouches || (mQs != null && mQs.isCustomizing())) {
             return false;
+        }
+        if ((mDoubleTapToSleepEnabled
+                && mStatusBarState == StatusBarState.KEYGUARD
+                && event.getY() < mStatusBarHeaderHeight)
+                || (mDoubleTapToSleepAnywhere
+                && mStatusBarState == StatusBarState.KEYGUARD)) {
+            if (mDoubleTapGesture.onTouchEvent(event)) {
+                return false;
+            }
         }
         initDownStates(event);
         if (mListenForHeadsUp && !mHeadsUpTouchHelper.isTrackingHeadsUp()
@@ -2739,7 +2765,10 @@ public class NotificationPanelView extends PanelView implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_SMART_PULLDOWN),
                     false, this, UserHandle.USER_ALL);
-            update();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_ANYWHERE), false, this);            update();
         }
 
         void unobserve() {
@@ -2767,6 +2796,10 @@ public class NotificationPanelView extends PanelView implements
                     UserHandle.USER_CURRENT);
             mQsSmartPullDown = Settings.System.getIntForUser(resolver,
                     Settings.System.QS_SMART_PULLDOWN, 0, UserHandle.USER_CURRENT);
+            mDoubleTapToSleepEnabled = Settings.System.getInt(
+                    resolver, Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 0) == 1;
+            mDoubleTapToSleepAnywhere = Settings.System.getInt(
+                    resolver, Settings.System.DOUBLE_TAP_SLEEP_ANYWHERE, 0) == 1;
         }
     }
 
