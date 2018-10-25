@@ -66,6 +66,9 @@
     <!-- colors for volume dialog tint -->
     <color name="car_volume_dialog_tint">@color/car_tint</color>
 
+    <!-- Navbar icon Colors -->
+    <color name="dark_nav_bar">#ff585858</color>
+
     <!-- Theme tile -->
     <color name="quick_settings_theme_tile_default">#4285F4</color>
     <color name="quick_settings_theme_tile_red">#FF5252</color>
