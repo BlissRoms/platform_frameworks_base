@@ -178,6 +178,8 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
+        state.label = mContext.getString(R.string.quick_settings_caffeine_label);
+        state.icon = mIcon;
         state.value = mWakeLock.isHeld();
         state.icon = mIcon;
         state.label = mContext.getString(R.string.quick_settings_caffeine_label);
@@ -187,7 +189,7 @@ public class CaffeineTile extends QSTileImpl<BooleanState> {
                     R.string.accessibility_quick_settings_caffeine_on);
             state.state = Tile.STATE_ACTIVE;
         } else {
-            state.secondaryLabel = null;
+            state.secondaryLabel = mContext.getString(R.string.quick_settings_caffeine_label_off);
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_caffeine_off);
             state.state = Tile.STATE_INACTIVE;

@@ -20,6 +20,7 @@
 
     <!-- Caffeine QS tile -->
     <string name="quick_settings_caffeine_label">Caffeine mode</string>
+    <string name="quick_settings_caffeine_label_off">Off</string>
     <string name="accessibility_quick_settings_caffeine_off">Caffeine mode disabled.</string>
     <string name="accessibility_quick_settings_caffeine_on">Caffeine mode enabled.</string>
 
