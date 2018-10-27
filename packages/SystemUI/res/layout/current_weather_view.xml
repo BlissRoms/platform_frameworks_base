@@ -41,13 +41,13 @@
             android:gravity="center"
             android:ellipsize="end"
             android:singleLine="true"
-            android:paddingEnd="8dp"
+	    android:paddingEnd="8dp"
             style="@style/TextAppearance.Keyguard" />
 
         <ImageView
             android:id="@+id/current_image"
             android:layout_width="@dimen/current_weather_image_size"
-            android:layout_height="@dimen/current_weather_image_size"
+	    android:layout_height="@dimen/current_weather_image_size"
             android:scaleType="centerInside"/>
 
         <TextView
@@ -57,7 +57,7 @@
             android:textColor="?attr/wallpaperTextColor"
             android:gravity="center"
             android:singleLine="true"
-            android:paddingStart="8dp"
+	    android:paddingStart="8dp"
             style="@style/TextAppearance.Keyguard" />
     </LinearLayout>
 
