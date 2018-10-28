@@ -44,6 +44,7 @@ import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenrecordTile;
+import com.android.systemui.qs.tiles.SmartPixelsTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.WeatherTile;
@@ -123,6 +124,8 @@ public class QSFactoryImpl implements QSFactory {
                 return new ScreenrecordTile(mHost);
             case "heads_up":
                 return new HeadsUpTile(mHost);
+            case "smartpixels":
+                return new SmartPixelsTile(mHost);
         }
 
         // Intent tiles.
