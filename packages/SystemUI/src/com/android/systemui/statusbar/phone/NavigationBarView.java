@@ -353,7 +353,11 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        mSlideTouchEvent.handleTouchEvent(event);
+        boolean onehandedEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.ONE_HAND_MODE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+        if (onehandedEnabled) {
+            mSlideTouchEvent.handleTouchEvent(event);
+        }
         if (shouldDeadZoneConsumeTouchEvents(event)) {
             return true;
         }
@@ -379,7 +383,11 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mSlideTouchEvent.handleTouchEvent(event);
+        boolean onehandEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.ONE_HAND_MODE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+        if (onehandEnabled) {
+            mSlideTouchEvent.handleTouchEvent(event);
+        }
         if (shouldDeadZoneConsumeTouchEvents(event)) {
             return true;
         }
