@@ -5025,6 +5025,15 @@ public final class Settings {
         private static final Validator ONE_HAND_MODE_ENABLED_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Enable or disable wifi data activity indicators
+         * @hide
+         */
+        public static final String STATUSBAR_SHOW_WIFI_ACTIVITY = "statusbar_show_wifi_activity";
+
+         /** @hide */
+        private static final Validator STATUSBAR_SHOW_WIFI_ACTIVITY_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5132,6 +5141,7 @@ public final class Settings {
             BURN_IN_PROTECTION_INTERVAL,
             OMNI_LOCK_POWER_MENU_DISABLED,
             ONE_HAND_MODE_ENABLED,
+            STATUSBAR_SHOW_WIFI_ACTIVITY,
         };
 
         /**
@@ -5297,6 +5307,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_LOCK_POWER_MENU_DISABLED);
             PRIVATE_SETTINGS.add(TOAST_ICON);
             PRIVATE_SETTINGS.add(ONE_HAND_MODE_ENABLED);
+            PRIVATE_SETTINGS.add(STATUSBAR_SHOW_WIFI_ACTIVITY);
         }
 
         /**
@@ -5457,6 +5468,7 @@ public final class Settings {
             VALIDATORS.put(OMNI_LOCK_POWER_MENU_DISABLED,
                     OMNI_LOCK_POWER_MENU_DISABLED_VALIDATOR);
             VALIDATORS.put(ONE_HAND_MODE_ENABLED, ONE_HAND_MODE_ENABLED_VALIDATOR);
+            VALIDATORS.put(STATUSBAR_SHOW_WIFI_ACTIVITY, STATUSBAR_SHOW_WIFI_ACTIVITY_VALIDATOR);
         }
 
         /**
