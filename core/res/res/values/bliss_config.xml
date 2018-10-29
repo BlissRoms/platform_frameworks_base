@@ -124,4 +124,7 @@
     <!-- Whether to force enable multi resolution configuration for camera -->
     <bool name="config_forceMultiResolution">false</bool>
 
+    <!-- Whether device supports gestures on fingerprint sensor -->
+    <bool name="config_supportsGesturesOnFingerprintSensor">false</bool>
+
 </resources>
