@@ -66,16 +66,6 @@
             android:visibility="gone"
             android:singleLine="true"/>
 
-        <com.android.systemui.statusbar.policy.NetworkTraffic
-            android:id="@+id/networkTraffic"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
-            android:singleLine="false"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="end|center_vertical"/>
-
         <FrameLayout
             android:layout_height="match_parent"
             android:layout_width="0dp"
@@ -103,6 +93,17 @@
                     android:paddingEnd="@dimen/status_bar_left_clock_end_padding"
                     android:gravity="center_vertical|start"
                 />
+
+                <com.android.systemui.statusbar.policy.NetworkTraffic
+                    android:id="@+id/networkTraffic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:singleLine="false"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"/>
 
                 <com.android.systemui.statusbar.AlphaOptimizedFrameLayout
                     android:id="@+id/notification_icon_area"

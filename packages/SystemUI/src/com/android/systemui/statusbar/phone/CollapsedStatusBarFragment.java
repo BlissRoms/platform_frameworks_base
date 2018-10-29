@@ -71,11 +71,15 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private View mOperatorNameFrame;
     private LinearLayout mCenterClockLayout;
     private final Handler mHandler = new Handler();
+    private ContentResolver mContentResolver;
 
     // custom carrier label
     private View mCustomCarrierLabel;
     private int mShowCarrierLabel;
     private View mBatteryBar;
+    // network traffic
+    private View mNetworkTraffic;
+    private int mShowNetworkTraffic;
 
     private class SettingsObserver extends ContentObserver {
        SettingsObserver(Handler handler) {
@@ -89,6 +93,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
          mContentResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_CARRIER),
                     false, this, UserHandle.USER_ALL);
+         mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NETWORK_TRAFFIC_STATE),
+                    false, this, UserHandle.USER_ALL);
        }
 
        @Override
@@ -97,7 +104,6 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
        }
     }
     private SettingsObserver mSettingsObserver = new SettingsObserver(mHandler);
-    private ContentResolver mContentResolver;
 
     private SignalCallback mSignalCallback = new SignalCallback() {
         @Override
@@ -138,6 +144,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mRightClock = mStatusBar.findViewById(R.id.right_clock);
         mCustomCarrierLabel = mStatusBar.findViewById(R.id.statusbar_carrier_text);
         mBatteryBar = mStatusBar.findViewById(R.id.battery_bar);
+        mNetworkTraffic = mStatusBar.findViewById(R.id.networkTraffic);
         updateSettings(false);
         showSystemIconArea(false);
         initEmergencyCryptkeeperText();
@@ -264,12 +271,14 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         animateHide(mNotificationIconAreaInner, animate, true);
         animateHide(mCenterClockLayout, animate, true);
         animateHide(mBatteryBar, animate, true);
+		animateHide(mNetworkTraffic, animate, true);
     }
 
     public void showNotificationIconArea(boolean animate) {
         animateShow(mNotificationIconAreaInner, animate);
         animateShow(mCenterClockLayout, animate);
         animateShow(mBatteryBar, animate);
+        updateNetworkTraffic(animate);
     }
 
     public void hideOperatorName(boolean animate) {
@@ -293,6 +302,14 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public void showCarrierName(boolean animate) {
         if (mCustomCarrierLabel != null) {
             setCarrierLabel(animate);
+        }
+    }
+
+    public void updateNetworkTraffic(boolean animate) {
+        if (mNetworkTraffic != null) {
+            if (mShowNetworkTraffic != 0) {
+                animateShow(mNetworkTraffic, animate);
+            }
         }
     }
 
@@ -369,11 +386,15 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public void updateSettings(boolean animate) {
         mClockStyle = Settings.System.getIntForUser(mContentResolver,
                 Settings.System.STATUSBAR_CLOCK_STYLE, 0, UserHandle.USER_CURRENT);
-        mShowCarrierLabel = Settings.System.getIntForUser(
-                getContext().getContentResolver(), Settings.System.STATUS_BAR_SHOW_CARRIER, 1,
+        mShowCarrierLabel = Settings.System.getIntForUser(mContentResolver,
+                Settings.System.STATUS_BAR_SHOW_CARRIER, 1,
+                UserHandle.USER_CURRENT);
+        mShowNetworkTraffic = Settings.System.getIntForUser(mContentResolver,
+                Settings.System.NETWORK_TRAFFIC_STATE, 0,
                 UserHandle.USER_CURRENT);
         updateClockStyle(animate);
         setCarrierLabel(animate);
+        updateNetworkTraffic(animate);
     }
 
     private void updateClockStyle(boolean animate) {
