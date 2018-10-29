@@ -5034,6 +5034,18 @@ public final class Settings {
         private static final Validator STATUSBAR_SHOW_WIFI_ACTIVITY_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Status bar weather temperature
+         * 0: Hide the temperature
+         * 1: Display the temperature with scale and image
+         * 2: Display the temperature without scale and with image
+         * 3: Display the temparature with scale and without image
+         * 4: Display the temperature without scale and without image
+         * 5: Display the temperature image
+         * @hide
+         */
+        public static final String STATUSBAR_SHOW_WEATHER_TEMP = "statusbar_show_weather_temp";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

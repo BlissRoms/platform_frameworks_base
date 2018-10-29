@@ -76,7 +76,11 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     // custom carrier label
     private View mCustomCarrierLabel;
     private int mShowCarrierLabel;
-    private View mBatteryBar;
+	private View mBatteryBar;
+    // statusbar weather
+    private View mWeatherImageView;
+    private View mWeatherTextView;
+    private int mShowWeather;
     // network traffic
     private View mNetworkTraffic;
     private int mShowNetworkTraffic;
@@ -92,6 +96,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
                     false, this, UserHandle.USER_ALL);
          mContentResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_CARRIER),
+                    false, this, UserHandle.USER_ALL);
+         mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_SHOW_WEATHER_TEMP),
                     false, this, UserHandle.USER_ALL);
          mContentResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NETWORK_TRAFFIC_STATE),
@@ -144,6 +151,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mRightClock = mStatusBar.findViewById(R.id.right_clock);
         mCustomCarrierLabel = mStatusBar.findViewById(R.id.statusbar_carrier_text);
         mBatteryBar = mStatusBar.findViewById(R.id.battery_bar);
+		mWeatherTextView = mStatusBar.findViewById(R.id.weather_temp_sb);
+        mWeatherImageView = mStatusBar.findViewById(R.id.weather_image_sb);
         mNetworkTraffic = mStatusBar.findViewById(R.id.networkTraffic);
         updateSettings(false);
         showSystemIconArea(false);
@@ -212,10 +221,12 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
                 hideNotificationIconArea(animate);
                 hideCarrierName(animate);
                 animateHide(mClockView, animate, false);
+                hideStaturbarWeather();
             } else {
                 showNotificationIconArea(animate);
                 updateClockStyle(animate);
                 showCarrierName(animate);
+                showStaturbarWeather(animate);
             }
         }
     }
@@ -271,13 +282,15 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         animateHide(mNotificationIconAreaInner, animate, true);
         animateHide(mCenterClockLayout, animate, true);
         animateHide(mBatteryBar, animate, true);
-		animateHide(mNetworkTraffic, animate, true);
+        animateHide(mNetworkTraffic, animate, true);
+        hideStaturbarWeather();
     }
 
     public void showNotificationIconArea(boolean animate) {
         animateShow(mNotificationIconAreaInner, animate);
         animateShow(mCenterClockLayout, animate);
         animateShow(mBatteryBar, animate);
+        showStaturbarWeather(animate);
         updateNetworkTraffic(animate);
     }
 
@@ -302,6 +315,29 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public void showCarrierName(boolean animate) {
         if (mCustomCarrierLabel != null) {
             setCarrierLabel(animate);
+        }
+    }
+
+
+    public void hideStaturbarWeather() {
+        if (mWeatherTextView != null) {
+            mWeatherTextView.setVisibility(View.GONE);
+        }
+        if (mWeatherImageView != null) {
+            mWeatherImageView.setVisibility(View.GONE);
+        }
+    }
+
+    public void showStaturbarWeather(boolean animate) {
+        if (mWeatherTextView != null) {
+            if (mShowWeather != 0 && mShowWeather != 5) {
+                animateShow(mWeatherTextView, animate);
+            }
+        }
+        if (mWeatherImageView != null) {
+            if (mShowWeather == 1 || mShowWeather == 2 || mShowWeather == 5) {
+                animateShow(mWeatherImageView, animate);
+            }
         }
     }
 
@@ -389,11 +425,15 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mShowCarrierLabel = Settings.System.getIntForUser(mContentResolver,
                 Settings.System.STATUS_BAR_SHOW_CARRIER, 1,
                 UserHandle.USER_CURRENT);
+        mShowWeather = Settings.System.getIntForUser(mContentResolver,
+                Settings.System.STATUSBAR_SHOW_WEATHER_TEMP, 0,
+                UserHandle.USER_CURRENT);
         mShowNetworkTraffic = Settings.System.getIntForUser(mContentResolver,
                 Settings.System.NETWORK_TRAFFIC_STATE, 0,
                 UserHandle.USER_CURRENT);
         updateClockStyle(animate);
         setCarrierLabel(animate);
+        showStaturbarWeather(animate);
         updateNetworkTraffic(animate);
     }
 
