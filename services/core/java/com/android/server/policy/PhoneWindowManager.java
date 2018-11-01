@@ -1932,6 +1932,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case CLOSE_APP:
                 closeApp();
                 break;
+            case TORCH:
+                BlissUtils.toggleCameraFlash();
+                break;
             default:
                 break;
         }
