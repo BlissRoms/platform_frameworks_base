@@ -5177,6 +5177,39 @@ public final class Settings {
          */
         public static final String PULSE_RENDER_STYLE_URI = "pulse_render_style";
 
+        /*
+         * Whether Ambient Play enabled/disabled
+         *
+         * @hide
+         */
+        public static final String AMBIENT_RECOGNITION = "ambient_recognition";
+
+        /** @hide */
+        private static final Validator AMBIENT_RECOGNITION_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
+         * Whether Ambient Play is shown on the lockscreen
+         *
+         * @hide
+         */
+        public static final String AMBIENT_RECOGNITION_KEYGUARD = "ambient_recognition_keyguard";
+
+        /** @hide */
+        private static final Validator AMBIENT_RECOGNITION_KEYGUARD_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
+         * Whether Ambient Play notification is enabled
+         *
+         * @hide
+         */
+        public static final String AMBIENT_RECOGNITION_NOTIFICATION = "ambient_recognition_notification";
+
+        /** @hide */
+        private static final Validator AMBIENT_RECOGNITION_NOTIFICATION_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
         /**
          * Custom Pulse Widths
          * @hide
@@ -5592,6 +5625,9 @@ public final class Settings {
             PRIVATE_SETTINGS.add(STATUS_BAR_SHOW_TICKER);
             PRIVATE_SETTINGS.add(STATUS_BAR_TICKER_ANIMATION_MODE);
             PRIVATE_SETTINGS.add(STATUS_BAR_TICKER_TICK_DURATION);
+            PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION);
+            PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION_KEYGUARD);
+            PRIVATE_SETTINGS.add(AMBIENT_RECOGNITION_NOTIFICATION);
         }
 
         /**
@@ -5756,6 +5792,9 @@ public final class Settings {
                     STATUS_BAR_TICKER_ANIMATION_MODE_VALIDATOR);
             VALIDATORS.put(STATUS_BAR_TICKER_TICK_DURATION,
                     STATUS_BAR_TICKER_TICK_DURATION_VALIDATOR);
+            VALIDATORS.put(AMBIENT_RECOGNITION, AMBIENT_RECOGNITION_VALIDATOR);
+            VALIDATORS.put(AMBIENT_RECOGNITION_KEYGUARD, AMBIENT_RECOGNITION_KEYGUARD_VALIDATOR);
+            VALIDATORS.put(AMBIENT_RECOGNITION_NOTIFICATION, AMBIENT_RECOGNITION_NOTIFICATION_VALIDATOR);
         }
 
         /**
@@ -9105,26 +9144,6 @@ public final class Settings {
          */
         public static final String MANAGED_PROFILE_CONTACT_REMOTE_SEARCH =
                 "managed_profile_contact_remote_search";
-
-        /**
-         * Whether Ambient Play enabled/disabled
-         *
-         * @hide
-         */
-        public static final String AMBIENT_RECOGNITION = "ambient_recognition";
-         /**
-         * Whether Ambient Play is shown on the lockscreen
-         *
-         * @hide
-         */
-        public static final String AMBIENT_RECOGNITION_KEYGUARD = "ambient_recognition_keyguard";
-
-        /**
-         * The update interval in milliseconds that is used by Ambient Play to recognize music 
-         *
-         * @hide
-         */
-        public static final String AMBIENT_RECOGNITION_INTERVAL = "ambient_recognition_interval";
 
         /**
          * Whether or not the automatic storage manager is enabled and should run on the device.
