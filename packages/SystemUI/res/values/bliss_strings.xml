@@ -188,9 +188,4 @@
          [CHAR LIMIT=4] -->
     <string name="status_bar_notification_info_overflow" translatable="false">\u221E</string>
 
-    <!-- AmbientPlay: The contents of the displayed recognition. -->
-    <string name="ambient_recognition_notification">Now Playing</string>
-    <string name="ambient_recognition_notification_channel">Recognized Music Notifications</string>
-    <string name="ambient_recognition_information">%1$s by %2$s</string>
-
 </resources>
