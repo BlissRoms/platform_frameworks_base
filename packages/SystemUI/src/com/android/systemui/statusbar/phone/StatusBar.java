@@ -460,6 +460,10 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected KeyguardViewMediator mKeyguardViewMediator;
     private ZenModeController mZenController;
 
+    ActivityManager mAm;
+    private ArrayList<String> mStoplist = new ArrayList<String>();
+    private ArrayList<String> mBlacklist = new ArrayList<String>();
+
     /**
      * Helper that is responsible for showing the right toast when a disallowed activity operation
      * occurred. In pinned mode, we show instructions on how to break out of this mode, whilst in
@@ -707,6 +711,9 @@ public class StatusBar extends SystemUI implements DemoMode,
                     Settings.System.HEADS_UP_BLACKLIST_VALUES),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_STOPLIST_VALUES),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_TILE_STYLE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -752,10 +759,21 @@ public class StatusBar extends SystemUI implements DemoMode,
                     UserHandle.USER_CURRENT) != 0;
             TelephonyIcons.updateIcons(USE_OLD_MOBILETYPE);
 
-            final String blackString = Settings.System.getString(resolver,
-                    Settings.System.HEADS_UP_BLACKLIST_VALUES);
-            splitAndAddToArrayList(mBlacklist, blackString, "\\|");
+            setHeadsUpStoplist();
+            setHeadsUpBlacklist();
         }
+
+    private void setHeadsUpStoplist() {
+        final String stopString = Settings.System.getString(mContext.getContentResolver(),
+                    Settings.System.HEADS_UP_STOPLIST_VALUES);
+        splitAndAddToArrayList(mStoplist, stopString, "\\|");
+    }
+
+     private void setHeadsUpBlacklist() {
+        final String blackString = Settings.System.getString(mContext.getContentResolver(),
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES);
+        splitAndAddToArrayList(mBlacklist, blackString, "\\|");
+    }
 
     private void updateBatterySettings() {
         if (mStatusBarView != null) {
@@ -828,6 +846,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mContext.getSystemService(Context.ACCESSIBILITY_SERVICE);
 
         mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+
+        mAm = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
 
         mDeviceProvisionedController = Dependency.get(DeviceProvisionedController.class);
 
@@ -2132,6 +2152,17 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     @Override
     public boolean shouldPeek(Entry entry, StatusBarNotification sbn) {
+
+        // get the info from the currently running task
+        List<ActivityManager.RunningTaskInfo> taskInfo = mAm.getRunningTasks(1);
+        if(taskInfo != null && !taskInfo.isEmpty()) {
+            ComponentName componentInfo = taskInfo.get(0).topActivity;
+            if(isPackageInStoplist(componentInfo.getPackageName())
+                && !isDialerApp(sbn.getPackageName())) {
+                return false;
+            }
+        }
+
         // check if package is blacklisted first
         if (isPackageBlacklisted(sbn.getPackageName())) {
             return false;
@@ -5524,8 +5555,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         return mDeviceInteractive;
     }
 
-    private ArrayList<String> mBlacklist = new ArrayList<String>();
-
     @Override  // NotificationData.Environment
     public boolean isDeviceProvisioned() {
         return mDeviceProvisionedController.isDeviceProvisioned();
@@ -6025,9 +6054,19 @@ public class StatusBar extends SystemUI implements DemoMode,
         maybeEscalateHeadsUp();
     }
 
-    private boolean isPackageBlacklisted(String packageName) {
+    private boolean isPackageInStoplist(String packageName) {
+        return mStoplist.contains(packageName);
+    }
+
+     private boolean isPackageBlacklisted(String packageName) {
         return mBlacklist.contains(packageName);
     }
+
+     private boolean isDialerApp(String packageName) {
+        return packageName.equals("com.android.dialer")
+            || packageName.equals("com.google.android.dialer");
+    }
+
      private void splitAndAddToArrayList(ArrayList<String> arrayList,
             String baseString, String separator) {
         // clear first

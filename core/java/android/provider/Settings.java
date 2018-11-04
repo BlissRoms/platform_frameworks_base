@@ -4350,6 +4350,13 @@ public final class Settings {
          */
         public static final String HEADS_UP_BLACKLIST_VALUES = "heads_up_blacklist_values";
 
+        /**
+         * Applications list where heasdup should't show
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_STOPLIST_VALUES = "heads_up_stoplist_values";
+
         /** @hide */
         private static final Validator OMNI_QS_PANEL_BG_ALPHA_VALIDATOR =
                 ANY_INTEGER_VALIDATOR;
