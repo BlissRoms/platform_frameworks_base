@@ -5054,6 +5054,39 @@ public final class Settings {
          */
         public static final String QS_TILE_STYLE = "qs_tile_style";
 
+         /**
+         * Whether to show the notification ticker on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_SHOW_TICKER = "status_bar_show_ticker";
+
+         /** @hide */
+        private static final Validator STATUS_BAR_SHOW_TICKER_VALIDATOR = BOOLEAN_VALIDATOR;
+
+         /**
+         * Ticker animation
+         * 0: Fade animation
+         * 1: Scrolling ticker
+         */
+        public static final String STATUS_BAR_TICKER_ANIMATION_MODE =
+                "status_bar_ticker_animation_mode";
+
+         /** @hide */
+        private static final Validator STATUS_BAR_TICKER_ANIMATION_MODE_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
+         /**
+         * Status bar ticker duration in milliseconds.
+         *
+         * @hide
+         */
+        public static final String STATUS_BAR_TICKER_TICK_DURATION =
+                "status_bar_ticker_tick_duration";
+
+         /** @hide */
+        private static final Validator STATUS_BAR_TICKER_TICK_DURATION_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -5163,6 +5196,9 @@ public final class Settings {
             OMNI_LOCK_POWER_MENU_DISABLED,
             ONE_HAND_MODE_ENABLED,
             STATUSBAR_SHOW_WIFI_ACTIVITY,
+            STATUS_BAR_SHOW_TICKER,
+            STATUS_BAR_TICKER_ANIMATION_MODE,
+            STATUS_BAR_TICKER_TICK_DURATION
         };
 
         /**
@@ -5330,6 +5366,9 @@ public final class Settings {
             PRIVATE_SETTINGS.add(ONE_HAND_MODE_ENABLED);
             PRIVATE_SETTINGS.add(STATUSBAR_SHOW_WIFI_ACTIVITY);
             PRIVATE_SETTINGS.add(QS_TILE_STYLE);
+            PRIVATE_SETTINGS.add(STATUS_BAR_SHOW_TICKER);
+            PRIVATE_SETTINGS.add(STATUS_BAR_TICKER_ANIMATION_MODE);
+            PRIVATE_SETTINGS.add(STATUS_BAR_TICKER_TICK_DURATION);
         }
 
         /**
@@ -5491,6 +5530,11 @@ public final class Settings {
                     OMNI_LOCK_POWER_MENU_DISABLED_VALIDATOR);
             VALIDATORS.put(ONE_HAND_MODE_ENABLED, ONE_HAND_MODE_ENABLED_VALIDATOR);
             VALIDATORS.put(STATUSBAR_SHOW_WIFI_ACTIVITY, STATUSBAR_SHOW_WIFI_ACTIVITY_VALIDATOR);
+            VALIDATORS.put(STATUS_BAR_SHOW_TICKER, STATUS_BAR_SHOW_TICKER_VALIDATOR);
+            VALIDATORS.put(STATUS_BAR_TICKER_ANIMATION_MODE,
+                    STATUS_BAR_TICKER_ANIMATION_MODE_VALIDATOR);
+            VALIDATORS.put(STATUS_BAR_TICKER_TICK_DURATION,
+                    STATUS_BAR_TICKER_TICK_DURATION_VALIDATOR);
         }
 
         /**
