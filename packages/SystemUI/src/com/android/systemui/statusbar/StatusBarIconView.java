@@ -317,10 +317,15 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
         if (!numberEquals || force) {
             if (icon.number > 1 && mShowNotificationCount) {
                 if (mNumberBackground == null) {
+                    final Resources res = mContext.getResources();
+                    final float densityMultiplier = res.getDisplayMetrics().density;
+                    final float scaledPx = 8 * densityMultiplier;
                     mNumberPain = new Paint();
                     mNumberPain.setTextAlign(Paint.Align.CENTER);
                     mNumberPain.setColor(getContext().getColor(R.drawable.notification_number_text_color));
                     mNumberPain.setAntiAlias(true);
+                    mNumberPain.setTypeface(Typeface.DEFAULT_BOLD);
+                    mNumberPain.setTextSize(scaledPx);
                     mNumberBackground = getContext().getResources().getDrawable(
                             R.drawable.ic_notification_overlay);
                 }
