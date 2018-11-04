@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.MemoryFile;
 import android.os.MessageQueue;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
@@ -161,6 +162,8 @@ public class SystemSensorManager extends SensorManager {
                 + "the sensor listeners size has exceeded the maximum limit "
                 + MAX_LISTENER_COUNT);
         }
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SENSOR_BLOCK, 0) == 1) {
             if (sensor.getType() == Sensor.TYPE_SIGNIFICANT_MOTION) {
                 String pkgName = mContext.getPackageName();
                 for (String blockedPkgName : mContext.getResources().getStringArray(
@@ -172,6 +175,7 @@ public class SystemSensorManager extends SensorManager {
                     }
                 }
             }
+        }
 
         // Invariants to preserve:
         // - one Looper per SensorEventListener
