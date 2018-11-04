@@ -172,13 +172,7 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
         super(context);
         mDozer = new NotificationIconDozeHelper(context);
         mBlocked = blocked;
-        final float densityMultiplier = context.getResources().getDisplayMetrics().density;
-        final float scaledPx = 8 * densityMultiplier;
         mSlot = slot;
-        mNumberPain = new Paint();
-        mNumberPain.setTextAlign(Paint.Align.CENTER);
-        mNumberPain.setColor(context.getColor(R.drawable.notification_number_text_color));
-        mNumberPain.setAntiAlias(true);
         setNotification(sbn);
         setScaleType(ScaleType.CENTER);
         mDensity = context.getResources().getDisplayMetrics().densityDpi;
@@ -323,6 +317,10 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
         if (!numberEquals || force) {
             if (icon.number > 1 && mShowNotificationCount) {
                 if (mNumberBackground == null) {
+                    mNumberPain = new Paint();
+                    mNumberPain.setTextAlign(Paint.Align.CENTER);
+                    mNumberPain.setColor(getContext().getColor(R.drawable.notification_number_text_color));
+                    mNumberPain.setAntiAlias(true);
                     mNumberBackground = getContext().getResources().getDrawable(
                             R.drawable.ic_notification_overlay);
                 }
@@ -330,6 +328,7 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
             } else {
                 mNumberBackground = null;
                 mNumberText = null;
+                mNumberPain = null;
             }
             invalidate();
         }
