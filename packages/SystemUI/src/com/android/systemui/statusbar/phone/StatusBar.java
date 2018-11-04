@@ -404,6 +404,13 @@ public class StatusBar extends SystemUI implements DemoMode,
     private QuickStatusBarHeader mQuickStatusBarHeader;
     private QuickQSPanel mQuickQSPanel;
 
+    private static final String[] QS_TILE_THEMES = {
+        "com.android.systemui.qstile.default", // 0
+        "com.android.systemui.qstile.circletrim", // 1
+        "com.android.systemui.qstile.dualtonecircletrim", // 2
+        "com.android.systemui.qstile.squircletrim", // 3
+    };
+
     // top bar
     private KeyguardStatusBarView mKeyguardStatusBar;
     private boolean mLeaveOpenOnKeyguardHide;
@@ -677,6 +684,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_BLACKLIST_VALUES),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_TILE_STYLE),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -690,6 +700,10 @@ public class StatusBar extends SystemUI implements DemoMode,
                     || uri.equals(Settings.Secure.getUriFor(
                     Settings.Secure.STATUS_BAR_BATTERY_STYLE))) {
                 updateBatterySettings();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_TILE_STYLE))) {
+                stockTileStyle();
+                updateTileStyle();
             }
         }
 
@@ -4033,6 +4047,45 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mUnlockMethodCache.isMethodSecure(),
                 mStatusBarKeyguardViewManager.isOccluded());
         Trace.endSection();
+    }
+
+    // Switches qs tile style from stock to custom
+    private void updateTileStyle() {
+         int qsTileStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                 Settings.System.QS_TILE_STYLE, 0, mLockscreenUserManager.getCurrentUserId());
+        updateTileStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), qsTileStyle);
+    }
+     // Unload all qs tile styles back to stock
+    private void stockTileStyle() {
+        stockTileStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId());
+    }
+
+    // Switches qs tile style to user selected.
+    public static void updateTileStyle(IOverlayManager om, int userId, int qsTileStyle) {
+        if (qsTileStyle == 0) {
+            stockTileStyle(om, userId);
+        } else {
+            try {
+                om.setEnabled(QS_TILE_THEMES[qsTileStyle],
+                        true, userId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change qs tile icon", e);
+            }
+        }
+    }
+
+      // Switches qs tile style back to stock.
+    public static void stockTileStyle(IOverlayManager om, int userId) {
+        // skip index 0
+        for (int i = 1; i < QS_TILE_THEMES.length; i++) {
+            String qstiletheme = QS_TILE_THEMES[i];
+            try {
+                om.setEnabled(qstiletheme,
+                        false /*disable*/, userId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
