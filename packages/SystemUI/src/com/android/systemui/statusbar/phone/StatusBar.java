@@ -722,6 +722,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_TICKER_TICK_DURATION),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PULSE_APPS_BLACKLIST),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -745,6 +748,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_TICKER_TICK_DURATION))) {
                 updateTickerTickDuration();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.PULSE_APPS_BLACKLIST))) {
+                setPulseBlacklist();
             }
         }
 
@@ -761,6 +766,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
             setHeadsUpStoplist();
             setHeadsUpBlacklist();
+			setPulseBlacklist();
         }
 
     private void setHeadsUpStoplist() {
@@ -769,10 +775,16 @@ public class StatusBar extends SystemUI implements DemoMode,
         splitAndAddToArrayList(mStoplist, stopString, "\\|");
     }
 
-     private void setHeadsUpBlacklist() {
+    private void setHeadsUpBlacklist() {
         final String blackString = Settings.System.getString(mContext.getContentResolver(),
                     Settings.System.HEADS_UP_BLACKLIST_VALUES);
         splitAndAddToArrayList(mBlacklist, blackString, "\\|");
+    }
+
+    private void setPulseBlacklist() {
+        String blacklist = Settings.System.getStringForUser(mContext.getContentResolver(),
+                Settings.System.PULSE_APPS_BLACKLIST, UserHandle.USER_CURRENT);
+        getMediaManager().setPulseBlacklist(blacklist);
     }
 
     private void updateBatterySettings() {
