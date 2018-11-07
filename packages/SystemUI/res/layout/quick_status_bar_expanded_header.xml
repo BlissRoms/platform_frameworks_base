@@ -18,6 +18,7 @@
 <!-- Extends RelativeLayout -->
 <com.android.systemui.qs.QuickStatusBarHeader
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -31,6 +32,12 @@
     android:paddingEnd="0dp"
     android:paddingStart="0dp"
     android:elevation="4dp" >
+
+    <com.android.systemui.statusbar.policy.BatteryBarController
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        systemui:viewLocation="5"
+        android:layout_below="@+id/quick_status_bar_date_privacy" />
 
     <!-- Date and privacy. Only visible in QS when not in split shade -->
     <include layout="@layout/quick_status_bar_header_date_privacy"/>
