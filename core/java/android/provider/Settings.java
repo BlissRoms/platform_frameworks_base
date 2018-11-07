@@ -5271,6 +5271,12 @@ public final class Settings {
         public static final String PULSE_APPS_BLACKLIST = "pulse_apps_blacklist";
 
         /**
+         * Pulse Fading units opacity
+         * @hide
+         */
+        public static final String PULSE_FADING_BLOCKS_OPACITY = "pulse_fading_blocks_opacity";
+
+        /**
 	     ** Change fonts for the system lockscreen clock widget
 	     **
 	     ** @hide
