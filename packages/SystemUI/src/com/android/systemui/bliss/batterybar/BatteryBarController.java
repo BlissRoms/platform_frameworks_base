@@ -47,6 +47,7 @@ public class BatteryBarController extends LinearLayout implements TunerService.T
 
     int mStyle;
     int mLocation;
+    int mBatteryBarLocation;
     int mThickness;
 
     protected final static int CURRENT_LOC = 1;
@@ -60,6 +61,8 @@ public class BatteryBarController extends LinearLayout implements TunerService.T
 
     private static final String STATUSBAR_BATTERY_BAR =
             "system:" + Settings.System.STATUSBAR_BATTERY_BAR;
+    private static final String STATUSBAR_BATTERY_BAR_LOCATION =
+            "system:" + Settings.System.STATUSBAR_BATTERY_BAR_LOCATION;
     private static final String STATUSBAR_BATTERY_BAR_STYLE =
             "system:" + Settings.System.STATUSBAR_BATTERY_BAR_STYLE;
     private static final String STATUSBAR_BATTERY_BAR_THICKNESS =
@@ -92,6 +95,7 @@ public class BatteryBarController extends LinearLayout implements TunerService.T
         Dependency.get(TunerService.class).addTunable(this,
                 STATUSBAR_BATTERY_BAR,
                 STATUSBAR_BATTERY_BAR_STYLE,
+                STATUSBAR_BATTERY_BAR_LOCATION,
                 STATUSBAR_BATTERY_BAR_THICKNESS);
     }
 
@@ -198,6 +202,15 @@ public class BatteryBarController extends LinearLayout implements TunerService.T
             case STATUSBAR_BATTERY_BAR:
                 mLocation =
                         newValue == null ? 0 : Integer.parseInt(newValue);
+                addBars();
+                break;
+            case STATUSBAR_BATTERY_BAR_LOCATION:
+                if (mLocation != 0)
+                    mBatteryBarLocation =
+                           TunerService.parseInteger(newValue, 1);
+                } else {
+                    mLocation = 0;
+                }
                 addBars();
                 break;
             case STATUSBAR_BATTERY_BAR_STYLE:

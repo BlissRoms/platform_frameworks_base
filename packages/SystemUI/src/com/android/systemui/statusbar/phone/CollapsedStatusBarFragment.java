@@ -81,7 +81,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private CommandQueue mCommandQueue;
     private ClockController mClockController;
 
-    private View mBatteryBar;
+    private View mBatteryBars[] = new View[2];
 
     // Statusbar Weather Image
     private View mWeatherImageView;
@@ -157,7 +157,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mSystemIconArea = mStatusBar.findViewById(R.id.system_icon_area);
         mCustomIconArea = mStatusBar.findViewById(R.id.left_icon_area);
         mCenterClockLayout = (LinearLayout) mStatusBar.findViewById(R.id.center_clock_layout);
-        mBatteryBar = mStatusBar.findViewById(R.id.battery_bar);
+        mBatteryBars[0] = mStatusBar.findViewById(R.id.battery_bar);
+        mBatteryBars[1] = mStatusBar.findViewById(R.id.battery_bar_1);
         mBlissLogoRight = mStatusBar.findViewById(R.id.bliss_logo_right);
         mClockController = new ClockController(mStatusBar);
         mWeatherTextView = mStatusBar.findViewById(R.id.weather_temp);
@@ -320,13 +321,17 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     }
 
     public void hideSystemIconArea(boolean animate) {
-        animateHide(mBatteryBar, animate);
+        for (View batteryBar: mBatteryBars) {
+            animateHide(batteryBar, animate);
+        }
         animateHide(mSystemIconArea, animate);
         animateHide(mBlissLogoRight, animate);
     }
 
     public void showSystemIconArea(boolean animate) {
-        animateShow(mBatteryBar, animate);
+        for (View batteryBar: mBatteryBars) {
+            animateShow(mBatteryBar, animate);
+        }
         animateShow(mSystemIconArea, animate);
         animateShow(mBlissLogoRight, animate);
     }
