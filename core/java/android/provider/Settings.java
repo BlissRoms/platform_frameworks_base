@@ -4103,6 +4103,9 @@ public final class Settings {
 
         // omni adding start
         /**
+         * 0 - Quickstep
+         * 1 - OmniSwitch
+         * 2 - AOSP
          * @hide
          */
         public static final String OMNI_NAVIGATION_BAR_RECENTS = "navigation_bar_recents";
@@ -5292,6 +5295,14 @@ public final class Settings {
          * @hide
          */
         public static final String FULL_GESTURE_NAVBAR_DT2S = "full_gesture_navbar_dt2s";
+
+        /**
+         * Recents component
+         * 0 - Quickstep
+         * 1 - AOSP
+         * @hide
+         */
+        public static final String RECENTS_COMPONENT = "recents_component";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings

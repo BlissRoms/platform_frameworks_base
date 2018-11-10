@@ -142,4 +142,7 @@
 
   <java-symbol type="array" name="config_blockPackagesSensorDrain" />
 
+  <!-- Oreo's recents component activity -->
+  <java-symbol type="string" name="config_recentsComponentNameOreo" />
+
 </resources>
