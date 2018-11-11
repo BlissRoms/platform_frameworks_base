@@ -35,6 +35,7 @@ public class StatusBarIconHolder {
     public static final int TYPE_WIFI = 1;
     public static final int TYPE_MOBILE = 2;
     public static final int TYPE_BLUETOOTH = 3;
+    public static final int TYPE_NETWORK_TRAFFIC = 42;
 
     private StatusBarIcon mIcon;
     private WifiIconState mWifiState;
@@ -106,6 +107,12 @@ public class StatusBarIconHolder {
         return holder;
     }
 
+    public static StatusBarIconHolder fromNetworkTraffic() {
+        StatusBarIconHolder holder = new StatusBarIconHolder();
+        holder.mType = TYPE_NETWORK_TRAFFIC;
+        return holder;
+    }
+
     public int getType() {
         return mType;
     }
@@ -156,6 +163,8 @@ public class StatusBarIconHolder {
                 return mMobileState.visible;
             case TYPE_BLUETOOTH:
                 return mBluetoothState.visible;
+            case TYPE_NETWORK_TRAFFIC:
+                return true;
 
             default: return true;
         }
