@@ -295,4 +295,8 @@
     <string name="tuner_keyguard_show_assistant_handle_title">Show assistant handles</string>
     <string name="tuner_keyguard_show_assistant_handle_summary">Show assistant handles on screen edges</string>
 
+    <!-- Stock Navbar -->
+    <string name="systemui_tuner_navbar_title">Stock settings</string>
+    <string name="navbar_activity_title">Navigation bar</string>
+
 </resources>
