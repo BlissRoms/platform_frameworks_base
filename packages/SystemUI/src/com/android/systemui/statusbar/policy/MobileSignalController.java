@@ -146,11 +146,11 @@ public class MobileSignalController extends SignalController<
                   Settings.System.SHOW_FOURG),
                   false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-			      Settings.System.ROAMING_INDICATOR_ICON);
+			      Settings.System.ROAMING_INDICATOR_ICON),
                   false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-			      Settings.System.SHOW_VOLTE_ICON), false,
-                  this, UserHandle.USER_ALL);
+			      Settings.System.SHOW_VOLTE_ICON), 
+				  false, this, UserHandle.USER_ALL);
            updateSettings();
         }
 
