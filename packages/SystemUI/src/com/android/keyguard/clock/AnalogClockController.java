@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -65,6 +66,7 @@ public class AnalogClockController implements ClockPlugin {
      */
     private ClockLayout mBigClockView;
     private ImageClock mAnalogClock;
+    private TextClock mLockClock;
 
     private int mHourColor;
     private int mMinuteColor;
@@ -180,5 +182,10 @@ public class AnalogClockController implements ClockPlugin {
     @Override
     public boolean shouldShowStatusArea() {
         return true;
+    }
+
+    @Override
+    public void setTypeface(Typeface tf) {
+        mLockClock.setTypeface(tf);
     }
 }
