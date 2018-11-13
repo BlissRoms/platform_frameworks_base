@@ -425,12 +425,15 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private static final String[] QS_TILE_THEMES = {
         "com.android.systemui.qstile.default", // 0
-        "com.android.systemui.qstile.circletrim", // 1
-        "com.android.systemui.qstile.dualtonecircletrim", // 2
-        "com.android.systemui.qstile.oreo", // 3
-        "com.android.systemui.qstile.oreocircletrim", // 4
-        "com.android.systemui.qstile.oreosquircletrim", // 5
-        "com.android.systemui.qstile.squircletrim", // 6
+        "com.android.systemui.qstile.circlegradient", // 1
+        "com.android.systemui.qstile.circletrim", // 2
+        "com.android.systemui.qstile.dottedcircle", // 3
+        "com.android.systemui.qstile.dualtonecircle", // 4
+        "com.android.systemui.qstile.dualtonecircletrim", // 5
+        "com.android.systemui.qstile.oreo", // 6
+        "com.android.systemui.qstile.oreocircletrim", // 7
+        "com.android.systemui.qstile.oreosquircletrim", // 8
+        "com.android.systemui.qstile.squircletrim", // 9
     };
 
     // top bar
