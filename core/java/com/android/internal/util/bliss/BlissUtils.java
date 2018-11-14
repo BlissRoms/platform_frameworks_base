@@ -108,7 +108,9 @@ public class BlissUtils {
         "com.android.systemui.qstile.oos", // 14
         "com.android.systemui.qstile.triangles", // 15
         "com.android.systemui.qstile.divided", // 16
-        "com.android.systemui.qstile.cosmos" // 17
+        "com.android.systemui.qstile.cosmos", // 17
+        "com.android.systemui.qstile.squircle", // 18
+        "com.android.systemui.qstile.teardrop", // 19
     };
 
     public static boolean isChineseLanguage() {
