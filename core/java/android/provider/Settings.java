@@ -9022,6 +9022,16 @@ public final class Settings {
                 "night_display_last_activated_time";
 
         /**
+         * Whether to set a lower brightness level when enabling night mode
+         * 0: Disabled
+         * 1: Set the brightness to a very low value
+         * 2: Set the brightness to a low value
+         * 3: Set the brightness to a medium value
+         * @hide
+         */
+        public static final String NIGHT_BRIGHTNESS_VALUE = "night_brightness_value";
+
+        /**
          * Names of the service components that the current user has explicitly allowed to
          * be a VR mode listener, separated by ':'.
          *
