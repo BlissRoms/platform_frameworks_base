@@ -763,12 +763,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.OMNI_NAVIGATION_BAR_SHOW),
                     false, this, UserHandle.USER_ALL);
-			resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SHOW_BATTERY_PERCENT),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.STATUS_BAR_BATTERY_STYLE),
-                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.OMNI_USE_OLD_MOBILETYPE),
                     false, this, UserHandle.USER_ALL);
@@ -821,13 +815,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             update();
-            updateBatterySettings();
             if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.SHOW_BATTERY_PERCENT))
-                    || uri.equals(Settings.Secure.getUriFor(
-                    Settings.Secure.STATUS_BAR_BATTERY_STYLE))) {
-                updateBatterySettings();
-            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_TILE_STYLE))) {
                 stockTileStyle();
                 updateTileStyle();
@@ -908,17 +896,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         mNotificationPanel.updateKeyguardStatusSettings();
     }
 
-    private void updateBatterySettings() {
-        if (mStatusBarView != null) {
-            mStatusBarView.updateBatterySettings();
-        }
-        if (mKeyguardStatusBar != null) {
-            mKeyguardStatusBar.updateBatterySettings();
-        }
-        if (mQuickStatusBarHeader != null) {
-            mQuickStatusBarHeader.updateBatterySettings();
-        }
-    }
     }
     private OmniSettingsObserver mOmniSettingsObserver;
     private boolean mShowNavBar;
