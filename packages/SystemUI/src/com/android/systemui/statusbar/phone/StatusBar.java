@@ -248,6 +248,7 @@ import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow
 import com.android.systemui.statusbar.notification.row.NotificationGutsManager;
 import com.android.systemui.statusbar.notification.stack.NotificationListContainer;
 import com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayout;
+import com.android.systemui.statusbar.phone.BarTransitions.BarBackgroundDrawable;
 import com.android.systemui.statusbar.phone.Ticker;
 import com.android.systemui.statusbar.phone.TickerView;
 import com.android.systemui.statusbar.phone.UnlockMethodCache.OnUnlockMethodChangedListener;
@@ -334,6 +335,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.STATUS_BAR_TICKER_ANIMATION_MODE;
     private static final String STATUS_BAR_TICKER_TICK_DURATION =
             "system:" + Settings.System.STATUS_BAR_TICKER_TICK_DURATION;
+    private static final String DISPLAY_CUTOUT_MODE =
+            "system:" + Settings.System.DISPLAY_CUTOUT_MODE;
+    private static final String STOCK_STATUSBAR_IN_HIDE =
+            "system:" + Settings.System.STOCK_STATUSBAR_IN_HIDE;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -676,6 +681,9 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mWereIconsJustHidden;
     private boolean mBouncerWasShowingWhenHidden;
 
+    private int mImmerseMode;
+    private boolean mStockStatusBar = true;
+
     // Notifies StatusBarKeyguardViewManager every time the keyguard transition is over,
     // this animation is tied to the scrim for historic reasons.
     // TODO: notify when keyguard has faded away instead of the scrim.
@@ -831,6 +839,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         tunerService.addTunable(this, GAMING_MODE_HEADSUP_TOGGLE);
         tunerService.addTunable(this, STATUS_BAR_TICKER_ANIMATION_MODE);
         tunerService.addTunable(this, STATUS_BAR_TICKER_TICK_DURATION);
+        tunerService.addTunable(this, DISPLAY_CUTOUT_MODE);
+        tunerService.addTunable(this, STOCK_STATUSBAR_IN_HIDE);
 
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
@@ -1084,6 +1094,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                         new BurnInProtectionController(mContext, this, mStatusBarView);
                     mStatusBarContent = (LinearLayout) mStatusBarView.findViewById(R.id.status_bar_contents);
                     mCenterClockLayout = mStatusBarView.findViewById(R.id.center_clock_layout);
+                    handleCutout(null);
                 }).getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.status_bar_container, new CollapsedStatusBarFragment(),
@@ -5801,6 +5812,22 @@ public class StatusBar extends SystemUI implements DemoMode,
                     mTicker.updateTickDuration(mTickerTickDuration);
                 }
                 break;
+            case DISPLAY_CUTOUT_MODE:
+                int immerseMode =
+                        TunerService.parseInteger(newValue, 0);
+                if (mImmerseMode != immerseMode) {
+                    mImmerseMode = immerseMode;
+                    handleCutout(null);
+                }
+                break;
+            case STOCK_STATUSBAR_IN_HIDE:
+                boolean stockStatusBar =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                if (mStockStatusBar != stockStatusBar) {
+                    mStockStatusBar = stockStatusBar;
+                    handleCutout(null);
+                }
+                break;
             default:
                 break;
         }
@@ -5820,6 +5847,24 @@ public class StatusBar extends SystemUI implements DemoMode,
         return mStatusBarMode;
     }
 
+    private void setCutoutOverlay(boolean enable) {
+        try {
+            mOverlayManager.setEnabled("com.potato.overlay.hidecutout",
+                        enable, mLockscreenUserManager.getCurrentUserId());
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to handle cutout overlay", e);
+        }
+    }
+
+    private void setStatusBarStockOverlay(boolean enable) {
+        try {
+            mOverlayManager.setEnabled("com.potato.overlay.statusbarstock",
+                        enable, mLockscreenUserManager.getCurrentUserId());
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to handle statusbar height overlay", e);
+        }
+    }
+
     private void setUseLessBoringHeadsUp() {
         boolean lessBoringHeadsUp = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.LESS_BORING_HEADS_UP, 0,
@@ -5831,5 +5876,33 @@ public class StatusBar extends SystemUI implements DemoMode,
         mMaxKeyguardNotifConfig = Settings.System.getIntForUser(mContext.getContentResolver(),
                  Settings.System.LOCKSCREEN_MAX_NOTIF_CONFIG, 3, UserHandle.USER_CURRENT);
         mPresenter.setMaxAllowedNotifUser(mMaxKeyguardNotifConfig);
+    }
+
+    private void setBlackStatusBar(boolean enable) {
+        if (mStatusBarWindow == null || mStatusBarWindow.getBarTransitions() == null) return;
+        if (enable) {
+            mStatusBarWindow.getBarTransitions().getBackground().setColorOverride(new Integer(0xFF000000));
+        } else {
+            mStatusBarWindow.getBarTransitions().getBackground().setColorOverride(null);
+        }
+    }
+
+    private void handleCutout(Configuration newConfig) {
+        boolean immerseMode;
+        if (newConfig == null) newConfig = mContext.getResources().getConfiguration();
+        if (newConfig == null || newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            immerseMode = mImmerseMode == 1;
+        } else {
+            immerseMode = false;
+        }
+        setBlackStatusBar(immerseMode);
+        setNotificationPanelPadding(immerseMode);
+
+        final boolean hideCutoutMode = mImmerseMode == 2;
+        final boolean statusBarStock = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.STOCK_STATUSBAR_IN_HIDE, 1, UserHandle.USER_CURRENT) == 1;
+        setBlackStatusBar(immerseMode);
+        setCutoutOverlay(hideCutoutMode);
+        setStatusBarStockOverlay(hideCutoutMode && statusBarStock);
     }
 }
