@@ -5,4 +5,48 @@
 -->
 <resources>
 
+    <style name="GlobalActionsAnimation">
+        <item name="windowEnterAnimation">@anim/slide_in_up</item>
+        <item name="windowExitAnimation">@anim/slide_out_down</item>
+    </style>
+
+    <style name="GlobalActionsAnimationTop">
+        <item name="windowEnterAnimation">@anim/slide_in_down</item>
+        <item name="windowExitAnimation">@anim/slide_out_up</item>
+    </style>
+
+    <style name="GlobalActionsAnimationEnter">
+        <item name="windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+
+    <style name="GlobalActionsAnimationFly">
+        <item name="windowEnterAnimation">@anim/recent_enter</item>
+        <item name="windowExitAnimation">@anim/recent_exit</item>
+    </style>
+
+    <style name="GlobalActionsAnimationTn">
+        <item name="windowEnterAnimation">@anim/tn_toast_enter</item>
+        <item name="windowExitAnimation">@anim/tn_toast_exit</item>
+    </style>
+
+    <style name="GlobalActionsAnimationTranslucent">
+        <item name="windowEnterAnimation">@anim/translucent_enter</item>
+        <item name="windowExitAnimation">@anim/translucent_exit</item>
+    </style>
+
+    <style name="GlobalActionsAnimationXylon">
+        <item name="windowEnterAnimation">@anim/xylon_toast_enter</item>
+        <item name="windowExitAnimation">@anim/xylon_toast_exit</item>
+    </style>
+
+    <style name="GlobalActionsAnimationCard">
+        <item name="windowEnterAnimation">@anim/honami_toast_enter</item>
+        <item name="windowExitAnimation">@anim/honami_toast_exit</item>
+    </style>
+
+    <style name="GlobalActionsAnimationRotate">
+        <item name="windowEnterAnimation">@anim/rotate</item>
+    </style>
+
 </resources>
