@@ -7704,4 +7704,9 @@ public class WindowManagerService extends IWindowManager.Stub
             scheduleAnimationLocked();
         }
     }
+
+    @Override
+    public void sendCustomAction(Intent intent) {
+        mPolicy.sendCustomAction(intent);
+    }
 }

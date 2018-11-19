@@ -69,6 +69,7 @@ import android.annotation.IntDef;
 import android.annotation.Nullable;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.CompatibilityInfo;
 import android.content.res.Configuration;
@@ -1812,4 +1813,9 @@ public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
      * Call screen record from WindowManager.
      */
     void screenRecordAction(int mode);
+
+    /**
+     * Send some ActionHandler commands to WindowManager.
+     */
+    public void sendCustomAction(Intent intent);
 }
