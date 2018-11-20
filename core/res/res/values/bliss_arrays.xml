@@ -19,4 +19,8 @@
     <string name="screen_zoom_summary_smaller">Smaller</string>
     <!-- Description for the screen zoom level that makes interface elements smallest. [CHAR LIMIT=24] -->
     <string name="screen_zoom_summary_smallest">Smallest</string>
+
+    <!-- System font packages (overlay in vendor) -->
+    <string-array name="config_fontPackages" translatable="false">
+    </string-array>
 </resources>
