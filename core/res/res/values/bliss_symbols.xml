@@ -173,4 +173,7 @@
   <java-symbol type="integer" name="config_buttonBrightnessSettingDefault" />
   <java-symbol type="bool" name="config_deviceHasVariableButtonBrightness" />
 
+    <!-- System fonts -->
+    <java-symbol type="array" name="config_fontPackages" />
+
 </resources>
