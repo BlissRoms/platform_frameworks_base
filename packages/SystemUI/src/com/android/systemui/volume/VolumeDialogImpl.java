@@ -137,6 +137,8 @@ public class VolumeDialogImpl implements VolumeDialog,
             "system:" + Settings.System.AUDIO_PANEL_VIEW_BT_SCO;
     public static final String VOLUME_LINK_NOTIFICATION =
             Settings.Secure.VOLUME_LINK_NOTIFICATION;
+    public static final String AUDIO_PANEL_VIEW_TIMEOUT =
+            "system:" + Settings.System.AUDIO_PANEL_VIEW_TIMEOUT;
 
     static final int DIALOG_TIMEOUT_MILLIS = 3000;
     static final int DIALOG_SAFETYWARNING_TIMEOUT_MILLIS = 5000;
@@ -198,6 +200,7 @@ public class VolumeDialogImpl implements VolumeDialog,
     private boolean mVoiceShowing;
     private boolean mBTSCOShowing;
     private boolean mNotificationLinked;
+    private int mTimeOutDesired, mTimeOut;
 
     public VolumeDialogImpl(Context context) {
         mContext =
@@ -221,6 +224,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         tunerService.addTunable(this, AUDIO_PANEL_VIEW_VOICE);
         tunerService.addTunable(this, AUDIO_PANEL_VIEW_BT_SCO);
         tunerService.addTunable(this, VOLUME_LINK_NOTIFICATION);
+        tunerService.addTunable(this, AUDIO_PANEL_VIEW_TIMEOUT);
     }
 
     @Override
@@ -426,6 +430,13 @@ public class VolumeDialogImpl implements VolumeDialog,
             case VOLUME_LINK_NOTIFICATION:
                 mNotificationLinked = TunerService.parseIntegerSwitch(newValue, true);
                 updateRowsH(getActiveRow());
+                break;
+            case AUDIO_PANEL_VIEW_TIMEOUT:
+                mTimeOutDesired = 3;
+                try {
+                    mTimeOutDesired = Integer.parseInt(newValue);
+                } catch (NumberFormatException ex) {}
+                mTimeOut = mTimeOutDesired * 1000;
                 break;
             default:
                 break;
@@ -858,8 +869,7 @@ public class VolumeDialogImpl implements VolumeDialog,
                     AccessibilityManager.FLAG_CONTENT_TEXT
                             | AccessibilityManager.FLAG_CONTENT_CONTROLS);
         }
-        return mAccessibilityMgr.getRecommendedTimeoutMillis(DIALOG_TIMEOUT_MILLIS,
-                AccessibilityManager.FLAG_CONTENT_CONTROLS);
+        return mTimeOut;
     }
 
     protected void dismissH(int reason) {
