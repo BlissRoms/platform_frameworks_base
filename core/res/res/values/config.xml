@@ -3532,4 +3532,7 @@
 
     <!-- Minimal height of bottom stack when IME is displayed -->
     <dimen name="config_bottom_stack_minimal_height">0dp</dimen>
+
+    <!-- Whether or not we should show the option to show battery percentage -->
+    <bool name="config_battery_percentage_setting_available">true</bool>
   </resources>
