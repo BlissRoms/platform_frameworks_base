@@ -4114,15 +4114,6 @@ public final class Settings {
         private static final Validator OMNI_NAVIGATION_BAR_RECENTS_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
-         * @hide
-         */
-        public static final String OMNI_SYSTEM_PROXI_CHECK_ENABLED = "system_proxi_check_enabled";
-
-        /** @hide */
-        private static final Validator OMNI_SYSTEM_PROXI_CHECK_ENABLED_VALIDATOR =
-                BOOLEAN_VALIDATOR;
-
-        /**
          * some devices have a extra hw button e.g. n3 on the back on the
          * fingerprint sensor. allow mapping button to key
          *
@@ -5381,7 +5372,6 @@ public final class Settings {
             HAPTIC_FEEDBACK_INTENSITY,
             DISPLAY_COLOR_MODE,
             OMNI_NAVIGATION_BAR_RECENTS,
-            OMNI_SYSTEM_PROXI_CHECK_ENABLED,
             OMNI_BUTTON_EXTRA_KEY_MAPPING,
             OMNI_HARDWARE_KEYS_DISABLE,
             OMNI_DEVICE_PROXI_CHECK_ENABLED,
@@ -5548,7 +5538,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
             PRIVATE_SETTINGS.add(OMNI_NAVIGATION_BAR_RECENTS);
-            PRIVATE_SETTINGS.add(OMNI_SYSTEM_PROXI_CHECK_ENABLED);
             PRIVATE_SETTINGS.add(OMNI_BUTTON_EXTRA_KEY_MAPPING);
             PRIVATE_SETTINGS.add(OMNI_HARDWARE_KEYS_DISABLE);
             PRIVATE_SETTINGS.add(OMNI_DEVICE_PROXI_CHECK_ENABLED);
@@ -5692,8 +5681,6 @@ public final class Settings {
             VALIDATORS.put(WIFI_STATIC_DNS2, WIFI_STATIC_DNS2_VALIDATOR);
             VALIDATORS.put(SHOW_BATTERY_PERCENT, SHOW_BATTERY_PERCENT_VALIDATOR);
             VALIDATORS.put(OMNI_NAVIGATION_BAR_RECENTS, OMNI_NAVIGATION_BAR_RECENTS_VALIDATOR);
-            VALIDATORS.put(OMNI_SYSTEM_PROXI_CHECK_ENABLED,
-                    OMNI_SYSTEM_PROXI_CHECK_ENABLED_VALIDATOR);
             VALIDATORS.put(OMNI_BUTTON_EXTRA_KEY_MAPPING,
                     OMNI_BUTTON_EXTRA_KEY_MAPPING_VALIDATOR);
             VALIDATORS.put(OMNI_HARDWARE_KEYS_DISABLE, OMNI_HARDWARE_KEYS_DISABLE_VALIDATOR);
