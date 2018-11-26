@@ -5268,6 +5268,35 @@ public final class Settings {
         public static final String HOME_RESIZE_DURATION = "home_resize_anim_duration";
 
         /**
+         * Pixel Anim Color
+         * @hide
+         */
+        public static final String DOT_TOP_COLOR = "dot_top_color";
+
+         /**
+         * Pixel Anim Color
+         * @hide
+         */
+        public static final String DOT_BOTTOM_COLOR = "dot_bottom_color";
+
+         /**
+         * Pixel Anim Color
+         * @hide
+         */
+        public static final String DOT_LEFT_COLOR = "dot_left_color";
+
+         /**
+         * Pixel Anim Color
+         * @hide
+         */
+        public static final String DOT_RIGHT_COLOR = "dot_right_color";
+         /**
+         * Pixel Anim Color
+         * @hide
+         */
+        public static final String DOT_COLOR_SWITCH = "dot_color_switch";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
