@@ -877,6 +877,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mLockscreenUserManager = Dependency.get(NotificationLockscreenUserManager.class);
         mGutsManager = Dependency.get(NotificationGutsManager.class);
         mMediaManager = Dependency.get(NotificationMediaManager.class);
+        mMediaManager.addCallback(this);
         mEntryManager = Dependency.get(NotificationEntryManager.class);
         mEntryManager.setStatusBar(this);
         mViewHierarchyManager = Dependency.get(NotificationViewHierarchyManager.class);
@@ -2006,6 +2007,10 @@ public class StatusBar extends SystemUI implements DemoMode,
     @Override
     public void updateMediaMetaData(boolean metaDataChanged, boolean allowEnterAnimation) {
         Trace.beginSection("StatusBar#updateMediaMetaData");
+
+        // ensure visualizer is visible regardless of artwork
+        mMediaManager.setMediaPlaying();
+
         if (!SHOW_LOCKSCREEN_MEDIA_ARTWORK) {
             Trace.endSection();
             return;
@@ -2069,14 +2074,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         mColorExtractor.setHasBackdrop(hasArtwork);
         if (mScrimController != null) {
             mScrimController.setHasBackdrop(hasArtwork);
-        }
-
-        if (!mKeyguardFadingAway && keyguardVisible && hasArtwork && mScreenOn) {
-            // if there's album art, ensure visualizer is visible
-            mVisualizerView.setPlaying(mMediaManager.getMediaController() != null
-                    && mMediaManager.getMediaController().getPlaybackState() != null
-                    && mMediaManager.getMediaController().getPlaybackState().getState()
-                            == PlaybackState.STATE_PLAYING);
         }
 
         if (keyguardVisible && mKeyguardShowingMedia &&
