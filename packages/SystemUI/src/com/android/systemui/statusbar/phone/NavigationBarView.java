@@ -75,6 +75,8 @@ import com.android.systemui.RecentsComponent;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.onehand.SlideTouchEvent;
 import com.android.systemui.navigation.Navigator;
+import com.android.systemui.navigation.pulse.PulseController;
+import com.android.systemui.navigation.pulse.PulseController.PulseObserver;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.PluginManager;
 import com.android.systemui.plugins.statusbar.phone.NavGesture;
@@ -99,7 +101,7 @@ import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_SHOW_O
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_OVERVIEW;
 import static com.android.systemui.shared.system.NavigationBarCompat.HIT_TARGET_ROTATION;
 
-public class NavigationBarView extends FrameLayout implements PluginListener<NavGesture>, Navigator {
+public class NavigationBarView extends FrameLayout implements Navigator, PulseObserver  {
     final static boolean DEBUG = false;
     final static String TAG = "StatusBar/NavBarView";
 
@@ -178,6 +180,7 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
     private RecentsOnboarding mRecentsOnboarding;
     private NotificationPanelView mPanelView;
 
+     private PulseController mPulse;
      private boolean mKeyguardShowing;
 
     private int mRotateBtnStyle = R.style.RotateButtonCCWStart90;
@@ -740,6 +743,10 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
             disableBack = disableRecent = false;
         }
 
+        if (mPulse != null) {
+            mPulse.setScreenPinningState(pinningActive);
+        }
+
         ViewGroup navButtons = (ViewGroup) getCurrentView().findViewById(R.id.nav_buttons);
         if (navButtons != null) {
             LayoutTransition lt = navButtons.getLayoutTransition();
@@ -1033,6 +1040,9 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
     protected void onDraw(Canvas canvas) {
         mGestureHelper.onDraw(canvas);
         mDeadZone.onDraw(canvas);
+        if (mPulse != null) {
+            mPulse.onDraw(canvas);
+        }
         super.onDraw(canvas);
     }
 
@@ -1102,6 +1112,69 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         return mVertical;
     }
 
+    @Override
+    public void setControllers(PulseController pc) {
+        mPulse = pc;
+        mPulse.setPulseObserver(this);
+    }
+
+    @Override
+    public final void setKeyguardShowing(boolean showing) {
+        if (mKeyguardShowing != showing) {
+            mKeyguardShowing = showing;
+            if (mPulse != null) {
+                mPulse.setKeyguardShowing(showing);
+            }
+            //onKeyguardShowing(showing);
+        }
+    }
+
+    @Override
+    public final void notifyInflateFromUser() {
+        if (mPulse != null) {
+            mPulse.notifyScreenOn(true);
+        }
+    }
+
+    @Override
+    public void setLeftInLandscape(boolean leftInLandscape) {
+        if (mPulse != null) {
+            mPulse.setLeftInLandscape(leftInLandscape);
+        }
+    }
+
+    public void setPulseColors(boolean colorizedMedia, int[] colors) {
+        if (mPulse != null) {
+            mPulse.setPulseColors(colorizedMedia, colors);
+        }
+    }
+
+    @Override
+    public boolean onStartPulse(Animation animatePulseIn) {
+        // TODO add buttons alpha animation
+        mPulse.turnOnPulse();
+        return true;
+    }
+
+    @Override
+    public void onStopPulse(Animation animatePulseOut) {
+        // TODO add buttons alpha animation
+    }
+
+    public boolean isBarPulseFaded() {
+        if (mPulse == null) {
+            return false;
+        } else {
+            return mPulse.shouldDrawPulse();
+        }
+    }
+
+    public void setMediaPlaying(boolean playing) {
+        if (mPulse != null) {
+            mPulse.setMediaPlaying(playing);
+        }
+    }
+
     public void reorient() {
         updateCurrentView();
 
@@ -1147,6 +1220,9 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
         }
 
         postCheckForInvalidLayout("sizeChanged");
+        if (mPulse != null) {
+            mPulse.onSizeChanged(w, h, oldw, oldh);
+        }
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
@@ -1366,6 +1442,9 @@ public class NavigationBarView extends FrameLayout implements PluginListener<Nav
 
     @Override
     public void dispose() {
+        if (mPulse != null) {
+            mPulse.doUnlinkVisualizer();
+        }
         removeAllViews();
     }
 
