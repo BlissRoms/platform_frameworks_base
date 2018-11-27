@@ -6003,6 +6003,7 @@ public final class Settings {
         public static final String LESS_BORING_HEADS_UP = "less_boring_heads_up";
 
         /**
+
          * Whether to play notification sound and vibration if screen is ON
          * 0 - never
          * 1 - always
@@ -6015,6 +6016,13 @@ public final class Settings {
          * @hide
          */
         public static final String HEADS_UP_TIMEOUT = "heads_up_timeout";
+
+        /**
+         * Whether to show the kill app button in notification guts
+         * @hide
+         */
+        public static final String NOTIFICATION_GUTS_KILL_APP_BUTTON =
+                "notification_guts_kill_app_button";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
