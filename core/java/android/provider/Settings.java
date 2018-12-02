@@ -5464,6 +5464,24 @@ public final class Settings {
                 new SettingsValidators.InclusiveIntegerRangeValidator(1, 3);
 
         /**
+         * Whether to enable charge battery warning
+         * @hide
+         */
+        public static final String BATTERY_LEVEL_CHARGE_ALARM_ENABLED = "battery_level_charge_alarm_enabled";
+
+        /**
+         * Change level for charge battery warning
+         * @hide
+         */
+        public static final String SEEK_BAR_BATTERY_CHARGE_LEVEL_SOUND = "battery_level_charge_seek_bar";
+
+        /**
+         * Ringtone for battery charge level warning.
+         * @hide
+         */
+        public static final String BATTERY_LEVEL_CHARGE_SOUND_ALARM = "battery_level_charge_ringtone";
+
+        /**
          * Whether the phone vibrates on call connect
          * @hide
          */
