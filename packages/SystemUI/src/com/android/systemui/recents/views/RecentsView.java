@@ -616,7 +616,7 @@ public class RecentsView extends FrameLayout {
         mAm.getMemoryInfo(memInfo);
             int available = (int)(memInfo.availMem / 1048576L);
             int max = (int)(getTotalMemory() / 1048576L);
-            mMemText.setText("Free RAM: " + String.valueOf(available) + "MB");
+            mMemText.setText(String.valueOf(available) + "MB" + " Free");
             mMemBar.setMax(max);
             mMemBar.setProgress(available);
     }
