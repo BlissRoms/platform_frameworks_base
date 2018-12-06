@@ -423,6 +423,30 @@ public class RecentsView extends FrameLayout {
         mMultiWindowBackgroundScrim.setAlpha(alpha);
     }
 
+    public void startFABanimation() {
+        RecentsConfiguration config = Recents.getConfiguration();
+        // Animate the action button in
+        mFloatingButton = ((View)getParent()).findViewById(R.id.floating_action_button);
+        mFloatingButton.animate().alpha(1f)
+                .setStartDelay(config.fabEnterAnimDelay)
+                .setDuration(config.fabEnterAnimDuration)
+                .setInterpolator(Interpolators.ALPHA_IN)
+                .withLayer()
+                .start();
+    }
+
+    public void endFABanimation() {
+        RecentsConfiguration config = Recents.getConfiguration();
+        // Animate the action button away
+        mFloatingButton = ((View)getParent()).findViewById(R.id.floating_action_button);
+        mFloatingButton.animate().alpha(0f)
+                .setStartDelay(0)
+                .setDuration(config.fabExitAnimDuration)
+                .setInterpolator(Interpolators.ALPHA_OUT)
+                .withLayer()
+                .start();
+    }
+
     @Override
     protected void onAttachedToWindow() {
         EventBus.getDefault().register(this, RecentsActivity.EVENT_BUS_PRIORITY + 1);
