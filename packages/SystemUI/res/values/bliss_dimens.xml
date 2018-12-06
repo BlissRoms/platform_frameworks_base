@@ -68,4 +68,7 @@
     <dimen name="floating_action_button_margin_side">54dp</dimen>
     <dimen name="floating_action_button_margin_bottom">54dp</dimen>
 
+    <!-- Membar spacing -->
+    <dimen name="recents_membar_spacing">12dp</dimen>
+
 </resources>
