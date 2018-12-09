@@ -41,6 +41,7 @@ import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.TimingsTraceLog;
@@ -79,7 +80,7 @@ public final class ShutdownThread extends Thread {
     private static final int MOUNT_SERVICE_STOP_PERCENT = 20;
 
     // length of vibration before shutting down
-    private static final int SHUTDOWN_VIBRATE_MS = 500;
+    private static final int SHUTDOWN_VIBRATE_MS = 250;
 
     // state tracking
     private static final Object sIsStartedGuard = new Object();
@@ -198,6 +199,8 @@ public final class ShutdownThread extends Thread {
             sConfirmDialog.setOnDismissListener(closer);
         WindowManager.LayoutParams attrs = sConfirmDialog.getWindow().getAttributes();
 
+	attrs.alpha = setRebootDialogAlpha(context);
+
         boolean isPrimary = UserHandle.getCallingUserId() == UserHandle.USER_OWNER;
 
         int powermenuAnimations = isPrimary ? getPowermenuAnimations(context) : 0;
@@ -248,6 +251,7 @@ public final class ShutdownThread extends Thread {
            break;
           }
             sConfirmDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
+            sConfirmDialog.getWindow().setDimAmount(setRebootDialogDim(context));
             sConfirmDialog.show();
         } else {
             beginShutdownSequence(context);
@@ -257,6 +261,23 @@ public final class ShutdownThread extends Thread {
     private static int getPowermenuAnimations(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.POWER_MENU_ANIMATIONS, 0);
+    }
+
+    private static float setRebootDialogAlpha(Context context) {
+        int mRebootDialogAlpha = Settings.System.getInt(
+                context.getContentResolver(),
+                Settings.System.TRANSPARENT_POWER_MENU, 100);
+        double dAlpha = mRebootDialogAlpha / 100.0;
+        float alpha = (float) dAlpha;
+        return alpha;
+    }
+
+    private static float setRebootDialogDim(Context context) {
+        int mRebootDialogDim = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.TRANSPARENT_POWER_DIALOG_DIM, 50);
+        double dDim = mRebootDialogDim / 100.0;
+        float dim = (float) dDim;
+        return dim;
     }
 
     private static class CloseDialogReceiver extends BroadcastReceiver
@@ -437,6 +458,9 @@ public final class ShutdownThread extends Thread {
         pd.setCancelable(false);
         pd.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
         WindowManager.LayoutParams attrs = pd.getWindow().getAttributes();
+
+        attrs.alpha = setRebootDialogAlpha(context);
+ 	    pd.getWindow().setDimAmount(setRebootDialogDim(context));
 
         boolean isPrimary = UserHandle.getCallingUserId() == UserHandle.USER_OWNER;
 
