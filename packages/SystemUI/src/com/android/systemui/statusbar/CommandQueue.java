@@ -101,6 +101,7 @@ public class CommandQueue extends IStatusBar.Stub {
     private static final int MSG_TOGGLE_FLASHLIGHT             = 51 << MSG_SHIFT;
     private static final int MSG_TOGGLE_NAVIGATION_EDITOR      = 52 << MSG_SHIFT;
     private static final int MSG_DISPATCH_NAVIGATION_EDITOR_RESULTS = 53 << MSG_SHIFT;
+	private static final int MSG_TOGGLE_PIE_ORIENTATION 	   = 54 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -152,6 +153,7 @@ public class CommandQueue extends IStatusBar.Stub {
         default void startAssist(Bundle args) { }
         default void onCameraLaunchGestureDetected(int source) { }
         default void showPictureInPictureMenu() { }
+		default void toggleOrientationListener(boolean enable) { }
         default void setTopAppHidesStatusBar(boolean topAppHidesStatusBar) { }
 
         default void addQsTile(ComponentName tile) { }
@@ -410,6 +412,13 @@ public class CommandQueue extends IStatusBar.Stub {
         synchronized (mLock) {
             mHandler.removeMessages(MSG_SHOW_PICTURE_IN_PICTURE_MENU);
             mHandler.obtainMessage(MSG_SHOW_PICTURE_IN_PICTURE_MENU).sendToTarget();
+        }
+    }
+
+    public void toggleOrientationListener(boolean enable) {
+        synchronized (mLock) {
+            mHandler.removeMessages(MSG_TOGGLE_PIE_ORIENTATION);
+            mHandler.obtainMessage(MSG_TOGGLE_PIE_ORIENTATION).sendToTarget();
         }
     }
 
@@ -900,6 +909,11 @@ public class CommandQueue extends IStatusBar.Stub {
                     Intent intent = (Intent) msg.obj;
                     for (int i = 0; i < mCallbacks.size(); i++) {
                         mCallbacks.get(i).dispatchNavigationEditorResults(intent);
+		            }
+		            break;
+                case MSG_TOGGLE_PIE_ORIENTATION:
+                    for (int i = 0; i < mCallbacks.size(); i++) {
+                        mCallbacks.get(i).toggleOrientationListener(msg.arg1 != 0);
                     }
                     break;
             }
