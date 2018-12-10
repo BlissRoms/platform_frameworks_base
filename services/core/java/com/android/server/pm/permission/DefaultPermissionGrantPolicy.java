@@ -969,6 +969,11 @@ public final class DefaultPermissionGrantPolicy {
             grantRuntimePermissions(googledialerPackage, CONTACTS_PERMISSIONS, true, userId);
             grantRuntimePermissions(googledialerPackage, SMS_PERMISSIONS, userId);
         }
+	// OmniJaws
+	PackageParser.Package omnijawsPackage = getSystemPackage("org.omnirom.omnijaws");
+	if (omnijawsPackage != null && doesPackageSupportRuntimePermissions(omnijawsPackage)) {
+	    grantRuntimePermissions(omnijawsPackage, LOCATION_PERMISSIONS, true, userId);
+	}
         // Pixel Wallpaper
         PackageParser.Package pixelwallsPackage = getDefaultProviderAuthorityPackage("com.google.android.apps.wallpaper", userId);
         if (pixelwallsPackage != null) {
