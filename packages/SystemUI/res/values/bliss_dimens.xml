@@ -67,5 +67,5 @@
     <dimen name="udfps_animation_offset">0dp</dimen>
 
     <!-- OmniWeather image size -->
-    <dimen name="current_weather_image_size">42dp</dimen>
+    <dimen name="current_weather_image_size">30dp</dimen>
 </resources>
