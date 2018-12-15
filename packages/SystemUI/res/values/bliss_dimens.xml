@@ -47,5 +47,5 @@
     <dimen name="tri_state_up_top_right_radius">24.0dip</dimen>
 
     <!-- OmniWeather image size -->
-    <dimen name="current_weather_image_size">42dp</dimen>
+    <dimen name="current_weather_image_size">30dp</dimen>
 </resources>
