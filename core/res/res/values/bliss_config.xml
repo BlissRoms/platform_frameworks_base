@@ -118,4 +118,8 @@
     <java-symbol type="dimen" name="edge_gesture_perpendicular_distance" />
     <java-symbol type="dimen" name="edge_gesture_trigger_thickness" />
 
+    <!-- Button Backlight -->
+    <integer name="config_buttonBrightnessSettingDefault">255</integer>
+    <bool name="config_deviceHasVariableButtonBrightness">false</bool>
+
 </resources>
