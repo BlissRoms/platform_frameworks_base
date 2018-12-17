@@ -9928,6 +9928,13 @@ public final class Settings {
         public static final String FLING_PULSE_COLOR = "fling_pulse_color";
 
         /**
+         * Pulse accent color
+         *
+         * @hide
+         */
+        public static final String PULSE_ACCENT_COLOR_ENABLED = "pulse_accent_color_enabled";
+
+        /**
          * Fling ripple effect
          *
          * @hide
