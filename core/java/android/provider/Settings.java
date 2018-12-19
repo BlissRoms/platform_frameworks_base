@@ -5688,13 +5688,21 @@ public final class Settings {
          * @hide
          */
         public static final String FONT_INFO = "font_info";
-        
+
         /**
          * Hold list of installed font provider packages. Uses "|" as a delimiter
          *
          * @hide
          */
         public static final String FONT_PACKAGES = "font_packages";
+
+        /**
+         * @hide
+         */
+        public static final String VOLUME_PANEL_ON_LEFT = "volume_panel_on_left";
+
+        /** @hide */
+        private static final Validator VOLUME_PANEL_ON_LEFT_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -5808,7 +5816,8 @@ public final class Settings {
             STATUS_BAR_TICKER_ANIMATION_MODE,
             STATUS_BAR_TICKER_TICK_DURATION,
             VOLUME_DIALOG_TIMEOUT,
-            QS_SHOW_BRIGHTNESS_BUTTONS
+            QS_SHOW_BRIGHTNESS_BUTTONS,
+            VOLUME_PANEL_ON_LEFT
         };
 
         /**
@@ -5984,7 +5993,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SWAP_VOLUME_BUTTONS);
             PRIVATE_SETTINGS.add(VOLUME_DIALOG_TIMEOUT);
             PRIVATE_SETTINGS.add(QS_SHOW_BRIGHTNESS_BUTTONS);
-        }
+            PRIVATE_SETTINGS.add(VOLUME_PANEL_ON_LEFT);
+	}
 
         /**
          * These are all public system settings
@@ -6153,6 +6163,7 @@ public final class Settings {
             VALIDATORS.put(AMBIENT_RECOGNITION_NOTIFICATION, AMBIENT_RECOGNITION_NOTIFICATION_VALIDATOR);
             VALIDATORS.put(VOLUME_DIALOG_TIMEOUT,VOLUME_DIALOG_TIMEOUT_VALIDATOR);
             VALIDATORS.put(QS_SHOW_BRIGHTNESS_BUTTONS, QS_SHOW_BRIGHTNESS_BUTTONS_VALIDATOR);
+    	    VALIDATORS.put(VOLUME_PANEL_ON_LEFT, VOLUME_PANEL_ON_LEFT_VALIDATOR);
         }
 
         /**
