@@ -16,6 +16,7 @@
 package com.android.systemui.ambient.play;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,6 +38,8 @@ public class AmbientIndicationContainer extends AutoReinflateContainer {
     private String mSong;
     private String mArtist;
 
+    private static final String FONT_FAMILY = "sans-serif-light";
+
     public AmbientIndicationContainer(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         mContext = context;
@@ -49,9 +52,11 @@ public class AmbientIndicationContainer extends AutoReinflateContainer {
     }
 
     public void showIndication() {
+      Typeface tf = Typeface.create(FONT_FAMILY, Typeface.NORMAL);
         if (mAmbientIndication != null && mSong != null && mArtist != null){
             mAmbientIndication.setVisibility(View.VISIBLE);
             mAmbientIndication.setClickable(false);
+            mText.setTypeface(tf);
             mText.setText(String.format(mContext.getResources().getString(
                     com.android.internal.R.string.ambient_recognition_information), mSong, mArtist));
         }
