@@ -486,4 +486,16 @@ public class BlissUtils {
             isPackageInstalled(context, LINEAGE_DOZE_PACKAGE_NAME) ||
             isPackageInstalled(context, CUSTOM_DOZE_PACKAGE_NAME);
     }
+
+    // Clear notifications
+    public static void clearAllNotifications() {
+        IStatusBarService service = getStatusBarService();
+        if (service != null) {
+            try {
+                service.onClearAllNotifications(ActivityManager.getCurrentUser());
+            } catch (RemoteException e) {
+                // do nothing.
+            }
+        }
+    }
 }
