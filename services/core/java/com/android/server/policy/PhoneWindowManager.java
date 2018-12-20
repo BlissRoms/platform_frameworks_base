@@ -1957,6 +1957,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case VOLUME_PANEL:
                 BlissUtils.toggleVolumePanel(mContext);
                 break;
+            case CLEAR_ALL_NOTIFICATIONS:
+                BlissUtils.clearAllNotifications();
+                break;
             default:
                 break;
         }
