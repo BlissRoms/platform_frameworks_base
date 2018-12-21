@@ -906,17 +906,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     }
 
-    public void setAmbientMusicInfo(MediaMetadata mediaMetadata, String notificationText, boolean nowPlaying) {
-        if (isAmbientContainerAvailable()) {
-            ((AmbientIndicationContainer)mAmbientIndicationContainer).setIndication(
-                    mediaMetadata, notificationText, nowPlaying);
-        }
-    }
-
-    private boolean isAmbientContainerAvailable() {
-        return mAmbientMediaPlaying && mAmbientIndicationContainer != null;
-    }
-
     private void updateKeyguardStatusSettings() {
         mNotificationPanel.updateKeyguardStatusSettings();
     }
@@ -5358,6 +5347,18 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mQSPanel != null) {
             mQSPanel.updateSettings();
         }
+    }
+
+
+    public void setAmbientMusicInfo(MediaMetadata mediaMetadata, String notificationText, boolean nowPlaying) {
+        if (isAmbientContainerAvailable()) {
+            ((AmbientIndicationContainer)mAmbientIndicationContainer).setIndication(
+                    mediaMetadata, notificationText, nowPlaying);
+        }
+    }
+
+    private boolean isAmbientContainerAvailable() {
+        return mAmbientMediaPlaying && mAmbientIndicationContainer != null;
     }
 
     public int getWakefulnessState() {
