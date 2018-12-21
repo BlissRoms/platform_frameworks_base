@@ -23,4 +23,7 @@
     <dimen name="binary_clock_width">100dp</dimen>
     <dimen name="binary_clock_height">100dp</dimen>
 
+    <!-- Weather condition icon  -->
+    <dimen name="weather_icon_size">24dp</dimen>
+
 </resources>
