@@ -5194,6 +5194,18 @@ public final class Settings {
         private static final Validator OMNI_LOCKSCREEN_WEATHER_ENABLED_VALIDATOR =
                BOOLEAN_VALIDATOR;
 
+
+        /**
+        * 0: OmniJaws Style
+        * 1: KeyguardSlice Style
+        * @hide
+        */
+        public static final String LOCKSCREEN_WEATHER_STYLE = "lockscreen_weather_style";
+
+        /** @hide */
+        private static final Validator LOCKSCREEN_WEATHER_STYLE_VALIDATOR =
+               new SettingsValidators.InclusiveIntegerRangeValidator(0, 1);;
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -5275,6 +5287,7 @@ public final class Settings {
             LOCK_SHOW_STATUS_BAR,
             OMNIJAWS_WEATHER_ICON_PACK,
             OMNI_LOCKSCREEN_WEATHER_ENABLED,
+            LOCKSCREEN_WEATHER_STYLE,
         };
 
         /**
@@ -5412,6 +5425,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCK_SHOW_STATUS_BAR);
             PRIVATE_SETTINGS.add(OMNIJAWS_WEATHER_ICON_PACK);
             PRIVATE_SETTINGS.add(OMNI_LOCKSCREEN_WEATHER_ENABLED);
+            PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_STYLE);
         }
 
         /**
@@ -5523,6 +5537,7 @@ public final class Settings {
             VALIDATORS.put(LOCK_SHOW_STATUS_BAR,LOCK_SHOW_STATUS_BAR_VALIDATOR);
             VALIDATORS.put(OMNIJAWS_WEATHER_ICON_PACK,OMNIJAWS_WEATHER_ICON_PACK_VALIDATOR);
             VALIDATORS.put(OMNI_LOCKSCREEN_WEATHER_ENABLED,OMNI_LOCKSCREEN_WEATHER_ENABLED_VALIDATOR);
+            VALIDATORS.put(LOCKSCREEN_WEATHER_STYLE,LOCKSCREEN_WEATHER_STYLE_VALIDATOR);
         }
 
         /**
