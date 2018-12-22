@@ -86,6 +86,7 @@ public class KeyguardStatusView extends GridLayout implements
     private float mWidgetPadding;
     private int mLastLayoutHeight;
     private CurrentWeatherView mWeatherView;
+    private boolean mOmniStyle;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -514,12 +515,16 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.OMNI_LOCKSCREEN_WEATHER_ENABLED, 0,
                 UserHandle.USER_CURRENT) == 1;
 
+        mOmniStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.AICP_LOCKSCREEN_WEATHER_STYLE, 0,
+                UserHandle.USER_CURRENT) == 0;
+
         if (mWeatherView != null) {
-            if (showWeather) {
+            if (showWeather &&  mOmniStyle) {
                 mWeatherView.setVisibility(View.VISIBLE);
                 mWeatherView.enableUpdates();
             }
-            if (!showWeather) {
+            if (!showWeather ||  !mOmniStyle) {
                 mWeatherView.setVisibility(View.GONE);
                 mWeatherView.disableUpdates();
             }
