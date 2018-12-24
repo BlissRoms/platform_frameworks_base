@@ -104,6 +104,6 @@
             android:textColor="?attr/wallpaperTextColorSecondary"
             android:ellipsize="marquee"
             android:singleLine="true"
-            style="@style/TextAppearance.Keyguard" />
+            android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 </com.android.keyguard.KeyguardStatusView>
