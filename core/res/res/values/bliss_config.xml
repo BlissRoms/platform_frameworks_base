@@ -122,4 +122,7 @@
     <integer name="config_buttonBrightnessSettingDefault">255</integer>
     <bool name="config_deviceHasVariableButtonBrightness">false</bool>
 
+     <!-- Whether the device has outdated qti-telephony-common.jar -->
+     <bool name="config_oldQtiTelephony">true</bool>
+
 </resources>
