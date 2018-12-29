@@ -2282,6 +2282,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_LABEL_USE_NEW_TINT),
                     false, this, UserHandle.USER_ALL);
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SWITCH_STYLE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2323,6 +2326,10 @@ public class StatusBar extends SystemUI implements DemoMode,
                 setUseLessBoringHeadsUp();
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.SHOW_MEDIA_HEADS_UP))) {
                 setMediaHeadsup();
+	    } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.SWITCH_STYLE))) {
+                stockSwitchStyle();
+                updateSwitchStyle();
             }
             update();
         }
@@ -2348,6 +2355,16 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mMediaManager != null) {
             mMediaManager.setMediaHeadsup();
         }
+    }
+
+    public void updateSwitchStyle() {
+        int switchStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SWITCH_STYLE, 0, mLockscreenUserManager.getCurrentUserId());
+        BlissUtils.updateSwitchStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), switchStyle);
+    }
+
+    public void stockSwitchStyle() {
+        BlissUtils.stockSwitchStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId());
     }
 
     private void setFpToDismissNotifications() {
