@@ -816,6 +816,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.Secure.AMBIENT_VISUALIZER_ENABLED),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_CLOCK_SELECTION),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -844,6 +847,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.Secure.getUriFor(
                     Settings.Secure.AMBIENT_VISUALIZER_ENABLED))) {
                 setAmbientVis();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_CLOCK_SELECTION))) {
+                updateKeyguardStatusSettings();
             }
         }
 
@@ -861,6 +867,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             setHeadsUpStoplist();
             setHeadsUpBlacklist();
 			setPulseBlacklist();
+            updateKeyguardStatusSettings();
         }
 
     private void setHeadsUpStoplist() {
@@ -885,6 +892,10 @@ public class StatusBar extends SystemUI implements DemoMode,
         mAmbientVisualizer = Settings.Secure.getIntForUser(
                 mContext.getContentResolver(), Settings.Secure.AMBIENT_VISUALIZER_ENABLED, 0,
                 UserHandle.USER_CURRENT) == 1;
+    }
+
+    private void updateKeyguardStatusSettings() {
+        mNotificationPanel.updateKeyguardStatusSettings();
     }
 
     private void updateBatterySettings() {
