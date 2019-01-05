@@ -19,4 +19,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <dimen name="qs_tile_height_wo_label">48dp</dimen>
+
+    <!-- the padding on the start and the end of the statusbar -->
+    <dimen name="status_bar_extra_padding">0dp</dimen>
 </resources>
