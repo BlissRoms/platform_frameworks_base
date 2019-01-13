@@ -353,12 +353,12 @@ public class VisualizerView extends View
                 mDisplaying = true;
                 dolink();
                 animate()
-                        .alpha(0.40f)
+                        .alpha(0.70f)
                         .withEndAction(null)
                         .setDuration(800);
             } else {
                 animate()
-                        .alpha(0.40f)
+                        .alpha(0.70f)
                         .withEndAction(null)
                         .setDuration(800);
             }
