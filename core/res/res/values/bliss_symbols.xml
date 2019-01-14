@@ -201,4 +201,8 @@
   <!-- Whether key handler sends intent when changing slider position -->
   <java-symbol type="string" name="config_alertSliderIntent" />
 
+  <!-- Shishu Nerves -->
+  <java-symbol type="drawable" name="bootleg_theme_nerves_bg01" />
+  <java-symbol type="drawable" name="bootleg_theme_nerves_bg02" />
+
 </resources>
