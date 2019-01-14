@@ -418,6 +418,9 @@ public class KeyguardStatusView extends GridLayout implements
         } else if (mClockSelection == 5) {
             mClockView.setFormat12Hour(Html.fromHtml("<strong>h</strong><br>mm"));
             mClockView.setFormat24Hour(Html.fromHtml("<strong>kk</strong><br>mm"));
+        } else if (mClockSelection == 8) {
+	        mClockView.setFormat12Hour(Html.fromHtml("<strong>h:mm</strong>"));
+            mClockView.setFormat24Hour(Html.fromHtml("<strong>kk:mm</strong>"));
         } else {
             mClockView.setFormat12Hour("hh\nmm");
             mClockView.setFormat24Hour("kk\nmm");
@@ -568,6 +571,7 @@ public class KeyguardStatusView extends GridLayout implements
 				mCustomNumClockView.setVisibility(View.GONE);
                 break;
             case 1: // digital (bold)
+			case 8: // digital (small)
                 mClockView.setVisibility(mDarkAmount != 1 ? (mShowClock ? View.VISIBLE :
                        View.GONE) : View.VISIBLE);
                 mCustomClockView.setVisibility(View.GONE);
@@ -645,6 +649,15 @@ public class KeyguardStatusView extends GridLayout implements
             }
         }
 
+        // Set smaller Clock, Date and OwnerInfo text size if the user selects the small clock type
+	if (mClockSelection == 8) {
+	    mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(R.dimen.widget_small_font_size));
+	} else {
+	    mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
+	}
+
         mShowClock = Settings.System.getIntForUser(resolver,
                 Settings.System.LOCKSCREEN_CLOCK, 1, UserHandle.USER_CURRENT) == 1;
         mClockSelection = Settings.System.getIntForUser(resolver,
@@ -660,6 +673,7 @@ public class KeyguardStatusView extends GridLayout implements
                 mClockView.setGravity(Gravity.CENTER);
                 break;
             case 1: // digital (bold)
+			case 8: // digital small
                 params.addRule(RelativeLayout.BELOW, R.id.clock_view);
                 mClockView.setSingleLine(true);
                 mClockView.setGravity(Gravity.CENTER);
