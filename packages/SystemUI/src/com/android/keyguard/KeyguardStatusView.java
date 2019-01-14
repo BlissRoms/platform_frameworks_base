@@ -369,6 +369,16 @@ public class KeyguardStatusView extends GridLayout implements
             if (mClockSelection >= 8 && mClockSelection <= 12)
                 mDefaultClockView.setLineSpacing(0, 0.8f);
 
+            if (mClockSelection == 13) {
+                mDefaultClockView.setBackground(getResources().getDrawable(R.drawable.clock_shishu_nerves_bg));
+                mDefaultClockView.getLayoutParams().width = getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_width);
+                mDefaultClockView.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_height);
+                mDefaultClockView.setLineSpacing(0,1f);
+                //mDefaultClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                //getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_font_size));
+                mDefaultClockView.setPadding(0,20,0,20);
+            }
+
             switch (mClockSelection) {
                 case 1: // hidden
                     mSmallClockView.setVisibility(mDarkAmount != 1 ? View.GONE : View.VISIBLE);
@@ -404,6 +414,9 @@ public class KeyguardStatusView extends GridLayout implements
                     mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 12: // sammy accent darker hour
+                    mSmallClockView.setVisibility(View.VISIBLE);
+                    break;
+                case 13: // nerves clock
                     mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 }
