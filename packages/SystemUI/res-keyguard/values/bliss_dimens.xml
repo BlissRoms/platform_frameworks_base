@@ -158,4 +158,11 @@
 
     <dimen name="clock_oronos_outline_size">4dp</dimen>
 
+    <!-- the size for all the clock sizes -->
+    <dimen name="widget_clock_shishu_size">175dp</dimen>
+
+    <!-- Font size for nerves clock -->
+    <dimen name="widget_clock_shishu_nerves_width">105dp</dimen>
+    <dimen name="widget_clock_shishu_nerves_height">@dimen/widget_clock_shishu_size</dimen>
+    <dimen name="widget_clock_shishu_nerves_font_size">52dp</dimen>
 </resources>
