@@ -1,0 +1,31 @@
+<com.android.keyguard.clock.ClockLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|top">
+    <FrameLayout
+         android:id="@+id/clock_view"
+         android:layout_width="@dimen/widget_clock_shishu_nerves_width"
+         android:layout_height="@dimen/widget_clock_shishu_nerves_height"
+         android:layout_gravity="center_horizontal"
+         android:layout_alignParentTop="true">
+
+        <ImageView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:src="@drawable/clock_shishu_nerves_bg"/>
+
+        <TextClock
+             android:id="@+id/nerves"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center_horizontal"
+             android:gravity="center_horizontal"
+             android:paddingBottom="@dimen/title_clock_padding"
+             android:letterSpacing="0.02"
+             android:textColor="?attr/wallpaperTextColor"
+             style="@style/widget_big"
+             android:elegantTextHeight="false"
+        />
+    </FrameLayout>
+</com.android.keyguard.clock.ClockLayout>

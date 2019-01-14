@@ -188,6 +188,8 @@
     <!-- Custom num Analog clock -->
     <string name="clock_title_custom_num" translatable="false">Custom-Num</string>
 
+    <string name="clock_title_nerves" translatable="false">Nerves</string>
+
     <!-- Immersive mode Tile -->
     <string name="quick_settings_immersive_tile">Immersive mode</string>
     <string name="quick_settings_immersive_tile_off">Immersive off</string>
