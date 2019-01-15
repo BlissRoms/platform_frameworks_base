@@ -25,6 +25,6 @@
     <path
         android:name="path_3"
         android:pathData="M 255 35 C 247.577 35 240.45 37.952 235.201 43.201 C 229.952 48.45 227 55.577 227 63 C 227 70.423 229.952 77.55 235.201 82.799 C 240.45 88.048 247.577 91 255 91 C 262.423 91 269.55 88.048 274.799 82.799 C 280.048 77.55 283 70.423 283 63 C 283 55.577 280.048 48.45 274.799 43.201 C 269.55 37.952 262.423 35 255 35 Z"
-        android:fillColor="#ff0000"
+        android:fillColor="@color/analog_clock_hand_hour_color"
         android:strokeWidth="1"/>
 </vector>

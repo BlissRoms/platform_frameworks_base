@@ -20,7 +20,7 @@
     <path
         android:name="path"
         android:pathData="M 256 5 C 189.456 5 125.57 31.463 78.516 78.516 C 31.463 125.57 5 189.456 5 256 C 5 322.544 31.463 386.43 78.516 433.484 C 125.57 480.537 189.456 507 256 507 C 322.544 507 386.43 480.537 433.484 433.484 C 480.537 386.43 507 322.544 507 256 C 507 189.456 480.537 125.57 433.484 78.516 C 386.43 31.463 322.544 5 256 5 Z"
-        android:fillColor="#ebefee"
+        android:fillColor="@color/analog_clock_face_color_theme"
         android:strokeWidth="1"/>
     <path
         android:name="path_3"
