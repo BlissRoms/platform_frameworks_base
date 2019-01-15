@@ -1660,6 +1660,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         finishPowerKeyPress();
     }
 
+    private boolean isDozeMode() {
+        IDreamManager dreamManager = getDreamManager();
+        try {
+            if (dreamManager != null && dreamManager.isDreaming()) {
+                return true;
+            }
+        } catch (RemoteException e) {
+            return false;
+        }
+        return false;
+    }
+
     private void finishPowerKeyPress() {
         mBeganFromNonInteractive = false;
         mPowerKeyPressCounter = 0;
