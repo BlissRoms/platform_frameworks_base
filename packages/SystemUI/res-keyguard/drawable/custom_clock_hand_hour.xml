@@ -19,13 +19,8 @@
     android:viewportWidth="512.000000"
     android:viewportHeight="512.000000">
 
-    <group
-            android:translateY="512.000000"
-            android:scaleX="0.100000"
-            android:scaleY="-0.100000">
-        <path
-            android:fillColor="@color/analog_clock_hand_hour_color"
-            android:strokeWidth="1"
-            android:pathData="M2486 4279 l-26 -20 0 -893 0 -893 23 -21 c33 -31 105 -31 135 1 l22 23 0 891 0 892 -26 20 c-16 13 -41 21 -64 21 -23 0 -48 -8 -64 -21z" />
-    </group>
+    <path
+        android:fillColor="#d3d3d3"
+        android:strokeWidth="1"
+        android:pathData="m 250.69336,79.957031 c -2.74047,0 -4.94727,7.015994 -4.94727,15.730469 v 144.93555 c 0,8.71447 2.2068,15.73047 4.94727,15.73047 h 10.61328 c 2.74047,0 4.94727,-7.016 4.94727,-15.73047 V 95.6875 c 0,-8.714475 -2.2068,-15.730469 -4.94727,-15.730469 z" />
 </vector>
