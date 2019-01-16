@@ -149,10 +149,6 @@
   <java-symbol type="array" name="config_deviceKeyHandlerLibs" />
   <java-symbol type="array" name="config_deviceKeyHandlerClasses" />
 
-  <!-- Ambient play -->
-  <java-symbol type="string" name="ambient_recognition_notification" />
-  <java-symbol type="string" name="ambient_recognition_information" />
-
   <java-symbol type="anim" name="inv_app_in" />
   <java-symbol type="anim" name="inv_app_out" />
 

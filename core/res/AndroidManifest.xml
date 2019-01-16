@@ -610,9 +610,6 @@
     <protected-broadcast android:name="org.omnirom.omniswitch.ACTION_HIDE_OVERLAY" />
     <protected-broadcast android:name="com.android.systemui.ACTION_DISMISS_KEYGUARD" />
 
-    <!-- Ambient Indication -->
-    <protected-broadcast android:name="com.android.internal.util.custom.ambient.play.AMBIENT_PLAY_SONG_MATCH" />
-
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
     <!-- ====================================================================== -->
