@@ -65,6 +65,7 @@ public class VisualizerView extends View
     private boolean mDisplaying = false; // the state we're animating to
     private boolean mDozing = false;
     private boolean mOccluded = false;
+    private boolean mAmbientVisualizerEnabled = false;
 
     private boolean mUseCustomColor;
     private int mColorToUse;
@@ -227,6 +228,9 @@ public class VisualizerView extends View
     private void setVisualizerEnabled() {
         mVisualizerEnabled = Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED, 0) == 1;
+        mAmbientVisualizerEnabled = Settings.Secure.getIntForUser(
+                getContext().getContentResolver(), Settings.Secure.AMBIENT_VISUALIZER_ENABLED, 0,
+                UserHandle.USER_CURRENT) == 1;
     }
 
     public void setVisible(boolean visible) {
@@ -343,12 +347,31 @@ public class VisualizerView extends View
     }
 
     private void checkStateChanged() {
-        boolean isVisible = getVisibility() == View.VISIBLE;
-        if (isVisible && mPlaying && !mDozing && !mPowerSaveMode
+        if (getVisibility() == View.VISIBLE && mVisible && mPlaying && mDozing && mAmbientVisualizerEnabled && !mPowerSaveMode
+                 && mVisualizerEnabled && !mOccluded) {
+            if (!mDisplaying) {
+                mDisplaying = true;
+                dolink();
+                animate()
+                        .alpha(0.70f)
+                        .withEndAction(null)
+                        .setDuration(800);
+            } else {
+                animate()
+                        .alpha(0.70f)
+                        .withEndAction(null)
+                        .setDuration(800);
+            }
+        } else if (getVisibility() == View.VISIBLE && mVisible && mPlaying && !mDozing && !mPowerSaveMode
                 && mVisualizerEnabled && !mOccluded) {
             if (!mDisplaying) {
                 mDisplaying = true;
                 dolink();
+                animate()
+                        .alpha(1f)
+                        .withEndAction(null)
+                        .setDuration(800);
+            } else {
                 animate()
                         .alpha(1f)
                         .withEndAction(null)
@@ -358,7 +381,7 @@ public class VisualizerView extends View
             if (mDisplaying) {
                 unlink();
                 mDisplaying = false;
-                if (isVisible) {
+                if (mVisible && !mAmbientVisualizerEnabled) {
                     animate()
                             .alpha(0f)
                             .setDuration(600);
@@ -391,14 +414,17 @@ public class VisualizerView extends View
         protected void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.Secure.getUriFor(
-                Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED),
-                false, this, UserHandle.USER_ALL);
+                    Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCK_SCREEN_VISUALIZER_USE_CUSTOM_COLOR),
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCK_SCREEN_VISUALIZER_CUSTOM_COLOR),
                     false, this);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.AMBIENT_VISUALIZER_ENABLED),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -410,7 +436,9 @@ public class VisualizerView extends View
         public void onChange(boolean selfChange, Uri uri) {
             ContentResolver resolver = mContext.getContentResolver();
             if (uri.equals(Settings.Secure.getUriFor(
-                    Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED))) {
+                    Settings.Secure.LOCKSCREEN_VISUALIZER_ENABLED)) 
+                || uri.equals(Settings.Secure.getUriFor( 
+                    Settings.Secure.AMBIENT_VISUALIZER_ENABLED))) {
                 setVisualizerEnabled();
                 checkStateChanged();
                 updateViewVisibility();

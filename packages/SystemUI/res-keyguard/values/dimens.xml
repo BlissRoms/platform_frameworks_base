@@ -51,6 +51,7 @@
     <dimen name="widget_pulsing_bottom_padding">48dp</dimen>
     <!-- Clock without header -->
     <dimen name="widget_big_font_size">64dp</dimen>
+    <dimen name="widget_clock_small_font_size">40dp</dimen>
     <!-- Clock with header -->
     <dimen name="widget_small_font_size">24dp</dimen>
     <dimen name="widget_small_font_stroke">0.6dp</dimen>

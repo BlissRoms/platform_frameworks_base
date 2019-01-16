@@ -5705,6 +5705,24 @@ public final class Settings {
         private static final Validator VOLUME_PANEL_ON_LEFT_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Whether to hide the lockscreen clock
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK = "lockscreen_clock";
+
+        /**
+         * Whether to hide the items underneath the lockscreen clock
+         * @hide
+         */
+        public static final String LOCKSCREEN_INFO = "lockscreen_info";
+
+        /**
+         * Select which lockscreen clock style to display
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK_SELECTION = "lockscreen_clock_selection";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -10198,6 +10216,24 @@ public final class Settings {
         public static final String SMARTBAR_DOUBLETAP_SLEEP = "smartbar_doubletap_sleep";
 
         /**
+         * Display input method and media actions on smartbar
+         * @hide
+         */
+        public static final String SMARTBAR_IME_HINT_MODE = "smartbar_ime_hint_mode";
+
+        /**
+         * Smartbar context buttons layout position
+         * @hide
+         */
+        public static final String SMARTBAR_CONTEXT_MENU_MODE = "smartbar_context_menu_mode";
+
+        /**
+         * Smarbar button touch animation
+         * @hide
+         */
+        public static final String SMARTBAR_BUTTON_ANIMATION_STYLE = "smartbar_button_animation_style";
+
+        /**
          * Fling pulse lavalamp start and end colors
          *
          * @hide
@@ -10235,6 +10271,12 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_VISUALIZER_ENABLED = "lockscreen_visualizer_enabled";
+
+        /**
+         * Ambient Display Visualizer
+         * @hide
+         */
+        public static final String AMBIENT_VISUALIZER_ENABLED = "ambient_visualizer";
 
         /**
          * Display style of the status bar battery information
