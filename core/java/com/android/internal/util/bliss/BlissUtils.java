@@ -29,9 +29,12 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.input.InputManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.BatteryManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -280,5 +283,18 @@ public class BlissUtils {
     // Check to see if device supports an alterative ambient display package
     public static boolean hasAltAmbientDisplay(Context context) {
         return context.getResources().getBoolean(com.android.internal.R.bool.config_alt_ambient_display);
+    }
+
+    public static String batteryTemperature(Context context, Boolean ForC) {
+        Intent intent = context.registerReceiver(null, new IntentFilter(
+                Intent.ACTION_BATTERY_CHANGED));
+        float  temp = ((float) (intent != null ? intent.getIntExtra(
+                BatteryManager.EXTRA_TEMPERATURE, 0) : 0)) / 10;
+        // Round up to nearest number
+        int c = (int) ((temp) + 0.5f);
+        float n = temp + 0.5f;
+        // Use boolean to determine celsius or fahrenheit
+        return String.valueOf((n - c) % 2 == 0 ? (int) temp :
+                ForC ? c * 9/5 + 32 + "°F" :c + "°C");
     }
 }
