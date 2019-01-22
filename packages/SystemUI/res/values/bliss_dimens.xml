@@ -34,10 +34,6 @@
     <dimen name="qs_tile_height_wo_label">48dp</dimen>
     <dimen name="current_weather_image_size">42dp</dimen>
 
-    <!-- SB stuff -->
-    <dimen name="signal_cluster_no_battery_padding">0dp</dimen>
-    <dimen name="battery_level_padding_start_no_icon">0dp</dimen>
-
     <dimen name="quick_status_bar_system_icons_margin_top">8dp</dimen>
     <dimen name="qs_brightness_slider_height">48dp</dimen>
 

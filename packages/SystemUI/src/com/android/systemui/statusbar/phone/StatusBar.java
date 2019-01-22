@@ -216,7 +216,6 @@ import com.android.systemui.plugins.statusbar.NotificationSwipeActionHelper.Snoo
 import com.android.systemui.qs.QSFragment;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QSTileHost;
-import com.android.systemui.qs.QuickStatusBarHeader;
 import com.android.systemui.qs.QuickQSPanel;
 import com.android.systemui.qs.car.CarQSFragment;
 import com.android.systemui.recents.Recents;
@@ -452,7 +451,6 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     // settings
     private QSPanel mQSPanel;
-    private QuickStatusBarHeader mQuickStatusBarHeader;
     private QuickQSPanel mQuickQSPanel;
 
     private static final String[] QS_TILE_THEMES = {
