@@ -20,6 +20,8 @@ import android.app.AlertDialog;
 import android.app.IActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -34,6 +36,7 @@ import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.os.Vibrator;
@@ -216,6 +219,19 @@ public class DeviceUtils {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String batteryTemperature(Context context, Boolean ForC) {
+        Intent intent = context.registerReceiver(null, new IntentFilter(
+                Intent.ACTION_BATTERY_CHANGED));
+        float  temp = ((float) (intent != null ? intent.getIntExtra(
+                BatteryManager.EXTRA_TEMPERATURE, 0) : 0)) / 10;
+        // Round up to nearest number
+        int c = (int) ((temp) + 0.5f);
+        float n = temp + 0.5f;
+        // Use boolean to determine celsius or fahrenheit
+        return String.valueOf((n - c) % 2 == 0 ? (int) temp :
+                ForC ? c * 9/5 + 32 + "°F" :c + "°C");
     }
 
     public static void restartSystemUi(Context context) {
