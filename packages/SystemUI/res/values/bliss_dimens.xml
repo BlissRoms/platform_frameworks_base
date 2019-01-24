@@ -123,4 +123,6 @@
     <dimen name="status_bar_battery_bigcircle_icon_width">20.5dp</dimen>
 
     <dimen name="quick_qs_drag_handle_height">20dp</dimen>
+    <dimen name="qs_header_image_offset">0dp</dimen>
+    <dimen name="qs_header_image_side_margin">0dp</dimen>
 </resources>
