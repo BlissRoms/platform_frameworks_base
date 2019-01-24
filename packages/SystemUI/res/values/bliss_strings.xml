@@ -222,4 +222,8 @@
     <!-- Ambient Display Pixel-Like string -->
     <string name="ambientmusic_songinfo">%s by %s</string>
 
+    <!-- The contents of the Ambient Weather bottom view -->
+    <string name="ambient_weather_info">%1$s &amp; %2$s</string>
+    <string name="ambient_weather_no_permission">OmniJaws weather service is currently disabled</string>
+
 </resources>
