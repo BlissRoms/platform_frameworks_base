@@ -37,6 +37,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -60,6 +61,11 @@ public class BlissUtils {
     public static boolean isChineseLanguage() {
        return Resources.getSystem().getConfiguration().locale.getLanguage().startsWith(
                Locale.CHINESE.getLanguage());
+    }
+
+    public static boolean deviceSupportsVibrator(Context context) {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        return vibrator.hasVibrator();
     }
 
     public static boolean isWifiOnly(Context context) {
@@ -393,5 +399,33 @@ public class BlissUtils {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = 24 * (metrics.densityDpi / 160f);
         return result > Math.round(px);
+    }
+
+   /* e.g.
+        <integer-array name="config_defaultNotificationVibePattern">
+        <item>0</item>
+        <item>350</item>
+        <item>250</item>
+        <item>350</item>
+        </integer-array>
+    */
+    public static void vibrateResourcePattern(Context context, int resId) {
+        if (deviceSupportsVibrator(context)) {
+            int[] pattern = context.getResources().getIntArray(resId);
+            if (pattern == null) {
+                return;
+            }
+            long[] out = new long[pattern.length];
+            for (int i=0; i<pattern.length; i++) {
+                out[i] = pattern[i];
+            }
+            ((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(out, -1);
+        }
+    }
+
+    public static void vibratePattern(Context context, long[] pattern) {
+        if (deviceSupportsVibrator(context)) {
+            ((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(pattern, -1);
+        }
     }
 }
