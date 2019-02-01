@@ -4858,6 +4858,21 @@ public final class Settings {
         /** @hide */
         public static final Validator INCREASING_RING_START_VOLUME_VALIDATOR = ANY_STRING_VALIDATOR;
 
+         /**
+         * Whether to enable DOZE only when charging
+         * @hide
+         */
+        public static final String OMNI_DOZE_ON_CHARGE = "doze_on_charge";
+
+        private static final Validator OMNI_DOZE_ON_CHARGE_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
+         * hidden stting of the current atate of DOZE only when charging
+         * @hide
+         */
+        public static final String OMNI_DOZE_ON_CHARGE_NOW = "doze_on_charge_now";
+
         /**
          * Ramp up time (seconds) for increasing ring
          * @hide
@@ -5981,7 +5996,8 @@ public final class Settings {
             OMNI_STATUS_BAR_DAYLIGHT_HEADER_PACK,
             OMNI_STATUS_BAR_CUSTOM_HEADER_PROVIDER,
             OMNI_STATUS_BAR_CUSTOM_HEADER_IMAGE,
-            OMNI_STATUS_BAR_FILE_HEADER_IMAGE
+            OMNI_STATUS_BAR_FILE_HEADER_IMAGE,
+            OMNI_DOZE_ON_CHARGE
         };
 
         /**
@@ -6165,6 +6181,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_STATUS_BAR_CUSTOM_HEADER_IMAGE);
             PRIVATE_SETTINGS.add(OMNI_STATUS_BAR_FILE_HEADER_IMAGE);
             PRIVATE_SETTINGS.add(HIDE_LOCKSCREEN_STATUS_BAR);
+            PRIVATE_SETTINGS.add(OMNI_DOZE_ON_CHARGE);
 	}
 
         /**
@@ -6344,6 +6361,7 @@ public final class Settings {
                     OMNI_STATUS_BAR_CUSTOM_HEADER_IMAGE_VALIDATOR);
             VALIDATORS.put(OMNI_STATUS_BAR_FILE_HEADER_IMAGE,
                     OMNI_STATUS_BAR_FILE_HEADER_IMAGE_VALIDATOR);
+            VALIDATORS.put(OMNI_DOZE_ON_CHARGE, OMNI_DOZE_ON_CHARGE_VALIDATOR);
         }
 
         /**
