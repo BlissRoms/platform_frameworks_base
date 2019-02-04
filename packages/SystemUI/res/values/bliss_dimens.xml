@@ -66,6 +66,7 @@
     <!-- Omni QS Headers -->
     <dimen name="qs_header_image_offset">25dp</dimen>
     <dimen name="qs_header_image_side_margin">4dp</dimen>
+    <dimen name="qs_header_image_top_margin">4dp</dimen>
     <dimen name="qs_header_image_bottom_margin">4dp</dimen>
 
     <!-- The width/height of the charging indicator view on keyguard. -->
