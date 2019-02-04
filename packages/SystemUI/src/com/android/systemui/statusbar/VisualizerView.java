@@ -356,7 +356,6 @@ public class VisualizerView extends View
                 dolink();
                 animate()
                         .alpha(0.70f)
-                        .withEndAction(null)
                         .setDuration(800);
             } else {
                 animate()
@@ -371,7 +370,6 @@ public class VisualizerView extends View
                 dolink();
                 animate()
                         .alpha(1f)
-                        .withEndAction(null)
                         .setDuration(800);
             } else {
                 animate()
