@@ -24,6 +24,8 @@ import static com.android.systemui.statusbar.StatusBarIconView.STATE_ICON;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -59,6 +61,7 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
     private View mMobileRoamingSpace;
     private int mVisibleState = -1;
     private DualToneHandler mDualToneHandler;
+    private boolean showHDVolteIcon;
 
     public static StatusBarMobileView fromContext(Context context, String slot) {
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -109,7 +112,14 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mIn = findViewById(R.id.mobile_in);
         mOut = findViewById(R.id.mobile_out);
         mInoutContainer = findViewById(R.id.inout_container);
-        mMobileImsImageView = findViewById(R.id.ims_hd);
+        Resources res = mContext.getResources();
+        showHDVolteIcon = res.getBoolean(R.bool.config_display_hd_volte);
+
+        if (showHDVolteIcon) {
+            mMobileImsImageView = findViewById(R.id.ims_hd);
+        } else {
+            mMobileImsImageView = findViewById(R.id.ims);
+        }
 
         mMobileDrawable = new SignalDrawable(getContext());
         mMobile.setImageDrawable(mMobileDrawable);
