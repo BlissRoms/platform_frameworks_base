@@ -1124,6 +1124,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
         boolean hspaDataDistinguishable;
         boolean inflateSignalStrengths = false;
         boolean alwaysShowDataRatIcon = false;
+        boolean showHDVolteIcon;
         public String patternOfCarrierSpecificDataIcon = "";
 
         /**
@@ -1178,6 +1179,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
                 }
             }
 
+            config.showHDVolteIcon = res.getBoolean(R.bool.config_display_hd_volte);
             return config;
         }
 

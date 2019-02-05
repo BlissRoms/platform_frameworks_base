@@ -109,7 +109,12 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mIn = findViewById(R.id.mobile_in);
         mOut = findViewById(R.id.mobile_out);
         mInoutContainer = findViewById(R.id.inout_container);
-        mMobileImsImageView = findViewById(R.id.ims_hd);
+        mMobileImsImageView =
+                if (mConfig.showHDVolteIcon) {
+                        findViewById(R.id.ims_hd);
+                } else {
+                        findViewById(R.id.ims);
+                }
 
         mMobileDrawable = new SignalDrawable(getContext());
         mMobile.setImageDrawable(mMobileDrawable);
