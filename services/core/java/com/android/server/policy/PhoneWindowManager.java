@@ -1212,6 +1212,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.OMNI_BOTTOM_GESTURE_SWIPE_LIMIT), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.BOTTOM_GESTURE_FEEDBACK_DURATION), false, this,
+                    UserHandle.USER_ALL);
             updateSettings();
         }
 

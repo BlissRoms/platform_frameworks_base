@@ -4291,6 +4291,16 @@ public final class Settings {
                 ANY_INTEGER_VALIDATOR;
 
         /**
+         * @hide
+         */
+        public static final String BOTTOM_GESTURE_FEEDBACK_DURATION =
+                "bottom_gesture_navigation_feedback_duration";
+
+        /** @hide */
+        private static final Validator BOTTOM_GESTURE_FEEDBACK_DURATION_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
+        /**
          * whether to enable or disable vibration on succesful fingerprint auth
          *
          * @hide
@@ -6094,7 +6104,8 @@ public final class Settings {
             OMNI_ADVANCED_REBOOT,
             OMNI_USE_BOTTOM_GESTURE_NAVIGATION,
             OMNI_BOTTOM_GESTURE_TRIGGER_TIMEOUT,
-            OMNI_BOTTOM_GESTURE_SWIPE_LIMI
+            OMNI_BOTTOM_GESTURE_SWIPE_LIMIT,
+            BOTTOM_GESTURE_FEEDBACK_DURATION,
             OMNI_QS_LAYOUT_COLUMNS_LANDSCAPE,
             OMNI_QS_LAYOUT_COLUMNS,
             OMNI_QS_TILE_TITLE_VISIBILITY,
@@ -6277,6 +6288,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_USE_BOTTOM_GESTURE_NAVIGATION);
             PRIVATE_SETTINGS.add(OMNI_BOTTOM_GESTURE_TRIGGER_TIMEOUT);
             PRIVATE_SETTINGS.add(OMNI_BOTTOM_GESTURE_SWIPE_LIMIT);
+            PRIVATE_SETTINGS.add(BOTTOM_GESTURE_FEEDBACK_DURATION);
             PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_COLUMNS_LANDSCAPE);
             PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_COLUMNS);
             PRIVATE_SETTINGS.add(OMNI_QS_TILE_TITLE_VISIBILITY);
@@ -6435,6 +6447,7 @@ public final class Settings {
                     OMNI_DEVICE_PROXI_CHECK_ENABLED_VALIDATOR);
             VALIDATORS.put(OMNI_DEVICE_GESTURE_FEEDBACK_ENABLED,
                     OMNI_DEVICE_GESTURE_FEEDBACK_ENABLED_VALIDATOR);
+            VALIDATORS.put(BOTTOM_GESTURE_FEEDBACK_DURATION, BOTTOM_GESTURE_FEEDBACK_DURATION_VALIDATOR);
             VALIDATORS.put(OMNI_DEVICE_FEATURE_SETTINGS,
                     OMNI_DEVICE_FEATURE_SETTINGS_VALIDATOR);
             VALIDATORS.put(OMNI_NAVIGATION_BAR_SHOW, OMNI_NAVIGATION_BAR_SHOW_VALIDATOR);
