@@ -10105,6 +10105,13 @@ public final class Settings {
                 "packages_to_clear_data_before_full_restore";
 
         /**
+         * Select various actions for squeeze gesture
+         *
+         * @hide
+         */
+        public static final String SQUEEZE_SELECTION = "squeeze_selection";
+
+        /**
          * Boolean value whether to link ringtone and notification volume
          * @hide
          */
