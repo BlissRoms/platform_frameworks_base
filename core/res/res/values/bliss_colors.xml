@@ -22,4 +22,7 @@
     <!-- QS Accent -->
     <color name="qs_accent">@color/accent_device_default_light</color>
 
+    <color name="gradient_start">@color/accent_device_default_light</color>
+    <color name="gradient_end">#ff1a73e8</color>
+
 </resources>
