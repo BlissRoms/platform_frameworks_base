@@ -1461,10 +1461,13 @@ easier.
         <!-- Button styles -->
         <item name="buttonCornerRadius">@dimen/config_buttonCornerRadius</item>
         <item name="buttonBarButtonStyle">@style/Widget.DeviceDefault.Button.ButtonBar.AlertDialog</item>
+        <item name="switchStyle">@style/Widget.DeviceDefault.CompoundButton.Switch</item>
 
         <!-- Progress bar attributes -->
         <item name="colorProgressBackgroundNormal">@color/config_progress_background_tint</item>
         <item name="progressBarCornerRadius">@dimen/config_progressBarCornerRadius</item>
+        <item name="progressBarStyleHorizontal">@style/Widget.DeviceDefault.Light.ProgressBar.Horizontal</item>
+        <item name="seekBarStyle">@style/Widget.DeviceDefault.Light.SeekBar</item>
 
         <!-- Toolbar attributes -->
         <item name="toolbarStyle">@style/Widget.DeviceDefault.Toolbar</item>
