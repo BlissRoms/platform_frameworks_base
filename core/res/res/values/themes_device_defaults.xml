@@ -801,6 +801,7 @@ easier.
         <item name="buttonStyleToggle">@style/Widget.DeviceDefault.Light.Button.Toggle</item>
 
         <item name="borderlessButtonStyle">@style/Widget.DeviceDefault.Light.Button.Borderless</item>
+        <item name="switchStyle">@style/Widget.DeviceDefault.CompoundButton.Switch</item>
 
         <item name="listSeparatorTextViewStyle">@style/Widget.DeviceDefault.Light.TextView.ListSeparator</item>
 
