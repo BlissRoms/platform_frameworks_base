@@ -1105,7 +1105,24 @@ public class ActionHandler {
 
     public static void screenOff(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (pm!= null && pm.isScreenOn()) {
         pm.goToSleep(SystemClock.uptimeMillis());
+        }
+    }
+
+    // Screen on
+    public static void switchScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (pm == null) return;
+        PowerManager.WakeLock wakeLock = pm.newWakeLock((
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                        PowerManager.ACQUIRE_CAUSES_WAKEUP), "wakeup:device");
+        boolean isScreenOn = pm.isScreenOn();
+        /* Wake up the device only when screen is off.
+         * Otherwise don't bother to do anything. */
+        if (!wakeLock.isHeld() && !isScreenOn) {
+            wakeLock.acquire();
+        }
     }
 
     private static void launchAssistAction(Context context) {
