@@ -33,6 +33,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
@@ -218,6 +219,22 @@ public class DeviceUtils {
             wm.screenRecordAction(mode);
         } catch (RemoteException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Cycle ringer modes
+    public static void toggleRingerModes (Context context) {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        switch (am.getRingerMode()) {
+            case AudioManager.RINGER_MODE_SILENT:
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                break;
+            case AudioManager.RINGER_MODE_VIBRATE:
+                am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                break;
+            case AudioManager.RINGER_MODE_NORMAL:
+                am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                break;
         }
     }
 
