@@ -18,6 +18,7 @@ package com.android.internal.util.omni;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.IActivityManager;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +55,8 @@ import android.provider.Settings;
 import com.android.internal.telephony.PhoneConstants;
 import static android.hardware.Sensor.TYPE_LIGHT;
 import static android.hardware.Sensor.TYPE_PROXIMITY;
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static android.content.Context.VIBRATOR_SERVICE;
 
 import com.android.internal.R;
 import java.util.Arrays;
@@ -227,15 +230,23 @@ public class DeviceUtils {
     // Cycle ringer modes
     public static void toggleRingerModes (Context context) {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+
         switch (am.getRingerMode()) {
-            case AudioManager.RINGER_MODE_SILENT:
-                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+            case AudioManager.RINGER_MODE_NORMAL:
+                if (vibrator.hasVibrator()) {
+                    am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                }
                 break;
             case AudioManager.RINGER_MODE_VIBRATE:
-                am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                NotificationManager notificationManager =
+                        (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.setInterruptionFilter(
+                        NotificationManager.INTERRUPTION_FILTER_PRIORITY);
                 break;
-            case AudioManager.RINGER_MODE_NORMAL:
-                am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+            case AudioManager.RINGER_MODE_SILENT:
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                 break;
         }
     }
