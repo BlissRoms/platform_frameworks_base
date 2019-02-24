@@ -546,9 +546,9 @@ public class ActionHandler {
             return;
             // } else if (action.equals(SYSTEMUI_TASK_AUDIORECORD)) {
             // takeAudiorecord();
-//        } else if (action.equals(SYSTEMUI_TASK_EXPANDED_DESKTOP)) {
-//            toggleExpandedDesktop(context);
-//            return;
+        } else if (action.equals(SYSTEMUI_TASK_EXPANDED_DESKTOP)) {
+            toggleExpandedDesktop(context);
+            return;
         } else if (action.equals(SYSTEMUI_TASK_SCREENOFF)) {
             screenOff(context);
             return;
@@ -797,7 +797,7 @@ public class ActionHandler {
             }
         }
     }
-/*
+
     private static void toggleExpandedDesktop(Context context) {
         ContentResolver cr = context.getContentResolver();
         String newVal = "";
@@ -813,7 +813,7 @@ public class ActionHandler {
             WindowManagerPolicyControl.reloadFromSetting(context);
         }
     }
-*/
+
     private static void launchVoiceSearch(Context context) {
         sendCloseSystemWindows("assist");
         // launch the search activity
