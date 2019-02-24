@@ -226,4 +226,9 @@
     <string name="ambient_weather_info">%1$s &amp; %2$s</string>
     <string name="ambient_weather_no_permission">OmniJaws weather service is currently disabled</string>
 
+    <!-- Expanded Desktop QS Tile -->
+    <string name="quick_settings_expanded_desktop_label">Expanded desktop</string>
+    <string name="quick_settings_expanded_desktop">Expanded</string>
+    <string name="quick_settings_expanded_desktop_off">Normal</string>
+
 </resources>

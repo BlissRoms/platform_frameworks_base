@@ -23,7 +23,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_extra" translatable="false">
-        aod,caffeine,adb_network,weather,nfc,sync,navbar,screenrecord,heads_up,smartpixels,pie
+        aod,caffeine,adb_network,weather,nfc,sync,navbar,screenrecord,heads_up,smartpixels,pie,expanded_desktop
     </string>
 
     <!-- Overall pie animation speed --> 
