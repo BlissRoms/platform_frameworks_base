@@ -233,4 +233,7 @@
     <string name="quick_settings_expanded_navigation_off">Hide navbar</string>
     <string name="quick_settings_expanded_statusbar_off">Hide statusbar</string>
 
+    <!--Google sound search tile -->
+    <string name="quick_settings_sound_search">Sound Search</string>
+
 </resources>
