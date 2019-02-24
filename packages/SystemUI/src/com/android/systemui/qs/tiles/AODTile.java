@@ -28,7 +28,7 @@ import com.android.systemui.R;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 
-import javax.inject.Inject
+import javax.inject.Inject;
 
 public class AODTile extends QSTileImpl<BooleanState> {
     private boolean mAodDisabled;
