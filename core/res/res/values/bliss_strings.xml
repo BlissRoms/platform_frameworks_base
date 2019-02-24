@@ -163,4 +163,9 @@
     <!-- Text of the checkbox for the permission confirmation dialog to remember the user's choice. [CHAR LIMIT=40] -->
     <string name="permission_remember_choice">Remember my choice</string>
 
+    <!-- Path to the library that contains a alternative device specific key handler -->
+    <string name="config_alternativeDeviceKeyHandlerLib" translatable="false"></string>
+    <!-- Name of that alternative key handler class -->
+    <string name="config_alternativeDeviceKeyHandlerClass" translatable="false"></string>
+
 </resources>

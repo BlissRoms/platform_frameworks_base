@@ -149,6 +149,10 @@
   <java-symbol type="array" name="config_deviceKeyHandlerLibs" />
   <java-symbol type="array" name="config_deviceKeyHandlerClasses" />
 
+  <!-- Alternative keyhandler -->
+  <java-symbol type="string" name="config_alternativeDeviceKeyHandlerLib" />
+  <java-symbol type="string" name="config_alternativeDeviceKeyHandlerClass" />
+
   <java-symbol type="anim" name="inv_app_in" />
   <java-symbol type="anim" name="inv_app_out" />
 
