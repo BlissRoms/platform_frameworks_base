@@ -324,7 +324,7 @@ public class ActionHandler {
         return bundle;
     }
 
-    public static final class StatusBarHelper {
+    private static final class StatusBarHelper {
         private static boolean isPreloaded = false;
         private static IStatusBarService mService = null;
 
@@ -361,7 +361,7 @@ public class ActionHandler {
             }
         }
 
-        public static void toggleFlashlight() {
+        private static void toggleFlashlight() {
             IStatusBarService service = getStatusBarService();
             try {
                 service.toggleFlashlight();
@@ -410,7 +410,7 @@ public class ActionHandler {
             }
         }
 
-        public static void expandNotificationPanel() {
+        private static void expandNotificationPanel() {
             IStatusBarService service = getStatusBarService();
             if (service != null) {
                 try {
@@ -420,7 +420,7 @@ public class ActionHandler {
             }
         }
 
-        public static void expandSettingsPanel() {
+        private static void expandSettingsPanel() {
             IStatusBarService service = getStatusBarService();
             if (service != null) {
                 try {
@@ -440,7 +440,7 @@ public class ActionHandler {
             }
         }
 
-        public static void splitScreen() {
+        private static void splitScreen() {
             IStatusBarService service = getStatusBarService();
             if (service != null) {
                 try {
@@ -460,7 +460,7 @@ public class ActionHandler {
             }
         }
 */
-        public static void clearAllNotifications() {
+        private static void clearAllNotifications() {
             IStatusBarService service = getStatusBarService();
             if (service != null) {
                 try {
@@ -470,7 +470,7 @@ public class ActionHandler {
             }
         }
 
-        public static void sendSystemKeyToStatusBar(int keyCode) {
+        private static void sendSystemKeyToStatusBar(int keyCode) {
             IStatusBarService service = getStatusBarService();
             if (service != null) {
                 try {
@@ -743,7 +743,7 @@ public class ActionHandler {
         }
     }
 
-    public static void switchToLastApp(Context context) {
+    private static void switchToLastApp(Context context) {
         final ActivityManager am =
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.RunningTaskInfo lastTask = getLastTask(context, am);
@@ -832,7 +832,7 @@ public class ActionHandler {
         }
     }
 
-    public static void dispatchMediaKeyWithWakeLock(int keycode, Context context) {
+    private static void dispatchMediaKeyWithWakeLock(int keycode, Context context) {
         if (ActivityManagerNative.isSystemReady()) {
             KeyEvent event = new KeyEvent(SystemClock.uptimeMillis(),
                     SystemClock.uptimeMillis(), KeyEvent.ACTION_DOWN, keycode, 0);
@@ -943,7 +943,7 @@ public class ActionHandler {
         }
     }
 
-    public static void sendCommandToWindowManager(Intent intent) {
+    private static void sendCommandToWindowManager(Intent intent) {
         IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
         try {
             wm.sendCustomAction(intent);
@@ -1103,7 +1103,7 @@ public class ActionHandler {
         return false;
     }
 
-    public static void screenOff(Context context) {
+    private static void screenOff(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         if (pm!= null && pm.isScreenOn()) {
         pm.goToSleep(SystemClock.uptimeMillis());
