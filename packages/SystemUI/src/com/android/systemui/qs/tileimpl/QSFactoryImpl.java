@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2017 The Android Open Source Project
  * Copyright (C) 2017 The LineageOS Project
+ * Copyright (C) 2019 The BlissRoms Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use mHost file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -48,6 +49,7 @@ import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
+import com.android.systemui.qs.tiles.MusicTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 
 import javax.inject.Inject;
@@ -80,6 +82,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<UiModeNightTile> mUiModeNightTileProvider;
     private final Provider<LteTile> mLteTileProvider;
     private final Provider<CaffeineTile> mCaffeineTileProvider;
+    private final Provider<MusicTile> mMusicTileProvider;
 
     private QSTileHost mHost;
 
@@ -104,7 +107,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<GarbageMonitor.MemoryTile> memoryTileProvider,
             Provider<UiModeNightTile> uiModeNightTileProvider,
             Provider<LteTile> lteTileProvider,
-            Provider<CaffeineTile> CaffeineTileProvider) {
+            Provider<CaffeineTile> CaffeineTileProvider,
+            Provider<MusicTile> MusicTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -126,6 +130,7 @@ public class QSFactoryImpl implements QSFactory {
         mUiModeNightTileProvider = uiModeNightTileProvider;
         mLteTileProvider = lteTileProvider;
         mCaffeineTileProvider = CaffeineTileProvider;
+        mMusicTileProvider = MusicTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -183,6 +188,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mLteTileProvider.get();
             case "caffeine":
                 return mCaffeineTileProvider.get();
+            case "music":
+                return new MusicTile(mHost);
         }
 
         // Intent tiles.
