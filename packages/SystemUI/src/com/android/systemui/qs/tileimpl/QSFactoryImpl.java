@@ -40,6 +40,7 @@ import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LocationTile;
+import com.android.systemui.qs.tiles.LteTile;
 import com.android.systemui.qs.tiles.MusicTile;
 import com.android.systemui.qs.tiles.NavBarTile;
 import com.android.systemui.qs.tiles.NfcTile;
@@ -141,6 +142,8 @@ public class QSFactoryImpl implements QSFactory {
                 return new SoundSearchTile(mHost);
             case "music":
                 return new MusicTile(mHost);
+            case "lte":
+                return new LteTile(mHost);
         }
 
         // Intent tiles.
