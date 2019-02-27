@@ -5272,12 +5272,14 @@ public final class Settings {
         public static final String FULL_GESTURE_NAVBAR_DT2S = "full_gesture_navbar_dt2s";
 
         /**
-         * Recents component
-         * 0 - Quickstep
-         * 1 - AOSP
+         * Which kind of style you might want to see on Recents UI
+         * 0 - Pie Recents (Quickstep)
+         * 1 - Oreo Recents (SystemUI)
+         * 2 - Grid Recents (SystemUI)
+         * 3 - Android Go Recents (SystemUI)
          * @hide
          */
-        public static final String RECENTS_COMPONENT = "recents_component";
+        public static final String RECENTS_LAYOUT_STYLE  = "recents_layout_style";
 
         /**
          * show clear all recents button

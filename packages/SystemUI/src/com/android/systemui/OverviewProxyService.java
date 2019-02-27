@@ -260,7 +260,7 @@ public class OverviewProxyService implements CallbackController<OverviewProxyLis
         mHandler = new Handler();
         mConnectionBackoffAttempts = 0;
         boolean mQuickStepEnabled = Settings.System.getIntForUser(context.getContentResolver(),
-                      Settings.System.RECENTS_COMPONENT, 0, UserHandle.USER_CURRENT) == 0;
+                      Settings.System.RECENTS_LAYOUT_STYLE, 0, UserHandle.USER_CURRENT) == 0;
         mRecentsComponentName = ComponentName.unflattenFromString(context.getString(
                 mQuickStepEnabled ? com.android.internal.R.string.config_recentsComponentName :
                 com.android.internal.R.string.config_recentsComponentNameOreo));

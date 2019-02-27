@@ -247,7 +247,7 @@ class RecentTasks {
      */
     void loadRecentsComponent(Resources res) {
         boolean mQuickStepEnabled = Settings.System.getIntForUser(mService.mContext.getContentResolver(),
-                      Settings.System.RECENTS_COMPONENT, 0, UserHandle.USER_CURRENT) == 0;
+                      Settings.System.RECENTS_LAYOUT_STYLE, 0, UserHandle.USER_CURRENT) == 0;
         final String rawRecentsComponent = res.getString(
                 mQuickStepEnabled ? com.android.internal.R.string.config_recentsComponentName :
                 com.android.internal.R.string.config_recentsComponentNameOreo);
