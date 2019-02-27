@@ -10111,7 +10111,7 @@ public final class Settings {
          *
          * @hide
          */
-        public static final String SQUEEZE_SELECTION = "squeeze_selection";
+        public static final String SQUEEZE_SELECTION_SMART_ACTIONS = "squeeze_selection_smart_actions";
 
         /**
          * Boolean value whether to link ringtone and notification volume

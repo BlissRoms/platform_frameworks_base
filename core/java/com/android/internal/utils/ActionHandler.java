@@ -46,6 +46,7 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.media.session.MediaSessionLegacyHelper;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,7 +68,7 @@ import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.WindowManagerGlobal;
-//import android.view.WindowManagerPolicyControl;
+import android.view.WindowManagerPolicyControl;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -82,6 +83,7 @@ import java.util.Set;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.utils.Config.ActionConfig;
+import com.android.internal.util.omni.DeviceUtils;
 
 public class ActionHandler {
     public static String TAG = ActionHandler.class.getSimpleName();
@@ -147,13 +149,16 @@ public class ActionHandler {
     public static final String INTENT_SCREENSHOT = "action_handler_screenshot";
     public static final String INTENT_REGION_SCREENSHOT = "action_handler_region_screenshot";
 
+    //one handed mode
+    private static final String EXTRA_ALIGNMENT_STATE = "alignment_state";
+    private static final int EXTRA_ALIGNMENT_STATE_LEFT = 0;
+    private static final int EXTRA_ALIGNMENT_STATE_RIGHT = 1;
+    private static final String ACTION_ONEHAND_TRIGGER_EVENT =
+            "com.android.server.wm.onehand.intent.action.ONEHAND_TRIGGER_EVENT";
+
     // remove actions from here as they come back on deck
     static final Set<String> sDisabledActions = new HashSet<String>();
     static {
-        sDisabledActions.add(SYSTEMUI_TASK_ONE_HANDED_MODE_LEFT);
-        sDisabledActions.add(SYSTEMUI_TASK_ONE_HANDED_MODE_RIGHT);
-        sDisabledActions.add(SYSTEMUI_TASK_EXPANDED_DESKTOP);
-        sDisabledActions.add(SYSTEMUI_TASK_SCREENRECORD);
     }
 
     static enum SystemAction {
@@ -546,9 +551,9 @@ public class ActionHandler {
             return;
             // } else if (action.equals(SYSTEMUI_TASK_AUDIORECORD)) {
             // takeAudiorecord();
-//        } else if (action.equals(SYSTEMUI_TASK_EXPANDED_DESKTOP)) {
-//            toggleExpandedDesktop(context);
-//            return;
+        } else if (action.equals(SYSTEMUI_TASK_EXPANDED_DESKTOP)) {
+            toggleExpandedDesktop(context);
+            return;
         } else if (action.equals(SYSTEMUI_TASK_SCREENOFF)) {
             screenOff(context);
             return;
@@ -711,10 +716,10 @@ public class ActionHandler {
             StatusBarHelper.splitScreen();
             return;
         } else if (action.equals(SYSTEMUI_TASK_ONE_HANDED_MODE_LEFT)) {
-//            toggleOneHandedMode(context, "left");
+            toggleOneHandedMode(context, EXTRA_ALIGNMENT_STATE_LEFT);
             return;
         } else if (action.equals(SYSTEMUI_TASK_ONE_HANDED_MODE_RIGHT)) {
-//            toggleOneHandedMode(context, "right");
+            toggleOneHandedMode(context, EXTRA_ALIGNMENT_STATE_RIGHT);
             return;
         } else if (action.equals(SYSTEMUI_TASK_ASSISTANT_SOUND_SEARCH)) {
             startAssistantSoundSearch(context);
@@ -797,7 +802,7 @@ public class ActionHandler {
             }
         }
     }
-/*
+
     private static void toggleExpandedDesktop(Context context) {
         ContentResolver cr = context.getContentResolver();
         String newVal = "";
@@ -813,7 +818,7 @@ public class ActionHandler {
             WindowManagerPolicyControl.reloadFromSetting(context);
         }
     }
-*/
+
     private static void launchVoiceSearch(Context context) {
         sendCloseSystemWindows("assist");
         // launch the search activity
@@ -1147,20 +1152,44 @@ public class ActionHandler {
         am.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
     }
 
-/*
-    private static void toggleOneHandedMode(Context context, String direction) {
-        String str = Settings.Global.getString(context.getContentResolver(), Settings.Global.SINGLE_HAND_MODE);
-
-        if (TextUtils.isEmpty(str))
-            Settings.Global.putString(context.getContentResolver(), Settings.Global.SINGLE_HAND_MODE, direction);
-        else
-            Settings.Global.putString(context.getContentResolver(), Settings.Global.SINGLE_HAND_MODE, "");
+    private static void toggleOneHandedMode(Context context, int direction) {
+	Intent intent = new Intent();
+        intent.setAction(ACTION_ONEHAND_TRIGGER_EVENT);
+        intent.putExtra(EXTRA_ALIGNMENT_STATE, direction);
+        context.sendBroadcast(intent);
     }
-    */
 
     public static void startAssistantSoundSearch(Context context) {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setAction("com.google.android.googlequicksearchbox.MUSIC_SEARCH");
-        context.startActivity(intent);
+        // Shazam 
+        if (DeviceUtils.isPackageInstalled(context, "com.shazam.android") || DeviceUtils.isPackageInstalled(context, "com.shazam.encore.android")) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setAction("com.shazam.android.intent.actions.START_TAGGING");
+        	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        // Soundhound
+        } else if (DeviceUtils.isPackageInstalled(context, "com.melodis.midomiMusicIdentifier.freemium") || DeviceUtils.isPackageInstalled(context, "com.melodis.midomiMusicIdentifier")) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setAction("com.soundhound.android.ID_NOW_EXTERNAL");
+        	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        // Google Search Music
+        } else if (DeviceUtils.isPackageInstalled(context, "com.google.android.googlequicksearchbox")) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setAction("com.google.android.googlequicksearchbox.MUSIC_SEARCH");
+        	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        } else {
+            PackageManager packageManager = context.getPackageManager();
+            String pkgName;
+            Resources systemUIRes = ActionUtils.getResourcesForPackage(context,
+  		    	    ActionUtils.PACKAGE_SYSTEMUI);
+            int ident = systemUIRes.getIdentifier("quick_settings_sound_search_no_app", ActionUtils.STRING,
+                    ActionUtils.PACKAGE_SYSTEMUI);
+            String toastMsg = systemUIRes.getString(ident, ActionUtils.PACKAGE_SYSTEMUI);
+            Context ctx = getPackageContext(context, ActionUtils.PACKAGE_SYSTEMUI);
+            Toast.makeText(ctx != null ? ctx : context, toastMsg, Toast.LENGTH_SHORT)
+            		.show();
+            return;
+        }
     }
 }
