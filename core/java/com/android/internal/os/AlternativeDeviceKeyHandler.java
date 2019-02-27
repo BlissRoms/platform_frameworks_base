@@ -71,4 +71,12 @@ public interface AlternativeDeviceKeyHandler {
      * @return an Intent or null
      */
     public Intent isActivityLaunchEvent(KeyEvent event);
+
+    default public String getCustomProxiSensor() {
+        return null;
+    }
+     default public boolean getCustomProxiIsNear(SensorEvent event) {
+        return false;
+    }
+
 }
