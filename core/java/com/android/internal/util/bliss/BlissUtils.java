@@ -514,7 +514,7 @@ public class BlissUtils {
             IStatusBarService service = getStatusBarService();
             if (service != null) {
                 try {
-                    service.expandSettingsPanel(null);
+                    service.toggleSettingsPanel();
                 } catch (RemoteException e) {
                     // do nothing.
                 }
