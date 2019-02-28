@@ -25,6 +25,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
 import android.app.IActivityManager;
+import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.usage.UsageStats;
@@ -85,6 +86,9 @@ import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.utils.Config.ActionConfig;
 import com.android.internal.util.omni.DeviceUtils;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static android.content.Context.VIBRATOR_SERVICE;
+
 public class ActionHandler {
     public static String TAG = ActionHandler.class.getSimpleName();
 
@@ -143,6 +147,7 @@ public class ActionHandler {
     public static final String SYSTEMUI_TASK_ONE_HANDED_MODE_LEFT = "task_one_handed_mode_left";
     public static final String SYSTEMUI_TASK_ONE_HANDED_MODE_RIGHT = "task_one_handed_mode_right";
     public static final String SYSTEMUI_TASK_ASSISTANT_SOUND_SEARCH = "task_assistant_sound_search";
+    public static final String SYSTEMUI_TASK_SOUND_MODES = "task_sound_modes";
 
     public static final String INTENT_SHOW_POWER_MENU = "action_handler_show_power_menu";
     public static final String INTENT_TOGGLE_SCREENRECORD = "action_handler_toggle_screenrecord";
@@ -199,7 +204,8 @@ public class ActionHandler {
         OneHandedModeRight(SYSTEMUI_TASK_ONE_HANDED_MODE_RIGHT, SYSTEMUI, "label_action_one_handed_mode_right", "ic_sysbar_one_handed_mode_right"),
         MediaArrowLeft(SYSTEMUI_TASK_MEDIA_PREVIOUS, SYSTEMUI, "label_action_media_left", "ic_skip_previous"),
         MediaArrowRight(SYSTEMUI_TASK_MEDIA_NEXT, SYSTEMUI, "label_action_media_right", "ic_skip_next"),
-        AssistantSoundSearch(SYSTEMUI_TASK_ASSISTANT_SOUND_SEARCH, SYSTEMUI, "label_action_assistant_sound_search", "ic_assistant_sound_search");
+        AssistantSoundSearch(SYSTEMUI_TASK_ASSISTANT_SOUND_SEARCH, SYSTEMUI, "label_action_assistant_sound_search", "ic_assistant_sound_search"),
+        SoundModes(SYSTEMUI_TASK_SOUND_MODES, SYSTEMUI, "label_action_sound_modes", "ic_sysbar_volume_panel");
 
         String mAction;
         String mResPackage;
@@ -242,7 +248,8 @@ public class ActionHandler {
             SystemAction.EditingSmartbar, SystemAction.SplitScreen,
             SystemAction.RegionScreenshot, SystemAction.OneHandedModeLeft,
             SystemAction.OneHandedModeRight, SystemAction.MediaArrowLeft,
-            SystemAction.MediaArrowRight, SystemAction.AssistantSoundSearch
+            SystemAction.MediaArrowRight, SystemAction.AssistantSoundSearch,
+            SystemAction.SoundModes
     };
 
     public static class ActionIconResources {
@@ -724,6 +731,9 @@ public class ActionHandler {
         } else if (action.equals(SYSTEMUI_TASK_ASSISTANT_SOUND_SEARCH)) {
             startAssistantSoundSearch(context);
             return;
+        } else if (action.equals(SYSTEMUI_TASK_SOUND_MODES)) {
+            toggleRingerModes(context);
+            return;
         }
     }
 
@@ -1150,6 +1160,30 @@ public class ActionHandler {
     public static void volumePanel(Context context) {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         am.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+    }
+
+    // Cycle ringer modes
+    public static void toggleRingerModes (Context context) {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+
+        switch (am.getRingerMode()) {
+            case AudioManager.RINGER_MODE_NORMAL:
+                if (vibrator.hasVibrator()) {
+                    am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                }
+                break;
+            case AudioManager.RINGER_MODE_VIBRATE:
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                NotificationManager notificationManager =
+                        (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.setInterruptionFilter(
+                        NotificationManager.INTERRUPTION_FILTER_PRIORITY);
+                break;
+            case AudioManager.RINGER_MODE_SILENT:
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                break;
+        }
     }
 
     private static void toggleOneHandedMode(Context context, int direction) {
