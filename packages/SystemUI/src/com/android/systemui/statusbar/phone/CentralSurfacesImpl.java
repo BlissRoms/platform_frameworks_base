@@ -437,6 +437,13 @@ public class CentralSurfacesImpl extends CoreStartable implements
     public void togglePanel() {
         mCommandQueueCallbacks.togglePanel();
     }
+
+    /** */
+    @Override
+    public void toggleSettingsPanel() {
+        mCommandQueueCallbacks.toggleSettingsPanel();
+    }
+
     /**
      * The {@link StatusBarState} of the status bar.
      */
