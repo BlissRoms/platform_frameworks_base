@@ -48,6 +48,7 @@ import android.text.TextUtils;
 import android.text.format.Time;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.util.TypedValue;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -549,6 +550,10 @@ public class BlissUtils {
         FireActions.toggleQsPanel();
     }
 
+    public static void sendSystemKeyToStatusBar(int keyCode) {
+        FireActions.sendSystemKeyToStatusBar(keyCode);
+    }
+
     private static final class FireActions {
         private static IStatusBarService mStatusBarService = null;
         private static IStatusBarService getStatusBarService() {
@@ -558,6 +563,17 @@ public class BlissUtils {
                             ServiceManager.getService("statusbar"));
                 }
                 return mStatusBarService;
+            }
+        }
+
+        public static void sendSystemKeyToStatusBar(int keyCode) {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.handleSystemKey(keyCode);
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
             }
         }
 
