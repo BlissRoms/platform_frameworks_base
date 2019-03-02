@@ -1969,6 +1969,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case RINGER_MODES:
                 BlissUtils.toggleRingerModes(mContext);
                 break;
+            case MEDIA_NEXT:
+                BlissUtils.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_NEXT);
+                break;
+            case MEDIA_PREVIOUS:
+                BlissUtils.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
+                break;
             default:
                 break;
         }
