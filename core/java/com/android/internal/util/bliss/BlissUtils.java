@@ -439,7 +439,7 @@ public class BlissUtils {
             ((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(pattern, -1);
         }
     }
-    
+
     // Enable/Disable Package Components
     public static void setComponentState(Context context, String packageName,
             String componentClassName, boolean enabled) {
@@ -449,9 +449,13 @@ public class BlissUtils {
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
         pm.setComponentEnabledSetting(componentName, state, PackageManager.DONT_KILL_APP);
     }
-    
+
     public static void toggleCameraFlash() {
         FireActions.toggleCameraFlash();
+    }
+
+    public static void sendSystemKeyToStatusBar(int keyCode) {
+        FireActions.sendSystemKeyToStatusBar(keyCode);
     }
 
     private static final class FireActions {
@@ -463,6 +467,17 @@ public class BlissUtils {
                             ServiceManager.getService("statusbar"));
                 }
                 return mStatusBarService;
+            }
+        }
+
+        public static void sendSystemKeyToStatusBar(int keyCode) {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.handleSystemKey(keyCode);
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
             }
         }
 
