@@ -205,7 +205,8 @@ public class ActionHandler {
         MediaArrowLeft(SYSTEMUI_TASK_MEDIA_PREVIOUS, SYSTEMUI, "label_action_media_left", "ic_skip_previous"),
         MediaArrowRight(SYSTEMUI_TASK_MEDIA_NEXT, SYSTEMUI, "label_action_media_right", "ic_skip_next"),
         AssistantSoundSearch(SYSTEMUI_TASK_ASSISTANT_SOUND_SEARCH, SYSTEMUI, "label_action_assistant_sound_search", "ic_assistant_sound_search"),
-        SoundModes(SYSTEMUI_TASK_SOUND_MODES, SYSTEMUI, "label_action_sound_modes", "ic_sysbar_volume_panel");
+        SoundModes(SYSTEMUI_TASK_SOUND_MODES, SYSTEMUI, "label_action_sound_modes", "ic_sysbar_volume_panel"),
+        PlayPause(SYSTEMUI_TASK_MEDIA_PLAY_PAUSE, SYSTEMUI, "label_action_play_pause", "ic_sysbar_play_pause");
 
         String mAction;
         String mResPackage;
@@ -249,7 +250,8 @@ public class ActionHandler {
             SystemAction.RegionScreenshot, SystemAction.OneHandedModeLeft,
             SystemAction.OneHandedModeRight, SystemAction.MediaArrowLeft,
             SystemAction.MediaArrowRight, SystemAction.AssistantSoundSearch,
-            SystemAction.SoundModes
+            SystemAction.SoundModes, SystemAction.PlayPause
+
     };
 
     public static class ActionIconResources {
@@ -642,14 +644,15 @@ public class ActionHandler {
             triggerVirtualKeypress(context, KeyEvent.KEYCODE_DPAD_LEFT);
             return;
         } else if (action.equals(SYSTEMUI_TASK_MEDIA_PREVIOUS)) {
-            StatusBarHelper.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
-            //dispatchMediaKeyWithWakeLock(KeyEvent.KEYCODE_MEDIA_PREVIOUS, context);
+            //StatusBarHelper.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
+            dispatchMediaKeyWithWakeLock(KeyEvent.KEYCODE_MEDIA_PREVIOUS, context);
             return;
         } else if (action.equals(SYSTEMUI_TASK_MEDIA_NEXT)) {
-            StatusBarHelper.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_NEXT);
-            //dispatchMediaKeyWithWakeLock(KeyEvent.KEYCODE_MEDIA_NEXT, context);
+            //StatusBarHelper.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_NEXT);
+            dispatchMediaKeyWithWakeLock(KeyEvent.KEYCODE_MEDIA_NEXT, context);
             return;
         } else if (action.equals(SYSTEMUI_TASK_MEDIA_PLAY_PAUSE)) {
+            //StatusBarHelper.sendSystemKeyToStatusBar(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
             dispatchMediaKeyWithWakeLock(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, context);
             return;
         } else if (action.equals(SYSTEMUI_TASK_SOUNDMODE_VIB)) {
