@@ -111,6 +111,7 @@ public class ActionHandler {
     // "task_audiorecord";
     public static final String SYSTEMUI_TASK_EXPANDED_DESKTOP = "task_expanded_desktop";
     public static final String SYSTEMUI_TASK_SCREENOFF = "task_screenoff";
+	public static final String SYSTEMUI_TASK_SCREENON = "task_screenon";
     public static final String SYSTEMUI_TASK_KILL_PROCESS = "task_killcurrent";
     public static final String SYSTEMUI_TASK_ASSIST = "task_assist";
     public static final String SYSTEMUI_TASK_GOOGLE_NOW_ON_TAP = "task_google_now_on_tap";
@@ -175,6 +176,7 @@ public class ActionHandler {
         Screenrecord(SYSTEMUI_TASK_SCREENRECORD, SYSTEMUI, "label_action_screenrecord", "ic_sysbar_record_screen"),
         ExpandedDesktop(SYSTEMUI_TASK_EXPANDED_DESKTOP, SYSTEMUI, "label_action_expanded_desktop", "ic_sysbar_expanded_desktop"),
         ScreenOff(SYSTEMUI_TASK_SCREENOFF, SYSTEMUI, "label_action_screen_off", "ic_sysbar_screen_off"),
+		ScreenOn(SYSTEMUI_TASK_SCREENON, SYSTEMUI, "label_action_screen_on", "ic_sysbar_torch"),
         KillApp(SYSTEMUI_TASK_KILL_PROCESS, SYSTEMUI, "label_action_force_close_app", "ic_sysbar_killtask"),
         Assistant(SYSTEMUI_TASK_ASSIST, SYSTEMUI, "label_action_search_assistant", "ic_sysbar_assist"),
         GoogleNowOnTap(SYSTEMUI_TASK_GOOGLE_NOW_ON_TAP, SYSTEMUI, "label_action_google_now_on_tap", "ic_sysbar_google_now_on_tap"),
@@ -250,7 +252,8 @@ public class ActionHandler {
             SystemAction.RegionScreenshot, SystemAction.OneHandedModeLeft,
             SystemAction.OneHandedModeRight, SystemAction.MediaArrowLeft,
             SystemAction.MediaArrowRight, SystemAction.AssistantSoundSearch,
-            SystemAction.SoundModes, SystemAction.PlayPause
+            SystemAction.SoundModes, SystemAction.PlayPause,
+            SystemAction.ScreenOn
 
     };
 
@@ -565,6 +568,9 @@ public class ActionHandler {
             return;
         } else if (action.equals(SYSTEMUI_TASK_SCREENOFF)) {
             screenOff(context);
+            return;
+        } else if (action.equals(SYSTEMUI_TASK_SCREENON)) {
+            switchScreenOn(context);
             return;
         } else if (action.equals(SYSTEMUI_TASK_WAKE_DEVICE)) {
             PowerManager powerManager =
