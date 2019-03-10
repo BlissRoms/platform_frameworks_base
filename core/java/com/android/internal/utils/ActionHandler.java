@@ -176,7 +176,7 @@ public class ActionHandler {
         Screenrecord(SYSTEMUI_TASK_SCREENRECORD, SYSTEMUI, "label_action_screenrecord", "ic_sysbar_record_screen"),
         ExpandedDesktop(SYSTEMUI_TASK_EXPANDED_DESKTOP, SYSTEMUI, "label_action_expanded_desktop", "ic_sysbar_expanded_desktop"),
         ScreenOff(SYSTEMUI_TASK_SCREENOFF, SYSTEMUI, "label_action_screen_off", "ic_sysbar_screen_off"),
-		ScreenOn(SYSTEMUI_TASK_SCREENON, SYSTEMUI, "label_action_screen_on", "ic_sysbar_torch"),
+        ScreenOn(SYSTEMUI_TASK_SCREENON, SYSTEMUI, "label_action_screen_on", "ic_sysbar_torch"),
         KillApp(SYSTEMUI_TASK_KILL_PROCESS, SYSTEMUI, "label_action_force_close_app", "ic_sysbar_killtask"),
         Assistant(SYSTEMUI_TASK_ASSIST, SYSTEMUI, "label_action_search_assistant", "ic_sysbar_assist"),
         GoogleNowOnTap(SYSTEMUI_TASK_GOOGLE_NOW_ON_TAP, SYSTEMUI, "label_action_google_now_on_tap", "ic_sysbar_google_now_on_tap"),
@@ -208,7 +208,8 @@ public class ActionHandler {
         MediaArrowRight(SYSTEMUI_TASK_MEDIA_NEXT, SYSTEMUI, "label_action_media_right", "ic_skip_next"),
         AssistantSoundSearch(SYSTEMUI_TASK_ASSISTANT_SOUND_SEARCH, SYSTEMUI, "label_action_assistant_sound_search", "ic_assistant_sound_search"),
         SoundModes(SYSTEMUI_TASK_SOUND_MODES, SYSTEMUI, "label_action_sound_modes", "ic_sysbar_volume_panel"),
-        PlayPause(SYSTEMUI_TASK_MEDIA_PLAY_PAUSE, SYSTEMUI, "label_action_play_pause", "ic_sysbar_play_pause");
+        PlayPause(SYSTEMUI_TASK_MEDIA_PLAY_PAUSE, SYSTEMUI, "label_action_play_pause", "ic_sysbar_play_pause"),
+        Camera(SYSTEMUI_TASK_CAMERA, SYSTEMUI, "label_action_camera", "ic_sysbar_camera");
 
         String mAction;
         String mResPackage;
@@ -253,7 +254,7 @@ public class ActionHandler {
             SystemAction.OneHandedModeRight, SystemAction.MediaArrowLeft,
             SystemAction.MediaArrowRight, SystemAction.AssistantSoundSearch,
             SystemAction.SoundModes, SystemAction.PlayPause,
-            SystemAction.ScreenOn
+            SystemAction.ScreenOn, SystemAction.Camera
 
     };
 
@@ -323,9 +324,6 @@ public class ActionHandler {
                 continue;
             } else if (TextUtils.equals(action, SYSTEMUI_TASK_TORCH)
                  && !ActionUtils.deviceSupportsFlashLight(context)) {
-                continue;
-            } else if (TextUtils.equals(action, SYSTEMUI_TASK_CAMERA)
-                    && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
                 continue;
             } else if (TextUtils.equals(action, SYSTEMUI_TASK_EDITING_SMARTBAR)) {
                 // don't allow smartbar editor on Fling
@@ -842,6 +840,7 @@ public class ActionHandler {
         sendCloseSystemWindows("assist");
         // launch the search activity
         Intent intent = new Intent(Intent.ACTION_SEARCH_LONG_PRESS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             // TODO: This only stops the factory-installed search manager.
             // Need to formalize an API to handle others
@@ -905,7 +904,7 @@ public class ActionHandler {
     }
 
     private static void launchCamera(Context context) {
-        Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
         PackageManager pm = context.getPackageManager();
         final ResolveInfo mInfo = pm.resolveActivity(i, 0);
         Intent intent = new Intent().setComponent(new ComponentName(mInfo.activityInfo.packageName,
