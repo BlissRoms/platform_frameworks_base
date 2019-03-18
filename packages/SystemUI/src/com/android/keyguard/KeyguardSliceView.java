@@ -30,7 +30,9 @@ import android.annotation.StyleRes;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Trace;
 import android.provider.Settings;
@@ -84,6 +86,7 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         Observer<Slice>, TunerService.Tunable, ConfigurationController.ConfigurationListener {
 
     private static final String TAG = "KeyguardSliceView";
+
     public static final int DEFAULT_ANIM_DURATION = 550;
 
     private final HashMap<View, PendingIntent> mClickActions;
@@ -112,6 +115,9 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
     private final int mRowPadding;
     private float mRowTextSize;
     private float mRowWithHeaderTextSize;
+
+    private int mLockDateFontStyle = 14;
+    private View mKeyguardSliceView;
 
     @Inject
     public KeyguardSliceView(@Named(VIEW_CONTEXT) Context context, AttributeSet attrs,
@@ -153,6 +159,7 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         mRowWithHeaderTextSize = mContext.getResources().getDimensionPixelSize(
                 R.dimen.header_row_font_size);
         mTitle.setOnClickListener(this);
+        mKeyguardSliceView = findViewById(R.id.keyguard_status_area);
     }
 
     public View getTitleView() {
@@ -308,6 +315,20 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         mDarkAmount = darkAmount;
         mRow.setDarkAmount(darkAmount);
         updateTextColors();
+    }
+
+    public void setDateFont(Typeface tf) {
+        setViewsTypeface(tf);
+    }
+
+    public void setViewsTypeface(Typeface tf) {
+        int childCount = mRow.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View v = mRow.getChildAt(i);
+            if (v instanceof Button) {
+                ((Button) v).setTypeface(tf);
+            }
+        }
     }
 
     private void updateTextColors() {
@@ -564,7 +585,6 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
 
         @Override
         public void onOverlayChanged() {
-            setTextAppearance(sStyleId);
         }
 
         @Override

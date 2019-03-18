@@ -5452,6 +5452,12 @@ public final class Settings {
         public static final String LOCK_CLOCK_FONT_STYLE = "lock_clock_font_style";
 
         /**
+         * Change font style for the system lockscreen date
+         * @hide
+         */
+        public static final String LOCK_DATE_FONT_STYLE = "lock_date_font_style";
+
+        /**
          * User definable value of pulse notification screen brightness
          *
          * @hide

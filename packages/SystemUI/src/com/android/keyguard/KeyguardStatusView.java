@@ -116,9 +116,12 @@ public class KeyguardStatusView extends GridLayout implements
 
     private int mClockSelection;
     private int mLockClockFontStyle;
+    private int mLockDateFontStyle;
 
     private static final String LOCK_CLOCK_FONT_STYLE =
             "system:" + Settings.System.LOCK_CLOCK_FONT_STYLE;
+    private static final String LOCK_DATE_FONT_STYLE =
+            "system:" + Settings.System.LOCK_DATE_FONT_STYLE;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -182,6 +185,7 @@ public class KeyguardStatusView extends GridLayout implements
         mHandler = new Handler(Looper.myLooper());
         final TunerService tunerService = Dependency.get(TunerService.class);
         tunerService.addTunable(this, LOCK_CLOCK_FONT_STYLE);
+        tunerService.addTunable(this, LOCK_DATE_FONT_STYLE);
         onDensityOrFontScaleChanged();
     }
 
@@ -237,6 +241,7 @@ public class KeyguardStatusView extends GridLayout implements
         mClockView.setShowCurrentUserTime(true);
         mOwnerInfo = findViewById(R.id.owner_info);
         mKeyguardSlice = findViewById(R.id.keyguard_status_area);
+        setDateStyle(mKeyguardSlice, mLockDateFontStyle);
 
         mWeatherView = (CurrentWeatherView) findViewById(R.id.weather_container);
         updateSettings();
@@ -429,6 +434,13 @@ public class KeyguardStatusView extends GridLayout implements
                 } catch (NumberFormatException ex) {}
                 onDensityOrFontScaleChanged();
                 break;
+            case LOCK_DATE_FONT_STYLE:
+                mLockDateFontStyle = 14;
+                try {
+                    mLockDateFontStyle = Integer.valueOf(newValue);
+                } catch (NumberFormatException ex) {}
+                onDensityOrFontScaleChanged();
+                break;
             default:
                 break;
         }
@@ -514,6 +526,91 @@ public class KeyguardStatusView extends GridLayout implements
             default:
                 break;
         }
+    }
+
+    private void setDateStyle(KeyguardSliceView view, int fontstyle) {
+        switch (fontstyle) {
+            case FONT_NORMAL:
+                view.setDateFont(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FONT_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FONT_BOLD:
+                view.setDateFont(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FONT_BOLD_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_LIGHT:
+                view.setDateFont(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FONT_LIGHT_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FONT_THIN:
+                view.setDateFont(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FONT_THIN_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED:
+                view.setDateFont(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FONT_CONDENSED_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED_LIGHT:
+                view.setDateFont(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FONT_CONDENSED_LIGHT_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED_BOLD:
+                view.setDateFont(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FONT_CONDENSED_BOLD_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_MEDIUM:
+            default:
+                view.setDateFont(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FONT_MEDIUM_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FONT_BLACK:
+                view.setDateFont(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FONT_BLACK_ITALIC:
+                view.setDateFont(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FONT_DANCINGSCRIPT:
+                view.setDateFont(Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FONT_DANCINGSCRIPT_BOLD:
+                view.setDateFont(Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FONT_COMINGSOON:
+                view.setDateFont(Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FONT_NOTOSERIF:
+                view.setDateFont(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FONT_NOTOSERIF_ITALIC:
+                view.setDateFont(Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FONT_NOTOSERIF_BOLD:
+                view.setDateFont(Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FONT_NOTOSERIF_BOLD_ITALIC:
+                view.setDateFont(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
+        }
+    }
+
+    public void setDateStyle(int fontstyle) {
+        mLockDateFontStyle = fontstyle;
     }
 
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
