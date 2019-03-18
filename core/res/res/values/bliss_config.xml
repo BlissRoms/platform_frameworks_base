@@ -157,4 +157,6 @@
     <!-- Default FOD pressed color -->
     <integer name="config_udfps_pressed_color">0</integer>
 
+    <!-- Whether or not we should show vendor mismatch message -->
+    <bool name="config_show_vendor_mismatch_message">true</bool>
 </resources>
