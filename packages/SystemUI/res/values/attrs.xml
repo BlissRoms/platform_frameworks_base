@@ -48,6 +48,12 @@
         </attr>
         <attr name="showDark" format="boolean" />
     </declare-styleable>
+    <declare-styleable name="SwipeAffordanceView">
+        <attr name="swipeDirection" format="enum">
+            <enum name="start" value="0" />
+            <enum name="end" value="1" />
+        </attr>
+    </declare-styleable>
     <attr name="orientation">
         <enum name="horizontal" value="0" />
         <enum name="vertical" value="1" />
