@@ -85,4 +85,7 @@
     <string name="vpn_credentials_password">Password</string>
     <string name="vpn_credentials_dialog_connect">Connect</string>
 
+    <!-- Hint for custom lockscreen shortcuts -->
+    <string name="custom_swipe_hint">Swipe from icon for <xliff:g name="target">%s</xliff:g></string>
+
 </resources>
