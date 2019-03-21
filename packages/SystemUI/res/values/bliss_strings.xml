@@ -128,4 +128,7 @@
 
     <string name="tuner_show_drag_handle">Show drag handle</string>
 
+    <!-- Hint for custom lockscreen shortcuts -->
+    <string name="custom_swipe_hint">Swipe from icon for <xliff:g name="target">%s</xliff:g></string>
+
 </resources>
