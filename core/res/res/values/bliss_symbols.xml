@@ -113,4 +113,7 @@
     <java-symbol type="style" name="Animation.Toast.SlideRightLeft" />
     <java-symbol type="style" name="Animation.Toast.SlideLeftRight" />
 
+    <!-- Smart charging battery percentage -->
+    <java-symbol type="integer" name="config_smartChargingBatteryLevel" />
+
 </resources>
