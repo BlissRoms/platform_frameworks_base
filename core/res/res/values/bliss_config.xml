@@ -353,4 +353,8 @@
     </string>
     <string name="config_batterymeterLandPowersavePathMiUIPill" translatable="false">@string/config_batterymeterLandPerimeterPathMiUIPill</string>
     <string name="config_batterymeterLandErrorPerimeterPathMiUIPill" translatable="false">@string/config_batterymeterLandPerimeterPathMiUIPill</string>
+
+    <!-- Smart charging battery percentage -->
+    <integer name="config_smartChargingBatteryLevel">80</integer>
+
 </resources>

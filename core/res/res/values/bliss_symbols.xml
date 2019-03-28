@@ -222,4 +222,8 @@
   <java-symbol type="string" name="config_batterymeterLandBoltPathMiUIPill" />
   <java-symbol type="string" name="config_batterymeterLandPowersavePathMiUIPill" />
   <java-symbol type="string" name="config_batterymeterLandErrorPerimeterPathMiUIPill" />
+
+    <!-- Smart charging battery percentage -->
+    <java-symbol type="integer" name="config_smartChargingBatteryLevel" />
+
 </resources>
