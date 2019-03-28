@@ -170,4 +170,8 @@
     <!-- These are system packages exempted from privacy indicator -->
     <string-array name="config_indicatorExemptedPackageNames" translatable="false">
     </string-array>
+
+    <!-- Smart charging battery percentage -->
+    <integer name="config_smartChargingBatteryLevel">80</integer>
+
 </resources>
