@@ -215,6 +215,9 @@
   <!-- Pocket bridge -->
   <java-symbol type="string" name="config_pocketBridgeSysfsInpocket" />
 
+  <!-- Smart charging battery percentage -->
+  <java-symbol type="integer" name="config_smartChargingBatteryLevel" />
+
   <!-- Fastscroller -->
   <java-symbol type="color" name="fastscroller_text_color" />
 </resources>
