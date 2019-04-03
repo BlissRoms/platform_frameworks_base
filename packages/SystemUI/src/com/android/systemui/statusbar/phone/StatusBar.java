@@ -80,6 +80,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -96,6 +97,7 @@ import android.media.session.PlaybackState;
 import android.metrics.LogMaker;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -108,6 +110,7 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.Trace;
+import android.os.ParcelFileDescriptor;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.VibrationEffect;
@@ -2176,8 +2179,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         if (mVisualizerView != null) {
-            if (mKeyguardShowingMedia && artworkDrawable instanceof BitmapDrawable) {
-                // always use current backdrop to color eq
+            if (hasArtwork && artworkDrawable instanceof BitmapDrawable) {
                 mVisualizerView.setBitmap(((BitmapDrawable)artworkDrawable).getBitmap());
             } else if (lockDrawable != null) {
                 mVisualizerView.setBitmap(((BitmapDrawable)lockDrawable).getBitmap());
