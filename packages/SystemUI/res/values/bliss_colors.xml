@@ -52,4 +52,7 @@
     <color name="system_primary_color">@*android:color/primary_material_light</color>
     <color name="system_accent_color">@*android:color/accent_device_default_light</color>
 
+    <!-- Color of the FOD view -->
+    <color name="config_fodColor">#00ff00</color>
+
 </resources>
