@@ -25,15 +25,19 @@
   <!-- Proximity check on screen on default -->
   <java-symbol type="bool" name="config_proximityCheckOnWakeEnabledByDefault" />
 
-    <!-- Usb drive persistent notification -->
-    <java-symbol type="bool" name="config_persistUsbDriveNotification" />
+  <!-- Usb drive persistent notification -->
+  <java-symbol type="bool" name="config_persistUsbDriveNotification" />
 
-    <!-- Package Manager -->
-    <java-symbol type="array" name="config_disabledComponents" />
-    <java-symbol type="array" name="config_forceEnabledComponents" />
+  <!-- FoD -->
+  <java-symbol type="bool" name="config_needCustomFODView" />
+  <java-symbol type="bool" name="config_usesOnePlusFOD" />
 
-    <!-- Gesture Sensor -->
-    <java-symbol type="bool" name="config_enableGestureService" />
+  <!-- Package Manager -->
+  <java-symbol type="array" name="config_disabledComponents" />
+  <java-symbol type="array" name="config_forceEnabledComponents" />
+
+  <!-- Gesture Sensor -->
+  <java-symbol type="bool" name="config_enableGestureService" />
 
   <java-symbol type="string" name="reboot_title" />
   <java-symbol type="string" name="reboot_confirm" />
