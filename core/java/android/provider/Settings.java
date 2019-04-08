@@ -10536,6 +10536,24 @@ public final class Settings {
         public static final String HIDE_LOCK_SHORTCUTS = "hide_lock_shortcuts";
 
         /**
+         * Lockscreen lavalamp psychedelic colors
+         * @hide
+         */
+        public static final String LOCKSCREEN_LAVALAMP_ENABLED = "lockscreen_lavalamp_enabled";
+
+        /**
+         * Lockscreen lavalamp animation speed
+         * @hide
+         */
+        public static final String LOCKSCREEN_LAVALAMP_SPEED = "lockscreen_lavalamp_speed";
+
+        /**
+         * Whether to use automatic color for visualizer
+         * @hide
+         */
+        public static final String LOCKSCREEN_VISUALIZER_AUTOCOLOR = "lockscreen_visualizer_autocolor";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
