@@ -507,7 +507,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         // Hide notifications if the disable flag is set or we have an ongoing call.
         if (disableNotifications || hasOngoingCall) {
             hideNotificationIconArea(animate);
-            animateHide(mClockView, animate, false);
+            animateHide(mClockView, animate, mClockStyle == 0);
         } else {
             showNotificationIconArea(animate);
             updateClockStyle(animate);
