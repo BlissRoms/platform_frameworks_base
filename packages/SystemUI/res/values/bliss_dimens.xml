@@ -125,4 +125,7 @@
     <dimen name="quick_qs_drag_handle_height">20dp</dimen>
     <dimen name="qs_header_image_offset">0dp</dimen>
     <dimen name="qs_header_image_side_margin">0dp</dimen>
+
+    <!-- Padding needed on bottom of lockscreen for FoD devices -->
+    <dimen name="op_keyguard_indication_margin_bottom">415.0px</dimen>
 </resources>
