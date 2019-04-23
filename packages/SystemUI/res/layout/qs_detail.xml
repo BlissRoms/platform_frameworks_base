@@ -22,7 +22,6 @@
     android:clickable="true"
     android:orientation="vertical"
     android:layout_marginTop="@*android:dimen/quick_qs_offset_height"
-    android:paddingBottom="8dp"
     android:visibility="invisible"
     android:elevation="4dp"
     android:importantForAccessibility="no" >
