@@ -5478,6 +5478,12 @@ public final class Settings {
         public static final String LOCKSCREEN_CLOCK_SELECTION = "lockscreen_clock_selection";
 
         /**
+         * Select which lockscreen date style to display
+         * @hide
+         */
+        public static final String LOCKSCREEN_DATE_SELECTION = "lockscreen_date_selection";
+
+        /**
          * User definable value of pulse notification screen brightness
          *
          * @hide

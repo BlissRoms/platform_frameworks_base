@@ -131,6 +131,11 @@ public class KeyguardStatusView extends GridLayout implements
     private int mClockSelection;
     private int mLockClockFontStyle;
     private int mLockDateFontStyle;
+    private int mDateSelection;
+
+    // Date styles paddings
+    private int mDateVerPadding;
+    private int mDateHorPadding;
 
     private static final String LOCK_CLOCK_FONT_STYLE =
             "system:" + Settings.System.LOCK_CLOCK_FONT_STYLE;
@@ -140,6 +145,9 @@ public class KeyguardStatusView extends GridLayout implements
             "system:" + Settings.System.LOCKSCREEN_CLOCK_SELECTION;
     private static final String LOCKSCREEN_DATE_HIDE =
             "system:" + Settings.System.LOCKSCREEN_DATE_HIDE;
+    private static final String LOCKSCREEN_DATE_SELECTION =
+            "system:" + Settings.System.LOCKSCREEN_DATE_SELECTION;
+
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -206,6 +214,7 @@ public class KeyguardStatusView extends GridLayout implements
         tunerService.addTunable(this, LOCK_DATE_FONT_STYLE);
         tunerService.addTunable(this, LOCKSCREEN_CLOCK_SELECTION);
         tunerService.addTunable(this, LOCKSCREEN_DATE_HIDE);
+        tunerService.addTunable(this, LOCKSCREEN_DATE_SELECTION);
         onDensityOrFontScaleChanged();
     }
 
@@ -363,6 +372,7 @@ public class KeyguardStatusView extends GridLayout implements
             refreshFormat();
             setFontStyle(mClockView, mLockClockFontStyle);
         }
+
         if (mOwnerInfo != null) {
             mOwnerInfo.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
@@ -377,6 +387,29 @@ public class KeyguardStatusView extends GridLayout implements
                  mKeyguardSlice.setVisibility(View.GONE);
             }
         }
+
+        switch (mDateSelection) {
+            case 0: // default
+            default:
+                mKeyguardSlice.setViewBackgroundResource(0);
+                mDateVerPadding = 0;
+                mDateHorPadding = 0;
+                mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                break;
+            case 1: // semi-transparent box
+                mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_box_str_border));
+                mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_box_padding_hor),getResources().getDisplayMetrics()));
+                mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_box_padding_ver),getResources().getDisplayMetrics()));
+                mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                break;
+            case 2: // semi-transparent box (round)
+                mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_str_border));
+                mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_box_padding_hor),getResources().getDisplayMetrics()));
+                mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_box_padding_ver),getResources().getDisplayMetrics()));
+                mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                break;
+        }
+
         loadBottomMargin();
     }
 
@@ -513,6 +546,10 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case LOCKSCREEN_DATE_HIDE:
                     mLockDateHide = TunerService.parseIntegerSwitch(newValue, 0);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCKSCREEN_DATE_SELECTION:
+                    mDateSelection = TunerService.parseInteger(newValue, 0);
                 onDensityOrFontScaleChanged();
                 break;
             default:
