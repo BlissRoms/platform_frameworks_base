@@ -39,4 +39,11 @@
     <dimen name="ForecastImageSize">50dp</dimen>
     <dimen name="TemperatureTextMarginTop">5dp</dimen>
     <dimen name="ForecastItemsMarginVertical">10dp</dimen>
+
+    <!-- padding for date view -->
+    <dimen name="widget_clock_normal_clock_padding">4dp</dimen>
+
+    <!-- Date styles padding-->
+    <dimen name="widget_date_box_padding_hor">8dp</dimen>
+    <dimen name="widget_date_box_padding_ver">4dp</dimen>
 </resources>
