@@ -397,6 +397,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 
+import org.lineageos.internal.applications.LineageActivityManager;
+
 public class ActivityManagerService extends IActivityManager.Stub
         implements Watchdog.Monitor, BatteryStatsImpl.BatteryCallback {
 
@@ -1598,6 +1600,9 @@ public class ActivityManagerService extends IActivityManager.Stub
 
     final SwipeToScreenshotObserver mSwipeToScreenshotObserver;
     private boolean mIsSwipeToScrenshotEnabled;
+
+    // Lineage sdk activity related helper
+    private LineageActivityManager mLineageActivityManager;
 
     private GamingModeController mGamingModeController;
 
@@ -7593,6 +7598,10 @@ public class ActivityManagerService extends IActivityManager.Stub
         RescueParty.onSettingsProviderPublished(mContext);
 
         //mUsageStatsService.monitorPackages();
+
+        // LineageActivityManager depends on settings so we can initialize only
+        // after providers are available.
+        mLineageActivityManager = new LineageActivityManager(mContext);
 
         // Gaming mode provider
         mGamingModeController = new GamingModeController(mContext);
@@ -19139,6 +19148,13 @@ public class ActivityManagerService extends IActivityManager.Stub
     public boolean isSwipeToScreenshotGestureActive() {
         synchronized (this) {
             return mIsSwipeToScrenshotEnabled && SystemProperties.getBoolean("sys.android.screenshot", false);
+        }
+    }
+
+    @Override
+    public boolean shouldForceCutoutFullscreen(String packageName) {
+        synchronized (this) {
+        return mLineageActivityManager.shouldForceLongScreen(packageName);
         }
     }
 
