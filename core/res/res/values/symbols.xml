@@ -3434,7 +3434,7 @@
 
   <java-symbol type="string" name="config_misprovisionedDeviceModel" />
   <java-symbol type="string" name="config_misprovisionedBrandValue" />
- 
+
   <java-symbol type="string" name="config_defaultAssistantComponentName" />
 
   <!-- Minimal height of bottom stack when IME is displayed -->
@@ -3449,5 +3449,7 @@
   <java-symbol type="color" name="gradient_end_dark" />
   <java-symbol type="color" name="gradient_start" />
   <java-symbol type="color" name="gradient_end" />
+
+  <java-symbol type="integer" name="db_wal_truncate_size" />
 
 </resources>
