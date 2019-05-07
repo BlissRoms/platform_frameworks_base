@@ -1028,4 +1028,10 @@
          that just start below the notch. -->
     <dimen name="display_cutout_touchable_region_size">12dp</dimen>
 
+    <!-- Padding for overheat alarm dialog message of content -->
+    <dimen name="alarm_dialog_panel_padding">24dp</dimen>
+
+    <!-- Padding for overheat alarm dialog message of content -->
+    <dimen name="alarm_dialog_message_space">28dp</dimen>
+
 </resources>
