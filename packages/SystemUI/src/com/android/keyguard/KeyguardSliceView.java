@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -331,8 +332,24 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
                 : GONE);
     }
 
+   public void setViewsTextStyles(float textSp, boolean textAllCaps) {
+         int childCount = mRow.getChildCount();
+         for (int i = 0; i < childCount; i++) {
+             View v = mRow.getChildAt(i);
+             if (v instanceof Button) {
+                 ((Button) v).setLetterSpacing(textSp);
+                 ((Button) v).setAllCaps(textAllCaps);
+             }
+         }
+     }
+
     public void setViewBackground(Drawable drawRes) {
+        setViewBackground(drawRes, 255);
+    }
+
+    public void setViewBackground(Drawable drawRes, int bgAlpha) {
         mRow.setBackground(drawRes);
+        mRow.getBackground().setAlpha(bgAlpha);
     }
 
     public void setViewBackgroundResource(int drawRes) {
@@ -341,6 +358,16 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
 
     public void setViewPadding(int left, int top, int right, int bottom) {
         mRow.setPadding(left,top,right,bottom);
+    }
+	
+	    public void setViewsTypeface(Typeface tf) {
+        int childCount = mRow.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View v = mRow.getChildAt(i);
+            if (v instanceof Button) {
+                ((Button) v).setTypeface(tf);
+            }
+        }
     }
 
     private void updateTextColors() {
@@ -498,7 +525,7 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
             int childCount = getChildCount();
             for (int i = 0; i < childCount; i++) {
                 View child = getChildAt(i);
-                if (child instanceof KeyguardSliceButton) {
+                if (child instanceof KeyguardSliceButton && childCount > 3) {
                     ((KeyguardSliceButton) child).setMaxWidth(width / childCount);
                 }
             }
