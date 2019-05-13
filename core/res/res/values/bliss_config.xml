@@ -190,7 +190,7 @@
     <bool name="config_dozeDefaultEnabled">false</bool>
 
     <!-- Default values for LiveDisplay -->
-    <bool name="config_enableLiveDisplay">true</bool>
+    <bool name="config_enableLiveDisplay">false</bool>
     <integer name="config_dayColorTemperature">6500</integer>
     <integer name="config_nightColorTemperature">4800</integer>
     <integer name="config_outdoorAmbientLux">12000</integer>
