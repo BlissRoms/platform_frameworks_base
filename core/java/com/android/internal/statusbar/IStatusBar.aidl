@@ -161,4 +161,5 @@ oneway interface IStatusBar
     void toggleFlashlight();
     void toggleNavigationEditor();
     void dispatchNavigationEditorResults(in Intent intent);
+    void toggleCameraFlashState(boolean enable);
 }
