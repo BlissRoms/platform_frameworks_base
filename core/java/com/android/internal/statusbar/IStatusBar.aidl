@@ -183,4 +183,6 @@ oneway interface IStatusBar
      * Bliss
      */
     void toggleCameraFlash();
+    void toggleCameraFlashState(boolean enable);
+
 }
