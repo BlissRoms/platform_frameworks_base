@@ -119,4 +119,5 @@ interface IStatusBarService
      * Bliss
      */
     void toggleCameraFlash();
+    void toggleCameraFlashState(boolean enable);
 }
