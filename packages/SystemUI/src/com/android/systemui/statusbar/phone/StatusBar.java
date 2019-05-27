@@ -296,6 +296,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.GAMING_MODE_ACTIVE;
     private static final String GAMING_MODE_HEADSUP_TOGGLE =
             "system:" + Settings.System.GAMING_MODE_HEADSUP_TOGGLE;
+    private static final String LOCKSCREEN_CHARGING_ANIMATION =
+            "system:" + Settings.System.LOCKSCREEN_CHARGING_ANIMATION;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -760,6 +762,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         tunerService.addTunable(this, SYSUI_ROUNDED_FWVALS);
         tunerService.addTunable(this, GAMING_MODE_ACTIVE);
         tunerService.addTunable(this, GAMING_MODE_HEADSUP_TOGGLE);
+        tunerService.addTunable(this, LOCKSCREEN_CHARGING_ANIMATION);
 
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
@@ -5051,6 +5054,12 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mHeadsUpDisabled =
                         TunerService.parseIntegerSwitch(newValue, true);
                 mNotificationInterruptionStateProvider.setGamingPeekMode(mGamingModeActivated && mHeadsUpDisabled);
+                break;
+            case LOCKSCREEN_CHARGING_ANIMATION:
+                boolean showChargingAnimation =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                if (mKeyguardIndicationController != null)
+                    mKeyguardIndicationController.updateChargingIndication(showChargingAnimation);
                 break;
             default:
                 break;
