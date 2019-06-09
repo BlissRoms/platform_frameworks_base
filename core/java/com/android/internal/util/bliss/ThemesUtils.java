@@ -32,6 +32,11 @@ public class ThemesUtils {
 		    "com.android.systemui.qstile.inkdrop", // 10
 		    "com.android.systemui.qstile.cookie", // 11
 		    "com.android.systemui.qstile.circleoutline", //12
+		    "com.android.systemui.qstile.neonlike", // 13
+		    "com.android.systemui.qstile.oos", // 14
+		    "com.android.systemui.qstile.triangles", // 15
+		    "com.android.systemui.qstile.divided", // 16
+		    "com.android.systemui.qstile.cosmos", // 17
     };
 
 }
