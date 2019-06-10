@@ -43,7 +43,6 @@ enum {
 
 struct fields_t {
     jfieldID    context;
-    jfieldID    metadata_ptr;
     jfieldID    facing;
     jfieldID    orientation;
     jfieldID    canDisableShutterSound;
@@ -79,7 +78,6 @@ struct fields_t {
 
 static fields_t fields;
 static Mutex sLock;
-static CameraMetadata* mMeta_ptr;
 
 // provides persistent context for calls from native code to Java
 class JNICameraContext: public CameraListener
@@ -166,7 +164,7 @@ JNICameraContext::JNICameraContext(JNIEnv* env, jobject weak_this, jclass clazz,
     mCameraJClass = (jclass)env->NewGlobalRef(clazz);
     mCamera = camera;
 
-    jclass extendedfaceClazz = env->FindClass("com/qualcomm/qti/camera/ExtendedFace");
+    jclass extendedfaceClazz = env->FindClass("org/codeaurora/camera/ExtendedFace");
     if (NULL != extendedfaceClazz) {
         mFaceClass = (jclass) env->NewGlobalRef(extendedfaceClazz);
         mIsExtendedFace = true;
@@ -299,12 +297,7 @@ void JNICameraContext::copyAndPost(JNIEnv* env, const sp<IMemory>& dataPtr, int 
                         return;
                     }
                 }
-            } else if(msgType == 0x40000) {
-                camera_metadata_t * cMetaData = reinterpret_cast<camera_metadata_t*>(heapBase + offset);
-                *mMeta_ptr=(const camera_metadata_t*)cMetaData;
-                mMeta_ptr->sort();
-            }
-            else {
+            } else {
                 ALOGV("Allocating callback buffer");
                 obj = env->NewByteArray(size);
             }
@@ -954,7 +947,6 @@ static void android_hardware_Camera_takePicture(JNIEnv *env, jobject thiz, jint 
     JNICameraContext* context;
     sp<Camera> camera = get_native_camera(env, thiz, &context);
     if (camera == 0) return;
-    mMeta_ptr=reinterpret_cast<android::CameraMetadata*>(env->GetLongField(thiz,fields.metadata_ptr));
 
     /*
      * When CAMERA_MSG_RAW_IMAGE is requested, if the raw image callback
@@ -1268,7 +1260,6 @@ int register_android_hardware_Camera(JNIEnv *env)
 {
     field fields_to_find[] = {
         { "android/hardware/Camera", "mNativeContext",   "J", &fields.context },
-        { "android/hardware/Camera", "mMetadataPtr",   "J", &fields.metadata_ptr },
         { "android/hardware/Camera$CameraInfo", "facing",   "I", &fields.facing },
         { "android/hardware/Camera$CameraInfo", "orientation",   "I", &fields.orientation },
         { "android/hardware/Camera$CameraInfo", "canDisableShutterSound",   "Z",
@@ -1288,24 +1279,24 @@ int register_android_hardware_Camera(JNIEnv *env)
     };
 
     field extendedfacefields_to_find[] = {
-        { "com/qualcomm/qti/camera/ExtendedFace", "rect", "Landroid/graphics/Rect;", &fields.face_rect },
-        { "com/qualcomm/qti/camera/ExtendedFace", "score", "I", &fields.face_score },
-        { "com/qualcomm/qti/camera/ExtendedFace", "id", "I", &fields.face_id },
-        { "com/qualcomm/qti/camera/ExtendedFace", "leftEye", "Landroid/graphics/Point;", &fields.face_left_eye },
-        { "com/qualcomm/qti/camera/ExtendedFace", "rightEye", "Landroid/graphics/Point;", &fields.face_right_eye },
-        { "com/qualcomm/qti/camera/ExtendedFace", "mouth", "Landroid/graphics/Point;", &fields.face_mouth },
-        { "com/qualcomm/qti/camera/ExtendedFace", "smileDegree", "I", &fields.face_sm_degree },
-        { "com/qualcomm/qti/camera/ExtendedFace", "smileScore", "I", &fields.face_sm_score },
-        { "com/qualcomm/qti/camera/ExtendedFace", "blinkDetected", "I", &fields.face_blink_detected },
-        { "com/qualcomm/qti/camera/ExtendedFace", "faceRecognized", "I", &fields.face_recognised },
-        { "com/qualcomm/qti/camera/ExtendedFace", "gazeAngle", "I", &fields.face_gaze_angle },
-        { "com/qualcomm/qti/camera/ExtendedFace", "updownDir", "I", &fields.face_updown_dir },
-        { "com/qualcomm/qti/camera/ExtendedFace", "leftrightDir", "I", &fields.face_leftright_dir },
-        { "com/qualcomm/qti/camera/ExtendedFace", "rollDir", "I", &fields.face_roll_dir },
-        { "com/qualcomm/qti/camera/ExtendedFace", "leyeBlink", "I", &fields.face_leye_blink },
-        { "com/qualcomm/qti/camera/ExtendedFace", "reyeBlink", "I", &fields.face_reye_blink },
-        { "com/qualcomm/qti/camera/ExtendedFace", "leftrightGaze", "I", &fields.face_left_right_gaze },
-        { "com/qualcomm/qti/camera/ExtendedFace", "topbottomGaze", "I", &fields.face_top_bottom_gaze },
+        { "org/codeaurora/camera/ExtendedFace", "rect", "Landroid/graphics/Rect;", &fields.face_rect },
+        { "org/codeaurora/camera/ExtendedFace", "score", "I", &fields.face_score },
+        { "org/codeaurora/camera/ExtendedFace", "id", "I", &fields.face_id },
+        { "org/codeaurora/camera/ExtendedFace", "leftEye", "Landroid/graphics/Point;", &fields.face_left_eye },
+        { "org/codeaurora/camera/ExtendedFace", "rightEye", "Landroid/graphics/Point;", &fields.face_right_eye },
+        { "org/codeaurora/camera/ExtendedFace", "mouth", "Landroid/graphics/Point;", &fields.face_mouth },
+        { "org/codeaurora/camera/ExtendedFace", "smileDegree", "I", &fields.face_sm_degree },
+        { "org/codeaurora/camera/ExtendedFace", "smileScore", "I", &fields.face_sm_score },
+        { "org/codeaurora/camera/ExtendedFace", "blinkDetected", "I", &fields.face_blink_detected },
+        { "org/codeaurora/camera/ExtendedFace", "faceRecognized", "I", &fields.face_recognised },
+        { "org/codeaurora/camera/ExtendedFace", "gazeAngle", "I", &fields.face_gaze_angle },
+        { "org/codeaurora/camera/ExtendedFace", "updownDir", "I", &fields.face_updown_dir },
+        { "org/codeaurora/camera/ExtendedFace", "leftrightDir", "I", &fields.face_leftright_dir },
+        { "org/codeaurora/camera/ExtendedFace", "rollDir", "I", &fields.face_roll_dir },
+        { "org/codeaurora/camera/ExtendedFace", "leyeBlink", "I", &fields.face_leye_blink },
+        { "org/codeaurora/camera/ExtendedFace", "reyeBlink", "I", &fields.face_reye_blink },
+        { "org/codeaurora/camera/ExtendedFace", "leftrightGaze", "I", &fields.face_left_right_gaze },
+        { "org/codeaurora/camera/ExtendedFace", "topbottomGaze", "I", &fields.face_top_bottom_gaze },
     };
 
     find_fields(env, fields_to_find, NELEM(fields_to_find));
@@ -1327,7 +1318,7 @@ int register_android_hardware_Camera(JNIEnv *env)
         return -1;
     }
 
-    clazz = env->FindClass("com/qualcomm/qti/camera/ExtendedFace");
+    clazz = env->FindClass("org/codeaurora/camera/ExtendedFace");
     if (NULL != clazz) {
         fields.face_constructor = env->GetMethodID(clazz, "<init>", "()V");
         find_fields(env, extendedfacefields_to_find, NELEM(extendedfacefields_to_find));
