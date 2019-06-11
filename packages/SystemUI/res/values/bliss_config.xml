@@ -33,4 +33,7 @@
     <!-- Color of the FOD view -->
     <color name="config_fodColor">#00ff00</color>
 
+    <!-- Allow devices override audio panel location to the left side -->
+    <bool name="config_audioPanelOnLeftSide">false</bool>
+
 </resources>
