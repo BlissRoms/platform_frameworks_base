@@ -401,34 +401,35 @@ public class VolumeDialogImpl implements VolumeDialog,
                 break;
             case AUDIO_PANEL_VIEW_MEDIA:
                 mMediaShowing = TunerService.parseIntegerSwitch(newValue, false);
-                updateRowsH(getActiveRow());
                 break;
             case AUDIO_PANEL_VIEW_RINGER:
                 mRingerShowing = TunerService.parseIntegerSwitch(newValue, false);
-                updateRowsH(getActiveRow());
                 break;
             case AUDIO_PANEL_VIEW_NOTIFICATION:
                 mNotificationShowing = TunerService.parseIntegerSwitch(newValue, false);
-                updateRowsH(getActiveRow());
                 break;
             case AUDIO_PANEL_VIEW_ALARM:
                 mAlarmShowing = TunerService.parseIntegerSwitch(newValue, false);
-                updateRowsH(getActiveRow());
                 break;
             case AUDIO_PANEL_VIEW_VOICE:
                 mVoiceShowing = TunerService.parseIntegerSwitch(newValue, false);
-                updateRowsH(getActiveRow());
                 break;
             case AUDIO_PANEL_VIEW_BT_SCO:
                 mBTSCOShowing = TunerService.parseIntegerSwitch(newValue, false);
-                updateRowsH(getActiveRow());
                 break;
             case VOLUME_LINK_NOTIFICATION:
                 mNotificationLinked = TunerService.parseIntegerSwitch(newValue, true);
-                updateRowsH(getActiveRow());
                 break;
             default:
                 break;
+        }
+        if (mVolumePanelOnLeft != mVolumePanelOnLeftDesired) {
+            mVolumePanelOnLeft = mVolumePanelOnLeftDesired;
+            // Reinit the panel dialog
+            initDialog();
+            mConfigurableTexts.update();
+        } else {
+            updateRowsH(getActiveRow());
         }
     }
 
