@@ -620,7 +620,9 @@ public final class PowerManagerService extends SystemService
     private boolean mSmartChargingEnabled;
     private boolean mPowerInputSuspended = false;
     private int mSmartChargingLevel;
+    private int mSmartChargingResumeLevel;
     private int mSmartChargingLevelDefaultConfig;
+    private int mSmartChargingResumeLevelDefaultConfig;
     private static String mPowerInputSupsendSysfsNode;
     private static String mPowerInputSupsendValue;
     private static String mPowerInputResumeValue;
@@ -1002,6 +1004,9 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.SMART_CHARGING_LEVEL),
                 false, mSettingsObserver, UserHandle.USER_ALL);
+        resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.SMART_CHARGING_RESUME_LEVEL),
+                false, mSettingsObserver, UserHandle.USER_ALL);
 
         IVrManager vrManager = IVrManager.Stub.asInterface(getBinderService(Context.VR_SERVICE));
         if (vrManager != null) {
@@ -1085,6 +1090,8 @@ public final class PowerManagerService extends SystemService
         // Smart charging
         mSmartChargingLevelDefaultConfig = resources.getInteger(
                 com.android.internal.R.integer.config_smartChargingBatteryLevel);
+        mSmartChargingResumeLevelDefaultConfig = resources.getInteger(
+                com.android.internal.R.integer.config_smartChargingBatteryResumeLevel);
         mPowerInputSupsendSysfsNode = resources.getString(
                 com.android.internal.R.string.config_SmartChargingSysfsNode);
         mPowerInputSupsendValue = resources.getString(
@@ -1127,6 +1134,9 @@ public final class PowerManagerService extends SystemService
         mSmartChargingLevel = Settings.System.getInt(resolver,
                 Settings.System.SMART_CHARGING_LEVEL,
                 mSmartChargingLevelDefaultConfig);
+        mSmartChargingResumeLevel = Settings.System.getInt(resolver,
+                Settings.System.SMART_CHARGING_RESUME_LEVEL,
+                mSmartChargingResumeLevelDefaultConfig);
 
         if (mSupportsDoubleTapWakeConfig) {
             boolean doubleTapWakeEnabled = Settings.Secure.getIntForUser(resolver,
@@ -1938,7 +1948,7 @@ public final class PowerManagerService extends SystemService
     }
 
     private void updateSmartChargingStatus() {
-        if (mPowerInputSuspended && (mBatteryLevel < mSmartChargingLevel) ||
+        if (mPowerInputSuspended && (mBatteryLevel <= mSmartChargingResumeLevel) ||
             (mPowerInputSuspended && !mSmartChargingEnabled)) {
             try {
                 FileUtils.stringToFile(mPowerInputSupsendSysfsNode, mPowerInputResumeValue);
