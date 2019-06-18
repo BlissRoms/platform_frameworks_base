@@ -3305,7 +3305,8 @@ public class PackageManagerService extends IPackageManager.Stub
                         // No apps are running this early, so no need to freeze
                         clearAppDataLIF(ps.pkg, UserHandle.USER_ALL,
                                 FLAG_STORAGE_DE | FLAG_STORAGE_CE | FLAG_STORAGE_EXTERNAL
-                                        | Installer.FLAG_CLEAR_CODE_CACHE_ONLY);
+                                        | Installer.FLAG_CLEAR_CODE_CACHE_ONLY
+                                        | Installer.FLAG_CLEAR_APP_DATA_KEEP_ART_PROFILES);
                     }
                 }
                 ver.fingerprint = Build.BLISS_FINGERPRINT;
@@ -10444,7 +10445,9 @@ public class PackageManagerService extends IPackageManager.Stub
             clearAppDataLeafLIF(pkg.childPackages.get(i), userId, flags);
         }
 
-        clearAppProfilesLIF(pkg, UserHandle.USER_ALL);
+        if ((flags & Installer.FLAG_CLEAR_APP_DATA_KEEP_ART_PROFILES) == 0) {
+            clearAppProfilesLIF(pkg, UserHandle.USER_ALL);
+        }
     }
 
     private void clearAppDataLeafLIF(PackageParser.Package pkg, int userId, int flags) {
@@ -22820,7 +22823,8 @@ public class PackageManagerService extends IPackageManager.Stub
 
                 if (!Build.BLISS_FINGERPRINT.equals(ver.fingerprint)) {
                     clearAppDataLIF(ps.pkg, UserHandle.USER_ALL, FLAG_STORAGE_DE | FLAG_STORAGE_CE
-                            | FLAG_STORAGE_EXTERNAL | Installer.FLAG_CLEAR_CODE_CACHE_ONLY);
+                            | FLAG_STORAGE_EXTERNAL | Installer.FLAG_CLEAR_CODE_CACHE_ONLY
+                            | Installer.FLAG_CLEAR_APP_DATA_KEEP_ART_PROFILES);
                 }
             }
         }
