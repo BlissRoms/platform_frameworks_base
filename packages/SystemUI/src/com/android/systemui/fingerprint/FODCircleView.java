@@ -64,9 +64,9 @@ public class FODCircleView extends ImageView implements OnTouchListener {
 
     private final WindowManager mWM;
 
-    private final int mCircleX = 444;
-    private final int mCircleY = 1966;
-    private final int mCircleSize = 190;
+    private final int mCircleX = 595;
+    private final int mCircleY = 2527;
+    private final int mCircleSize = 250;
 
     private boolean mIsDreaming;
     private boolean mIsPulsing;
