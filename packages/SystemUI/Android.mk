@@ -62,8 +62,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     trail-drawing \
     rebound \
     guava \
-    vendor.oneplus.fingerprint.extension-V1.0-java \
-    vendor.oneplus.hardware.display-V1.0-java
+    vendor.lineage.biometrics.fingerprint.inscreen-V1.0-java
 
 LOCAL_JAVA_LIBRARIES := telephony-common \
     android.car \

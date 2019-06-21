@@ -31,7 +31,7 @@ import com.android.internal.statusbar.IStatusBarService;
 
 import java.util.Arrays;
 
-import vendor.oneplus.fingerprint.extension.V1_0.IVendorFingerprintExtensions;
+import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
 
 /**
  * A class to keep track of the enrollment state for a given client.
@@ -42,10 +42,7 @@ public abstract class EnrollClient extends ClientMonitor {
     private byte[] mCryptoToken;
     private boolean mDisplayFODView;
     private IStatusBarService mStatusBarService;
-    private IVendorFingerprintExtensions mExtDaemon = null;
-    private static final int DISABLE_FP_LONGPRESS = 4;
-    private static final int RESUME_FP_ENROLL = 8;
-    private static final int FINISH_FP_ENROLL = 10;
+    private IFingerprintInscreen mExtDaemon = null;
 
     public EnrollClient(Context context, long halDeviceId, IBinder token,
             IFingerprintServiceReceiver receiver, int userId, int groupId, byte [] cryptoToken,
@@ -83,8 +80,8 @@ public abstract class EnrollClient extends ClientMonitor {
             receiver.onEnrollResult(getHalDeviceId(), fpId, groupId, remaining);
             if(remaining == 0 && mDisplayFODView) {
                 try {
-                    mExtDaemon = IVendorFingerprintExtensions.getService();
-                    mExtDaemon.updateStatus(FINISH_FP_ENROLL);
+                    mExtDaemon = IFingerprintInscreen.getService();
+                    mExtDaemon.onFinishEnroll();
                     mStatusBarService.handleInDisplayFingerprintView(false, true);
                 } catch (RemoteException e) {}
             }
@@ -106,10 +103,9 @@ public abstract class EnrollClient extends ClientMonitor {
 
         if (mDisplayFODView) {
             try {
-                mExtDaemon = IVendorFingerprintExtensions.getService();
-                mExtDaemon.updateStatus(RESUME_FP_ENROLL);
+                mExtDaemon = IFingerprintInscreen.getService();
+                mExtDaemon.onStartEnroll();
                 mStatusBarService.handleInDisplayFingerprintView(true, true);
-                mExtDaemon.updateStatus(DISABLE_FP_LONGPRESS);
             } catch (RemoteException e) {}
         }
 
