@@ -35,7 +35,7 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.IStatusBarService;
 
-import vendor.oneplus.fingerprint.extension.V1_0.IVendorFingerprintExtensions;
+import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
 
 /**
  * A class to keep track of the authentication state for a given client.
@@ -60,10 +60,8 @@ public abstract class AuthenticationClient extends ClientMonitor {
     protected boolean mDialogDismissed;
 
     private boolean mDisplayFODView;
-    private IVendorFingerprintExtensions mExtDaemon = null;
+    private IFingerprintInscreen mExtDaemon = null;
     private final String mKeyguardPackage;
-    private static final int DISABLE_FP_LONGPRESS = 4;
-    private static final int ENABLE_FP_LONGPRESS = 3;
 
     // Receives events from SystemUI and handles them before forwarding them to FingerprintDialog
     protected IBiometricPromptReceiver mDialogReceiver = new IBiometricPromptReceiver.Stub() {
@@ -268,13 +266,13 @@ public abstract class AuthenticationClient extends ClientMonitor {
 
         if (mDisplayFODView) {
             try {
-                mExtDaemon = IVendorFingerprintExtensions.getService();
+                mExtDaemon = IFingerprintInscreen.getService();
                 Slog.w(TAG, "getOwnerString : " + isKeyguard(getOwnerString()));
 
                 if (isKeyguard(getOwnerString())) {
-                    mExtDaemon.updateStatus(ENABLE_FP_LONGPRESS);
+                    mExtDaemon.setLongPressEnabled(true);
                 } else {
-                    mExtDaemon.updateStatus(DISABLE_FP_LONGPRESS);
+                    mExtDaemon.setLongPressEnabled(false);
                 }
 
                 mStatusBarService.handleInDisplayFingerprintView(true, false);
