@@ -52,6 +52,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
     private final Paint mPaintShow = new Paint();
     private IFingerprintInscreen mFpDaemon = null;
     private boolean mInsideCircle = false;
+    private boolean mPressed = false;
     private final WindowManager.LayoutParams mParams = new WindowManager.LayoutParams();
 
     private final int DISPLAY_AOD_MODE = 8;
@@ -68,6 +69,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
 
     public boolean viewAdded;
     private boolean mIsEnrolling;
+    private boolean mShouldBoostBrightness;
 
     KeyguardUpdateMonitor mUpdateMonitor;
 
@@ -182,6 +184,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
 
         try {
             mFpDaemon = IFingerprintInscreen.getService();
+            mShouldBoostBrightness = mFpDaemon.shouldBoostBrightness();
         } catch (Exception e) {}
 
         mUpdateMonitor = KeyguardUpdateMonitor.getInstance(context);
@@ -193,7 +196,20 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         super.onDraw(canvas);
         //TODO w!=h?
         if(mInsideCircle) {
+            if (!mPressed) {
+                try {
+                    mFpDaemon.onPress();
+                } catch (RemoteException e) {}
+                mPressed = true;
+            }
             canvas.drawCircle(mW/2, mH/2, (float) (mW/2.0f), this.mPaintFingerprint);
+        } else {
+            if (mPressed) {
+                try {
+                    mFpDaemon.onRelease();
+                } catch (RemoteException e) {}
+                mPressed = false;
+            }
         }
         mChange = false;
     }
@@ -205,12 +221,10 @@ public class FODCircleView extends ImageView implements OnTouchListener {
 
         boolean newInside = (x > 0 && x < mW) && (y > 0 && y < mW);
 
-        if(event.getAction() == MotionEvent.ACTION_UP) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            setDim(false);
             newInside = false;
             setImageResource(R.drawable.fod_icon_default);
-            try {
-                mFpDaemon.onRelease();
-            } catch (RemoteException e) {}
         }
 
         if(newInside == mInsideCircle) return mInsideCircle;
@@ -224,10 +238,8 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             return false;
         }
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            setDim(true);
             setImageResource(R.drawable.fod_icon_empty);
-            try {
-                mFpDaemon.onPress();
-            } catch (RemoteException e) {}
         }
         return true;
     }
@@ -265,7 +277,6 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         mWM.addView(this, mParams);
         viewAdded = true;
         mChange = true;
-        setDim(true);
         try {
             mFpDaemon.onShowFODView();
         } catch (RemoteException e) {}
@@ -277,6 +288,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         mInsideCircle = false;
         mWM.removeView(this);
         viewAdded = false;
+        mPressed = false;
         setDim(false);
         try {
             mFpDaemon.onHideFODView();
@@ -287,10 +299,12 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         if (dim) {
             int curBrightness = Settings.System.getInt(getContext().getContentResolver(),
                             Settings.System.SCREEN_BRIGHTNESS, 100);
-            float dimAmount = ((float) Math.pow(2, 1.0f - ((float) curBrightness) / 255.0f)) - 1.2f;
-            if (dimAmount < 0) dimAmount = 0f;
-            mParams.screenBrightness = 1.0f;
-            mParams.dimAmount = dimAmount;
+            int dimAmount = 0;
+            try {
+                dimAmount = mFpDaemon.getDimAmount(curBrightness);
+            } catch (RemoteException e) {}
+            if (mShouldBoostBrightness) mParams.screenBrightness = 1.0f;
+            mParams.dimAmount = ((float) dimAmount) / 255.0f;
         } else {
             mParams.screenBrightness = .0f;
             mParams.dimAmount = .0f;
