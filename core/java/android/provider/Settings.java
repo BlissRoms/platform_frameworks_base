@@ -5002,16 +5002,20 @@ public final class Settings {
         public static final String ALERT_SLIDER_SILENT_MODE = "alert_slider_silent_mode";
 
         /**
+         * Whether to show wireless charging animation
+         * @hide
+         */
+        public static final String WIRELESS_CHARGING_ANIMATION = "wireless_charging_animation";
+
+        /** @hide */
+        private static final Validator WIRELESS_CHARGING_ANIMATION_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * Enable\Disable Bluetooth Battery bar in quick settings
          * @hide
          */
         public static final String BLUETOOTH_QS_SHOW_BATTERY = "bluetooth_qs_show_battery";
-
-        /**
-         * Whether to show charging animation
-         * @hide
-         */
-        public static final String CHARGING_ANIMATION = "charging_animation";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -5086,6 +5090,7 @@ public final class Settings {
             SCREEN_OFF_ANIMATION,
             LOCKSCREEN_MEDIA_BLUR,
             FINGERPRINT_SUCCESS_VIB,
+            WIRELESS_CHARGING_ANIMATION,
         };
 
         /**
@@ -5215,6 +5220,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCKSCREEN_MEDIA_BLUR);
             PRIVATE_SETTINGS.add(SCREENSHOT_DEFAULT_MODE);
             PRIVATE_SETTINGS.add(FINGERPRINT_SUCCESS_VIB);
+            PRIVATE_SETTINGS.add(WIRELESS_CHARGING_ANIMATION);
         }
 
         /**
@@ -5318,6 +5324,7 @@ public final class Settings {
             VALIDATORS.put(SCREEN_OFF_ANIMATION, SCREEN_OFF_ANIMATION_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_MEDIA_BLUR, LOCKSCREEN_MEDIA_BLUR_VALIDATOR);
             VALIDATORS.put(FINGERPRINT_SUCCESS_VIB, FINGERPRINT_SUCCESS_VIB_VALIDATOR);
+            VALIDATORS.put(WIRELESS_CHARGING_ANIMATION, WIRELESS_CHARGING_ANIMATION_VALIDATOR);
         }
 
         /**
