@@ -652,7 +652,7 @@ public class Notifier {
     /**
      * Called when wired charging has started - to provide user feedback
      */
-    public void onWiredChargingStarted(int batteryLevel, @UserIdInt int userId) {
+    public void onWiredChargingStarted(@UserIdInt int userId,int batteryLevel) {
         if (DEBUG) {
             Slog.d(TAG, "onWiredChargingStarted");
         }
@@ -660,15 +660,15 @@ public class Notifier {
         mSuspendBlocker.acquire();
         Message msg = mHandler.obtainMessage(MSG_WIRED_CHARGING_STARTED);
         msg.setAsynchronous(true);
-        msg.arg1 = batteryLevel;
-        msg.arg2 = userId;
+        msg.arg1 = userId;
+        msg.arg2 = batteryLevel;
         mHandler.sendMessage(msg);
     }
 
     /**
      * Called when wired charging has been disconnected so as to provide user feedback
      */
-    public void onWiredChargingDisconnected(@UserIdInt int userId) {
+    public void onWiredChargingDisconnected(@UserIdInt int userId,int batteryLevel) {
         if (DEBUG) {
             Slog.d(TAG, "onWiredChargingDisconnected");
         }
@@ -677,6 +677,7 @@ public class Notifier {
         Message msg = mHandler.obtainMessage(MSG_WIRED_CHARGING_DISCONNECTED);
         msg.setAsynchronous(true);
         msg.arg1 = userId;
+        msg.arg2 = batteryLevel;
         mHandler.sendMessage(msg);
     }
 
@@ -841,7 +842,7 @@ public class Notifier {
 
     private void showWiredChargingStarted(@UserIdInt int userId,int batteryLevel) {
         final boolean animationEnabled = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.CHARGING_ANIMATION, 1) == 1;
+                Settings.System.WIRELESS_CHARGING_ANIMATION, 0) == 1;
         playChargingStartedVibration(userId);
         playChargingStartedFeedback(userId);
         if (mStatusBarManagerInternal != null && animationEnabled) {
