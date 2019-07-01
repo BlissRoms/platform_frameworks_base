@@ -53,12 +53,15 @@ import com.android.systemui.R;
 
 import java.io.PrintWriter;
 import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
 import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreenCallback;
 
 public class FODCircleView extends ImageView implements OnTouchListener {
     private final int mX, mY, mW, mH;
+    private final int mDreamingMaxOffset;
     private final Paint mPaintFingerprint = new Paint();
     private final Paint mPaintShow = new Paint();
     private IFingerprintInscreen mFpDaemon = null;
@@ -74,6 +77,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
     private final WindowManager mWM;
 
     private int mNavigationBarSize;
+    private int mDreamingOffsetX = 0, mDreamingOffsetY = 0;
 
     private boolean mIsDreaming;
     private boolean mIsPulsing;
@@ -83,6 +87,8 @@ public class FODCircleView extends ImageView implements OnTouchListener {
     public boolean viewAdded;
     private boolean mIsEnrolling;
     private boolean mShouldBoostBrightness;
+
+    private Timer mBurnInProtectionTimer = null;
 
     IFingerprintInscreenCallback mFingerprintInscreenCallback =
             new IFingerprintInscreenCallback.Stub() {
@@ -125,6 +131,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             super.onDreamingStateChanged(dreaming);
             mIsDreaming = dreaming;
             mInsideCircle = false;
+<<<<<<< HEAD
             mChange = true;
         }
 
@@ -134,6 +141,19 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             mIsPulsing = pulsing;
             mInsideCircle = false;
             mChange = true;
+=======
+            if (dreaming) {
+                mBurnInProtectionTimer = new Timer();
+                mBurnInProtectionTimer.schedule(new BurnInProtectionTask(), 0, 60 * 1000);
+            } else {
+                mBurnInProtectionTimer.cancel();
+            }
+
+            if (viewAdded) {
+                resetPosition();
+                invalidate();
+            }
+>>>>>>> 072f6a72c67... FODCircleView: move randomly to prevent burn-in
         }
 
         @Override
@@ -222,6 +242,8 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             mH = -1;
         }
 
+        mDreamingMaxOffset = (int) (mW * 0.1f);
+
         mPaintFingerprint.setAntiAlias(true);
         mPaintFingerprint.setColor(Color.GREEN);
 
@@ -253,6 +275,9 @@ public class FODCircleView extends ImageView implements OnTouchListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mInsideCircle) {
+            if (mIsDreaming) {
+                setAlpha(1.0f);
+            }
             if (!mPressed) {
                 try {
                     mFpDaemon.onPress();
@@ -263,6 +288,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             }
             canvas.drawCircle(mW / 2, mH / 2, (float) (mW / 2.0f), this.mPaintFingerprint);
         } else {
+            setAlpha(mIsDreaming ? 0.5f : 1.0f);
             if (mPressed) {
                 try {
                     mFpDaemon.onRelease();
@@ -412,6 +438,15 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             default:
                 throw new IllegalArgumentException("Unknown rotation: " + rotation);
         }
+
+        if (mIsDreaming) {
+            mParams.x += mDreamingOffsetX;
+            mParams.y += mDreamingOffsetY;
+        }
+
+        if (viewAdded) {
+            mWindowManager.updateViewLayout(this, mParams);
+        }
     }
 
     private void setDim(boolean dim) {
@@ -442,4 +477,27 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             // do nothing
         }
     }
+
+    private class BurnInProtectionTask extends TimerTask {
+        @Override
+        public void run() {
+            // It is fine to modify the variables here because
+            // no other thread will be modifying it
+            long now = System.currentTimeMillis() / 1000 / 60;
+            mDreamingOffsetX = (int) (now % (mDreamingMaxOffset * 4));
+            if (mDreamingOffsetX > mDreamingMaxOffset * 2) {
+                mDreamingOffsetX = mDreamingMaxOffset * 4 - mDreamingOffsetX;
+            }
+            // Let y to be not synchronized with x, so that we get maximum movement
+            mDreamingOffsetY = (int) ((now + mDreamingMaxOffset / 3) % (mDreamingMaxOffset * 2));
+            if (mDreamingOffsetY > mDreamingMaxOffset * 2) {
+                mDreamingOffsetY = mDreamingMaxOffset * 4 - mDreamingOffsetY;
+            }
+            mDreamingOffsetX -= mDreamingMaxOffset;
+            mDreamingOffsetY -= mDreamingMaxOffset;
+            if (viewAdded) {
+                new Handler(Looper.getMainLooper()).post(() -> resetPosition());
+            }
+        }
+    };
 }
