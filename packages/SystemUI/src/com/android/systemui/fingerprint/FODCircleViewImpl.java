@@ -17,7 +17,6 @@
 package com.android.systemui.fingerprint;
 
 import android.content.pm.PackageManager;
-import android.util.Log;
 import android.view.View;
 
 import com.android.systemui.SystemUI;
@@ -26,25 +25,26 @@ import com.android.systemui.statusbar.CommandQueue.Callbacks;
 
 public class FODCircleViewImpl extends SystemUI implements CommandQueue.Callbacks {
     private static final String TAG = "FODCircleViewImpl";
-    private FODCircleView mfodCircleView;
 
+    private FODCircleView mFodCircleView;
 
     @Override
     public void start() {
-        if (!mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
-            return;
+        if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
+            getComponent(CommandQueue.class).addCallbacks(this);
         }
-        getComponent(CommandQueue.class).addCallbacks(this);
     }
 
     @Override
     public void handleInDisplayFingerprintView(boolean show, boolean isEnrolling) {
-        if (mfodCircleView == null)
-            mfodCircleView = new FODCircleView(mContext);
-        if (!mfodCircleView.viewAdded && show)
-            mfodCircleView.show(isEnrolling);
-        else if (mfodCircleView.viewAdded)
-            mfodCircleView.hide();
+        if (mFodCircleView == null) {
+            mFodCircleView = new FODCircleView(mContext);
+        }
+
+        if (!mFodCircleView.viewAdded && show) {
+            mFodCircleView.show(isEnrolling);
+        } else if (mFodCircleView.viewAdded) {
+            mFodCircleView.hide();
+        }
     }
 }
-
