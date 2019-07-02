@@ -91,14 +91,11 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         public void onFingerDown() {
             mInsideCircle = true;
 
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    setDim(true);
-                    setImageResource(R.drawable.fod_icon_empty);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                setDim(true);
+                setImageResource(R.drawable.fod_icon_empty);
 
-                    invalidate();
-                }
+                invalidate();
             });
         }
 
@@ -106,14 +103,11 @@ public class FODCircleView extends ImageView implements OnTouchListener {
         public void onFingerUp() {
             mInsideCircle = false;
 
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    setDim(false);
-                    setImageResource(R.drawable.fod_icon_default);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                setDim(false);
+                setImageResource(R.drawable.fod_icon_default);
 
-                    invalidate();
-                }
+                invalidate();
             });
         }
     };
