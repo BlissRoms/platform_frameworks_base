@@ -65,5 +65,8 @@
         <item>com.google.android.systemui.GoogleServices</item>
     </string-array>
 
+    <!-- Color of the FOD view -->
+    <color name="config_fodColor">#00ff00</color>
+
 </resources>
 
