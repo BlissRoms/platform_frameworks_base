@@ -93,7 +93,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 setDim(true);
-                setImageResource(R.drawable.fod_icon_empty);
+                setImageDrawable(null);
 
                 invalidate();
             });
@@ -125,7 +125,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
             if (dreaming) {
                 mBurnInProtectionTimer = new Timer();
                 mBurnInProtectionTimer.schedule(new BurnInProtectionTask(), 0, 60 * 1000);
-            } else {
+            } else if (mBurnInProtectionTimer != null) {
                 mBurnInProtectionTimer.cancel();
             }
 
@@ -304,7 +304,7 @@ public class FODCircleView extends ImageView implements OnTouchListener {
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             setDim(true);
-            setImageResource(R.drawable.fod_icon_empty);
+            setImageDrawable(null);
         }
 
         return true;
