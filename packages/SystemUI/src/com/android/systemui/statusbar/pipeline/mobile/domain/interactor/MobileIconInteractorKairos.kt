@@ -316,13 +316,37 @@ class MobileIconInteractorKairosImpl(
     override val isAllowedDuringAirplaneMode: State<Boolean>
         get() = connectionRepository.isAllowedDuringAirplaneMode
 
+    private val DATA_DISABLED_ICON: String =
+            "system:" + Settings.System.DATA_DISABLED_ICON
+
+    private val shouldShowExclamationMark: State<Boolean> = buildState {
+        callbackFlow {
+                val callback =
+                    object : TunerService.Tunable {
+                        override fun onTuningChanged(key: String, newValue: String?) {
+                            when (key) {
+                                DATA_DISABLED_ICON ->
+                                    trySend(TunerService.parseIntegerSwitch(newValue, true))
+                            }
+                        }
+                    }
+                Dependency.get(TunerService::class.java).addTunable(callback, DATA_DISABLED_ICON)
+
+                awaitClose { Dependency.get(TunerService::class.java).removeTunable(callback) }
+            }
+            .toState(initialValue = true)
+    }
+
     /** Whether or not to show the error state of [SignalDrawable] for cellular connections */
     private val showExclamationMarkForCellular: State<Boolean> =
-        combine(defaultSubscriptionHasDataEnabled, isDefaultConnectionFailed, isInService) {
-            isDefaultDataEnabled,
+        combine(
+            isDataEnabled,
+            defaultSubscriptionHasDataEnabled,
             isDefaultConnectionFailed,
-            isInService ->
-            !isDefaultDataEnabled || isDefaultConnectionFailed || !isInService
+            isInService,
+            shouldShowExclamationMark,
+        ) { isDataEnabled, isDefaultDataEnabled, isDefaultConnectionFailed, isInService, shouldShowEx ->
+            (!isDataEnabled || !isDefaultDataEnabled || isDefaultConnectionFailed || !isInService) && shouldShowEx
         }
 
     /** Whether or not to show the error state of [SignalDrawable] for satellite connections */
