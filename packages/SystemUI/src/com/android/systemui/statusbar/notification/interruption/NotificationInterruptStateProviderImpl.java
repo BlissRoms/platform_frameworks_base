@@ -25,6 +25,7 @@ import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.content.Context;
 import android.hardware.display.AmbientDisplayConfiguration;
+import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.RemoteException;
@@ -58,6 +59,8 @@ import javax.inject.Inject;
 @SysUISingleton
 public class NotificationInterruptStateProviderImpl implements NotificationInterruptStateProvider {
     private static final String TAG = "InterruptionStateProvider";
+    private static final boolean DEBUG = false;
+    private static final boolean DEBUG_HEADS_UP = Build.IS_DEBUGGABLE;
     private static final boolean ENABLE_HEADS_UP = true;
     private static final String SETTING_HEADS_UP_TICKER = "ticker_gets_heads_up";
 
@@ -83,6 +86,7 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
     ActivityManager mAm;
     private ArrayList<String> mStoplist = new ArrayList<String>();
     private ArrayList<String> mBlacklist = new ArrayList<String>();
+    private boolean mLessBoringHeadsUp;
 
     @Inject
     public NotificationInterruptStateProviderImpl(
@@ -405,6 +409,18 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
         return true;
     }
 
+    @Override
+    public void setUseLessBoringHeadsUp(boolean lessBoring) {
+        mLessBoringHeadsUp = lessBoring;
+    }
+
+    public boolean shouldSkipHeadsUp(StatusBarNotification sbn) {
+        boolean isImportantHeadsUp = false;
+        String notificationPackageName = sbn.getPackageName().toLowerCase();
+        isImportantHeadsUp = notificationPackageName.contains("dialer");
+        return !mStatusBarStateController.isDozing() && mLessBoringHeadsUp && !isImportantHeadsUp;
+    }
+
     /**
      * Common checks between alerts that occur while the device is awake (heads up & bubbles).
      *
@@ -419,6 +435,12 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
                 mLogger.logNoAlertingSuppressedBy(sbn, mSuppressors.get(i), /* awake */ true);
                 return false;
             }
+        }
+        if (shouldSkipHeadsUp(sbn)) {
+            if (DEBUG_HEADS_UP) {
+                Log.d(TAG, "No alerting: less boring headsup enabled");
+            }
+            return false;
         }
         return true;
     }
