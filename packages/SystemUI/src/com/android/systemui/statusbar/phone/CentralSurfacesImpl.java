@@ -295,6 +295,8 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
             "com.android.systemui.statusbar.banner_action_cancel";
     private static final String BANNER_ACTION_SETUP =
             "com.android.systemui.statusbar.banner_action_setup";
+    private static final String LESS_BORING_HEADS_UP =
+            "system:" + Settings.System.LESS_BORING_HEADS_UP;
 
     private static final int MSG_OPEN_SETTINGS_PANEL = 1002;
     private static final int MSG_LAUNCH_TRANSITION_TIMEOUT = 1003;
@@ -951,6 +953,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
         mColorExtractor.addOnColorsChangedListener(mOnColorsChangedListener);
 
         mTunerService.addTunable(this, QS_TRANSPARENCY);
+        mTunerService.addTunable(this, LESS_BORING_HEADS_UP);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 
@@ -4253,6 +4256,11 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
             case QS_TRANSPARENCY:
                 mScrimController.setCustomScrimAlpha(
                         TunerService.parseInteger(newValue, 100));
+                break;
+            case LESS_BORING_HEADS_UP:
+                boolean lessBoringHeadsUp =
+                        TunerService.parseIntegerSwitch(newValue, false);
+                mNotificationInterruptStateProvider.setUseLessBoringHeadsUp(lessBoringHeadsUp);
                 break;
             default:
                 break;
