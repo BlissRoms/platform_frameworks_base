@@ -27,11 +27,16 @@ import static com.android.systemui.statusbar.notification.interruption.Notificat
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.Context;
+import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.hardware.display.AmbientDisplayConfiguration;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.provider.Settings;
+import android.provider.Telephony.Sms;
 import android.service.notification.StatusBarNotification;
+import android.telecom.TelecomManager;
 
 import androidx.annotation.NonNull;
 
@@ -53,6 +58,7 @@ import com.android.systemui.util.EventLog;
 import com.android.systemui.util.settings.GlobalSettings;
 import com.android.systemui.util.time.SystemClock;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +76,7 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
     private final List<NotificationInterruptSuppressor> mSuppressors = new ArrayList<>();
     private final StatusBarStateController mStatusBarStateController;
     private final KeyguardStateController mKeyguardStateController;
+    private final ContentResolver mContentResolver;
     private final PowerManager mPowerManager;
     private final AmbientDisplayConfiguration mAmbientDisplayConfiguration;
     private final BatteryController mBatteryController;
@@ -86,6 +93,11 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
 
     @VisibleForTesting
     protected boolean mUseHeadsUp = false;
+
+    private boolean mLessBoringHeadsUp = false;
+    private boolean mReTicker = false;
+    private TelecomManager mTm;
+    private Context mContext;
 
     public enum NotificationInterruptEvent implements UiEventLogger.UiEventEnum {
         @UiEvent(doc = "FSI suppressed for suppressive GroupAlertBehavior")
@@ -117,6 +129,8 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
 
     @Inject
     public NotificationInterruptStateProviderImpl(
+            Context context,
+            ContentResolver contentResolver,
             PowerManager powerManager,
             AmbientDisplayConfiguration ambientDisplayConfiguration,
             BatteryController batteryController,
@@ -133,6 +147,9 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
             SystemClock systemClock,
             GlobalSettings globalSettings,
             EventLog eventLog) {
+        mContext = context;
+        mTm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+        mContentResolver = contentResolver;
         mPowerManager = powerManager;
         mBatteryController = batteryController;
         mAmbientDisplayConfiguration = ambientDisplayConfiguration;
@@ -155,6 +172,14 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
                 final boolean settingEnabled = HEADS_UP_OFF
                         != mGlobalSettings.getInt(HEADS_UP_NOTIFICATIONS_ENABLED, HEADS_UP_OFF);
                 mUseHeadsUp = ENABLE_HEADS_UP && settingEnabled;
+                mLessBoringHeadsUp = Settings.System.getInt(
+                        mContentResolver,
+                        Settings.System.LESS_BORING_HEADS_UP,
+                        0) == 1;
+                mReTicker = Settings.System.getInt(
+                        mContentResolver,
+                        Settings.System.RETICKER_STATUS,
+                        0) == 1;
                 mLogger.logHeadsUpFeatureChanged(mUseHeadsUp);
                 if (wasUsing != mUseHeadsUp) {
                     if (!mUseHeadsUp) {
@@ -172,6 +197,14 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
                     headsUpObserver);
             mGlobalSettings.registerContentObserver(
                     mGlobalSettings.getUriFor(SETTING_HEADS_UP_TICKER), true,
+                    headsUpObserver);
+            mContentResolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.LESS_BORING_HEADS_UP),
+                    true,
+                    headsUpObserver);
+            mContentResolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.RETICKER_STATUS),
+                    true,
                     headsUpObserver);
         }
         headsUpObserver.onChange(true); // set up
@@ -416,6 +449,15 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
             return false;
         }
 
+        if (mLessBoringHeadsUp) {
+            if (!mReTicker) {
+                if (shouldSkipHeadsUp(entry)) {
+                    mLogger.logNoHeadsUpShouldSkipPackage(entry);
+                    return false;
+                }
+            }
+        }
+
         if (!canAlertCommon(entry, log)) {
             return false;
         }
@@ -533,6 +575,44 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
         }
         if (log) mLogger.logPulsing(entry);
         return true;
+    }
+
+    /**
+     * Determines whether a notification should be skipped as a heads-up notification.
+     *
+     * @param entry The notification entry that will be used to retrieve notification package name.
+     * @return True if the notification should be skipped; otherwise, false.
+     */
+    public boolean shouldSkipHeadsUp(NotificationEntry entry) {
+        // Check if the device is in Doze mode; if so, do not skip.
+        if (mStatusBarStateController.isDozing()) {
+            return false;
+        }
+
+        String notificationPackageName = entry.getSbn().getPackageName();
+
+        // List of packages allowed to show headsup notification
+        List<String> headsUpWhitelistPackages = Arrays.asList(
+            getDefaultDialerPackage(mTm).toLowerCase(),
+            getDefaultSmsPackage(mContext).toLowerCase(),
+            "dialer",
+            "messaging",
+            "messenger",
+            "clock"
+        );
+
+        boolean shouldSkip = !headsUpWhitelistPackages.contains(notificationPackageName.toLowerCase());
+
+        return shouldSkip;
+    }
+
+    private static String getDefaultSmsPackage(Context ctx) {
+        // for reference, there's also a new RoleManager api with getDefaultSmsPackage(context, userid) 
+        return Sms.getDefaultSmsPackage(ctx);
+    }
+
+    private static String getDefaultDialerPackage(TelecomManager tm) {
+        return tm != null ? tm.getDefaultDialerPackage() : "";
     }
 
     /**
