@@ -39,6 +39,7 @@ public class AmbientDisplayConfiguration {
                 || pulseOnPickupEnabled(user)
                 || pulseOnDoubleTapEnabled(user)
                 || pulseOnLongPressEnabled(user)
+                || pulseOnCustomDozeEventEnabled(user)
                 || pulseOnMedia(user)
                 || alwaysOnEnabled(user);
     }
@@ -52,6 +53,16 @@ public class AmbientDisplayConfiguration {
         return boolSettingDefaultOn(Settings.Secure.DOZE_ENABLED, user) && pulseOnNotificationAvailable();
     }
 
+    public boolean pulseOnNotificationAvailable() {
+        return ambientDisplayAvailable();
+    }
+
+    private boolean pulseOnCustomDozeEventEnabled(int user) {
+        return (Settings.System.getInt(mContext.getContentResolver(), Settings.System.CUSTOM_AMBIENT_TILT_GESTURE, 0) != 0
+                || Settings.System.getInt(mContext.getContentResolver(), Settings.System.CUSTOM_AMBIENT_POCKETMODE_GESTURE, 0) != 0
+                || Settings.System.getInt(mContext.getContentResolver(), Settings.System.CUSTOM_AMBIENT_HANDWAVE_GESTURE, 0) != 0)
+                && pulseOnNotificationAvailable();
+    }
 
     public boolean pulseOnMedia(int user) {
         boolean enabled = Settings.System.getIntForUser(mContext.getContentResolver(),
@@ -61,10 +72,6 @@ public class AmbientDisplayConfiguration {
 
     public boolean canForceDozeNotifications() {
         return mContext.getResources().getBoolean(R.bool.config_canForceDozeNotifications);
-    }
-
-    public boolean pulseOnNotificationAvailable() {
-        return ambientDisplayAvailable();
     }
 
     public boolean pulseOnPickupEnabled(int user) {
