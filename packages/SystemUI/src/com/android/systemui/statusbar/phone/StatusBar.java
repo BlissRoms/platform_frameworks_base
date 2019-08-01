@@ -172,6 +172,7 @@ import com.android.systemui.statusbar.phone.Ticker;
 import com.android.systemui.statusbar.phone.TickerView;
 import com.android.internal.utils.ActionConstants;
 import com.android.internal.utils.ActionUtils;
+import com.android.internal.utils.ImageHelper;
 import com.android.internal.utils.SmartPackageMonitor;
 import com.android.internal.utils.SmartPackageMonitor.PackageChangedListener;
 import com.android.internal.utils.SmartPackageMonitor.PackageState;
@@ -420,6 +421,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected FingerprintUnlockController mFingerprintUnlockController;
     private LightBarController mLightBarController;
     protected LockscreenWallpaper mLockscreenWallpaper;
+    private int mAlbumArtFilter;
 
     private BurnInProtectionController mBurnInProtectionController;
 
@@ -839,6 +841,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                  Settings.System.LOCKSCREEN_ALBUM_ART_FILTER),
+                  false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -873,6 +878,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.Secure.getUriFor(
                     Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS))) {
                 setFpToDismissNotifications();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_ALBUM_ART_FILTER))) {
+                updateLockscreenFilter();
             }
 
 	    update();
@@ -896,6 +904,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 			setForceAmbient();
 	        setUseLessBoringHeadsUp();
             setFpToDismissNotifications();
+            updateLockscreenFilter();
         }
 
     private void setHeadsUpStoplist() {
@@ -929,6 +938,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (isAmbientContainerAvailable()) {
             ((AmbientIndicationContainer)mAmbientIndicationContainer).setIndication(null, false);
         }
+    }
+
+    private void updateLockscreenFilter() {
+        mAlbumArtFilter = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_ALBUM_ART_FILTER, 0,
+                UserHandle.USER_CURRENT);
     }
 
     private void updateKeyguardStatusSettings() {
@@ -2114,10 +2129,20 @@ public class StatusBar extends SystemUI implements DemoMode,
                 // might still be null
             }
             if (artworkBitmap != null) {
-                artworkDrawable = new BitmapDrawable(mBackdropBack.getResources(), artworkBitmap);
+                switch (mAlbumArtFilter) {
+                    case 1:
+                        artworkDrawable = new BitmapDrawable(mBackdropBack.getResources(), ImageHelper.toGrayscale(artworkBitmap));
+                        break;
+                    case 2:
+                        artworkDrawable = new BitmapDrawable(mBackdropBack.getResources(), ImageHelper.getBlurredImage(mContext, artworkBitmap));
+                        break;
+                    case 0:
+                    default:
+                        artworkDrawable = new BitmapDrawable(mBackdropBack.getResources(), artworkBitmap);
+                }
+
             }
         }
-        mKeyguardShowingMedia = artworkDrawable != null;
 
         boolean allowWhenShade = false;
         BitmapDrawable lockDrawable = null;
