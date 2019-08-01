@@ -652,6 +652,8 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private boolean mWallpaperSupportsAmbientMode;
 
+    private BitmapDrawable altDrawable;
+
     private BroadcastReceiver mWallpaperChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -665,6 +667,13 @@ public class StatusBar extends SystemUI implements DemoMode,
 
             mStatusBarWindowManager.setWallpaperSupportsAmbientMode(mWallpaperSupportsAmbientMode);
             mScrimController.setWallpaperSupportsAmbientMode(mWallpaperSupportsAmbientMode);
+
+            ParcelFileDescriptor pfd = wallpaperManager.getWallpaperFile(WallpaperManager.FLAG_SYSTEM);
+            if (pfd != null) {
+                Bitmap sysWallpaper = BitmapFactory.decodeFileDescriptor(pfd.getFileDescriptor());
+                altDrawable = new BitmapDrawable(mBackdropBack.getResources(), sysWallpaper);
+            }
+
         }
     };
 
@@ -2096,6 +2105,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         Drawable artworkDrawable = null;
+
         if (mediaMetadata != null && (Settings.System.getIntForUser(mContext.getContentResolver(),
             Settings.System.LOCKSCREEN_MEDIA_METADATA, 1, UserHandle.USER_CURRENT) == 1)) {
             Bitmap artworkBitmap = mediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ART);
@@ -2110,11 +2120,14 @@ public class StatusBar extends SystemUI implements DemoMode,
         mKeyguardShowingMedia = artworkDrawable != null;
 
         boolean allowWhenShade = false;
+        BitmapDrawable lockDrawable = null;
+
         if (ENABLE_LOCKSCREEN_WALLPAPER && artworkDrawable == null) {
             Bitmap lockWallpaper = mLockscreenWallpaper.getBitmap();
             if (lockWallpaper != null) {
                 artworkDrawable = new LockscreenWallpaper.WallpaperDrawable(
                         mBackdropBack.getResources(), lockWallpaper);
+                lockDrawable = new BitmapDrawable(mBackdropBack.getResources(), lockWallpaper);
                 // We're in the SHADE mode on the SIM screen - yet we still need to show
                 // the lockscreen wallpaper in that mode.
                 allowWhenShade = mStatusBarKeyguardViewManager != null
@@ -2135,9 +2148,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (mKeyguardShowingMedia && artworkDrawable instanceof BitmapDrawable) {
                 // always use current backdrop to color eq
                 mVisualizerView.setBitmap(((BitmapDrawable)artworkDrawable).getBitmap());
-            } else {
-                // clear the color
-                mVisualizerView.setBitmap(null);
+            } else if (lockDrawable != null) {
+                mVisualizerView.setBitmap(((BitmapDrawable)lockDrawable).getBitmap());
+            } else if (altDrawable != null) {
+                mVisualizerView.setBitmap(((BitmapDrawable)altDrawable).getBitmap());
             }
         }
 
