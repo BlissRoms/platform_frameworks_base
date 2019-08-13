@@ -214,4 +214,7 @@
 
   <!-- Pocket bridge -->
   <java-symbol type="string" name="config_pocketBridgeSysfsInpocket" />
+
+    <!-- Whether or not swipe up gesture's opt-in setting is available on this device -->
+    <java-symbol type="bool" name="config_custom_swipe_up_gesture_setting_available" />
 </resources>

@@ -133,4 +133,7 @@
          to communicate pocket state to the pocket judge kernel driver. -->
      <string name="config_pocketBridgeSysfsInpocket"></string>
 
+    <!-- Whether or not swipe up gesture's opt-in setting is available on this device -->
+    <bool name="config_custom_swipe_up_gesture_setting_available">false</bool>
+
 </resources>
