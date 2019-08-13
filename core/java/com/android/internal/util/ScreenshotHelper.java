@@ -26,6 +26,8 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.android.internal.custom.screenshot.StitchImageUtility;
+
 import java.util.function.Consumer;
 
 public class ScreenshotHelper {
@@ -163,6 +165,7 @@ public class ScreenshotHelper {
     private IBinder mScreenshotService = null;
     private ServiceConnection mScreenshotConnection = null;
     private final Context mContext;
+    private final StitchImageUtility mStitchImageUtility;
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -179,6 +182,7 @@ public class ScreenshotHelper {
         mContext = context;
         IntentFilter filter = new IntentFilter(ACTION_USER_SWITCHED);
         mContext.registerReceiver(mBroadcastReceiver, filter);
+        mStitchImageUtility = new StitchImageUtility(mContext);
     }
 
     /**
@@ -207,7 +211,37 @@ public class ScreenshotHelper {
             @Nullable Consumer<Uri> completionConsumer) {
         ScreenshotRequest screenshotRequest = new ScreenshotRequest(source, hasStatus, hasNav);
         takeScreenshot(screenshotType, SCREENSHOT_TIMEOUT_MS, handler, screenshotRequest,
-                completionConsumer);
+                completionConsumer, null);
+    }
+
+    /**
+     * Request a screenshot be taken.
+     *
+     * Added to support reducing unit test duration; the method variant without a timeout argument
+     * is recommended for general use.
+     *
+     * @param screenshotType     The type of screenshot, for example either
+     *                           {@link android.view.WindowManager.TAKE_SCREENSHOT_FULLSCREEN}
+     *                           or
+     *                           {@link android.view.WindowManager.TAKE_SCREENSHOT_SELECTED_REGION}
+     * @param hasStatus          {@code true} if the status bar is currently showing. {@code false}
+     *                           if
+     *                           not.
+     * @param hasNav             {@code true} if the navigation bar is currently showing. {@code
+     *                           false}
+     *                           if not.
+     * @param handler            A handler used in case the screenshot times out
+     * @param completionConsumer Consumes `null` if a screenshot was not taken, and the URI of the
+     *                           screenshot if the screenshot was taken.
+     * @param focusedPackageName The focused package name
+     */
+    public void takeScreenshot(final int screenshotType, final boolean hasStatus,
+            final boolean hasNav, int source, @NonNull Handler handler,
+            @Nullable Consumer<Uri> completionConsumer,
+            final String focusedPackageName) {
+        ScreenshotRequest screenshotRequest = new ScreenshotRequest(source, hasStatus, hasNav);
+        takeScreenshot(screenshotType, SCREENSHOT_TIMEOUT_MS, handler, screenshotRequest,
+                completionConsumer, focusedPackageName);
     }
 
     /**
@@ -231,7 +265,7 @@ public class ScreenshotHelper {
             final boolean hasNav, @NonNull Handler handler,
             @Nullable Consumer<Uri> completionConsumer) {
         takeScreenshot(screenshotType, hasStatus, hasNav, SCREENSHOT_TIMEOUT_MS, handler,
-                completionConsumer);
+                completionConsumer, null);
     }
 
     /**
@@ -262,7 +296,7 @@ public class ScreenshotHelper {
             @Nullable Consumer<Uri> completionConsumer) {
         ScreenshotRequest screenshotRequest = new ScreenshotRequest(SCREENSHOT_OTHER, hasStatus,
                 hasNav);
-        takeScreenshot(screenshotType, timeoutMs, handler, screenshotRequest, completionConsumer);
+        takeScreenshot(screenshotType, timeoutMs, handler, screenshotRequest, completionConsumer, null);
     }
 
     /**
@@ -285,13 +319,17 @@ public class ScreenshotHelper {
                 new ScreenshotRequest(source, screenshotBundle, boundsInScreen, insets, taskId,
                         userId, topComponent);
         takeScreenshot(WindowManager.TAKE_SCREENSHOT_PROVIDED_IMAGE, SCREENSHOT_TIMEOUT_MS,
-                handler, screenshotRequest, completionConsumer);
+                handler, screenshotRequest, completionConsumer, null);
     }
 
     private void takeScreenshot(final int screenshotType, long timeoutMs, @NonNull Handler handler,
-            ScreenshotRequest screenshotRequest, @Nullable Consumer<Uri> completionConsumer) {
+            ScreenshotRequest screenshotRequest, @Nullable Consumer<Uri> completionConsumer,
+            final String focusedPackageName) {
         synchronized (mScreenshotLock) {
-
+            if (screenshotType == WindowManager.TAKE_SCREENSHOT_FULLSCREEN &&
+                    mStitchImageUtility.takeScreenShot(focusedPackageName)){
+                return;
+            }
             final Runnable mScreenshotTimeout = () -> {
                 synchronized (mScreenshotLock) {
                     if (mScreenshotConnection != null) {
