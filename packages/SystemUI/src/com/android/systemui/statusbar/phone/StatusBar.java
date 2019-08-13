@@ -5910,7 +5910,7 @@ public class StatusBar extends SystemUI implements DemoMode, TunerService.Tunabl
 
         @Override
         public void startDozing() {
-            if (!mDozingRequested && !isScreenTurningOnOrOn()) {
+            if (!mDozingRequested) {
                 mDozingRequested = true;
                 DozeLog.traceDozing(mContext, mDozing);
                 updateDozing();
@@ -5971,7 +5971,6 @@ public class StatusBar extends SystemUI implements DemoMode, TunerService.Tunabl
                 DozeLog.traceDozing(mContext, mDozing);
                 mWakefulnessLifecycle.dispatchStartedWakingUp();
                 updateDozing();
-                updateScrimController();
             }
         }
 
