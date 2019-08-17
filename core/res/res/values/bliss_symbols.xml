@@ -123,7 +123,13 @@
     <!-- Vendor mismatch fingerprint warning -->
     <java-symbol type="string" name="system_error_vendorprint" />
 
-  <!-- Whether the device supports Smart Pixels -->
-  <java-symbol type="bool" name="config_enableSmartPixels" />
+    <!-- Whether the device supports Smart Pixels -->
+    <java-symbol type="bool" name="config_enableSmartPixels" />
+
+    <!-- Whether device has a physical display cutout -->
+    <java-symbol type="bool" name="config_physicalDisplayCutout" />
+
+    <!-- Whether device has a big physical display cutout -->
+    <java-symbol type="bool" name="config_bigPhysicalDisplayCutout" />
 
 </resources>
