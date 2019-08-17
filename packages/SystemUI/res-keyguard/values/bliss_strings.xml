@@ -17,9 +17,7 @@
 -->
 
 <resources>
-
-<resources>
-    <plurals name="type_clock_header">
+    <plurals name="type_clock_header" translatable="false">
         <item quantity="other"><annotation name="color">It’s</annotation>"
 ^1
 ^2"</item>
@@ -30,5 +28,4 @@
 ^1
 ^2"</item>
      </plurals>
-
 </resources>
