@@ -5945,6 +5945,15 @@ public final class Settings {
         public static final String POCKET_JUDGE_ALLOW_FP = "pocket_judge_allow_fp";
 
         /**
+         * @hide
+         */
+        public static final String CUSTOM_FP_ICON = "custom_fingerprint_icon";
+
+        /** @hide */
+        private static final Validator CUSTOM_FP_ICON_VALIDATOR =
+                ANY_STRING_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -6066,7 +6075,8 @@ public final class Settings {
             OMNI_STATUS_BAR_CUSTOM_HEADER_PROVIDER,
             OMNI_STATUS_BAR_CUSTOM_HEADER_IMAGE,
             OMNI_STATUS_BAR_FILE_HEADER_IMAGE,
-            OMNI_DOZE_ON_CHARGE
+            OMNI_DOZE_ON_CHARGE,
+            CUSTOM_FP_ICON,
         };
 
         /**
@@ -6254,6 +6264,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(HIDE_LOCKSCREEN_STATUS_BAR);
             PRIVATE_SETTINGS.add(OMNI_DOZE_ON_CHARGE);
             PRIVATE_SETTINGS.add(POCKET_JUDGE);
+            PRIVATE_SETTINGS.add(CUSTOM_FP_ICON);
 	}
 
         /**
@@ -6437,6 +6448,8 @@ public final class Settings {
                     OMNI_STATUS_BAR_FILE_HEADER_IMAGE_VALIDATOR);
             VALIDATORS.put(OMNI_DOZE_ON_CHARGE, OMNI_DOZE_ON_CHARGE_VALIDATOR);
             VALIDATORS.put(POCKET_JUDGE, POCKET_JUDGE_VALIDATOR);
+            VALIDATORS.put(CUSTOM_FP_ICON,
+                    CUSTOM_FP_ICON_VALIDATOR);
         }
 
         /**
