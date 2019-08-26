@@ -974,6 +974,11 @@ public final class DefaultPermissionGrantPolicy {
 	if (omnijawsPackage != null && doesPackageSupportRuntimePermissions(omnijawsPackage)) {
 	    grantRuntimePermissions(omnijawsPackage, LOCATION_PERMISSIONS, true, userId);
 	}
+        // Google Markup
+        PackageParser.Package googlemarkupPackage = getSystemPackage("com.google.android.markup");
+        if (googlemarkupPackage != null && doesPackageSupportRuntimePermissions(googlemarkupPackage)) {
+            grantRuntimePermissions(googlemarkupPackage, STORAGE_PERMISSIONS, userId);
+        }
         // Pixel Wallpaper
         PackageParser.Package pixelwallsPackage = getDefaultProviderAuthorityPackage("com.google.android.apps.wallpaper", userId);
         if (pixelwallsPackage != null) {
