@@ -30,6 +30,7 @@ import com.android.settingslib.drawable.UserIconDrawable;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import com.android.internal.custom.longshot.LongScreenshotManagerService;
 
 public class Utils {
 
@@ -286,6 +287,7 @@ public class Utils {
                 || pkg.packageName.equals(sServicesSystemSharedLibPackageName)
                 || pkg.packageName.equals(sSharedSystemSharedLibPackageName)
                 || pkg.packageName.equals(PrintManager.PRINT_SPOOLER_PACKAGE_NAME)
+                || pkg.packageName.equals(LongScreenshotManagerService.PACKAGENAME_LONGSHOT)
                 || isDeviceProvisioningPackage(resources, pkg.packageName);
     }
 

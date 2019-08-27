@@ -181,6 +181,10 @@ public class DeviceUtils {
                Locale.CHINESE.getLanguage());
     }
 
+    public static boolean hasFodSupport(Context context) {
+        return context.getResources().getBoolean(com.android.internal.R.bool.config_needCustomFODView);
+    }
+
     public static boolean isAppInstalled(Context context, String appUri) {
         try {
             PackageManager pm = context.getPackageManager();
