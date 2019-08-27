@@ -25,7 +25,7 @@
     </declare-styleable>
 
     <declare-styleable name="CustomTextClock">
-        <attr name="HandType"/>
+        <attr name="handType"/>
     </declare-styleable>
 
 </resources>
