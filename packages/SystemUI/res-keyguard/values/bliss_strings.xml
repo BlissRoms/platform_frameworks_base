@@ -18,14 +18,8 @@
 
 <resources>
     <plurals name="type_clock_header" translatable="false">
-        <item quantity="other"><annotation name="color">It’s</annotation>"
-^1
-^2"</item>
-        <item quantity="one"><annotation name="color">It’s</annotation>"
-^1
-^2"</item>
-        <item quantity="few"><annotation name="color">It’s</annotation>"
-^1
-^2"</item>
-     </plurals>
+        <item quantity="other"><annotation name="color">It’s</annotation>\n^1\n^2</item>
+        <item quantity="one"><annotation name="color">It’s</annotation>\n^1\n^2</item>
+        <item quantity="few"><annotation name="color">It’s</annotation>\n^1\n^2</item>
+    </plurals>
 </resources>
