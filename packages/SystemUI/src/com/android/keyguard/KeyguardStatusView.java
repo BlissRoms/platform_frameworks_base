@@ -528,6 +528,16 @@ public class KeyguardStatusView extends GridLayout implements
         if (mOwnerInfo == null) return;
         String info = mLockPatternUtils.getDeviceOwnerInfo();
         if (info == null) {
+
+            // If text style clock, align the textView to start else keep it center.
+            if (mClockSelection == 17) {
+                mOwnerInfo.setPaddingRelative((int) mContext.getResources()
+                    .getDimension(R.dimen.custom_clock_left_padding) + 8, 0, 0, 0);
+                mOwnerInfo.setGravity(Gravity.START);
+            } else {
+                mOwnerInfo.setPaddingRelative(0, 0, 0, 0);
+                mOwnerInfo.setGravity(Gravity.CENTER);
+            }
             // Use the current user owner information if enabled.
             final boolean ownerInfoEnabled = mLockPatternUtils.isOwnerInfoEnabled(
                     KeyguardUpdateMonitor.getCurrentUser());
@@ -777,15 +787,22 @@ public class KeyguardStatusView extends GridLayout implements
 
     private void updateSettings() {
         final ContentResolver resolver = getContext().getContentResolver();
-		final Resources res = getContext().getResources();
+	final Resources res = getContext().getResources();
 
         mShowWeather = Settings.System.getIntForUser(resolver,
                 Settings.System.OMNI_LOCKSCREEN_WEATHER_ENABLED, 0,
                 UserHandle.USER_CURRENT) == 1;
 
-
         if (mWeatherView != null) {
             if (mShowWeather) {
+                if (mClockSelection == 17) {
+                    mWeatherView.setPaddingRelative((int) mContext.getResources()
+                        .getDimension(R.dimen.custom_clock_left_padding) + 8, 0, 0, 0);
+                    mWeatherView.setGravity(Gravity.START);
+                } else {
+                    mWeatherView.setPaddingRelative(0, 0, 0, 0);
+                    mWeatherView.setGravity(Gravity.CENTER);
+                }
                 mWeatherView.setVisibility(View.VISIBLE);
                 mWeatherView.enableUpdates();
             }
@@ -973,6 +990,15 @@ public class KeyguardStatusView extends GridLayout implements
         mKeyguardSlice.setPulsing(pulsing, animate);
         if (mWeatherView != null) {
             mWeatherView.setVisibility((mShowWeather && !mPulsing) ? View.VISIBLE : View.GONE);
+            // If text style clock, align the weatherView to start else keep it center.
+            if (mClockSelection == 17) {
+                mWeatherView.setPaddingRelative((int) mContext.getResources()
+                    .getDimension(R.dimen.custom_clock_left_padding) + 8, 0, 0, 0);
+                mWeatherView.setGravity(Gravity.START);
+            } else {
+                mWeatherView.setPaddingRelative(0, 0, 0, 0);
+                mWeatherView.setGravity(Gravity.CENTER);
+            }
         }
         updateDozeVisibleViews();
     }
