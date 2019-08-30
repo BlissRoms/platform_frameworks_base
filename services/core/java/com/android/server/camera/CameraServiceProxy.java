@@ -624,8 +624,8 @@ public class CameraServiceProxy extends SystemService
     }
 
     private void sendCameraStateIntent(String cameraState) {
-        Intent intent = new Intent(android.content.Intent.ACTION_CAMERA_STATUS_CHANGED);
-        intent.putExtra(android.content.Intent.EXTRA_CAMERA_STATE, cameraState);
+        Intent intent = new Intent(lineageos.content.Intent.ACTION_CAMERA_STATUS_CHANGED);
+        intent.putExtra(lineageos.content.Intent.EXTRA_CAMERA_STATE, cameraState);
         mContext.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
     }
 }
