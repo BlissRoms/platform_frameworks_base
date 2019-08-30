@@ -4660,6 +4660,21 @@ public class Intent implements Parcelable, Cloneable {
     @SdkConstant(SdkConstantType.BROADCAST_INTENT_ACTION)
     public static final String ACTION_PACKAGE_NEEDS_INTEGRITY_VERIFICATION =
             "android.intent.action.PACKAGE_NEEDS_INTEGRITY_VERIFICATION";
+        
+    /**
+     * Broadcast action: Camera satus Changed
+     * @hide
+     */
+    public static final String ACTION_CAMERA_STATUS_CHANGED =
+            "android.intent.action.CAMERA_STATUS_CHANGED";
+
+    /**
+     * This field is part of the intent {@link #ACTION_CAMERA_STATUS_CHANGED}.
+     * Intent extra field for the state of changed camera state
+     * @hide
+     */
+    public static final String EXTRA_CAMERA_STATE =
+            "android.intent.extra.CAMERA_STATE";
 
     // ---------------------------------------------------------------------
     // ---------------------------------------------------------------------
