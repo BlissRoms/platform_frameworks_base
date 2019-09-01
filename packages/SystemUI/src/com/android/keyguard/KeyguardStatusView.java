@@ -56,6 +56,7 @@ import com.android.keyguard.clocks.TypographicClock;
 import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.omni.CurrentWeatherView;
+import com.android.systemui.omni.CurrentWeatherViewAlt;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.util.wakelock.KeepAwakeAnimationListener;
@@ -100,6 +101,7 @@ public class KeyguardStatusView extends GridLayout implements
     private float mWidgetPadding;
     private int mLastLayoutHeight;
     private CurrentWeatherView mWeatherView;
+    private CurrentWeatherViewAlt mWeatherViewAlt;
     private boolean mShowWeather;
 
     private boolean mShowClock;
@@ -222,10 +224,14 @@ public class KeyguardStatusView extends GridLayout implements
         mClockSeparator = findViewById(R.id.clock_separator);
 
         mWeatherView = (CurrentWeatherView) findViewById(R.id.weather_container);
+        mWeatherViewAlt = (CurrentWeatherViewAlt) findViewById(R.id.weather_container_alt);
 
         mVisibleInDoze = Sets.newArraySet();
         if (mWeatherView != null) {
             mVisibleInDoze.add(mWeatherView);
+        }
+        if (mWeatherViewAlt != null) {
+            mVisibleInDoze.add(mWeatherViewAlt);
         }
         if (mClockView != null) {
             mVisibleInDoze.add(mClockView);
@@ -444,6 +450,9 @@ public class KeyguardStatusView extends GridLayout implements
         }
         if (mWeatherView != null) {
             mWeatherView.onDensityOrFontScaleChanged();
+        }
+        if (mWeatherViewAlt != null) {
+            mWeatherViewAlt.onDensityOrFontScaleChanged();
         }
         if (mLogoutView != null) {
             mLogoutView.setTypeface(tfMedium);
@@ -799,12 +808,19 @@ public class KeyguardStatusView extends GridLayout implements
 
         if (mWeatherView != null) {
             if (mShowWeather) {
-                mWeatherView.setVisibility(View.VISIBLE);
-                mWeatherView.enableUpdates();
+	        if (mClockSelection == 17) {
+                    mWeatherViewAlt.setVisibility(View.VISIBLE);
+                    mWeatherViewAlt.enableUpdates();
+	        } else {
+                    mWeatherView.setVisibility(View.VISIBLE);
+                    mWeatherView.enableUpdates();
+               }
             }
             if (!mShowWeather) {
                 mWeatherView.setVisibility(View.GONE);
                 mWeatherView.disableUpdates();
+                mWeatherViewAlt.setVisibility(View.GONE);
+                mWeatherViewAlt.disableUpdates();
             }
         }
 
@@ -1014,8 +1030,11 @@ public class KeyguardStatusView extends GridLayout implements
         }
         mKeyguardSlice.setPulsing(pulsing, animate);
         if (mWeatherView != null) {
-            mWeatherView.setVisibility((mShowWeather && !mPulsing) ? View.VISIBLE : View.GONE);
-            // If text style clock, align the weatherView to start else keep it center.
+            if (mClockSelection == 17) {
+                mWeatherViewAlt.setVisibility((mShowWeather && !mPulsing) ? View.VISIBLE : View.GONE);
+            } else {
+                mWeatherView.setVisibility((mShowWeather && !mPulsing) ? View.VISIBLE : View.GONE);
+          }
         }
         updateDozeVisibleViews();
     }
