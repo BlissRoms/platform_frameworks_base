@@ -56,6 +56,7 @@ import com.android.keyguard.clocks.TypographicClock;
 import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.omni.CurrentWeatherView;
+import com.android.systemui.omni.CurrentWeatherViewAlt;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.util.wakelock.KeepAwakeAnimationListener;
@@ -100,6 +101,7 @@ public class KeyguardStatusView extends GridLayout implements
     private float mWidgetPadding;
     private int mLastLayoutHeight;
     private CurrentWeatherView mWeatherView;
+    private CurrentWeatherViewAlt mWeatherViewAlt;
     private boolean mShowWeather;
 
     private boolean mShowClock;
@@ -222,10 +224,14 @@ public class KeyguardStatusView extends GridLayout implements
         mClockSeparator = findViewById(R.id.clock_separator);
 
         mWeatherView = (CurrentWeatherView) findViewById(R.id.weather_container);
+        mWeatherViewAlt = (CurrentWeatherViewAlt) findViewById(R.id.weather_container_alt);
 
         mVisibleInDoze = Sets.newArraySet();
         if (mWeatherView != null) {
             mVisibleInDoze.add(mWeatherView);
+        }
+        if (mWeatherViewAlt != null) {
+            mVisibleInDoze.add(mWeatherViewAlt);
         }
         if (mClockView != null) {
             mVisibleInDoze.add(mClockView);
@@ -242,13 +248,13 @@ public class KeyguardStatusView extends GridLayout implements
         if (mSpideyClockView != null) {
             mVisibleInDoze.add(mSpideyClockView);
         }
-		if (mCustomNumClockView != null) {
+        if (mCustomNumClockView != null) {
             mVisibleInDoze.add(mCustomNumClockView);
         }
-		if (mDotClockView != null) {
+        if (mDotClockView != null) {
             mVisibleInDoze.add(mDotClockView);
         }
-		if (mSpectrumClockView != null) {
+        if (mSpectrumClockView != null) {
             mVisibleInDoze.add(mSpectrumClockView);
         }
 
@@ -444,6 +450,9 @@ public class KeyguardStatusView extends GridLayout implements
         }
         if (mWeatherView != null) {
             mWeatherView.onDensityOrFontScaleChanged();
+        }
+        if (mWeatherViewAlt != null) {
+            mWeatherViewAlt.onDensityOrFontScaleChanged();
         }
         if (mLogoutView != null) {
             mLogoutView.setTypeface(tfMedium);
@@ -797,14 +806,23 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.OMNI_LOCKSCREEN_WEATHER_ENABLED, 0,
                 UserHandle.USER_CURRENT) == 1;
 
-        if (mWeatherView != null) {
-            if (mShowWeather) {
-                mWeatherView.setVisibility(View.VISIBLE);
-                mWeatherView.enableUpdates();
+        if (mShowWeather) {
+	    if (mClockSelection == 17) {
+                if (mWeatherViewAlt != null) {
+                    mWeatherViewAlt.setVisibility(View.VISIBLE);
+                    mWeatherViewAlt.enableUpdates();
+	        } else {
+                if (mWeatherView != null) {
+                    mWeatherView.setVisibility(View.VISIBLE);
+                    mWeatherView.enableUpdates();
+                }
+              }
             }
             if (!mShowWeather) {
                 mWeatherView.setVisibility(View.GONE);
                 mWeatherView.disableUpdates();
+                mWeatherViewAlt.setVisibility(View.GONE);
+                mWeatherViewAlt.disableUpdates();
             }
         }
 
@@ -1013,9 +1031,14 @@ public class KeyguardStatusView extends GridLayout implements
             animate = false;
         }
         mKeyguardSlice.setPulsing(pulsing, animate);
-        if (mWeatherView != null) {
-            mWeatherView.setVisibility((mShowWeather && !mPulsing) ? View.VISIBLE : View.GONE);
-            // If text style clock, align the weatherView to start else keep it center.
+        if (mClockSelection == 17) {
+            if (mWeatherViewAlt != null) {
+                mWeatherViewAlt.setVisibility((mShowWeather && !mPulsing) ? View.VISIBLE : View.GONE);
+            } else {
+            if (mWeatherView != null) {
+                mWeatherView.setVisibility((mShowWeather && !mPulsing) ? View.VISIBLE : View.GONE);
+            }
+          }
         }
         updateDozeVisibleViews();
     }

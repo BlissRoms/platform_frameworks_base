@@ -177,6 +177,16 @@
                 android:visibility="gone"
                 android:layout_marginTop="@dimen/date_owner_info_margin"
                 android:layout_below="@id/keyguard_status_area"/>
+
+            <include layout="@layout/current_weather_view_alt"
+                android:id="@+id/weather_container_alt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:visibility="gone"
+                android:paddingStart="@dimen/custom_clock_left_padding"
+                android:layout_marginTop="@dimen/date_owner_info_margin"
+                android:layout_below="@id/keyguard_status_area"/>
         </RelativeLayout>
 
         <TextView
