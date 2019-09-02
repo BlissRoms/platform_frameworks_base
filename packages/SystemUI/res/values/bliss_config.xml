@@ -28,4 +28,7 @@
     <!-- System icon area layout weight -->
     <item name="system_icon_area_weight" format="float" type="integer">1</item>
 
+    <!-- Whether SystemUI ignores notch -->
+    <bool name="hide_view_behind_notch">false</bool>
+
 </resources>
