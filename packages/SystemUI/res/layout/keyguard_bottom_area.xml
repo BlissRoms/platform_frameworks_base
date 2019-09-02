@@ -31,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
+        android:animateLayoutChanges="true"
         android:orientation="vertical">
 
         <liquid.support.lottie.LottieAnimationView
@@ -40,6 +41,7 @@
             android:layout_gravity="center"
             android:clickable="false"
             app:lottie_fileName="keyguard_charging_indication.json"
+            android:animateLayoutChanges="true"
             android:visibility="gone" />
 
         <com.android.systemui.statusbar.phone.KeyguardIndicationTextView
