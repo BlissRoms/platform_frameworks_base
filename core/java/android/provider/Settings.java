@@ -5980,6 +5980,12 @@ public final class Settings {
         public static final String SMART_CHARGING_RESET_STATS = "smart_charging_reset_stats";
 
         /**
+         * Whether to show charging animation on lock screen
+         * @hide
+         */
+        public static final String LOCKSCREEN_CHARGING_ANIMATION = "lockscreen_charging_animation";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
