@@ -23,7 +23,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
-    android:layout_marginTop="@dimen/custom_clock_top_margin"
     android:fontFamily="google-sans"
     android:letterSpacing="0.03"
     android:orientation="vertical"
