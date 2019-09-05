@@ -240,6 +240,8 @@ public class KeyguardSliceProvider extends SliceProvider implements
         mNextAlarmController.addCallback(this);
         mZenModeController = new ZenModeControllerImpl(getContext(), mHandler);
         mZenModeController.addCallback(this);
+        mSettingsObserver = new SettingsObserver(mHandler);
+        mSettingsObserver.observe();
         mSettingsObserver.updateDateSkeleton();
         registerClockUpdate();
         updateClock();
