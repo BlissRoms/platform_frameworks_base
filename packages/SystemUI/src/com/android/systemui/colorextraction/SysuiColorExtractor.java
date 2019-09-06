@@ -48,7 +48,6 @@ public class SysuiColorExtractor extends ColorExtractor implements Dumpable {
     private boolean mHasBackdrop;
     // Colors to return when the wallpaper isn't visible
     private final GradientColors mWpHiddenColors;
-    private final Tonal mTonal;
 
     public SysuiColorExtractor(Context context) {
         this(context, new Tonal(context), true);
@@ -57,7 +56,6 @@ public class SysuiColorExtractor extends ColorExtractor implements Dumpable {
     @VisibleForTesting
     public SysuiColorExtractor(Context context, ExtractionType type, boolean registerVisibility) {
         super(context, type, false /* immediately */);
-        mTonal = type instanceof Tonal ? (Tonal) type : new Tonal(context);
         mWpHiddenColors = new GradientColors();
 
         WallpaperColors systemColors = getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
@@ -91,7 +89,7 @@ public class SysuiColorExtractor extends ColorExtractor implements Dumpable {
     }
 
     private void updateDefaultGradients(WallpaperColors colors) {
-        mTonal.applyFallback(colors, mWpHiddenColors);
+        Tonal.applyFallback(colors, mWpHiddenColors);
     }
 
     @Override
