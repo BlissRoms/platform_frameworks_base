@@ -5998,6 +5998,12 @@ public final class Settings {
         public static final String LOCKSCREEN_DATE_SELECTION = "lockscreen_date_selection";
 
         /**
+         * Select which lockscreen date format to display
+         * @hide
+         */
+        public static final String LOCKSCREEN_DATE_FORMAT = "lockscreen_date_format";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
