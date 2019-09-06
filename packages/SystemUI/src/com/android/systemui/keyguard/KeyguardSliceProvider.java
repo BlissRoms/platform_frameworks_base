@@ -199,29 +199,29 @@ public class KeyguardSliceProvider extends SliceProvider implements
 
         void observe() {
             mContentResolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_DATE_SELECTION),
+                    Settings.System.LOCKSCREEN_DATE_FORMAT),
                     false, this, UserHandle.USER_ALL);
         }
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
-            if (uri.equals(Settings.System.getUriFor(Settings.System.LOCKSCREEN_DATE_SELECTION))) {
+            if (uri.equals(Settings.System.getUriFor(Settings.System.LOCKSCREEN_DATE_FORMAT))) {
                 updateDateSkeleton();
                 mContentResolver.notifyChange(mSliceUri, null /* observer */);
             }
         }
 
         public void updateDateSkeleton() {
-            mLsDateSel = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_DATE_SELECTION, 0, UserHandle.USER_CURRENT);
+            mLsDateSel = Settings.System.getIntForUser(mContentResolver, Settings.System.LOCKSCREEN_DATE_FORMAT, 0, UserHandle.USER_CURRENT);
             switch (mLsDateSel) {
-            case 4: case 6: case 8:
+            case 1:
                 mDatePattern = getContext().getString(R.string.abbrev_wday_day_no_year);
                 break;
-            case 5: case 7: case 9:
+            case 2:
                 mDatePattern = getContext().getString(R.string.abbrev_wday_no_year);
                 break;
-            case 10:
+            case 3:
                 mDatePattern = getContext().getString(R.string.abbrev_wday_month_no_year);
                 break;
             default:
