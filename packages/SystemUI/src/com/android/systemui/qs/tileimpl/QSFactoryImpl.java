@@ -28,6 +28,7 @@ import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.plugins.qs.QSTileView;
 import com.android.systemui.qs.QSTileHost;
 import com.android.systemui.qs.external.CustomTile;
+import com.android.systemui.qs.tiles.AdbOverNetworkTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AODTile;
 import com.android.systemui.qs.tiles.AmbientDisplayTile;
@@ -90,6 +91,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<UiModeNightTile> mUiModeNightTileProvider;
     private final Provider<LteTile> mLteTileProvider;
     private final Provider<AmbientDisplayTile> mAmbientDisplayTileProvider;
+    private final Provider<AdbOverNetworkTile> mAdbOverNetworkTileProvider;
     private final Provider<CaffeineTile> mCaffeineTileProvider;
     private final Provider<AODTile> mAODTileProvider;
     private final Provider<HeadsUpTile> mHeadsUpTileProvider;
@@ -126,6 +128,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<CaffeineTile> CaffeineTileProvider,
             Provider<AODTile> AODTileProvider,
             Provider<AmbientDisplayTile> ambientDisplayTileProvider,
+            Provider<AdbOverNetworkTile> adbOverNetworkTileProvider,
             Provider<HeadsUpTile> headsUpTileProvider,
             Provider<LiveDisplayTile> liveDisplayTileProvider,
             Provider<ReadingModeTile> readingModeTileProvider,
@@ -156,6 +159,7 @@ public class QSFactoryImpl implements QSFactory {
         mCaffeineTileProvider = CaffeineTileProvider;
         mAODTileProvider = AODTileProvider;
         mAmbientDisplayTileProvider = ambientDisplayTileProvider;
+        mAdbOverNetworkTileProvider = adbOverNetworkTileProvider;
         mHeadsUpTileProvider = headsUpTileProvider;
         mLiveDisplayTileProvider = liveDisplayTileProvider;
         mReadingModeTileProvider = readingModeTileProvider;
@@ -220,6 +224,9 @@ public class QSFactoryImpl implements QSFactory {
                 return mLteTileProvider.get();
             case "ambient_display":
                 return mAmbientDisplayTileProvider.get();
+            // Custom tiles.
+            case "adb_network":
+                return mAdbOverNetworkTileProvider.get();
             case "caffeine":
                 return mCaffeineTileProvider.get();
             case "aod":
