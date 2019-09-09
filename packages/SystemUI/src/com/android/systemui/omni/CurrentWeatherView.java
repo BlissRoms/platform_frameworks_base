@@ -66,6 +66,8 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
     static final String TAG = "SystemUI:CurrentWeatherView";
     static final boolean DEBUG = false;
 
+    private static final String FONT_FAMILY_MEDIUM = "sans-serif-medium";
+
     private ImageView mCurrentImage;
     private OmniJawsClient mWeatherClient;
     private TextView mLeftText;
@@ -131,6 +133,9 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
                 Settings.System.LOCKSCREEN_WEATHER_SHOW_TEMP, 1, UserHandle.USER_CURRENT) == 1;
         boolean showCity = Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.LOCKSCREEN_WEATHER_SHOW_CITY, 1, UserHandle.USER_CURRENT) == 1;
+
+        Typeface tf = Typeface.create(FONT_FAMILY_MEDIUM, Typeface.NORMAL);
+
         if (DEBUG) Log.d(TAG, "updateWeatherData");
 
         if (!mWeatherClient.isOmniJawsEnabled() || weatherData == null) {
@@ -142,11 +147,13 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
         mCurrentImage.setImageDrawable(d);
         if (showTemp) {
             mRightText.setText(weatherData.temp + " " + weatherData.tempUnits);
+            mRightText.setTypeface(tf);
         } else {
             mRightText.setText("");
         }
         if (showCity) {
             mLeftText.setText(weatherData.city);
+            mLeftText.setTypeface(tf);
         } else {
             mLeftText.setText("");
         }
@@ -207,6 +214,9 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
                 getResources().getDimensionPixelSize(R.dimen.current_weather_image_size);
         mCurrentImage.getLayoutParams().width =
                 getResources().getDimensionPixelSize(R.dimen.current_weather_image_size);
+        Typeface tf = Typeface.create(FONT_FAMILY_MEDIUM, Typeface.NORMAL);
+        mRightText.setTypeface(tf);
+        mLeftText.setTypeface(tf);
     }
 
     private class SettingsObserver extends ContentObserver {
