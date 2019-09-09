@@ -65,5 +65,9 @@
         <item>com.google.android.systemui.GoogleServices</item>
     </string-array>
 
+    <!-- Max visible notification icons -->
+    <integer name="config_maxVisibleNotificationIcons">4</integer>
+    <integer name="config_maxVisibleNotificationIconsWhenDark">5</integer>
+
 </resources>
 
