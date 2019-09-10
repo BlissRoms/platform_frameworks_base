@@ -158,4 +158,7 @@
     <java-symbol type="integer" name="config_useScaleBrightness" />
 
     <java-symbol type="integer" name="config_screenBrightnessPulse" />
+
+    <!-- Post reset runnable for all clients -->
+    <java-symbol type="bool" name="config_fingerprintPostResetRunnableForAllClients" />
 </resources>
