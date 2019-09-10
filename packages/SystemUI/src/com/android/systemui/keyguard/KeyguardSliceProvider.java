@@ -220,13 +220,58 @@ public class KeyguardSliceProvider extends SliceProvider implements
                 mDatePattern = getContext().getString(R.string.system_ui_aod_date_pattern);
                 break;
             case 1:
-                mDatePattern = getContext().getString(R.string.abbrev_wday_day_no_year);
+                mDatePattern = getContext().getString(R.string.lockdate_opt_1);
                 break;
             case 2:
-                mDatePattern = getContext().getString(R.string.abbrev_wday_no_year);
+                mDatePattern = getContext().getString(R.string.lockdate_opt_2);
                 break;
             case 3:
-                mDatePattern = getContext().getString(R.string.abbrev_wday_month_no_year);
+                mDatePattern = getContext().getString(R.string.lockdate_opt_3);
+                break;
+            case 4:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_4);
+                break;
+            case 5:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_5);
+                break;
+            case 6:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_6);
+                break;
+            case 7:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_7);
+                break;
+            case 8:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_8);
+                break;
+            case 9:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_9);
+                break;
+            case 10:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_10);
+                break;
+            case 11:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_11);
+                break;
+            case 12:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_12);
+                break;
+            case 13:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_13);
+                break;
+            case 14:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_14);
+                break;
+            case 15:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_15);
+                break;
+            case 16:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_16);
+                break;
+            case 17:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_17);
+                break;
+            case 18:
+                mDatePattern = getContext().getString(R.string.lockdate_opt_18);
                 break;
             }
             updateClock();
