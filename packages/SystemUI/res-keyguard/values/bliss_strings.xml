@@ -24,9 +24,22 @@
     </plurals>
 
     <!-- Skeleton string format for displaying the date with number. -->
-    <string name="abbrev_wday_day_no_year">eeeedd</string>
-    <!-- Skeleton string format for displaying the date. -->
-    <string name="abbrev_wday_no_year">eeee</string>
-    <!-- Skeleton string format for displaying the day of the month. -->
-    <string name="abbrev_wday_month_no_year">MMMMd</string>
+    <string name="lockdate_opt_1">dd/MM/yy</string>
+    <string name="lockdate_opt_2">MM/dd/yy</string>
+    <string name="lockdate_opt_3">yyyy-MM-dd</string>
+    <string name="lockdate_opt_4">yyyy-dd-MM</string>
+    <string name="lockdate_opt_5">dd-MM-yyyy</string>
+    <string name="lockdate_opt_6">MM-dd-yyyy</string>
+    <string name="lockdate_opt_7">MMM dd</string>
+    <string name="lockdate_opt_8">MMM dd, yyyy</string>
+    <string name="lockdate_opt_9">MMMM dd, yyyy</string>
+    <string name="lockdate_opt_10">EEE</string>
+    <string name="lockdate_opt_11">EEE dd</string>
+    <string name="lockdate_opt_12">EEE dd/MM</string>
+    <string name="lockdate_opt_13">EEE MM/dd</string>
+    <string name="lockdate_opt_14">EEE dd MMM</string>
+    <string name="lockdate_opt_15">EEE MMM dd</string>
+    <string name="lockdate_opt_16">EEE MMMM dd</string>
+    <string name="lockdate_opt_17">EEEE dd/MM</string>
+    <string name="lockdate_opt_18">EEEE MM/dd</string>
 </resources>
