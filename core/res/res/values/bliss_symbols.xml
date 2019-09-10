@@ -24,4 +24,7 @@
   <!-- The list of components which should be forced to be enabled. -->
   <string-array name="config_forceEnabledComponents" translatable="false">
   </string-array>
+
+  <!-- Post reset runnable for all clients -->
+  <java-symbol type="bool" name="config_fingerprintPostResetRunnableForAllClients" />
 </resources>
