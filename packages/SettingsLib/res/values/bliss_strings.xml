@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2019 Benzo Rom
+     Copyright (C) 2014-2021 BlissRoms Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -27,4 +27,5 @@
     -->
     <integer name="config_udfps_hbm_type">1</integer>
 
+    <string name="status_deep_sleep">(Deep sleep: %1$d%2$s)</string>
 </resources>
