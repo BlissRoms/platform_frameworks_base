@@ -4824,6 +4824,15 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
+         * Whether the Home button works during call
+         * @hide
+         */
+        public static final String ALLOW_INCALL_HOME = "allow_incall_home";
+        /** @hide */
+        private static final Validator ALLOW_INCALL_HOME_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
@@ -4951,6 +4960,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
             PRIVATE_SETTINGS.add(VOLUME_ROCKER_WAKE);
             PRIVATE_SETTINGS.add(ANBI_ENABLED_OPTION);
+            PRIVATE_SETTINGS.add(ALLOW_INCALL_HOME);
         }
 
         /**
