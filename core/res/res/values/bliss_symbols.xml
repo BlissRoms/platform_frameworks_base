@@ -116,7 +116,9 @@
   <!-- Whether the device supports Smart Pixels -->
   <java-symbol type="bool" name="config_enableSmartPixels" />
 
-    <!-- Smart charging battery percentage -->
+    <!-- Smart charging -->
     <java-symbol type="integer" name="config_smartChargingBatteryLevel" />
-
+    <java-symbol type="string" name="config_SmartChargingSysfsNode" />
+    <java-symbol type="string" name="config_SmartChargingSupspendValue" />
+    <java-symbol type="string" name="config_SmartChargingResumeValue" />
 </resources>
