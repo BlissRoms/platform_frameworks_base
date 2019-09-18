@@ -217,5 +217,8 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.BATTERY_LIGHT_MEDIUM_COLOR, ANY_INTEGER_VALIDATOR);
         VALIDATORS.put(System.BATTERY_LIGHT_FULL_COLOR, ANY_INTEGER_VALIDATOR);
         VALIDATORS.put(System.BATTERY_LIGHT_REALLYFULL_COLOR, ANY_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.INCREASING_RING, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.INCREASING_RING_START_VOLUME, new InclusiveFloatRangeValidator(0, 1));
+        VALIDATORS.put(System.INCREASING_RING_RAMP_UP_TIME, new InclusiveFloatRangeValidator(5, 60));
     }
 }
