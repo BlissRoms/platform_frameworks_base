@@ -140,6 +140,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private int animStyle, animDuration, interpolatorType;
 
     private final Vibrator mVibrator;
+    private View mBrightnessPlaceholder;
 
     public QSPanel(Context context) {
         this(context, null);
@@ -162,6 +163,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_dialog, this, false);
+        mBrightnessPlaceholder = LayoutInflater.from(mContext).inflate(
+            R.layout.quick_settings_brightness_placeholder, this, false);
 
         mTileLayout = (QSTileLayout) LayoutInflater.from(mContext).inflate(
                 R.layout.qs_paged_tile_layout, this, false);
@@ -232,8 +235,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     }
 
     private void addQSPanel() {
-        if (mBrightnessSlider == 1 || mBrightnessSlider == 3) {
+        if (mBrightnessSlider == 1) {
             addView(mBrightnessView);
+            addView(mBrightnessPlaceholder);
             addView((View) mTileLayout);
         } else {
             addView((View) mTileLayout);
@@ -402,6 +406,10 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
     View getBrightnessView() {
         return mBrightnessView;
+    }
+
+    View getBrightnessPlaceholder() {
+        return mBrightnessPlaceholder;
     }
 
     public void setCallback(QSDetail.Callback callback) {
