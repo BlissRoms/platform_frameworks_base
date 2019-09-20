@@ -149,4 +149,9 @@
     <string name="dlg_ok">@android:string/ok</string>
     <string name="dlg_cancel">@android:string/cancel</string>
     <string name="guts_force_close_app">Close App</string>
+
+    <!-- Nav Bar Inverse -->
+    <string name="navigation_bar_inverse_title">Swap buttons</string>
+    <string name="navigation_bar_inverse_summary">Swap the order of recents and back buttons</string>
+
 </resources>
