@@ -280,15 +280,18 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
             count++;
         }
         View brightness = mQsPanel.getBrightnessView();
+        View brightnessPlaceholder = mQsPanel.getBrightnessPlaceholder();
         if (mAllowFancy) {
             // Make brightness appear static position and alpha in through second half.
             if (brightness != null) {
                 firstPageBuilder.addFloat(brightness, "translationY", heightDiff, 0);
+                firstPageBuilder.addFloat(brightnessPlaceholder, "translationY", heightDiff, 0);
                 mBrightnessAnimator = new TouchAnimator.Builder()
                         .addFloat(brightness, "alpha", mIsQuickQsBrightnessEnabled ? 1 : 0, 1)
                         .setStartDelay(.5f)
                         .build();
                 mAllViews.add(brightness);
+                mAllViews.add(brightnessPlaceholder);
             } else {
                 mBrightnessAnimator = null;
             }
@@ -304,8 +307,10 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
             mAllViews.add(mQsPanel.getDivider());
             mAllViews.add(mQsPanel.getFooter().getView());
             if (brightness != null) {
+                firstPageBuilder.addFloat(brightnessPlaceholder, "translationY", heightDiff, 0);
                 builder.addFloat(mQsPanel.getBrightnessView(), "alpha", 0, 1);
                 mAllViews.add(mQsPanel.getBrightnessView());
+                mAllViews.add(brightnessPlaceholder);
             }
             mFirstPageDelayedAnimator = builder.build();
             float px = 0;
