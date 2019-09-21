@@ -58,4 +58,7 @@
     <string-array name="config_vendorPlatformSignatures">
     </string-array>
 
+    <!-- Device have FOD -->
+    <bool name="config_mHasFod">false</bool>
+
 </resources>
