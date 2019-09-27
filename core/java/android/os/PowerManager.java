@@ -365,14 +365,6 @@ public final class PowerManager {
     public static final int USER_ACTIVITY_FLAG_INDIRECT = 1 << 1;
 
     /**
-    * User activity flag: Certain hardware buttons are not supposed to
-    * activate hardware button illumination.  This flag indicates a
-    * button event from one of those buttons.
-    * @hide
-    */
-    public static final int USER_ACTIVITY_FLAG_NO_BUTTON_LIGHTS = 1 << 2;
-
-    /**
      * @hide
      */
     public static final int GO_TO_SLEEP_REASON_MIN = 0;
@@ -927,15 +919,6 @@ public final class PowerManager {
     }
 
     /**
-     * Gets the default button brightness value.
-     * @hide
-     */
-    public int getDefaultButtonBrightness() {
-        return mContext.getResources().getInteger(
-                com.android.internal.R.integer.config_buttonBrightnessSettingDefault);
-    }
-
-    /**
      * Creates a new wake lock with the specified level and flags.
      * <p>
      * The {@code levelAndFlags} parameter specifies a wake lock level and optional flags
@@ -1237,22 +1220,6 @@ public final class PowerManager {
     public void wakeUp(long time, @WakeReason int reason, String details) {
         try {
             mService.wakeUp(time, reason, details, mContext.getOpPackageName());
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    /**
-     * Forces the device to wake up from sleep only if
-     * nothing is blocking the proximity sensor
-     *
-     * @see #wakeUp
-     *
-     * @hide
-     */
-    public void wakeUpWithProximityCheck(long time, int reason, String details) {
-        try {
-            mService.wakeUpWithProximityCheck(time, reason, details, mContext.getOpPackageName());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
