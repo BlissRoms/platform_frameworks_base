@@ -25,4 +25,9 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="TriStateUiText">
+        <item name="android:textSize">11.0sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
 </resources>
