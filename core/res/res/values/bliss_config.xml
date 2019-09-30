@@ -262,4 +262,15 @@
        recharge when the battery level is lower than a threshold. Set this so that the device
        will be charged between (limit - val) and limit. -->
   <integer name="config_chargingControlBatteryRechargeMargin">10</integer>
+
+    <!-- Whether device has physical tri state switch -->
+    <bool name="config_hasAlertSlider">false</bool>
+
+    <!-- The location of the devices physical tri state switch
+         0: Left side
+         1: Right side -->
+    <integer name="config_alertSliderLocation">0</integer>
+
+    <!-- Whether key handler sends intent when changing slider position -->
+    <string name="config_alertSliderIntent"></string>
 </resources>
