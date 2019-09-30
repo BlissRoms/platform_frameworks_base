@@ -92,4 +92,20 @@
     <string name="keyguard_indication_turbo_power_time"><xliff:g id="percentage">%2$s</xliff:g> • Turbo Charging (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%1$s</xliff:g> until full)</string>
     <string name="keyguard_plugged_in_turbo_charging"><xliff:g id="percentage">%s</xliff:g> • Turbo Charging</string>
 
+    <!-- Alert slide extras -->
+    <string name="volume_ringer_priority_only">Priority</string>
+    <string name="volume_ringer_alarms_only">Alarms</string>
+    <string name="volume_ringer_dnd">DnD</string>
+    <string name="tristate_flashlight">Torch</string>
+    <string name="tristate_flashlight_on">Torch on</string>
+    <string name="tristate_flashlight_off">Torch off</string>
+    <string name="tristate_flashlight_blink">Torch blink</string>
+    <string name="tristate_brightness_bright">Max-brightness</string>
+    <string name="tristate_brightness_dark">Min-brightness</string>
+    <string name="tristate_brightness_auto">Auto-brightness</string>
+    <string name="tristate_rotation_auto">Auto-rotate</string>
+    <string name="tristate_rotation_0">Portrait</string>
+    <string name="tristate_rotation_90">Landscape (90°)</string>
+    <string name="tristate_rotation_270">Landscape (270°)</string>
+
 </resources>
