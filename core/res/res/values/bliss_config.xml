@@ -168,4 +168,12 @@
 
     <!-- Name of a font family to use as regular font. For theming purpose. -->
     <string name="config_regularFontFamily" translatable="false">sans-serif-regular</string>
+
+    <!-- Whether device has an alert slider -->
+    <bool name="config_hasAlertSlider" translatable="false">false</bool>
+
+    <!-- The location of the device's alert slider:
+       0: Left side
+       1: Right side -->
+    <integer name="config_alertSliderLocation">0</integer>
 </resources>
