@@ -4,5 +4,5 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
-
+    <attr name="remoteViewsCardCornerRadius" format="dimension" />
 </resources>
