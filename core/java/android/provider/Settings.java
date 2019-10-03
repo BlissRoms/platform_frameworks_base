@@ -4791,6 +4791,15 @@ public final class Settings {
         public static final String SHOW_QS_CLOCK = "show_qs_clock";
 
         /**
+         * @hide
+         */
+        public static final String NAV_BAR_GESTURAL_HIDE_NAV = "nav_bar_gestural_hide_nav";
+
+        /** @hide */
+        private static final Validator NAV_BAR_GESTURAL_HIDE_NAV_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4863,6 +4872,7 @@ public final class Settings {
             OMNI_QS_LAYOUT_COLUMNS,
             FINGERPRINT_SUCCESS_VIB,
             OMNI_QS_TILE_TITLE_VISIBILITY,
+            NAV_BAR_GESTURAL_HIDE_NAV,
         };
 
         /**
@@ -4991,6 +5001,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(FINGERPRINT_SUCCESS_VIB);
             PRIVATE_SETTINGS.add(OMNI_QS_TILE_TITLE_VISIBILITY);
             PRIVATE_SETTINGS.add(TOAST_ICON);
+            PRIVATE_SETTINGS.add(NAV_BAR_GESTURAL_HIDE_NAV);
         }
 
         /**
@@ -5093,6 +5104,7 @@ public final class Settings {
             VALIDATORS.put(OMNI_QS_LAYOUT_COLUMNS, OMNI_QS_LAYOUT_COLUMNS_VALIDATOR);
             VALIDATORS.put(FINGERPRINT_SUCCESS_VIB, FINGERPRINT_SUCCESS_VIB_VALIDATOR);
             VALIDATORS.put(OMNI_QS_TILE_TITLE_VISIBILITY, OMNI_QS_TILE_TITLE_VISIBILITY_VALIDATOR);
+            VALIDATORS.put(NAV_BAR_GESTURAL_HIDE_NAV, NAV_BAR_GESTURAL_HIDE_NAV_VALIDATOR);
         }
 
         /**
