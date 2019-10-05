@@ -1111,6 +1111,10 @@ public final class SystemServer {
             mSystemServiceManager.startService(PinnerService.class);
             traceEnd();
 
+            traceBeginAndSlog("ActivityTriggerService");
+            mSystemServiceManager.startService(ActivityTriggerService.class);
+            traceEnd();
+
             traceBeginAndSlog("SignedConfigService");
             SignedConfigService.registerUpdateReceiver(mSystemContext);
             traceEnd();
