@@ -45,6 +45,7 @@ import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
+import android.hardware.biometrics.BiometricSourceType;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -74,6 +75,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.util.bliss.udfps.UdfpsUtils;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -169,6 +171,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private FalsingManager mFalsingManager;
     private boolean mUserSetupComplete;
     private boolean mPrewarmBound;
+    private boolean mIsFingerprintRunning;
     private Messenger mPrewarmMessenger;
     private final ServiceConnection mPrewarmConnection = new ServiceConnection() {
 
@@ -195,6 +198,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private boolean mDozing;
     private int mIndicationBottomMargin;
     private int mIndicationPadding;
+    private int mIndicationBottomMarginUdfps;
     private float mDarkAmount;
     private int mBurnInXOffset;
     private int mBurnInYOffset;
@@ -290,6 +294,8 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mIndicationTextBottom = findViewById(R.id.keyguard_indication_text_bottom);
         mIndicationBottomMargin = getResources().getDimensionPixelSize(
                 R.dimen.keyguard_indication_margin_bottom);
+        mIndicationBottomMarginUdfps = getResources().getDimensionPixelSize(
+                R.dimen.keyguard_indication_margin_bottom_fingerprint_in_display);
         mBurnInYOffset = getResources().getDimensionPixelSize(
                 R.dimen.default_burn_in_prevention_offset);
         updateCameraVisibility();
@@ -318,6 +324,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mPreviewContainer = previewContainer;
         inflateCameraPreview();
         updateLeftAffordance();
+        updateIndicationAreaPadding();
         updateRightAffordance();
     }
 
@@ -377,15 +384,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mIndicationBottomMargin = getResources().getDimensionPixelSize(
-                R.dimen.keyguard_indication_margin_bottom);
-        mBurnInYOffset = getResources().getDimensionPixelSize(
-                R.dimen.default_burn_in_prevention_offset);
-        MarginLayoutParams mlp = (MarginLayoutParams) mIndicationArea.getLayoutParams();
-        if (mlp.bottomMargin != mIndicationBottomMargin) {
-            mlp.bottomMargin = mIndicationBottomMargin;
-            mIndicationArea.setLayoutParams(mlp);
-        }
+
+        // Update the bottom margin of the indication area
+        updateIndicationAreaPadding();
 
         // Respect font size setting.
         mIndicationTextBottom.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -482,6 +483,23 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 && mRightButton.getIcon().isVisible ? View.VISIBLE : View.GONE);
     }
 
+    private void updateIndicationAreaPadding() {
+        mIndicationBottomMargin = getResources().getDimensionPixelSize(
+                R.dimen.keyguard_indication_margin_bottom);
+        mIndicationBottomMarginUdfps = getResources().getDimensionPixelSize(
+                R.dimen.keyguard_indication_margin_bottom_fingerprint_in_display);
+        mBurnInYOffset = getResources().getDimensionPixelSize(
+                R.dimen.default_burn_in_prevention_offset);
+        MarginLayoutParams mlp = (MarginLayoutParams) mIndicationArea.getLayoutParams();
+
+        int bottomMargin = hasInDisplayFingerprint() ? mIndicationBottomMarginUdfps : mIndicationBottomMargin;
+        boolean newLp = mlp.bottomMargin != bottomMargin;
+        if (newLp) {
+            mlp.bottomMargin = bottomMargin;
+            mIndicationArea.setLayoutParams(mlp);
+        }
+    }
+
     /**
      * Set an alternate icon for the left assist affordance (replace the mic icon)
      */
@@ -545,6 +563,10 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             mControlsButton.setOnClickListener(this::onControlsClick);
             mIndicationArea.setPadding(mIndicationPadding, 0, mIndicationPadding, 0);
         }
+    }
+
+    private boolean hasInDisplayFingerprint() {
+        return UdfpsUtils.hasUdfpsSupport(mContext);
     }
 
     public boolean isLeftVoiceAssist() {
@@ -901,6 +923,12 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                     updateCameraVisibility();
                     updateLeftAffordance();
                     updateRightAffordance();
+                }
+                @Override
+                public void onBiometricRunningStateChanged(boolean running,
+                            BiometricSourceType biometricSourceType) {
+                    mIsFingerprintRunning = running;
+                    updateIndicationAreaPadding();
                 }
             };
 
