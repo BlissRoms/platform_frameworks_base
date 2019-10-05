@@ -156,4 +156,6 @@
 
     <!-- Whether to use scaled brightness (set -1 to disable) -->
     <java-symbol type="integer" name="config_useScaleBrightness" />
+
+    <java-symbol type="integer" name="config_screenBrightnessPulse" />
 </resources>
