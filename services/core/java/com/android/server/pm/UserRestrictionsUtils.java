@@ -773,6 +773,7 @@ public class UserRestrictionsUtils {
             case android.provider.Settings.Secure.DOZE_PICK_UP_GESTURE:
             case android.provider.Settings.Secure.DOZE_PULSE_ON_LONG_PRESS:
             case android.provider.Settings.Secure.DOZE_DOUBLE_TAP_GESTURE:
+            case android.provider.Settings.System.DOZE_ON_CHARGE:
                 if ("0".equals(value)) {
                     return false;
                 }

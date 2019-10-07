@@ -92,5 +92,6 @@ public class SystemSettings {
         Settings.System.FULLSCREEN_GESTURES,
         Settings.System.USE_OLD_MOBILETYPE,
         Settings.System.TORCH_POWER_BUTTON_GESTURE,
+	Settings.System.DOZE_ON_CHARGE,
     };
 }
