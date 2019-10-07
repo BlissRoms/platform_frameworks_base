@@ -13726,6 +13726,12 @@ public final class Settings {
         public static final String VPN_ENFORCE_DNS_STORE = "vpn_enforce_dns_store";
 
         /**
+         * Whether to enable DOZE only when charging
+         * @hide
+         */
+        public static final String DOZE_ON_CHARGE = "doze_on_charge";
+
+        /**
          * These entries are considered common between the personal and the managed profile,
          * since the managed profile doesn't get to change them.
          */
