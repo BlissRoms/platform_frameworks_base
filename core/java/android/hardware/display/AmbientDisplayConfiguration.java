@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @TestApi
 public class AmbientDisplayConfiguration {
-    private static final String TAG = "AmbientDisplayConfig";
+    private static final IntentFilter sIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 
     private final Context mContext;
     private final boolean mAlwaysOnByDefault;
@@ -291,7 +291,6 @@ public class AmbientDisplayConfiguration {
         return alwaysOnEnabledSetting(user) || alwaysOnChargingEnabled(user);
     }
 
-    /** @hide */
     public boolean alwaysOnEnabledSetting(int user) {
         final boolean alwaysOnEnabled = Settings.Secure.getIntForUser(
                 mContext.getContentResolver(), Settings.Secure.DOZE_ALWAYS_ON,
@@ -299,17 +298,14 @@ public class AmbientDisplayConfiguration {
         return alwaysOnEnabled && alwaysOnAvailable() && !accessibilityInversionEnabled(user);
     }
 
-    /** @hide */
     public boolean alwaysOnChargingEnabledSetting(int user) {
         return Settings.Secure.getIntForUser(mContext.getContentResolver(),
             Settings.Secure.DOZE_ON_CHARGE, 0, user) == 1;
     }
 
-    /** @hide */
     private boolean alwaysOnChargingEnabled(int user) {
         if (alwaysOnChargingEnabledSetting(user)) {
-            final Intent intent = mContext.registerReceiver(null,
-                    new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            final Intent intent = mContext.registerReceiver(null, sIntentFilter, Context.RECEIVER_NOT_EXPORTED);
             if (intent != null) {
                 return intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
             }

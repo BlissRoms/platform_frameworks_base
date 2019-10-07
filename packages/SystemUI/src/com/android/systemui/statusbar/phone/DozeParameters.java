@@ -263,8 +263,7 @@ public class DozeParameters implements
      * @return {@code true} if enabled and available.
      */
     public boolean getAlwaysOn() {
-        return mAmbientDisplayConfiguration.alwaysOnEnabled(mUserTracker.getUserId())
-                && !mBatteryController.isAodPowerSave();
+        return mAmbientDisplayConfiguration.alwaysOnEnabled(mUserTracker.getUserId()) && !mBatteryController.isAodPowerSave();
     }
 
     /**
