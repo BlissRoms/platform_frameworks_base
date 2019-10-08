@@ -29,6 +29,23 @@
         android:elevation="4dp"
         android:background="@drawable/qs_background_primary" />
 
+    <!-- Black part behind the status bar -->
+    <LinearLayout
+        android:id="@+id/quick_settings_status_bar_background"
+        android:layout_width="match_parent"
+        android:layout_height="@*android:dimen/quick_qs_offset_height"
+        android:background="@android:color/transparent" >
+
+        <ImageView android:id="@+id/qs_header_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/qs_header_image_top_margin"
+            android:layout_marginBottom="@dimen/qs_header_image_bottom_margin"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:background="@drawable/qs_header_image_view_outline" />
+    </LinearLayout>
+
     <com.android.systemui.qs.NonInterceptingScrollView
         android:id="@+id/expanded_qs_scroll_view"
         android:layout_width="match_parent"
