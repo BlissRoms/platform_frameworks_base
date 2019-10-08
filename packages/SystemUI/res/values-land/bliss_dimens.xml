@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/* //device/apps/common/assets/res/any/dimens.xml
+/* //device/apps/common/assets/res/any/strings.xml
 **
 ** Copyright 2006, The Android Open Source Project
 **
@@ -17,14 +17,6 @@
 ** limitations under the License.
 */
 -->
-
-<resources>
-    <dimen name="binary_clock_dot_size">8dp</dimen>
-    <dimen name="binary_clock_stroke_width">2dp</dimen>
-    <dimen name="binary_clock_width">100dp</dimen>
-    <dimen name="binary_clock_height">100dp</dimen>
-
-    <!-- Weather condition icon  -->
-    <dimen name="weather_icon_size">24dp</dimen>
-
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <dimen name="qs_custom_header_offset">0dp</dimen>
 </resources>
