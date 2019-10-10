@@ -186,7 +186,7 @@ public class DozeParameters implements TunerService.Tunable,
      * @return {@code true} if enabled and available.
      */
     public boolean getAlwaysOn() {
-        return mAmbientDisplayConfiguration.alwaysOnEnabled(UserHandle.USER_CURRENT) && !mBatteryController.isAodPowerSave();
+        return mAmbientDisplayConfiguration.alwaysOnEnabled(UserHandle.USER_CURRENT) ? true : false && !mBatteryController.isAodPowerSave();
     }
 
     public boolean isQuickPickupEnabled() {
@@ -310,4 +310,5 @@ public class DozeParameters implements TunerService.Tunable,
          */
         void onAlwaysOnChange();
     }
+
 }
