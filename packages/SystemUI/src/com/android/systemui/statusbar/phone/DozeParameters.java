@@ -216,4 +216,5 @@ public class DozeParameters implements TunerService.Tunable,
     public AlwaysOnDisplayPolicy getPolicy() {
         return mAlwaysOnPolicy;
     }
+
 }
