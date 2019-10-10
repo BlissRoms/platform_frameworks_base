@@ -193,4 +193,7 @@
   <java-symbol type="integer" name="config_sysCPUTempMultiplier" />
   <java-symbol type="integer" name="config_sysBatteryTempMultiplier" />
 
+  <!-- Ambiant Pulse Light -->
+  <java-symbol type="integer" name="config_AmbiantPulseLightColor" />
+
 </resources>
