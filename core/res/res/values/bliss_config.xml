@@ -157,4 +157,6 @@
     <!-- Default FOD pressed color -->
     <integer name="config_udfps_pressed_color">0</integer>
 
+    <!-- Default value for Ambient Pulse light color -->
+    <integer name="config_AmbientPulseLightColor">0x3980FF</integer>
 </resources>

@@ -130,4 +130,7 @@
 
    <!-- Default UDFPS pressed icon -->
    <java-symbol type="integer" name="config_udfps_pressed_color" />
+
+    <!-- Ambient Pulse Light -->
+    <java-symbol type="integer" name="config_AmbientPulseLightColor" />
 </resources>
