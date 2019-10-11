@@ -113,4 +113,7 @@
   <!-- Whether device supports internal audio recording -->
   <java-symbol type="bool" name="config_hasInternalAudioRecordingSupport" />
 
+  <java-symbol type="integer" name="config_defaultMaxCachedProcesses" />
+  <java-symbol type="integer" name="config_defaultTrimCachedProcesses" />
+
 </resources>
