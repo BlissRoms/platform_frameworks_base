@@ -4629,6 +4629,16 @@ public final class Settings {
         private static final Validator OMNI_QS_LAYOUT_COLUMNS_VALIDATOR =
                 ANY_STRING_VALIDATOR;
 
+          /**
+           * Number of qs rows on landscape orientation
+           * @hide
+           */
+        public static final String OMNI_QS_LAYOUT_ROWS_LANDSCAPE = "qs_layout_rows_landscape";
+           /** @hide */
+        private static final Validator OMNI_QS_LAYOUT_ROWS_LANDSCAPE_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
+
         /**
          * Whether to display qs tile titles in the qs panel
          * @hide
@@ -4863,6 +4873,8 @@ public final class Settings {
             OMNI_QS_LAYOUT_COLUMNS,
             FINGERPRINT_SUCCESS_VIB,
             OMNI_QS_TILE_TITLE_VISIBILITY,
+            OMNI_QS_LAYOUT_ROWS_LANDSCAPE,
+            OMNI_QS_LAYOUT_ROWS,
         };
 
         /**
@@ -4991,6 +5003,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(FINGERPRINT_SUCCESS_VIB);
             PRIVATE_SETTINGS.add(OMNI_QS_TILE_TITLE_VISIBILITY);
             PRIVATE_SETTINGS.add(TOAST_ICON);
+            PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_ROWS_LANDSCAPE);
+            PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_ROWS);
         }
 
         /**
@@ -5093,6 +5107,9 @@ public final class Settings {
             VALIDATORS.put(OMNI_QS_LAYOUT_COLUMNS, OMNI_QS_LAYOUT_COLUMNS_VALIDATOR);
             VALIDATORS.put(FINGERPRINT_SUCCESS_VIB, FINGERPRINT_SUCCESS_VIB_VALIDATOR);
             VALIDATORS.put(OMNI_QS_TILE_TITLE_VISIBILITY, OMNI_QS_TILE_TITLE_VISIBILITY_VALIDATOR);
+            VALIDATORS.put(OMNI_QS_LAYOUT_ROWS_LANDSCAPE,
+                    OMNI_QS_LAYOUT_ROWS_LANDSCAPE_VALIDATOR);
+            VALIDATORS.put(OMNI_QS_LAYOUT_ROWS, OMNI_QS_LAYOUT_ROWS_VALIDATOR);
         }
 
         /**
