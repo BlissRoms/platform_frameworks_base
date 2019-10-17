@@ -5607,6 +5607,15 @@ public final class Settings {
         public static final String QS_FOOTER_SHOW_USER = "qs_footer_show_user";
 
         /**
+         * Whether footer text shows #BLISS
+         * @hide
+         */
+        public static final String BLISS_FOOTER_TEXT_SHOW = "footer_text_show";
+         /** @hide */
+        private static final Validator BLISS_FOOTER_TEXT_SHOW_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * Whether to vibrate on notifications
          * @hide
          */
@@ -5715,6 +5724,7 @@ public final class Settings {
             SENSOR_BLOCK,
             LOCKSCREEN_WEATHER_SHOW_TEMP,
             LOCKSCREEN_WEATHER_SHOW_CITY,
+            BLISS_FOOTER_TEXT_SHOW,
         };
 
         /**
@@ -5885,6 +5895,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SENSOR_BLOCK);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_TEMP);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_CITY);
+            PRIVATE_SETTINGS.add(BLISS_FOOTER_TEXT_SHOW);
         }
 
         /**
@@ -6025,6 +6036,7 @@ public final class Settings {
             VALIDATORS.put(SENSOR_BLOCK, SENSOR_BLOCK_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_TEMP, LOCKSCREEN_WEATHER_SHOW_TEMP_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_CITY, LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR);
+            VALIDATORS.put(BLISS_FOOTER_TEXT_SHOW, BLISS_FOOTER_TEXT_SHOW_VALIDATOR);
         }
 
         /**
