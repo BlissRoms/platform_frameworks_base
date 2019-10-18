@@ -152,4 +152,7 @@
     <!-- signification move threshold - if stays below will trigger action -->
     <integer name="config_navgesturemovethreshold">4</integer>
 
+    <!-- min height for gesture action start -->
+    <integer name="config_navgestureswipestart">20</integer>
+
 </resources>

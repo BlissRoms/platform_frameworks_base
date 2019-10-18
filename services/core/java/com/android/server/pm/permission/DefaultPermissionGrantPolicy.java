@@ -965,8 +965,8 @@ public final class DefaultPermissionGrantPolicy {
         // Google dialer
         PackageParser.Package googledialerPackage = getSystemPackage("com.google.android.dialer");
         if (googledialerPackage != null && doesPackageSupportRuntimePermissions(googledialerPackage)) {
-            grantRuntimePermissions(googledialerPackage, PHONE_PERMISSIONS, true, userId);
-            grantRuntimePermissions(googledialerPackage, CONTACTS_PERMISSIONS, true, userId);
+            grantRuntimePermissions(googledialerPackage, PHONE_PERMISSIONS, userId);
+            grantRuntimePermissions(googledialerPackage, CONTACTS_PERMISSIONS, userId);
             grantRuntimePermissions(googledialerPackage, SMS_PERMISSIONS, userId);
         }
 	// OmniJaws
@@ -983,13 +983,6 @@ public final class DefaultPermissionGrantPolicy {
         PackageParser.Package pixelwallsPackage = getDefaultProviderAuthorityPackage("com.google.android.apps.wallpaper", userId);
         if (pixelwallsPackage != null) {
             grantRuntimePermissions(pixelwallsPackage, STORAGE_PERMISSIONS, true, userId);
-        }
-        // Google dialer
-        PackageParser.Package googledialerPackage = getSystemPackage("com.google.android.dialer");
-        if (googledialerPackage != null && doesPackageSupportRuntimePermissions(googledialerPackage)) {
-            grantRuntimePermissions(googledialerPackage, PHONE_PERMISSIONS, userId);
-            grantRuntimePermissions(googledialerPackage, CONTACTS_PERMISSIONS, userId);
-            grantRuntimePermissions(googledialerPackage, SMS_PERMISSIONS, userId);
         }
 
         if (mPermissionGrantedCallback != null) {
