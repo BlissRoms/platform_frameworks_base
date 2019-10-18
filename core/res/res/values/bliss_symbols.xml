@@ -39,7 +39,8 @@
   <java-symbol name="reboot_system_message" type="string" />
   <java-symbol type="array" name="config_rebootActionsList" />
 
-
+  <!-- OP Gestures -->
+  <java-symbol type="integer" name="config_navgestureswipestart" />
   <java-symbol type="integer" name="config_navgestureswipeminlength" />
   <java-symbol type="integer" name="config_navgestureswipetimout" />
   <java-symbol type="integer" name="config_navgesturemovethreshold" />
