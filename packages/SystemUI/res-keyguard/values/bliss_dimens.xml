@@ -36,4 +36,7 @@
     <dimen name="widget_date_accent_box_padding_hor">10dp</dimen>
     <dimen name="widget_date_accent_box_padding_ver">6dp</dimen>
 
+    <!-- Weather condition icon  -->
+    <dimen name="weather_icon_size">24dp</dimen>
+
 </resources>
