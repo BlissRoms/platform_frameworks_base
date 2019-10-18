@@ -4691,6 +4691,17 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
+        * 0: OmniJaws Style
+        * 1: KeyguardSlice Style
+        * @hide
+        */
+        public static final String AICP_LOCKSCREEN_WEATHER_STYLE = "lockscreen_weather_style";
+
+        /** @hide */
+        private static final Validator AICP_LOCKSCREEN_WEATHER_STYLE_VALIDATOR =
+               new SettingsValidators.InclusiveIntegerRangeValidator(0, 1);;
+
+        /**
          * @hide
          */
         public static final String LOCKSCREEN_WEATHER_SHOW_TEMP = "lockscreen_weather_show_temp";
@@ -6094,6 +6105,7 @@ public final class Settings {
             OMNI_LOCKSCREEN_WEATHER_ENABLED,
             LOCKSCREEN_WEATHER_SHOW_TEMP,
             LOCKSCREEN_WEATHER_SHOW_CITY,
+            AICP_LOCKSCREEN_WEATHER_STYLE,
             OMNI_SCREENSHOT_SHUTTER_SOUND,
             INCREASING_RING,
             INCREASING_RING_START_VOLUME,
@@ -6276,6 +6288,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_LOCKSCREEN_WEATHER_ENABLED);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_TEMP);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_CITY);
+            PRIVATE_SETTINGS.add(AICP_LOCKSCREEN_WEATHER_STYLE);
             PRIVATE_SETTINGS.add(OMNI_SCREENSHOT_SHUTTER_SOUND);
             PRIVATE_SETTINGS.add(STATUS_BAR_CLOCK);
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_STYLE);
@@ -6453,6 +6466,7 @@ public final class Settings {
                     OMNI_LOCKSCREEN_WEATHER_ENABLED_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_TEMP, LOCKSCREEN_WEATHER_SHOW_TEMP_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_CITY, LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR);
+            VALIDATORS.put(AICP_LOCKSCREEN_WEATHER_STYLE,AICP_LOCKSCREEN_WEATHER_STYLE_VALIDATOR);
             VALIDATORS.put(OMNI_SCREENSHOT_SHUTTER_SOUND,
                     OMNI_SCREENSHOT_SHUTTER_SOUND_VALIDATOR);
             VALIDATORS.put(INCREASING_RING, INCREASING_RING_VALIDATOR);

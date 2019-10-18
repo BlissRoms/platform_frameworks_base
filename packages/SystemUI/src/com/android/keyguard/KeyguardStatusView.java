@@ -103,6 +103,7 @@ public class KeyguardStatusView extends GridLayout implements
     private int mLastLayoutHeight;
     private CurrentWeatherView mWeatherView;
     private boolean mShowWeather;
+    private boolean mOmniStyle;
 
     private boolean mShowClock;
     private boolean mShowInfo;
@@ -178,7 +179,6 @@ public class KeyguardStatusView extends GridLayout implements
         mHandler = new Handler(Looper.myLooper());
         mSmallClockScale = getResources().getDimension(R.dimen.widget_small_font_size)
                 / getResources().getDimension(R.dimen.widget_big_font_size);
-
         onDensityOrFontScaleChanged();
     }
 
@@ -232,16 +232,16 @@ public class KeyguardStatusView extends GridLayout implements
         mClockSeparator = findViewById(R.id.clock_separator);
 
         mWeatherView = (CurrentWeatherView) findViewById(R.id.weather_container);
-
+        updateSettings();
         mVisibleInDoze = Sets.newArraySet();
         if (mWeatherView != null) {
-            mVisibleInDoze.add(mWeatherView);
+            if (mShowWeather && mOmniStyle) mVisibleInDoze.add(mWeatherView);
         }
         if (mClockView != null) {
             mVisibleInDoze.add(mClockView);
         }
         if (mKeyguardSlice != null) {
-            mVisibleInDoze.add(mKeyguardSlice);
+            if (mShowWeather && !mOmniStyle) mVisibleInDoze.add(mKeyguardSlice);
         }
         if (mCustomClockView != null) {
             mVisibleInDoze.add(mCustomClockView);
@@ -1013,12 +1013,16 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.OMNI_LOCKSCREEN_WEATHER_ENABLED, 0,
                 UserHandle.USER_CURRENT) == 1;
 
+        mOmniStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.AICP_LOCKSCREEN_WEATHER_STYLE, 0,
+                UserHandle.USER_CURRENT) == 0;
+
         if (mWeatherView != null) {
-            if (mShowWeather) {
+            if (mShowWeather && mOmniStyle) {
                 mWeatherView.setVisibility(View.VISIBLE);
                 mWeatherView.enableUpdates();
             }
-            if (!mShowWeather) {
+            if (!mShowWeather || !mOmniStyle) {
                 mWeatherView.setVisibility(View.GONE);
                 mWeatherView.disableUpdates();
             }
@@ -1236,8 +1240,7 @@ public class KeyguardStatusView extends GridLayout implements
         }
         mKeyguardSlice.setPulsing(pulsing, animate);
         if (mWeatherView != null) {
-            mWeatherView.setVisibility((mShowWeather && !mPulsing) ? View.VISIBLE : View.GONE);
-            // If text style clock, align the weatherView to start else keep it center.
+            mWeatherView.setVisibility((mShowWeather && mOmniStyle && !mPulsing) ? View.VISIBLE : View.GONE);
         }
         updateDozeVisibleViews();
     }
@@ -1255,6 +1258,12 @@ public class KeyguardStatusView extends GridLayout implements
             } else {
                 child.setAlpha(mDarkAmount == 1 ? 0 : 1);
             }
+        }
+        if (mKeyguardSlice != null) {
+            mKeyguardSlice.setVisibility(mForcedMediaDoze ? View.GONE : View.VISIBLE);
+        }
+        if (mWeatherView != null) {
+            mWeatherView.setVisibility(mForcedMediaDoze ? View.GONE : (mShowWeather && mOmniStyle) ? View.VISIBLE : View.GONE);
         }
     }
 
