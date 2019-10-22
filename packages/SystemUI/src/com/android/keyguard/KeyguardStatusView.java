@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -104,6 +105,7 @@ public class KeyguardStatusView extends GridLayout implements
                 updateOwnerInfo();
                 updateLogoutView();
                 updateSettings();
+                mClockView.refreshLockFont();
             }
         }
 
@@ -123,6 +125,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateOwnerInfo();
             updateLogoutView();
             updateSettings();
+            mClockView.refreshLockFont();
         }
 
         @Override
@@ -199,7 +202,7 @@ public class KeyguardStatusView extends GridLayout implements
         mClockView.setShowCurrentUserTime(true);
         mOwnerInfo = findViewById(R.id.owner_info);
         mKeyguardSlice = findViewById(R.id.keyguard_status_area);
-
+        mClockView.refreshLockFont();
         mWeatherView = (CurrentWeatherView) findViewById(R.id.weather_container);
         updateSettings();
 
