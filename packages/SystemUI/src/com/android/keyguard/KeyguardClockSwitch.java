@@ -149,6 +149,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mLargeClockView = findViewById(R.id.animatable_clock_view_large);
         mStatusArea = findViewById(R.id.keyguard_status_area);
 
+        refreshLockFont();
+
         onDensityOrFontScaleChanged();
         onThemeChanged();
     }

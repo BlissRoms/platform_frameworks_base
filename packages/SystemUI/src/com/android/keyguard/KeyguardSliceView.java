@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.text.LineBreaker;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Trace;
 import android.text.TextUtils;
@@ -225,6 +226,16 @@ public class KeyguardSliceView extends LinearLayout {
         mDarkAmount = darkAmount;
         mRow.setDarkAmount(darkAmount);
         updateTextColors();
+    }
+
+    public void setViewsTypeface(Typeface tf) {
+        int childCount = mRow.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View v = mRow.getChildAt(i);
+            if (v instanceof TextView) {
+                ((TextView) v).setTypeface(tf);
+            }
+        }
     }
 
     private void updateTextColors() {
@@ -434,7 +445,6 @@ public class KeyguardSliceView extends LinearLayout {
         }
 
         public void onOverlayChanged() {
-            setTextAppearance(sStyleId);
         }
 
         @Override
