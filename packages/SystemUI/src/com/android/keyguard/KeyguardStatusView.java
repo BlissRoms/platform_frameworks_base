@@ -17,12 +17,17 @@
 package com.android.keyguard;
 
 import android.content.Context;
+import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.RemoteException;
+import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
-
 import androidx.core.graphics.ColorUtils;
 
 import com.android.systemui.R;
@@ -72,6 +77,7 @@ public class KeyguardStatusView extends GridLayout {
 
         mMediaHostContainer = findViewById(R.id.status_view_media_container);
 
+        mClockView.refreshLockFont();
         updateDark();
     }
 
@@ -83,6 +89,7 @@ public class KeyguardStatusView extends GridLayout {
         mClockView.setDarkAmount(darkAmount);
         CrossFadeHelper.fadeOut(mMediaHostContainer, darkAmount);
         updateDark();
+        mClockView.refreshLockFont();
     }
 
     void updateDark() {

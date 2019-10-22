@@ -16,5 +16,5 @@
 
 <resources>
     <!-- Large clock maximum font size (dp is intentional, to prevent any further scaling) -->
-    <dimen name="large_clock_text_size">170dp</dimen>
+    <dimen name="large_clock_text_size">150dp</dimen>
 </resources>
