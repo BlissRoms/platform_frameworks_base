@@ -66,6 +66,7 @@ import android.widget.FrameLayout;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
+import com.android.internal.widget.LockPatternUtils;
 import com.android.keyguard.KeyguardClockSwitch;
 import com.android.keyguard.KeyguardStatusView;
 import com.android.keyguard.KeyguardUpdateMonitor;
@@ -176,6 +177,8 @@ public class NotificationPanelView extends PanelView implements
             "lineagesystem:" + LineageSettings.System.DOUBLE_TAP_SLEEP_GESTURE;
     private static final String DOUBLE_TAP_SLEEP_LOCKSCREEN =
             "system:" + Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN;
+    private static final String LOCKSCREEN_ENABLE_QS =
+            "global:" + Settings.Global.LOCKSCREEN_ENABLE_QS;
 
     private static final Rect mDummyDirtyRect = new Rect(0, 0, 1, 1);
     private static final Rect mEmptyRect = new Rect();
@@ -276,6 +279,7 @@ public class NotificationPanelView extends PanelView implements
     private boolean mQsExpandedWhenExpandingStarted;
     private boolean mQsFullyExpanded;
     private boolean mKeyguardShowing;
+    private boolean mKeyguardOrShadeShowing;
     private boolean mDozing;
     private boolean mDozingOnDown;
     protected int mBarState;
@@ -350,6 +354,9 @@ public class NotificationPanelView extends PanelView implements
     private boolean mAffordanceHasPreview;
     private FalsingManager mFalsingManager;
     private String mLastCameraLaunchSource = KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_AFFORDANCE;
+
+    private boolean mStatusBarShownOnSecureKeyguard;
+    private LockPatternUtils mLockPatternUtils;
 
     private Runnable mHeadsUpExistenceChangedRunnable = new Runnable() {
         @Override
@@ -522,6 +529,7 @@ public class NotificationPanelView extends PanelView implements
         });
         mBottomAreaShadeAlphaAnimator.setDuration(160);
         mBottomAreaShadeAlphaAnimator.setInterpolator(Interpolators.ALPHA_OUT);
+        mLockPatternUtils = new LockPatternUtils(mContext);
         mDoubleTapGesture = new GestureDetector(mContext,
                 new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -609,6 +617,7 @@ public class NotificationPanelView extends PanelView implements
         Dependency.get(TunerService.class).addTunable(this, STATUS_BAR_QUICK_QS_PULLDOWN);
         Dependency.get(TunerService.class).addTunable(this, DOUBLE_TAP_SLEEP_GESTURE);
         Dependency.get(TunerService.class).addTunable(this, DOUBLE_TAP_SLEEP_LOCKSCREEN);
+        Dependency.get(TunerService.class).addTunable(this, LOCKSCREEN_ENABLE_QS);
         mUpdateMonitor.registerCallback(mKeyguardUpdateCallback);
         // Theme might have changed between inflating this view and attaching it to the window, so
         // force a call to onThemeChanged
@@ -641,6 +650,9 @@ public class NotificationPanelView extends PanelView implements
                 mIsLockscreenDoubleTapEnabled =
                         TunerService.parseIntegerSwitch(newValue, true);
                 break;
+            case LOCKSCREEN_ENABLE_QS:
+                mStatusBarShownOnSecureKeyguard =
+                        TunerService.parseIntegerSwitch(newValue, true);
             default:
                 break;
         }
@@ -1022,10 +1034,15 @@ public class NotificationPanelView extends PanelView implements
         mAnimateNextPositionUpdate = true;
     }
 
+    private boolean isQSEventBlocked() {
+        return mLockPatternUtils.isSecure(KeyguardUpdateMonitor.getCurrentUser())
+            && !mStatusBarShownOnSecureKeyguard && mKeyguardOrShadeShowing;
+    }
+
     public void setQsExpansionEnabled(boolean qsExpansionEnabled) {
-        mQsExpansionEnabled = qsExpansionEnabled;
+        mQsExpansionEnabled = qsExpansionEnabled && !isQSEventBlocked();
         if (mQs == null) return;
-        mQs.setHeaderClickable(qsExpansionEnabled);
+        mQs.setHeaderClickable(mQsExpansionEnabled);
     }
 
     @Override
@@ -1706,11 +1723,14 @@ public class NotificationPanelView extends PanelView implements
         boolean keyguardFadingAway = mKeyguardMonitor.isKeyguardFadingAway();
         int oldState = mBarState;
         boolean keyguardShowing = statusBarState == StatusBarState.KEYGUARD;
+        boolean keyguardOrShadeShowing = statusBarState == StatusBarState.KEYGUARD
+                || statusBarState == StatusBarState.SHADE_LOCKED;
         setKeyguardStatusViewVisibility(statusBarState, keyguardFadingAway, goingToFullShade);
         setKeyguardBottomAreaVisibility(statusBarState, goingToFullShade);
 
         mBarState = statusBarState;
         mKeyguardShowing = keyguardShowing;
+        mKeyguardOrShadeShowing = keyguardOrShadeShowing;
 
         if (oldState == StatusBarState.KEYGUARD
                 && (goingToFullShade || statusBarState == StatusBarState.SHADE_LOCKED)) {
