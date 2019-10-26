@@ -60,12 +60,15 @@ public class VisualizerView extends View
             Settings.Secure.LOCKSCREEN_SOLID_UNITS_OPACITY;
     private static final String AMBIENT_VISUALIZER_ENABLED =
             Settings.Secure.AMBIENT_VISUALIZER_ENABLED;
+    private static final String LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED =
+            Settings.Secure.LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED;
 
     private Paint mPaint;
     private Visualizer mVisualizer;
     private ObjectAnimator mVisualizerColorAnimator;
 
     private ValueAnimator[] mValueAnimators;
+    private FFTAverage[] mFFTAverage;
     private float[] mFFTPoints;
 
     private int mStatusBarState;
@@ -85,6 +88,7 @@ public class VisualizerView extends View
     private boolean mAutoColor;
     private boolean mLavaLampEnabled;
     private int mLavaLampSpeed;
+    private boolean mSmoothingEnabled;
     private boolean shouldAnimate;
     private int mUnits = 32;
     private float mDbFuzzFactor = 16f;
@@ -109,6 +113,9 @@ public class VisualizerView extends View
                 ifk = fft[i * 2 + 3];
                 magnitude = rfk * rfk + ifk * ifk;
                 dbValue = magnitude > 0 ? (int) (10 * Math.log10(magnitude)) : 0;
+                if (mSmoothingEnabled) {
+                    dbValue = mFFTAverage[i].average(dbValue);
+                }
 
                 mValueAnimators[i].setFloatValues(mFFTPoints[i * 4 + 1],
                         mFFTPoints[3] - (dbValue * mDbFuzzFactor));
@@ -221,6 +228,7 @@ public class VisualizerView extends View
         final TunerService tunerService = Dependency.get(TunerService.class);
         tunerService.addTunable(this, LOCKSCREEN_VISUALIZER_ENABLED);
         tunerService.addTunable(this, AMBIENT_VISUALIZER_ENABLED);
+        tunerService.addTunable(this, LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED);
         tunerService.addTunable(this, LOCKSCREEN_VISUALIZER_AUTOCOLOR);
         tunerService.addTunable(this, LOCKSCREEN_LAVALAMP_ENABLED);
         tunerService.addTunable(this, LOCKSCREEN_LAVALAMP_SPEED);
@@ -263,6 +271,10 @@ public class VisualizerView extends View
                 mAmbientVisualizerEnabled =
                         TunerService.parseIntegerSwitch(newValue, true);
                 break;
+            case LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED:
+                mSmoothingEnabled =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                break;
             case LOCKSCREEN_LAVALAMP_SPEED:
                 mLavaLampSpeed = 10000;
                 try {
@@ -278,6 +290,9 @@ public class VisualizerView extends View
                 } catch (NumberFormatException ex) {}
                 if (mUnits != oldUnits) {
                     mFFTPoints = new float[mUnits * 4];
+                    if (mSmoothingEnabled) {
+                        setupFFTAverage();
+                    }
                     onSizeChanged(0, 0, 0, 0);
                 }
                 break;
@@ -437,6 +452,13 @@ public class VisualizerView extends View
             setColor(Color.TRANSPARENT);
         } else if (mAutoColor && !mLavaLampEnabled) {
             Palette.generateAsync(mCurrentBitmap, this);
+        }
+    }
+
+    public void setupFFTAverage() {
+        mFFTAverage = new FFTAverage[mUnits];
+        for (int i = 0; i < mUnits; i++) {
+            mFFTAverage[i] = new FFTAverage();
         }
     }
 
