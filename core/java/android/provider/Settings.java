@@ -9478,6 +9478,12 @@ public final class Settings {
         public static final String LOCKSCREEN_SOLID_UNITS_OPACITY = "lockscreen_solid_units_opacity";
 
         /**
+         * Visualizer smoothing
+         * @hide
+         */
+        public static final String LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED = "lockscreen_visualizer_smoothing_enabled";
+
+        /**
          * Switch between filters for lockscreen album art
          * @hide
          */
