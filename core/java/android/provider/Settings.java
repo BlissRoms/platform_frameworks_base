@@ -10806,6 +10806,12 @@ public final class Settings {
         public static final String LOCKSCREEN_SOLID_UNITS_OPACITY = "lockscreen_solid_units_opacity";
 
         /**
+         * Visualizer smoothing
+         * @hide
+         */
+        public static final String LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED = "lockscreen_visualizer_smoothing_enabled";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
