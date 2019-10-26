@@ -35,6 +35,14 @@
         android:orientation="horizontal"
         android:gravity="center_vertical|start" >
 
+    <com.android.systemui.bliss.logo.LogoImageViewQuick
+        android:id="@+id/statusbar_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingEnd="1dip"
+        android:scaleType="center"
+        android:visibility="gone" />
+
     <com.android.systemui.statusbar.policy.Clock
         android:id="@+id/clock"
         android:layout_width="wrap_content"
@@ -79,6 +87,15 @@
     </com.android.systemui.statusbar.LineageStatusBarItemHolder>
 
     <include layout="@layout/ongoing_privacy_chip" />
+
+    <com.android.systemui.bliss.logo.LogoImageViewQuickRight
+        android:id="@+id/statusbar_logo_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingStart="2dip"
+        android:scaleType="center"
+        android:gravity="center_vertical"
+        android:visibility="gone" />
 
     </LinearLayout>
 </LinearLayout>
