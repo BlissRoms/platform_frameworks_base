@@ -53,6 +53,7 @@ public class VisualizerView extends View
     private Context mContext;
 
     private ValueAnimator[] mValueAnimators;
+    private FFTAverage[] mFFTAverage;
     private float[] mFFTPoints;
 
     private int mStatusBarState;
@@ -72,6 +73,7 @@ public class VisualizerView extends View
     private boolean mAutoColorEnabled;
     private boolean mLavaLampEnabled;
     private int mLavaLampSpeed;
+    private boolean mSmoothingEnabled;
     private boolean shouldAnimate;
     private int mUnits = 32;
     private float mDbFuzzFactor = 16f;
@@ -96,6 +98,9 @@ public class VisualizerView extends View
                 ifk = fft[i * 2 + 3];
                 magnitude = rfk * rfk + ifk * ifk;
                 dbValue = magnitude > 0 ? (int) (10 * Math.log10(magnitude)) : 0;
+                if (mSmoothingEnabled) {
+                    dbValue = mFFTAverage[i].average(dbValue);
+                }
 
                 mValueAnimators[i].setFloatValues(mFFTPoints[i * 4 + 1],
                         mFFTPoints[3] - (dbValue * mDbFuzzFactor));
@@ -309,6 +314,11 @@ public class VisualizerView extends View
                 Settings.Secure.LOCKSCREEN_LAVALAMP_ENABLED , 0, UserHandle.USER_CURRENT) == 1;
     }
 
+    private void setSmoothingAnimation() {
+        mSmoothingEnabled = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED, 0, UserHandle.USER_CURRENT) ==1;
+    }
+
     private void setLavaLampSpeed() {
         mLavaLampSpeed = Settings.Secure.getIntForUser(mContext.getContentResolver(),
                 Settings.Secure.LOCKSCREEN_LAVALAMP_SPEED, 10000, UserHandle.USER_CURRENT);
@@ -333,7 +343,17 @@ public class VisualizerView extends View
                 Settings.Secure.LOCKSCREEN_SOLID_UNITS_COUNT, 32, UserHandle.USER_CURRENT);
         if (mUnits != oldUnits) {
             mFFTPoints = new float[mUnits * 4];
+            if (mSmoothingEnabled) {
+                setupFFTAverage();
+            }
             onSizeChanged(0, 0, 0, 0);
+        }
+        if (mSmoothingEnabled) {
+            if (mFFTAverage == null) {
+                setupFFTAverage();
+            }
+        } else {
+            mFFTAverage = null;
         }
     }
 
@@ -412,6 +432,13 @@ public class VisualizerView extends View
             setColor(Color.TRANSPARENT);
         } else if (mAutoColorEnabled && !mLavaLampEnabled) {
             Palette.generateAsync(mCurrentBitmap, this);
+        }
+    }
+
+    public void setupFFTAverage() {
+        mFFTAverage = new FFTAverage[mUnits];
+        for (int i = 0; i < mUnits; i++) {
+            mFFTAverage[i] = new FFTAverage();
         }
     }
 
@@ -543,6 +570,9 @@ public class VisualizerView extends View
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.LOCKSCREEN_SOLID_UNITS_OPACITY),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -577,6 +607,9 @@ public class VisualizerView extends View
             } else if (uri.equals(Settings.Secure.getUriFor(
                     Settings.Secure.LOCKSCREEN_SOLID_UNITS_OPACITY))) {
                 setSolidUnitsOpacity();
+            } else if (uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.LOCKSCREEN_VISUALIZER_SMOOTHING_ENABLED))) {
+                setSmoothingAnimation();
             }
         }
 
@@ -589,6 +622,7 @@ public class VisualizerView extends View
             setSolidUnitsCount();
             setSolidFudgeFactor();
             setSolidUnitsOpacity();
+            setSmoothingAnimation();
             checkStateChanged();
             updateViewVisibility();
         }
