@@ -98,8 +98,8 @@ public class LogoImageViewRight extends ImageView implements
 
     public void onDarkChanged(Rect area, float darkIntensity, int tint) {
         mTintColor = DarkIconDispatcher.getTint(area, this, tint);
-        if (mBlissLogo && mBlissLogoPosition == 1 && 
-                mBlissLogoColor == 0xFFFFFFFF) {
+        if (mBlissLogo && (mBlissLogoPosition == 1
+                || mLogoPosition == 3) && mBlissLogoColor == 0xFFFFFFFF) {
             updateBlissLogo();
         }
     }
@@ -107,7 +107,7 @@ public class LogoImageViewRight extends ImageView implements
     public void updateBlissLogo() {
         Drawable drawable = null;
 
-        if (!mBlissLogo || mBlissLogoPosition == 0) {
+        if (!mBlissLogo || (mBlissLogoPosition == 0 || mLogoPosition == 2)) {
             setImageDrawable(null);
             setVisibility(View.GONE);
             return;

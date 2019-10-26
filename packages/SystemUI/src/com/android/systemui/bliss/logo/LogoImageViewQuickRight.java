@@ -1,5 +1,7 @@
 /*
  * Copyright (C) 2018 Bliss Android Project
+ * Copyright (C) 2018 Crdroid Android Project
+ * Copyright (C) 2018 AICP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +35,7 @@ import com.android.systemui.Dependency;
 import com.android.systemui.plugins.DarkIconDispatcher;
 import com.android.systemui.tuner.TunerService;
 
-public class LogoImageView extends ImageView implements
+public class LogoImageViewQuickRight extends ImageView implements
         TunerService.Tunable {
 
     private Context mContext;
@@ -54,15 +56,15 @@ public class LogoImageView extends ImageView implements
     private static final String STATUS_BAR_LOGO_STYLE =
             "system:" + Settings.System.STATUS_BAR_LOGO_STYLE;
 
-    public LogoImageView(Context context) {
+    public LogoImageViewQuickRight(Context context) {
         this(context, null);
     }
 
-    public LogoImageView(Context context, AttributeSet attrs) {
+    public LogoImageViewQuickRight(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LogoImageView(Context context, AttributeSet attrs, int defStyle) {
+    public LogoImageViewQuickRight(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         final Resources resources = getResources();
         mContext = context;
@@ -98,8 +100,8 @@ public class LogoImageView extends ImageView implements
 
     public void onDarkChanged(Rect area, float darkIntensity, int tint) {
         mTintColor = DarkIconDispatcher.getTint(area, this, tint);
-        if (mBlissLogo && (mBlissLogoPosition == 0
-                || mLogoPosition == 2) && mBlissLogoColor == 0xFFFFFFFF) {
+        if (mBlissLogo && mBlissLogoPosition == 3 &&
+                mBlissLogoColor == 0xFFFFFFFF) {
             updateBlissLogo();
         }
     }
@@ -107,7 +109,7 @@ public class LogoImageView extends ImageView implements
     public void updateBlissLogo() {
         Drawable drawable = null;
 
-        if (!mBlissLogo || (mBlissLogoPosition == 1 || mLogoPosition == 3)) {
+        if (!mBlissLogo || mBlissLogoPosition != 3) {
             setImageDrawable(null);
             setVisibility(View.GONE);
             return;
