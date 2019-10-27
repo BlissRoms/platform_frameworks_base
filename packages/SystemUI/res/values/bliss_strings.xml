@@ -88,4 +88,8 @@
     <!-- Hint for custom lockscreen shortcuts -->
     <string name="custom_swipe_hint">Swipe from icon for <xliff:g name="target">%s</xliff:g></string>
 
+    <string name="screenrecord_stopdot_label">Show stop dot</string>
+        <!-- Power menu item for taking a screenshot [CHAR LIMIT=20]-->
+    <string name="global_action_screenshot_cust">"Screenshot/Rec"</string>
+
 </resources>
