@@ -1010,4 +1010,16 @@
     <!-- Dimensions for the translations of the default dialog animation. -->
     <dimen name="popup_enter_animation_from_y_delta">20dp</dimen>
     <dimen name="popup_exit_animation_to_y_delta">-10dp</dimen>
+
+     <!-- Pocket Mode -->
+    <dimen name="pocket_view_img_height">350dp</dimen>
+    <dimen name="pocket_view_img_width">175dp</dimen>
+    <dimen name="pocket_view_img_margin_top">56dp</dimen>
+    <dimen name="pocket_view_title_size">24sp</dimen>
+    <dimen name="pocket_view_title_margin_horizontal">56dp</dimen>
+    <dimen name="pocket_view_title_cancel_size">16sp</dimen>
+    <dimen name="pocket_view_title_cancel_margin_top">56dp</dimen>
+    <dimen name="pocket_view_cancel_margin_horizontal">24dp</dimen>
+    <dimen name="pocket_view_top_tag_size">14sp</dimen>
+    <dimen name="pocket_view_top_tag_margin_top">8dp</dimen>
 </resources>
