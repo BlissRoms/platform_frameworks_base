@@ -11,6 +11,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
 <resources>
 
     <!-- The default tiles to display in QuickSettings -->
@@ -24,6 +25,9 @@
 
     <!-- Max visible system icons -->
     <integer name="config_maxVisibleStatusIconContainer">6</integer>
+
+    <!-- Whether to use the mask for the quicksettings icons-->
+    <bool name="config_useMaskForQs">true</bool>
 
     <!-- System icon area layout weight -->
     <item name="system_icon_area_weight" format="float" type="integer">1</item>
