@@ -262,4 +262,8 @@
        recharge when the battery level is lower than a threshold. Set this so that the device
        will be charged between (limit - val) and limit. -->
   <integer name="config_chargingControlBatteryRechargeMargin">10</integer>
+
+    <!-- Defines the sysfs attribute path used by pocket bridge
+         to communicate pocket state to the pocket judge kernel driver. -->
+    <string name="config_pocketBridgeSysfsInpocket"></string>
 </resources>
