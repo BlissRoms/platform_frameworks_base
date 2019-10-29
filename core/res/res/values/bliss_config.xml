@@ -160,4 +160,8 @@
     <!-- Smart cutoff -->
     <integer name="config_smartCutoffTemperature">30</integer>
     <integer name="config_smartCutoffResumeTemperature">25</integer>
+
+    <!-- Defines the sysfs attribute path used by pocket bridge
+         to communicate pocket state to the pocket judge kernel driver. -->
+    <string name="config_pocketBridgeSysfsInpocket"></string>
 </resources>
