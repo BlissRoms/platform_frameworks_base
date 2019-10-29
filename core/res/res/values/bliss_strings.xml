@@ -65,4 +65,7 @@
 
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Screenrecord</string>
+
+    <!-- Pocket Lock --> 
+    <string name="pocket_lock_message_long_press">Press and hold power button to unlock</string> 
 </resources>
