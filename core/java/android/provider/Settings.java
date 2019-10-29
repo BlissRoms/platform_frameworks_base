@@ -6139,6 +6139,16 @@ public final class Settings {
         @Readable
         public static final String BURN_IN_PROTECTION_INTERVAL = "burn_in_protection_interval";
 
+
+        /**
+         * Whether allowing pocket service to register sensors and dispatch informations.
+         *   0 = disabled
+         *   1 = enabled
+         * @author Carlo Savignano
+         * @hide
+         */
+        public static final String POCKET_JUDGE = "pocket_judge";
+
         /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
@@ -6277,6 +6287,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_DATE_POSITION);
             PRIVATE_SETTINGS.add(BURN_IN_PROTECTION);
             PRIVATE_SETTINGS.add(BURN_IN_PROTECTION_INTERVAL);
+            PRIVATE_SETTINGS.add(POCKET_JUDGE);
         }
 
         /**
