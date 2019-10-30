@@ -23,8 +23,6 @@
     <!-- the padding on the start and the end of the statusbar -->
     <dimen name="status_bar_extra_padding">0dp</dimen>
 
-    <dimen name="quick_qs_drag_handle_height">20dp</dimen>
-
     <dimen name="screenrecord_dot_size">48dp</dimen>
 
 </resources>

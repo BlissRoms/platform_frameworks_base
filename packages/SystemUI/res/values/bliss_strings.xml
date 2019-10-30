@@ -33,8 +33,6 @@
     <!-- LTE QS Tile -->
     <string name="qs_lte_label">LTE</string>
 
-    <string name="tuner_show_drag_handle">Show drag handle</string>
-
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
     <string name="quick_settings_region_screenshot_label">Partial screenshot</string>
