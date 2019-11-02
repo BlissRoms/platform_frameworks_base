@@ -6599,6 +6599,13 @@ public final class Settings {
          */
         public static final String STOCK_STATUSBAR_IN_HIDE = "stock_statusbar_in_hide";
 
+        /** Whether to show ambient or lockscreen if AoD is disabled
+         * and we do a wake gesture like lift to wake or double tap
+         *
+         * @hide
+         */
+        public static final String AMBIENT_WAKE_GESTURES = "ambient_wake_gestures";
+
         /**
          * Force full screen for devices with cutout
          * @hide
