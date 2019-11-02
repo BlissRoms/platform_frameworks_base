@@ -394,6 +394,7 @@
     <protected-broadcast android:name="com.android.settings.flashlight.action.FLASHLIGHT_CHANGED" />
     <protected-broadcast android:name="com.android.systemui.action.ACTION_LAUNCH_MEDIA_OUTPUT_BROADCAST_DIALOG" />
     <protected-broadcast android:name="com.android.systemui.STARTED" />
+    <protected-broadcast android:name="com.android.systemui.doze.pulse" />
 
     <!-- Parallel spaces -->
     <uses-permission android:name="com.android.permission.MANAGE_PARALLEL_SPACES" />
