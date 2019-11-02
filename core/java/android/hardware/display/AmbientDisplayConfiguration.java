@@ -256,4 +256,9 @@ public class AmbientDisplayConfiguration {
         }
         return false;
     }
+
+    public boolean isAmbientGestureEnabled(int user) {
+        return Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.AMBIENT_WAKE_GESTURES, 1, user) != 0;
+    }
 }
