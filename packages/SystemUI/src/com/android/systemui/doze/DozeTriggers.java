@@ -168,12 +168,13 @@ public class DozeTriggers implements DozeMachine.Part {
 
         if (isWakeDisplay) {
             onWakeScreen(wakeEvent, mMachine.isExecutingTransition() ? null : mMachine.getState());
-        } else if (isLongPress) {
-            requestPulse(pulseReason, true /* alreadyPerformedProxCheck */,
-                    null /* onPulseSupressedListener */);
+        } else if (isLongPress
+                // whether to show ambient or lockscreen if AoD is disabled and we do a wake gesture like lift to wake or double tap
+               || (!mConfig.alwaysOnEnabled(UserHandle.USER_CURRENT) && mConfig.isAmbientGestureEnabled(UserHandle.USER_CURRENT))) {
+            requestPulse(pulseReason, true, null /* onPulseSupressedListener */);
         } else if (isWakeLockScreen) {
             if (wakeEvent) {
-                requestPulse(pulseReason, true /* alreadyPerformedProxCheck */,
+                requestPulse(pulseReason, true,
                         null /* onPulseSupressedListener */);
             }
         } else {
@@ -186,7 +187,7 @@ public class DozeTriggers implements DozeMachine.Part {
                     if (screenX != -1 && screenY != -1) {
                         mDozeHost.onSlpiTap(screenX, screenY);
                     }
-                    gentleWakeUp(pulseReason);
+                    //gentleWakeUp(pulseReason);
                 } else if (isPickup) {
                     gentleWakeUp(pulseReason);
                 } else {
@@ -577,6 +578,11 @@ public class DozeTriggers implements DozeMachine.Part {
             if (active) {
                 mMachine.requestState(DozeMachine.State.FINISH);
             }
+        }
+
+        @Override
+        public void wakeUpFromDoubleTap() {
+            gentleWakeUp(DozeLog.REASON_SENSOR_DOUBLE_TAP);
         }
     };
 }
