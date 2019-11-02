@@ -5095,6 +5095,13 @@ public final class Settings {
         private static final Validator LOCK_SHOW_STATUS_BAR_VALIDATOR =
                BOOLEAN_VALIDATOR;
 
+        /** Whether to show ambient or lockscreen if AoD is disabled
+         * and we do a wake gesture like lift to wake or double tap
+         *
+         * @hide
+         */
+        public static final String AMBIENT_WAKE_GESTURES = "ambient_wake_gestures";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
