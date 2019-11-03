@@ -104,6 +104,7 @@ public class NavigationBarInflaterView extends FrameLayout
     private boolean mIsVertical;
     private boolean mAlternativeOrder;
     private boolean mInverseLayout;
+    private boolean mUsingCustomLayout;
 
     private OverviewProxyService mOverviewProxyService;
     private int mNavBarMode = NAV_BAR_MODE_3BUTTON;
@@ -185,6 +186,14 @@ public class NavigationBarInflaterView extends FrameLayout
         }
         if (QuickStepContract.isGesturalMode(mNavBarMode)) {
             setNavigationBarLayout(newValue);
+        }
+    }
+
+    public void setNavigationBarLayout(String layoutValue) {
+        if (!Objects.equals(mCurrentLayout, layoutValue)) {
+            mUsingCustomLayout = layoutValue != null;
+            clearViews();
+            inflateLayout(layoutValue);
         }
     }
 
