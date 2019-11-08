@@ -58,6 +58,8 @@ public class VisualizerView extends View
             Settings.Secure.LOCKSCREEN_SOLID_FUDGE_FACTOR;
     private static final String LOCKSCREEN_SOLID_UNITS_OPACITY =
             Settings.Secure.LOCKSCREEN_SOLID_UNITS_OPACITY;
+    private static final String AMBIENT_VISUALIZER_ENABLED =
+            Settings.Secure.AMBIENT_VISUALIZER_ENABLED;
 
     private Paint mPaint;
     private Visualizer mVisualizer;
@@ -74,6 +76,7 @@ public class VisualizerView extends View
     private boolean mDisplaying = false; // the state we're animating to
     private boolean mDozing = false;
     private boolean mOccluded = false;
+    private boolean mAmbientVisualizerEnabled = false;
 
     private int mColor;
     private Bitmap mCurrentBitmap;
@@ -217,6 +220,7 @@ public class VisualizerView extends View
         super.onAttachedToWindow();
         final TunerService tunerService = Dependency.get(TunerService.class);
         tunerService.addTunable(this, LOCKSCREEN_VISUALIZER_ENABLED);
+        tunerService.addTunable(this, AMBIENT_VISUALIZER_ENABLED);
         tunerService.addTunable(this, LOCKSCREEN_VISUALIZER_AUTOCOLOR);
         tunerService.addTunable(this, LOCKSCREEN_LAVALAMP_ENABLED);
         tunerService.addTunable(this, LOCKSCREEN_LAVALAMP_SPEED);
@@ -253,6 +257,10 @@ public class VisualizerView extends View
                 break;
             case LOCKSCREEN_LAVALAMP_ENABLED:
                 mLavaLampEnabled =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                break;
+            case AMBIENT_VISUALIZER_ENABLED:
+                mAmbientVisualizerEnabled =
                         TunerService.parseIntegerSwitch(newValue, true);
                 break;
             case LOCKSCREEN_LAVALAMP_SPEED:
@@ -476,8 +484,23 @@ public class VisualizerView extends View
 
     private void checkStateChanged() {
         boolean isVisible = getVisibility() == View.VISIBLE;
-        if (isVisible && mPlaying && !mDozing && !mPowerSaveMode
-                && mVisualizerEnabled && !mOccluded) {
+        if (isVisible && mVisible && mPlaying && mDozing && mAmbientVisualizerEnabled && !mPowerSaveMode && mVisualizerEnabled && !mOccluded) {
+            if (!mDisplaying) {
+                mDisplaying = true;
+                AsyncTask.execute(mLinkVisualizer);
+                animate()
+                        .alpha(0.40f)
+                        .withEndAction(null)
+                        .setDuration(800);
+                if (mLavaLampEnabled) mLavaLamp.start();
+            } else {
+                mPaint.setColor(mColor);
+                animate()
+                        .alpha(0.40f)
+                        .withEndAction(null)
+                        .setDuration(800);
+            }
+        } else if (isVisible && mVisible && mPlaying && !mDozing && !mPowerSaveMode && mVisualizerEnabled && !mOccluded) {
             if (!mDisplaying) {
                 mDisplaying = true;
                 AsyncTask.execute(mLinkVisualizer);
@@ -486,12 +509,18 @@ public class VisualizerView extends View
                         .withEndAction(null)
                         .setDuration(800);
                 if (mLavaLampEnabled) mLavaLamp.start();
+            } else {
+                mPaint.setColor(mColor);
+                animate()
+                        .alpha(1f)
+                        .withEndAction(null)
+                        .setDuration(800);
             }
         } else {
             if (mDisplaying) {
                 mDisplaying = false;
                 mLavaLamp.stop();
-                if (isVisible) {
+                if (mVisible && !mAmbientVisualizerEnabled) {
                     animate()
                             .alpha(0f)
                             .withEndAction(mAsyncUnlinkVisualizer)
