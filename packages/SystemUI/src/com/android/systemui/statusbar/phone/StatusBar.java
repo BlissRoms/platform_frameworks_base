@@ -539,7 +539,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mDozingRequested;
 
     // LS visualizer on Ambient Display
-    private boolean mAmbientVisualizer
+    private boolean mAmbientVisualizer;
 
     private NotificationMediaManager mMediaManager;
     protected NotificationLockscreenUserManager mLockscreenUserManager;
