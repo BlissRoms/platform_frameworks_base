@@ -100,4 +100,8 @@
     <dimen name="quick_settings_top_margin_media_extra">14dp</dimen>
     <dimen name="qs_media_action_button_margin_top">18dp</dimen>
     <dimen name="qs_media_action_button_size">40dp</dimen>
+    <dimen name="op_brightness_margin">37dp</dimen>
+
+    <!-- Qs visibility -->
+    <dimen name="qs_tile_height_wo_label">64dp</dimen>
 </resources>
