@@ -423,7 +423,6 @@ public class VolumeDialogImpl implements VolumeDialog,
                 break;
             case VOLUME_LINK_NOTIFICATION:
                 mNotificationLinked = TunerService.parseIntegerSwitch(newValue, true);
-                updateRowsH(getActiveRow());
                 break;
             case AUDIO_PANEL_VIEW_TIMEOUT:
                 mTimeOutDesired = 3;
