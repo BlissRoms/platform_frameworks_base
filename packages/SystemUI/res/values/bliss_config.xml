@@ -31,4 +31,7 @@
     <!-- Whether SystemUI ignores notch -->
     <bool name="hide_view_behind_notch">false</bool>
 
+    <!-- Allow devices override audio panel location to the left side -->
+    <bool name="config_audioPanelOnLeftSide">false</bool>
+
 </resources>
