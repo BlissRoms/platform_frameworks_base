@@ -160,12 +160,9 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
         final int availableHeight = MeasureSpec.getSize(heightMeasureSpec) - mCellMarginTop
                 + mCellMarginVertical;
         final int previousRows = mRows;
-        mRows = availableHeight / (mCellHeight + mCellMarginVertical);
-        if (mRows >= mMaxAllowedRows) {
-            mRows = mMaxAllowedRows;
-        } else if (mRows <= 1) {
-            mRows = 1;
-        }
+        mRows = LineageSettings.System.getInt(getContext().getContentResolver(),
+                LineageSettings.System.QS_TILE_COLUMNS, 3,
+                UserHandle.USER_CURRENT);
         if (mRows > (tilesCount + mColumns - 1) / mColumns) {
             mRows = (tilesCount + mColumns - 1) / mColumns;
         }
