@@ -95,6 +95,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             "system:" + Settings.System.ANIM_TILE_INTERPOLATOR;
     public static final String QS_TILE_COLUMNS =
             "lineagesystem:" + LineageSettings.System.QS_TILE_COLUMNS;
+    public static final String QS_TILE_ROWS =
+            "lineagesystem:" + LineageSettings.System.QS_TILE_ROWS;
 
     private static final String TAG = "QSPanel";
 
@@ -243,6 +245,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         tunerService.addTunable(this, ANIM_TILE_DURATION);
         tunerService.addTunable(this, ANIM_TILE_INTERPOLATOR);
         tunerService.addTunable(this, QS_TILE_COLUMNS);
+        tunerService.addTunable(this, QS_TILE_ROWS);
 
         if (mHost != null) {
             setTiles(mHost.getTiles());
@@ -299,6 +302,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
                 setTiles(mHost.getTiles());
             }
         } else if (QS_TILE_COLUMNS.equals(key)) {
+            updateResources();
+        } else if (QS_TILE_ROWS.equals(key)) {
             updateResources();
         }
     }
