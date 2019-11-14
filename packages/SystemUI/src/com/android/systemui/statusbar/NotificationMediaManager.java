@@ -803,7 +803,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                     return ImageHelper.getColoredBitmap(aw,
                         manager.mContext.getResources().getColor(R.color.accent_device_default_light));
                 case 3:
-                    return ImageHelper.getBlurredImage(manager.mContext, bitmaps[0], 7.0f);
+                    return manager.processArtwork(bitmaps[0]);
                 case 4:
                     return ImageHelper.getGrayscaleBlurredImage(manager.mContext, bitmaps[0], 7.0f);
             }
