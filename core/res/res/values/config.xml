@@ -1372,7 +1372,7 @@
     <integer name="config_notificationsBatteryFullARGB">0xFF00FF00</integer>
 
     <!-- Default value for LED on time when the battery is low on charge in miliseconds -->
-    <integer name="config_notificationsBatteryLedOn">125</integer>
+    <integer name="config_notificationsBatteryLedOn">130</integer>
 
     <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveNotificationLed">false</bool>
@@ -2489,7 +2489,7 @@
     <!-- Automatic "network" time detection config: Number of times to try network time polling with
          the shorter interval, before backing off until the normal polling interval. A value < 0
          indicates infinite. -->
-    <integer name="config_ntpRetry">3</integer>
+    <integer name="config_ntpRetry">6</integer>
 
     <!-- Default network policy warning threshold, in megabytes. -->
     <integer name="config_networkPolicyDefaultWarning">2048</integer>
