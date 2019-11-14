@@ -760,20 +760,24 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                 return null;
             }
 
-            switch (manager.mAlbumArtFilter) {
-                case 0:
-                default:
-                    return bitmaps[0];
-                case 1:
-                    return ImageHelper.toGrayscale(bitmaps[0]);
-                case 2:
-                    Drawable aw = new BitmapDrawable(manager.mBackdropBack.getResources(), bitmaps[0]);
-                    return ImageHelper.getColoredBitmap(aw,
-                        manager.mContext.getResources().getColor(R.color.accent_device_default_light));
-                case 3:
-                    return ImageHelper.getBlurredImage(manager.mContext, bitmaps[0], 7.0f);
-                case 4:
-                    return ImageHelper.getGrayscaleBlurredImage(manager.mContext, bitmaps[0], 7.0f);
+            if (mAlbumArtFilter == 0) {
+                return manager.processArtwork(bitmaps[0]);
+            } else {
+                switch (manager.mAlbumArtFilter) {
+                    //case 0:
+                    default:
+                        return bitmaps[0];
+                    case 1:
+                        return ImageHelper.toGrayscale(bitmaps[0]);
+                    case 2:
+                        Drawable aw = new BitmapDrawable(manager.mBackdropBack.getResources(), bitmaps[0]);
+                        return ImageHelper.getColoredBitmap(aw,
+                            manager.mContext.getResources().getColor(R.color.accent_device_default_light));
+                    case 3:
+                        return ImageHelper.getBlurredImage(manager.mContext, bitmaps[0], 7.0f);
+                    case 4:
+                        return ImageHelper.getGrayscaleBlurredImage(manager.mContext, bitmaps[0], 7.0f);
+                }
             }
         }
 
