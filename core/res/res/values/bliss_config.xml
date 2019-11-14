@@ -69,4 +69,7 @@
     <!-- Screen off delay -->
     <integer name="config_screen_off_delay">1000</integer>
 
+    <!-- Whether device supports variable refresh rate -->
+    <bool name="config_hasVariableRefreshRate">false</bool>
+
 </resources>
