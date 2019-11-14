@@ -760,6 +760,10 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                 return null;
             }
 
+            if (mShowMediaMetadata) {
+                return manager.processArtwork(bitmaps[0]);
+            }
+
             switch (manager.mAlbumArtFilter) {
                 case 0:
                 default:
@@ -774,6 +778,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                     return ImageHelper.getBlurredImage(manager.mContext, bitmaps[0], 7.0f);
                 case 4:
                     return ImageHelper.getGrayscaleBlurredImage(manager.mContext, bitmaps[0], 7.0f);
+
             }
         }
 
