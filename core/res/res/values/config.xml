@@ -1344,7 +1344,7 @@
     <integer name="config_notificationsBatteryFullARGB">0xFF00FF00</integer>
 
     <!-- Default value for LED on time when the battery is low on charge in miliseconds -->
-    <integer name="config_notificationsBatteryLedOn">125</integer>
+    <integer name="config_notificationsBatteryLedOn">130</integer>
 
     <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveNotificationLed">false</bool>
@@ -2475,7 +2475,7 @@
     <integer name="config_ntpPollingIntervalShorter">60000</integer>
     <!-- Number of times to try again with the shorter interval, before backing
          off until the normal polling interval. A value < 0 indicates infinite. -->
-    <integer name="config_ntpRetry">3</integer>
+    <integer name="config_ntpRetry">6</integer>
     <!-- Timeout to wait for NTP server response in milliseconds. -->
     <integer name="config_ntpTimeout">5000</integer>
 
