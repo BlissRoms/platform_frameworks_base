@@ -763,7 +763,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
             switch (manager.mAlbumArtFilter) {
                 case 0:
                 default:
-                    return bitmaps[0];
+                    return manager.processArtwork(bitmaps[0]);
                 case 1:
                     return ImageHelper.toGrayscale(bitmaps[0]);
                 case 2:
