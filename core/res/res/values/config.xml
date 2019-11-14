@@ -479,7 +479,7 @@
     <bool name="config_camera_autorotate">false</bool>
 
     <!-- Fast brightness animation ramp rate in brightness units per second-->
-    <integer translatable="false" name="config_brightness_ramp_rate_fast">180</integer>
+    <integer translatable="false" name="config_brightness_ramp_rate_fast">200</integer>
 
     <!-- Slow brightness animation ramp rate in brightness units per second-->
     <integer translatable="false" name="config_brightness_ramp_rate_slow">60</integer>
@@ -1491,8 +1491,8 @@
          when adapting to brighter or darker environments.  This parameter controls how quickly
          brightness changes occur in response to an observed change in light level that exceeds the
          hysteresis threshold. -->
-    <integer name="config_autoBrightnessBrighteningLightDebounce">4000</integer>
-    <integer name="config_autoBrightnessDarkeningLightDebounce">8000</integer>
+    <integer name="config_autoBrightnessBrighteningLightDebounce">3200</integer>
+    <integer name="config_autoBrightnessDarkeningLightDebounce">6000</integer>
 
     <!-- Initial light sensor event rate in milliseconds for automatic brightness control. This is
          used for obtaining the first light sample when the device stops dozing.
@@ -1501,7 +1501,7 @@
     <integer name="config_autoBrightnessInitialLightSensorRate">-1</integer>
 
     <!-- Light sensor event rate in milliseconds for automatic brightness control. -->
-    <integer name="config_autoBrightnessLightSensorRate">250</integer>
+    <integer name="config_autoBrightnessLightSensorRate">280</integer>
 
     <!-- The maximum range of gamma adjustment possible using the screen
          auto-brightness adjustment setting. -->
@@ -1527,7 +1527,7 @@
     <!-- Screen brightness used to dim the screen when the user activity
          timeout expires.  May be less than the minimum allowed brightness setting
          that can be set by the user. -->
-    <integer name="config_screenBrightnessDim">10</integer>
+    <integer name="config_screenBrightnessDim">8</integer>
     <item name="config_screenBrightnessDimFloat" format="float" type="dimen">0.05</item>
 
     <!-- If the screen brightness is already set at or below config_screenBrightnessDim, and the
@@ -2721,7 +2721,7 @@
          This value must be between 0% and 100%.  If the value is zero, the screen will not
          dim before the device goes to sleep.
     -->
-    <fraction name="config_maximumScreenDimRatio">20%</fraction>
+    <fraction name="config_maximumScreenDimRatio">24%</fraction>
 
     <!-- Minimum size of the scrollbar thumb's touch target. -->
     <dimen name="config_minScrollbarTouchTarget">48dp</dimen>
