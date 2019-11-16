@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "14222d5c_b33b209b",
+        "filename": "packages/SystemUI/src/com/android/systemui/statusbar/NotificationMediaManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 764,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2019-11-16T00:02:11Z",
+      "side": 1,
+      "message": "what if this is moved to case 3 below and do away with the ImageHelper handling blur, that way we have only 1 blur option.",
+      "range": {
+        "startLine": 764,
+        "startChar": 0,
+        "endLine": 764,
+        "endChar": 16
+      },
+      "revId": "bee9ed6de73cfb61937dcedb878fda6b8d0d49ee",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": false
+    }
+  ]
+}
