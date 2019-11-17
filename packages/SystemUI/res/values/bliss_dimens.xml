@@ -26,7 +26,10 @@
     <dimen name="screenrecord_dot_size">48dp</dimen>
 
     <!-- Width of the battery icon in the status bar when set to circle style. -->
-    <dimen name="status_bar_battery_icon_circle_width">14.5dp</dimen>
+    <dimen name="status_bar_battery_icon_circle_width">16.5dp</dimen>
+
+    <!-- Height of the battery icon in the status bar when set to circle style. -->
+    <dimen name="status_bar_battery_icon_circle_height">16.5dp</dimen>
 
     <!-- Bottom margin size when fingerprint in display is active -->
     <dimen name="keyguard_indication_margin_bottom_fingerprint_in_display">30dp</dimen>
