@@ -2012,6 +2012,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
 	            Settings.System.QS_PANEL_BG_USE_ACCENT),
 	            false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.SHOW_BACK_ARROW_GESTURE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2053,6 +2056,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             updateCutoutOverlay();
             setMaxKeyguardNotifConfig();
             updateQSPanel();
+            setHideArrowForBackGesture();
         }
     }
 
@@ -2071,6 +2075,12 @@ public class StatusBar extends SystemUI implements DemoMode,
     private void setQsRowsColumns() {
         if (mQSPanel != null) {
             mQSPanel.updateResources();
+        }
+    }
+
+    private void setHideArrowForBackGesture() {
+        if (getNavigationBarView() != null) {
+            getNavigationBarView().updateBackArrowForGesture();
         }
     }
 
