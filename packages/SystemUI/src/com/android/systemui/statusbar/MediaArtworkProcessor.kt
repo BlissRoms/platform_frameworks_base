@@ -41,7 +41,7 @@ class MediaArtworkProcessor @Inject constructor() {
     private val mTmpSize = Point()
     private var mArtworkCache: Bitmap? = null
     private var mDownSample: Int = DOWNSAMPLE
-    private var mColorAlpha: Int = COLOR_ALPHA
+    //private var mColorAlpha: Int = COLOR_ALPHA
 
     fun processArtwork(context: Context, artwork: Bitmap, blur_radius: Float): Bitmap? {
         if (mArtworkCache != null) {
@@ -53,12 +53,12 @@ class MediaArtworkProcessor @Inject constructor() {
         var output: Allocation? = null
         var inBitmap: Bitmap? = null
         try {
-            if (blur_radius < 5f) {
-                mDownSample = 2
-                mColorAlpha = (mColorAlpha * 0.5f).toInt()
-            } else if (blur_radius < 1f) {
+            if (blur_radius < 1f) {
                 mDownSample = 1
-                mColorAlpha = (mColorAlpha * 0.1f).toInt()
+                //mColorAlpha = (mColorAlpha * 0.1f).toInt()
+            } else if (blur_radius < 5f) {
+                mDownSample = 2
+                //mColorAlpha = (mColorAlpha * 0.5f).toInt()
             }
             @Suppress("DEPRECATION")
             context.display?.getSize(mTmpSize)
