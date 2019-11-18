@@ -63,6 +63,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -1003,6 +1004,9 @@ public class CentralSurfacesImpl extends CoreStartable implements
         }
 
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
+
+        mSbSettingsObserver.observe();
+        mSbSettingsObserver.update();
 
         // Set up the initial notification state. This needs to happen before CommandQueue.disable()
         setUpPresenter();
@@ -4239,6 +4243,39 @@ public class CentralSurfacesImpl extends CoreStartable implements
     @Override
     public boolean isDeviceInteractive() {
         return mDeviceInteractive;
+    }
+
+    private SbSettingsObserver mSbSettingsObserver = new SbSettingsObserver(mMainHandler);
+    private class SbSettingsObserver extends ContentObserver {
+        SbSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_MEDIA_BLUR),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_MEDIA_BLUR))) {
+                setLockScreenMediaBlurLevel();
+            }
+        }
+
+        public void update() {
+            setLockScreenMediaBlurLevel();
+        }
+    }
+
+    private void setLockScreenMediaBlurLevel() {
+        if (mMediaManager != null) {
+            mMediaManager.setLockScreenMediaBlurLevel();
+        }
     }
 
     private final BroadcastReceiver mBannerActionBroadcastReceiver = new BroadcastReceiver() {
