@@ -43,7 +43,7 @@ class MediaArtworkProcessor @Inject constructor() {
     private val mTmpSize = Point()
     private var mArtworkCache: Bitmap? = null
     private var mDownSample: Int = DOWNSAMPLE
-    private var mColorAlpha: Int = COLOR_ALPHA
+    //private var mColorAlpha: Int = COLOR_ALPHA
 
     fun processArtwork(context: Context, artwork: Bitmap, blur_radius: Float): Bitmap? {
         if (mArtworkCache != null) {
@@ -55,7 +55,13 @@ class MediaArtworkProcessor @Inject constructor() {
         var output: Allocation? = null
         var inBitmap: Bitmap? = null
         try {
-            if (blur_radius < 5f) mDownSample = 2 else mDownSample = DOWNSAMPLE
+            if (blur_radius < 1f) {
+                mDownSample = 1
+                //mColorAlpha = (mColorAlpha * 0.1f).toInt()
+            } else if (blur_radius < 5f) {
+                mDownSample = 2
+                //mColorAlpha = (mColorAlpha * 0.5f).toInt()
+            }
             @Suppress("DEPRECATION")
             context.display?.getSize(mTmpSize)
             val rect = Rect(0, 0, artwork.width, artwork.height)
@@ -85,7 +91,7 @@ class MediaArtworkProcessor @Inject constructor() {
             }
             val swatch = MediaNotificationProcessor.findBackgroundSwatch(artwork)
             val canvas = Canvas(outBitmap)
-            canvas.drawColor(ColorUtils.setAlphaComponent(swatch.rgb, COLOR_ALPHA))
+            canvas.drawColor(ColorUtils.setAlphaComponent(swatch.rgb, COLOR_ALPHA/*mColorAlpha*/))
             return outBitmap
         } catch (ex: IllegalArgumentException) {
             Log.e(TAG, "error while processing artwork", ex)

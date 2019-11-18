@@ -134,6 +134,8 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
 
     private final DelayableExecutor mMainExecutor;
 
+    private float mLockscreenMediaBlur;
+
     private final Context mContext;
     private final ArrayList<MediaListener> mMediaListeners;
     private final Lazy<Optional<CentralSurfaces>> mCentralSurfacesOptionalLazy;
@@ -785,13 +787,15 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
     };
 
     private Bitmap processArtwork(Bitmap artwork) {
-        return mMediaArtworkProcessor.processArtwork(mContext, artwork, getLockScreenMediaBlurLevel());
+        return mMediaArtworkProcessor.processArtwork(mContext, artwork, mLockscreenMediaBlur);
     }
 
     public void setLockScreenMediaBlurLevel() {
+        /* divide for 100 so if we set 2500 on the seekbar we get 25, the stock aosp value
+        remember to set 2500 as default value to the seekbar! */
         mLockscreenMediaBlur = (float) Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_MEDIA_BLUR, 100,
-                UserHandle.USER_CURRENT) / 4;
+                Settings.System.LOCKSCREEN_MEDIA_BLUR, 2500,
+                UserHandle.USER_CURRENT) / 100;
     }
 
     @MainThread
