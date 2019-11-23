@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c8ed3ea4_9f44bdc7",
+        "filename": "packages/SystemUI/src/com/android/systemui/qs/QSContainerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2019-11-23T05:52:20Z",
+      "side": 1,
+      "message": "again here better to add as switch https://github.com/crdroidandroid/android_frameworks_base/commit/8f88f7589e2a228d6eeb2e9b50c05d77bfb04967#diff-cf271ec69c28b974713df291110ad6f2 like this 😊",
+      "revId": "80703f16dd471d839483657114054af0e96edb7c",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    }
+  ]
+}
