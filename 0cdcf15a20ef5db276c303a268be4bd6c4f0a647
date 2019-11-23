@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "389c98f4_bb499e2a",
+        "filename": "packages/SystemUI/src/com/android/systemui/qs/QuickStatusBarHeader.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2019-11-23T05:48:38Z",
+      "side": 1,
+      "message": "I\u0027d suggest using the tuner already available in this file instead of adding this observer , https://github.com/crdroidandroid/android_frameworks_base/commit/77120e2f895be83a695811ec52264054290e43b6#diff-0946b3d5c1a161c78c4472659728905aR677 like this",
+      "revId": "0cdcf15a20ef5db276c303a268be4bd6c4f0a647",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47da0fa9_52535390",
+        "filename": "packages/SystemUI/src/com/android/systemui/qs/QuickStatusBarHeader.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 724,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2019-11-23T05:48:38Z",
+      "side": 1,
+      "message": "here !",
+      "revId": "0cdcf15a20ef5db276c303a268be4bd6c4f0a647",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    }
+  ]
+}
