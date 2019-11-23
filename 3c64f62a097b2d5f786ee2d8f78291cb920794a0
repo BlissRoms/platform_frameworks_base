@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a54f2ff6_4183f2f2",
+        "filename": "core/java/com/android/internal/util/bliss/PackageUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2019-11-23T05:48:02Z",
+      "side": 1,
+      "message": "only this method is required so just add this here https://github.com/BlissRoms/platform_frameworks_base/blob/q/core/java/com/android/internal/util/bliss/BlissUtils.java in https://review.blissroms.com/c/platform_frameworks_base/+/4212/1 here , as the method is calld here :) so omit this change entirely",
+      "revId": "3c64f62a097b2d5f786ee2d8f78291cb920794a0",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    }
+  ]
+}
