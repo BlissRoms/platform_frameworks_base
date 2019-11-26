@@ -388,6 +388,9 @@
     <!-- Parallel spaces -->
     <uses-permission android:name="com.android.permission.MANAGE_PARALLEL_SPACES" />
 
+    <!-- DataSwitch tile -->
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"
