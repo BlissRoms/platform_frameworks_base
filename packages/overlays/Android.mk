@@ -32,6 +32,21 @@ LOCAL_REQUIRED_MODULES := \
 	FontGoogleSansOverlay \
 	FontNotoSerifSourceOverlay \
 	FontRubikRubikOverlay \
+	FontAlpacaScarlettOverlay \
+	FontAlpacaSolidifyOverlay \
+	FontASansroundedOverlay \
+	FontAmaranteOverlay \
+	FontAnaheimRegularOverlay \
+	FontAnitaOverlay \
+	FontArkitechOverlay \
+	FontAsapOverlay \
+	FontAssassinOverlay \
+	FontAtmaOverlay \
+	FontAudiowideOverlay \
+	FontBariolLightOverlay \
+	FontBariolRegularOverlay \
+	FontBarlowOverlay \
+	FontBauhausOverlay \
 	IconPackCircularAndroidOverlay \
 	IconPackCircularLauncherOverlay \
 	IconPackCircularSettingsOverlay \
