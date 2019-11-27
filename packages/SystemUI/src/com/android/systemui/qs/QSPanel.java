@@ -227,6 +227,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
         mIsAutomaticBrightnessAvailable = getResources().getBoolean(
                 com.android.internal.R.bool.config_automatic_brightness_available);
+        updateSettings();
     }
 
     private void addQSPanel() {
