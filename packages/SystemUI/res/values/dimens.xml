@@ -1623,4 +1623,12 @@
     <item name="communal_source_height_percentage" format="float" type="dimen">0.80</item>
 
     <dimen name="drag_and_drop_icon_size">70dp</dimen>
+
+    <!-- Old style mobile data indicators -->
+    <dimen name="status_bar_mobile_signal_with_type_width">18dp</dimen>
+    <dimen name="status_bar_mobile_signal_width">16dp</dimen>
+    <dimen name="status_bar_mobile_type_height">8dp</dimen>
+    <dimen name="status_bar_mobile_type_padding">2dp</dimen>
+    <dimen name="status_bar_mobile_type_padding_limit">10dp</dimen>
+        
 </resources>
