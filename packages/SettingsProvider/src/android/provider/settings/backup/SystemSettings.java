@@ -91,5 +91,6 @@ public class SystemSettings {
         Settings.System.NOTIFICATION_LIGHT_PULSE,
         Settings.System.FULLSCREEN_GESTURES,
         Settings.System.SHOW_FOURG_ICON,
+        Settings.System.USE_OLD_MOBILETYPE,
     };
 }
