@@ -6207,6 +6207,11 @@ public final class Settings {
         /**
          * @hide
          */
+        public static final String USE_OLD_MOBILETYPE = "use_old_mobiletype";
+
+        /**
+         * @hide
+         */
         public static final String STATUSBAR_BATTERY_BAR_BLEND_COLOR = "statusbar_battery_bar_blend_color";
 
         /**
