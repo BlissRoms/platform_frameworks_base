@@ -5473,7 +5473,6 @@ public final class Settings {
          */
         public static final String HEADS_UP_STOPLIST_VALUES = "heads_up_stoplist_values";
 
-
         /**
          * Which applications to disable heads up notifications for
          *
@@ -5823,6 +5822,11 @@ public final class Settings {
          * @hide
          */
         public static final String BATTERY_LIGHT_REALLYFULL_COLOR = "battery_light_reallyfull_color";
+
+        /**
+         * @hide
+         */
+        public static final String USE_OLD_MOBILETYPE = "use_old_mobiletype";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
