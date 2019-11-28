@@ -5616,6 +5616,15 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
+         * QS footer text
+         * @hide
+         */
+        public static final String BLISS_FOOTER_TEXT_STRING = "bliss_footer_text_string";
+         /** @hide */
+        private static final Validator BLISS_FOOTER_TEXT_STRING_VALIDATOR =
+                ANY_STRING_VALIDATOR;
+
+        /**
          * Whether to vibrate on notifications
          * @hide
          */
@@ -5725,6 +5734,7 @@ public final class Settings {
             LOCKSCREEN_WEATHER_SHOW_TEMP,
             LOCKSCREEN_WEATHER_SHOW_CITY,
             BLISS_FOOTER_TEXT_SHOW,
+            BLISS_FOOTER_TEXT_STRING,
         };
 
         /**
@@ -5896,6 +5906,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_TEMP);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_CITY);
             PRIVATE_SETTINGS.add(BLISS_FOOTER_TEXT_SHOW);
+            PRIVATE_SETTINGS.add(BLISS_FOOTER_TEXT_STRING);
         }
 
         /**
@@ -6037,6 +6048,7 @@ public final class Settings {
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_TEMP, LOCKSCREEN_WEATHER_SHOW_TEMP_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_CITY, LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR);
             VALIDATORS.put(BLISS_FOOTER_TEXT_SHOW, BLISS_FOOTER_TEXT_SHOW_VALIDATOR);
+            VALIDATORS.put(BLISS_FOOTER_TEXT_STRING, BLISS_FOOTER_TEXT_STRING_VALIDATOR);
         }
 
         /**
