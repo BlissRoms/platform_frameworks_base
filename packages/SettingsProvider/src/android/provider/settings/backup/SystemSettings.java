@@ -92,5 +92,6 @@ public class SystemSettings {
         Settings.System.ENABLE_RIPPLE_EFFECT,
         Settings.System.DOZE_ON_CHARGE,
         Settings.System.QS_FOOTER_TEXT_SHOW,
+        Settings.System.QS_FOOTER_TEXT_STRING,
     };
 }
