@@ -5535,6 +5535,15 @@ public final class Settings {
         public static final String SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
 
         /**
+         * Setting to determine whether or not to show the battery percentage in the status bar when charging
+         *    0 - Don't show percentage
+         *    1 - Show percentage
+         * @hide
+         */
+        @Readable
+        public static final String SHOW_BATTERY_PERCENT_CHARGING = "status_bar_show_battery_percent_charging";
+
+        /**
          * Whether or not to enable multiple audio focus.
          * When enabled, requires more management by user over application playback activity,
          * for instance pausing media apps when another starts.
@@ -5974,6 +5983,22 @@ public final class Settings {
         * @hide
         */
         public static final String AICP_LOCKSCREEN_WEATHER_STYLE = "lockscreen_weather_style";
+
+        /**
+         * Style of battery to show.
+         * 0 = protrait (default)
+         * 1 = circle
+         * 2 = text
+         * @hide
+         */
+        @Readable
+        public static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
+
+        /**
+         * Whether to draw battery percent inside the icon
+         * @hide
+         */
+        public static final String SHOW_BATTERY_PERCENT_INSIDE = "status_bar_show_battery_percent_inside";
 
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to

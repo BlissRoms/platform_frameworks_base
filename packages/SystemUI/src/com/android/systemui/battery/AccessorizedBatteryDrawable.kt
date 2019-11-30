@@ -195,6 +195,11 @@ class AccessorizedBatteryDrawable(
         mainBatteryDrawable.setColors(fgColor, bgColor, singleToneColor)
     }
 
+    /** Sets whether to show % next to the drawable */
+    fun setShowPercent(show: Boolean) {
+        mainBatteryDrawable.showPercent = show;
+    }
+
     /** Notifies this drawable that the density might have changed. */
     fun notifyDensityChanged() {
         density = context.resources.displayMetrics.density
