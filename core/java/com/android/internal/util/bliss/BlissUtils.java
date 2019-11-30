@@ -223,6 +223,26 @@ public class BlissUtils {
     private static final String ACTION_HIDE_OVERLAY = APP_PACKAGE_NAME + ".ACTION_HIDE_OVERLAY";
 
     /**
+     * @hide
+     */
+    public static final String ACTION_DISMISS_KEYGUARD = SYSTEMUI_PACKAGE_NAME +".ACTION_DISMISS_KEYGUARD";
+
+    /**
+     * @hide
+     */
+    public static final String DISMISS_KEYGUARD_EXTRA_INTENT = "launch";
+
+    /**
+     * @hide
+     */
+    public static void launchKeyguardDismissIntent(Context context, UserHandle user, Intent launchIntent) {
+        Intent keyguardIntent = new Intent(ACTION_DISMISS_KEYGUARD);
+        keyguardIntent.setPackage(SYSTEMUI_PACKAGE_NAME);
+        keyguardIntent.putExtra(DISMISS_KEYGUARD_EXTRA_INTENT, launchIntent);
+        context.sendBroadcastAsUser(keyguardIntent, user);
+    }
+
+    /**
      * Intent for launching the omniswitch settings actvity
      */
     public static Intent INTENT_LAUNCH_APP = new Intent(Intent.ACTION_MAIN)
