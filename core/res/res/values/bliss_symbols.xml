@@ -156,4 +156,7 @@
 
     <!-- Whether to cancel fingerprint operation if not idle -->
     <java-symbol type="bool" name="config_fpCancelIfNotIdle" />
+
+    <!-- Whether to use old mobile type icons as default -->
+    <java-symbol type="bool" name="config_useOldMobileIcons" />
 </resources>
