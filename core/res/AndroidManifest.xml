@@ -621,6 +621,8 @@
     <protected-broadcast android:name="android.content.pm.action.SESSION_UPDATED" />
     <protected-broadcast android:name="android.settings.action.GRAYSCALE_CHANGED" />
 
+    <protected-broadcast android:name="com.android.systemui.ACTION_DISMISS_KEYGUARD" />
+
     <!-- For CarIdlenessTracker -->
     <protected-broadcast android:name="com.android.server.jobscheduler.GARAGE_MODE_ON" />
     <protected-broadcast android:name="com.android.server.jobscheduler.GARAGE_MODE_OFF" />
