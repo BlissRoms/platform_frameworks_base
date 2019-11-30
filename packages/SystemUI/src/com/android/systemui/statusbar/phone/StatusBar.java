@@ -1150,7 +1150,11 @@ public class StatusBar extends SystemUI implements DemoMode,
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(DevicePolicyManager.ACTION_SHOW_DEVICE_MONITORING_DIALOG);
+<<<<<<< HEAD
         filter.addAction("android.intent.action.SCREEN_CAMERA_GESTURE");
+=======
+        filter.addAction(OmniUtils.ACTION_DISMISS_KEYGUARD);
+>>>>>>> 670baf344880... base: add missing handling of DISMISS_KEYGUARD_EXTRA_INTENT
         context.registerReceiverAsUser(mBroadcastReceiver, UserHandle.ALL, filter, null, null);
 
         IntentFilter demoFilter = new IntentFilter();
@@ -2962,6 +2966,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             else if (DevicePolicyManager.ACTION_SHOW_DEVICE_MONITORING_DIALOG.equals(action)) {
                 mQSPanel.showDeviceMonitoringDialog();
             }
+<<<<<<< HEAD
             else if ("android.intent.action.SCREEN_CAMERA_GESTURE".equals(action)) {
                 boolean userSetupComplete = Settings.Secure.getInt(mContext.getContentResolver(),
                         Settings.Secure.USER_SETUP_COMPLETE, 0) != 0;
@@ -2973,6 +2978,13 @@ public class StatusBar extends SystemUI implements DemoMode,
                 }
 
                 onCameraLaunchGestureDetected(StatusBarManager.CAMERA_LAUNCH_SOURCE_SCREEN_GESTURE);
+=======
+            else if (BlissUtils.ACTION_DISMISS_KEYGUARD.equals(action)) {
+                if (intent.hasExtra(BlissUtils.DISMISS_KEYGUARD_EXTRA_INTENT)) {
+                    Intent launchIntent = (Intent) intent.getParcelableExtra(BlissUtils.DISMISS_KEYGUARD_EXTRA_INTENT);
+                    startActivityDismissingKeyguard(launchIntent, true, true);
+                }
+>>>>>>> 670baf344880... base: add missing handling of DISMISS_KEYGUARD_EXTRA_INTENT
             }
         }
     };
