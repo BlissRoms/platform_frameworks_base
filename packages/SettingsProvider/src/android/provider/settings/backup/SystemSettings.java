@@ -76,6 +76,7 @@ public class SystemSettings {
         Settings.System.NOTIFICATION_SOUND,
         Settings.System.ACCELEROMETER_ROTATION,
         Settings.System.SHOW_BATTERY_PERCENT,
+        Settings.System.SHOW_BATTERY_PERCENT_CHARGING,
         Settings.System.ALARM_VIBRATION_INTENSITY,
         Settings.System.MEDIA_VIBRATION_INTENSITY,
         Settings.System.NOTIFICATION_VIBRATION_INTENSITY,
@@ -92,5 +93,7 @@ public class SystemSettings {
         Settings.System.NETWORK_TRAFFIC_STATE,
         Settings.System.NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD,
         Settings.System.QS_SHOW_BATTERY_ESTIMATE,
+        Settings.System.STATUS_BAR_BATTERY_STYLE,
+        Settings.System.SHOW_BATTERY_PERCENT_INSIDE,
     };
 }
