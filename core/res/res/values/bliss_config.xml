@@ -191,4 +191,7 @@
 
     <!-- Whether device has SuperDart charging support -->
     <bool name="config_hasSuperDartCharger">false</bool>
+
+    <!-- Whether to use old mobile type icons as default -->
+    <bool name="config_useOldMobileIcons">false</bool>
 </resources>
