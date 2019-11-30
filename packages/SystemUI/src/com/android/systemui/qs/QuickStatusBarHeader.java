@@ -22,6 +22,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.DisplayCutout;
@@ -265,7 +267,11 @@ public class QuickStatusBarHeader extends FrameLayout {
 
         int textColor = Utils.getColorAttrDefaultColor(mContext, android.R.attr.textColorPrimary);
         if (textColor != mTextColorPrimary) {
+            int isCircleBattery = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.STATUS_BAR_BATTERY_STYLE,
+                    0, UserHandle.USER_CURRENT);
             int textColorSecondary = Utils.getColorAttrDefaultColor(mContext,
+                    (isCircleBattery == 1 || isCircleBattery == 2) ? android.R.attr.textColorHint :
                     android.R.attr.textColorSecondary);
             mTextColorPrimary = textColor;
             mClockView.setTextColor(textColor);
