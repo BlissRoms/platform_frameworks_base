@@ -459,6 +459,7 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
             // either the bouncer is showing or the notification panel is hidden
             int stateFlags = mOverviewProxyService.getSystemUiStateFlags();
             mIsOnLeftEdge = ev.getX() <= mEdgeWidth + mLeftInset;
+
             mInRejectedExclusion = false;
             mAllowGesture = !QuickStepContract.isBackGestureDisabled(stateFlags)
                     && isWithinTouchRegion((int) ev.getX(), (int) ev.getY());
@@ -476,6 +477,7 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
                 mThresholdCrossed = false;
             }
         } else if (mAllowGesture) {
+
             if (!mThresholdCrossed) {
                 if (action == MotionEvent.ACTION_POINTER_DOWN) {
                     // We do not support multi touch for back gesture

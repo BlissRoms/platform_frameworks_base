@@ -104,6 +104,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.config.sysui.SystemUiDeviceConfigFlags;
 import com.android.internal.messages.nano.SystemMessageProto.SystemMessage;
 import com.android.internal.statusbar.IStatusBarService;
+import com.android.internal.util.bliss.BlissUtils;
 import com.android.systemui.R;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.SystemUI;
@@ -866,6 +867,7 @@ class GlobalScreenshot {
         setBlockedGesturalNavigation(true);
         setLockedScreenOrientation(true);
         mWindowManager.addView(mScreenshotLayout, mWindowLayoutParams);
+        Utils.setPartialScreenshot(true);
         mScreenshotSelectorView.setSelectionListener(
                 new ScreenshotSelectorView.OnSelectionListener() {
             @Override
@@ -916,6 +918,7 @@ class GlobalScreenshot {
 
     void hideScreenshotSelector() {
         setLockedScreenOrientation(false);
+        BlissUtils.setPartialScreenshot(false);
         mWindowManager.removeView(mScreenshotLayout);
         mScreenshotSelectorView.stopSelection();
         mScreenshotSelectorView.setVisibility(View.GONE);
@@ -931,6 +934,8 @@ class GlobalScreenshot {
         if (mScreenshotLayout.getParent() != null) {
             hideScreenshotSelector();
         }
+        // called when unbinding screenshot service
+        Utils.setPartialScreenshot(false);
     }
 
     /**
