@@ -142,6 +142,7 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
         }
 
         requestLayout();
+        updateSettings();
         return false;
     }
 
@@ -243,5 +244,15 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
     @Override
     public int getNumVisibleTiles() {
         return mRecords.size();
+    }
+
+    public void updateSettings() {
+        final Resources res = mContext.getResources();
+        int defaultColumns = Math.max(1, res.getInteger(R.integer.quick_settings_num_columns));
+    }
+
+    @Override
+    public int getNumColumns() {
+        return mColumns;
     }
 }
