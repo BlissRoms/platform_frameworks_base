@@ -180,6 +180,7 @@ import com.android.systemui.plugins.statusbar.NotificationSwipeActionHelper.Snoo
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.qs.QSFragment;
 import com.android.systemui.qs.QSPanel;
+import com.android.systemui.qs.QuickQSPanel;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.ScreenPinningRequest;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -436,6 +437,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     // settings
     private QSPanel mQSPanel;
+    private QuickQSPanel mQuickQSPanel;
 
     KeyguardIndicationController mKeyguardIndicationController;
 
@@ -1113,6 +1115,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 if (qs instanceof QSFragment) {
                     mQSPanel = ((QSFragment) qs).getQsPanel();
                     mQSPanel.setBrightnessMirror(mBrightnessMirrorController);
+                    mQuickQSPanel = ((QSFragment) qs).getQuickQsPanel();
                 }
             });
         }
@@ -3128,7 +3131,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mQSPanel != null) {
             mQSPanel.updateResources();
         }
-
+        if (mQuickQSPanel != null) {
+            mQuickQSPanel.updateResources();
+        }
         loadDimens();
 
         if (mStatusBarView != null) {
@@ -4235,6 +4240,172 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     };
 
+<<<<<<< HEAD
+=======
+    private EvolutionSettingsObserver mEvolutionSettingsObserver = new EvolutionSettingsObserver(mHandler);
+    private class EvolutionSettingsObserver extends ContentObserver {
+        EvolutionSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SCREEN_BRIGHTNESS_MODE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PULSE_ON_NEW_TRACKS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LESS_BORING_HEADS_UP),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.POCKET_JUDGE_ALLOW_FP),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_ROWS_PORTRAIT),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_ROWS_LANDSCAPE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_COLUMNS_PORTRAIT),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_COLUMNS_LANDSCAPE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_QUICKBAR_COLUMNS),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_TILE_TITLE_VISIBILITY),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_CHARGING_ANIMATION),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GAMING_MODE_ACTIVE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GAMING_MODE_HEADSUP_TOGGLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.USE_OLD_MOBILETYPE),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.Secure.getUriFor(
+                    Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS))) {
+                setFpToDismissNotifications();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.POCKET_JUDGE_ALLOW_FP))) {
+                updatePocketJudgeFP();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_ROWS_PORTRAIT)) ||
+                    uri.equals(Settings.System.getUriFor(Settings.System.QS_ROWS_LANDSCAPE)) ||
+                    uri.equals(Settings.System.getUriFor(Settings.System.QS_COLUMNS_PORTRAIT)) ||
+                    uri.equals(Settings.System.getUriFor(Settings.System.QS_COLUMNS_LANDSCAPE)) ||
+                    uri.equals(Settings.System.getUriFor(Settings.System.QS_TILE_TITLE_VISIBILITY))) {
+                updateQsPanelResources();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_CHARGING_ANIMATION))) {
+                updateChargingAnimation();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.USE_OLD_MOBILETYPE))) {
+                setOldMobileType();
+            }
+            update();
+        }
+
+        public void update() {
+            setStatusDoubleTapToSleep();
+            setScreenBrightnessMode();
+            setPulseOnNewTracks();
+            setFpToDismissNotifications();
+            setUseLessBoringHeadsUp();
+            updatePocketJudgeFP();
+            updateQsPanelResources();
+            updateChargingAnimation();
+            setGamingMode();
+            setOldMobileType();
+        }
+    }
+
+    private void updateQsPanelResources() {
+        if (mQSPanel != null) {
+            mQSPanel.updateResources();
+        }
+        if (mQuickQSPanel != null) {
+            mQuickQSPanel.updateSettings();
+        }
+    }
+
+    private void setOldMobileType() {
+        USE_OLD_MOBILETYPE = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.USE_OLD_MOBILETYPE, 0,
+                UserHandle.USER_CURRENT) != 0;
+        TelephonyIcons.updateIcons(USE_OLD_MOBILETYPE);
+    }
+
+    private void updatePocketJudgeFP() {
+        mPocketJudgeAllowFP = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.POCKET_JUDGE_ALLOW_FP, 0,
+                UserHandle.USER_CURRENT) == 1;
+    }
+
+    private void setUseLessBoringHeadsUp() {
+        boolean lessBoringHeadsUp = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.LESS_BORING_HEADS_UP, 0,
+                UserHandle.USER_CURRENT) == 1;
+        mNotificationInterruptionStateProvider.setUseLessBoringHeadsUp(lessBoringHeadsUp);
+    }
+
+    private void setFpToDismissNotifications() {
+        mFpDismissNotifications = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS, 0,
+                UserHandle.USER_CURRENT) == 1;
+    }
+
+    private void setScreenBrightnessMode() {
+        int mode = Settings.System.getIntForUser(mContext.getContentResolver(),
+            Settings.System.SCREEN_BRIGHTNESS_MODE,
+            Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL,
+            UserHandle.USER_CURRENT);
+        mAutomaticBrightness = mode != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+
+        mBrightnessControl = Settings.System.getIntForUser(
+            mContext.getContentResolver(), Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0,
+            UserHandle.USER_CURRENT) == 1;
+    }
+
+    private void setStatusDoubleTapToSleep() {
+        if (mStatusBarWindow != null) {
+            mStatusBarWindow.updateSettings();
+        }
+    }
+
+    private void setPulseOnNewTracks() {
+        final KeyguardSliceProvider sliceProvider = KeyguardSliceProvider.getAttachedInstance();
+        if (sliceProvider != null) {
+            sliceProvider.setPulseOnNewTracks(Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.PULSE_ON_NEW_TRACKS, 1, UserHandle.USER_CURRENT) == 1);
+        }
+    }
+
+>>>>>>> 98dc3fbf8a9a... base: SystemUI: qs quickbar columns config
     private void setHeadsUpStoplist() {
         if (mPresenter != null)
             mPresenter.setHeadsUpStoplist();
