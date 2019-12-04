@@ -16,5 +16,5 @@
 package com.android.internal.util.rr;
 
 public class OverlayUtils {
-    public static String[] AllPackages = {"com.google.android.pixel.setupwizard.overlay"};
+    public static String[] AllPackages = {"com.google.android.pixel.setupwizard.overlay", "com.google.android.pixel.setupwizard.overlay.aod"};
 }
