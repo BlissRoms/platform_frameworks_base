@@ -127,4 +127,11 @@
     <dimen name="qs_temperatur_icon_size">16sp</dimen>
 
     <dimen name="fod_animation_size">280dp</dimen>
+
+    <dimen name="custom_volume_dialog_seekbar_width">40dip</dimen>
+    <dimen name="custom_volume_dialog_seekbar_height">220dip</dimen>
+    <dimen name="volume_dialog_row_icon_margintop">-54dp</dimen>
+    <dimen name="volume_dialog_rows_padding_right">0.5dip</dimen>
+    <dimen name="volume_dialog_ringer_spacing">4dip</dimen>
+    <dimen name="volume_dialog_ringer_height">38dip</dimen>
 </resources>
