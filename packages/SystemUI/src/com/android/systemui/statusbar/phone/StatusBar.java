@@ -436,6 +436,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     // settings
     private QSPanel mQSPanel;
+    private CollapsedStatusBarFragment mCollapsedStatusBarFragment;
 
     KeyguardIndicationController mKeyguardIndicationController;
 
@@ -962,6 +963,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 .addTagListener(CollapsedStatusBarFragment.TAG, (tag, fragment) -> {
                     CollapsedStatusBarFragment statusBarFragment =
                             (CollapsedStatusBarFragment) fragment;
+                    mCollapsedStatusBarFragment = (CollapsedStatusBarFragment) statusBarFragment;
                     statusBarFragment.initNotificationIconArea(mNotificationIconAreaController);
                     PhoneStatusBarView oldStatusBarView = mStatusBarView;
                     mStatusBarView = (PhoneStatusBarView) fragment.getView();
@@ -1949,6 +1951,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
 	            Settings.System.QS_PANEL_BG_USE_ACCENT),
 	            false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_SHOW_CARRIER),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -1990,6 +1995,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             updateCutoutOverlay();
             setMaxKeyguardNotifConfig();
             updateQSPanel();
+            if (mCollapsedStatusBarFragment != null) {
+                mCollapsedStatusBarFragment.updateSettings(false);
+            }
         }
     }
 
