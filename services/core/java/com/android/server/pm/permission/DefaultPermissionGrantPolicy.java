@@ -810,6 +810,12 @@ public final class DefaultPermissionGrantPolicy {
         // Google dialer
         grantSystemFixedPermissionsToSystemPackage("com.google.android.dialer", userId, PHONE_PERMISSIONS,
                 CONTACTS_PERMISSIONS, SMS_PERMISSIONS);
+
+        grantSystemFixedPermissionsToSystemPackage("com.asus.camera", userId, STORAGE_PERMISSIONS);
+        grantSystemFixedPermissionsToSystemPackage("com.asus.gallery", userId, STORAGE_PERMISSIONS);
+        grantSystemFixedPermissionsToSystemPackage("com.asus.filemanager", userId, STORAGE_PERMISSIONS);
+        grantSystemFixedPermissionsToSystemPackage("com.asus.soundrecorder", userId, STORAGE_PERMISSIONS, PHONE_PERMISSIONS);
+
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(String category, int userId) {
