@@ -26,4 +26,9 @@
     <!-- Names of the key handler classes -->
     <string-array name="config_deviceKeyHandlerClasses" translatable="false">
     </string-array>
+
+    <!-- App Permissions -->
+    <string-array translatable="false" name="config_customPermissionsList">
+        <!-- <item>more packages</item>-->
+    </string-array>
 </resources>
