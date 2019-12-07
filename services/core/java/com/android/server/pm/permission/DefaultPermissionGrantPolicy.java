@@ -614,6 +614,34 @@ public final class DefaultPermissionGrantPolicy {
                     true /*whitelistRestrictedPermissions*/, CONTACTS_PERMISSIONS, STORAGE_PERMISSIONS);
         }
 
+        String camPackage = "com.asus.camera";
+        PackageInfo pkg1 = getPackageInfo(camPackage);
+        if (pkg1 != null) {
+        grantPermissionsToPackage(chromePackage, userId, false /* ignoreSystemPackage */,
+                true /*whitelistRestrictedPermissions*/, STORAGE_PERMISSIONS);
+        }
+
+        String galleryPackage = "com.asus.gallery";
+        PackageInfo pkg2 = getPackageInfo(galleryPackage);
+        if (pkg2 != null) {
+        grantPermissionsToPackage(chromePackage, userId, false /* ignoreSystemPackage */,
+                true /*whitelistRestrictedPermissions*/, STORAGE_PERMISSIONS);
+        }
+
+        String soundPackage = "com.asus.soundrecorder";
+        PackageInfo pkg3 = getPackageInfo(soundPackage);
+        if (pkg3 != null) {
+        grantPermissionsToPackage(chromePackage, userId, false /* ignoreSystemPackage */,
+                true /*whitelistRestrictedPermissions*/, STORAGE_PERMISSIONS);
+        }
+
+        String filePackage = "com.asus.filemanager";
+        PackageInfo pkg4 = getPackageInfo(filePackage);
+        if (pkg4 != null) {
+        grantPermissionsToPackage(chromePackage, userId, false /* ignoreSystemPackage */,
+                true /*whitelistRestrictedPermissions*/, STORAGE_PERMISSIONS);
+        }
+
         // Voice interaction
         if (voiceInteractPackageNames != null) {
             for (String voiceInteractPackageName : voiceInteractPackageNames) {
