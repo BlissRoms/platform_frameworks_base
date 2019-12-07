@@ -5917,6 +5917,12 @@ public final class Settings {
          */
          public static final String NETWORK_TRAFFIC_FONT_SIZE = "network_traffic_font_size";
 
+         /**
+         * Network traffic layout
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_LAYOUT = "network_traffic_layout";
+
         /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
@@ -6044,6 +6050,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(NETWORK_TRAFFIC_TYPE);
             PRIVATE_SETTINGS.add(NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD);
 	    PRIVATE_SETTINGS.add(NETWORK_TRAFFIC_FONT_SIZE);
+ 	    PRIVATE_SETTINGS.add(NETWORK_TRAFFIC_LAYOUT);
         }
 
         /**
