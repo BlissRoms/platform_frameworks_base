@@ -22,6 +22,7 @@ import android.annotation.ColorInt;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -38,8 +39,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.UserHandle;
 import android.provider.AlarmClock;
-import android.provider.DeviceConfig;
 import android.provider.CalendarContract;
+import android.provider.DeviceConfig;
 import android.provider.Settings;
 import android.service.notification.ZenModeConfig;
 import android.text.format.DateUtils;
@@ -155,6 +156,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private boolean mLandscape;
     private boolean mHeaderImageEnabled;
+	
+    private SettingsObserver mSettingsObserver = new SettingsObserver(mHandler);
 
     private PrivacyItemController mPrivacyItemController;
 
@@ -164,8 +167,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             "system:" + Settings.System.QS_BATTERY_MODE;
     public static final String STATUS_BAR_BATTERY_STYLE =
             "system:" + Settings.System.STATUS_BAR_BATTERY_STYLE;
-    public static final String OMNI_STATUS_BAR_CUSTOM_HEADER =
-            "system:" + Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER;
     private boolean mHideDragHandle;
 
     private final BroadcastReceiver mRingerReceiver = new BroadcastReceiver() {
@@ -213,6 +214,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mPrivacyItemController = privacyItemController;
         mDualToneHandler = new DualToneHandler(
                 new ContextThemeWrapper(context, R.style.QSHeaderTheme));
+        mSettingsObserver.observe();
     }
 
     @Override
@@ -285,6 +287,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 SHOW_QS_CLOCK,
                 QS_BATTERY_MODE,
                 STATUS_BAR_BATTERY_STYLE);
+
+        updateSettings();
     }
 
     private List<String> getIgnoredIconSlots() {
@@ -453,6 +457,14 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         updateStatusIconAlphaAnimator();
         updateHeaderTextContainerAlphaAnimator();
         updatePrivacyChipAlphaAnimator();
+    }
+
+    private void updateSettings() {
+        mHeaderImageEnabled = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER, 0,
+                UserHandle.USER_CURRENT) == 1;
+        updateResources();
+        updateStatusbarProperties();
     }
 
     private void updateStatusIconAlphaAnimator() {
@@ -714,6 +726,24 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
     }
 
+    private class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = getContext().getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER), false,
+                    this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
     @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
@@ -747,11 +777,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 mBatteryRemainingIcon.updateBatteryStyle();
                 mBatteryRemainingIcon.updatePercentView();
                 mBatteryRemainingIcon.updateVisibility();
-                break;
-            case OMNI_STATUS_BAR_CUSTOM_HEADER:
-                mHeaderImageEnabled =
-                        TunerService.parseIntegerSwitch(newValue, true);
-                updateStatusbarProperties();
                 break;
             case QSFooterImpl.QS_SHOW_DRAG_HANDLE:
                 mHideDragHandle =
