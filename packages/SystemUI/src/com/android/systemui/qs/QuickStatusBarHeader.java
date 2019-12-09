@@ -284,7 +284,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         Dependency.get(TunerService.class).addTunable(this,
                 SHOW_QS_CLOCK,
                 QS_BATTERY_MODE,
-                STATUS_BAR_BATTERY_STYLE);
+                STATUS_BAR_BATTERY_STYLE,
+                OMNI_STATUS_BAR_CUSTOM_HEADER);
     }
 
     private List<String> getIgnoredIconSlots() {
