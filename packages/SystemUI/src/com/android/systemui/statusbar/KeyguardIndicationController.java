@@ -194,7 +194,7 @@ public class KeyguardIndicationController {
     private int mChargingWattage;
     private int mBatteryLevel;
     private boolean mBatteryPresent = true;
-    private int mTemperature;
+    private float mTemperature;
     private long mChargingTimeRemaining;
     private String mBiometricErrorMessageToShowOnScreenOn;
     private final Set<Integer> mCoExFaceAcquisitionMsgIdsToShow;
