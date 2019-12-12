@@ -350,7 +350,7 @@
     <bool name="config_showNotificationShelf">true</bool>
 
     <!-- Whether or not the notifications should always fade as they are dismissed. -->
-    <bool name="config_fadeNotificationsOnDismiss">false</bool>
+    <bool name="config_fadeNotificationsOnDismiss">true</bool>
 
     <!-- Whether or not the parent of the notification row itself is being translated when swiped or
          its children views. If true, then the contents are translated and vice versa. -->
@@ -358,10 +358,10 @@
 
     <!-- Whether or not the fade on the notification is based on the amount that it has been swiped
          off-screen. -->
-    <bool name="config_fadeDependingOnAmountSwiped">false</bool>
+    <bool name="config_fadeDependingOnAmountSwiped">true</bool>
 
     <!-- Whether or not to show the expand button at the end of the notification header. -->
-    <bool name="config_showNotificationExpandButtonAtEnd">false</bool>
+    <bool name="config_showNotificationExpandButtonAtEnd">true</bool>
 
     <!-- Whether or the notifications should be clipped to be reduced in height if it has been
          scrolled to the top of the screen. -->
@@ -370,13 +370,13 @@
     <!-- Whether or not the notification contents should be clipped to any background that is
          set on the notification container. For example, if this value is true and the background
          has rounded corners, then the contents will be clipped to those corners. -->
-    <bool name="config_clipNotificationsToOutline">false</bool>
+    <bool name="config_clipNotificationsToOutline">true</bool>
 
     <!-- Whether or not notifications that can be expanded will always be in their expanded state.
          This value only affects notifications that are not a group of notifications from the same
          applications. If this value is false, then only the first notification will be expanded;
          the other notifications need to be manually expanded by the user. -->
-    <bool name="config_alwaysExpandNonGroupedNotifications">false</bool>
+    <bool name="config_alwaysExpandNonGroupedNotifications">true</bool>
 
     <!-- Whether or not an expandable notification can be manually expanded or collapsed by the
          user. Grouped notifications are still expandable even if this value is false. -->
@@ -384,19 +384,19 @@
 
     <!-- Whether or not there should be dividing lines between child notifications when the
          group has been expanded. -->
-    <bool name="config_showDividersWhenGroupNotificationExpanded">false</bool>
+    <bool name="config_showDividersWhenGroupNotificationExpanded">true</bool>
 
     <!-- Whether or not the dividing lines should be shown when the container is expanding and
          collapsing. If this value is true, then the lines will only show when the container has
          been completely expanded. -->
-    <bool name="config_hideDividersDuringExpand">false</bool>
+    <bool name="config_hideDividersDuringExpand">true</bool>
 
     <!-- Whether or not child notifications that are part of a group will have shadows. -->
     <bool name="config_enableShadowOnChildNotifications">true</bool>
 
     <!-- Whether or not a view containing child notifications will have a custom background when
          it has been expanded to reveal its children. -->
-    <bool name="config_showGroupNotificationBgWhenExpanded">false</bool>
+    <bool name="config_showGroupNotificationBgWhenExpanded">true</bool>
 
     <!-- Should we vibrate on an icon animation of the shelf. This should only be active if the
      vibrator is capable of subtle vibrations -->
@@ -434,7 +434,7 @@
     <!-- Smart replies in notifications: Whether by default tapping on a choice should let the user
          edit the input before it is sent to the app. Developers can override this via
          RemoteInput.Builder.setEditChoicesBeforeSending. -->
-    <bool name="config_smart_replies_in_notifications_edit_choices_before_sending">false</bool>
+    <bool name="config_smart_replies_in_notifications_edit_choices_before_sending">true</bool>
 
     <!-- Smart replies in notifications: Whether smart suggestions in notifications are enabled in
          heads-up notifications.  -->
