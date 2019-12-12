@@ -214,18 +214,18 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             if ((state1 & DISABLE_SYSTEM_INFO) != 0) {
                 hideSystemIconArea(animate);
                 hideOperatorName(animate);
+                showCarrierName(animate);
             } else {
                 showSystemIconArea(animate);
                 showOperatorName(animate);
+                hideCarrierName(animate);
             }
         }
         if ((diff1 & DISABLE_NOTIFICATION_ICONS) != 0) {
             if ((state1 & DISABLE_NOTIFICATION_ICONS) != 0) {
                 hideNotificationIconArea(animate);
-                hideCarrierName(animate);
             } else {
                 showNotificationIconArea(animate);
-                showCarrierName(animate);
             }
         }
     }
