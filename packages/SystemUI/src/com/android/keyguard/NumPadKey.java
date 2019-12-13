@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.internal.widget.LockPatternUtils;
+import com.android.systemui.R;
 
 import lineageos.providers.LineageSettings;
 
