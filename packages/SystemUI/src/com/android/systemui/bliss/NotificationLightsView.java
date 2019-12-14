@@ -84,12 +84,9 @@ public class NotificationLightsView extends RelativeLayout {
     }
 
     public void animateNotification(boolean mNotification) {
-        int defaultColor = Color.parseColor("#3980FF");
-        /*int color = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.OMNI_PULSE_AMBIANT_LIGHT_COLOR, 0x3980FF,
-                UserHandle.USER_CURRENT);*/
-        //int color = Color.parseColor("#3980FF");
-        int color = defaultColor;
+        int color = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.PULSE_AMBIENT_LIGHT_COLOR, 0xFF3980FF,
+                UserHandle.USER_CURRENT);
         StringBuilder sb = new StringBuilder();
         sb.append("animateNotification color ");
         sb.append(Integer.toHexString(color));
