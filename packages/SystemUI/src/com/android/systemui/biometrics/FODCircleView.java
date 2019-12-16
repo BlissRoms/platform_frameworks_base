@@ -48,6 +48,7 @@ import com.android.systemui.R;
 import com.android.systemui.Dependency;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.ConfigurationController.ConfigurationListener;
+import com.android.systemui.tuner.TunerService;
 
 import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
 import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreenCallback;
@@ -56,7 +57,7 @@ import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FODCircleView extends ImageView implements OnTouchListener, ConfigurationListener {
+public class FODCircleView extends ImageView implements OnTouchListener, ConfigurationListener, TunerService.Tunable {
     private final int mPositionX;
     private final int mPositionY;
     private final int mWidth;
@@ -88,6 +89,11 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
     private PowerManager.WakeLock mWakeLock;
 
     private Timer mBurnInProtectionTimer;
+
+    private static final String FOD_ICON =
+            "system:" + Settings.System.FOD_ICON;
+
+    private int mfodicon;
 
     private IFingerprintInscreenCallback mFingerprintInscreenCallback =
             new IFingerprintInscreenCallback.Stub() {
@@ -259,6 +265,8 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         updateCutoutFlags();
 
         Dependency.get(ConfigurationController.class).addCallback(this);
+        Dependency.get(TunerService.class).addTunable(this, FOD_ICON);
+
         mPowerManager = context.getSystemService(PowerManager.class);
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "FODCircleView");
     }
@@ -397,6 +405,38 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
             }
         }
         return mFingerprintInscreenDaemon;
+    }
+
+    private void setFODIcon() {
+        switch (mfodicon) {
+            case 0:
+            case 1:
+            default:
+                setImageResource(R.drawable.fod_icon_default);
+                break;
+            case 2:
+                setImageResource(R.drawable.fod_icon_default_1);
+                break;
+            case 2:
+                setImageResource(R.drawable.fod_icon_default_2);
+                break;
+            case 2:
+                setImageResource(R.drawable.fod_icon_default_3);
+                break;
+        }
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case FOD_ICON:
+                mfodicon =
+                    TunerService.parseInteger(newValue, 0);
+                setFODIcon();
+                break;
+            default:
+                break;
+        }
     }
 
     public void show() {
