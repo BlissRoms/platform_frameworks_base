@@ -16,6 +16,8 @@
 
 package com.android.systemui.qs;
 
+import static android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+import static com.android.settingslib.display.BrightnessUtils.GAMMA_SPACE_MAX;
 import static com.android.systemui.qs.tileimpl.QSTileImpl.getColorForState;
 import static com.android.systemui.util.InjectionInflationController.VIEW_CONTEXT;
 
@@ -26,12 +28,16 @@ import android.animation.ObjectAnimator;
 import android.annotation.Nullable;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.metrics.LogMaker;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.UserHandle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.util.AttributeSet;
@@ -82,7 +88,7 @@ import javax.inject.Named;
 public class QSPanel extends LinearLayout implements Tunable, Callback, BrightnessMirrorListener,
         Dumpable {
 
-    private static final String QS_SHOW_AUTO_BRIGHTNESS =
+    public static final String QS_SHOW_AUTO_BRIGHTNESS =
             "lineagesecure:" + LineageSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS;
     public static final String QS_SHOW_BRIGHTNESS_SLIDER =
             "lineagesecure:" + LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER;
@@ -93,13 +99,13 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             "system:" + Settings.System.ANIM_TILE_DURATION;
     public static final String ANIM_TILE_INTERPOLATOR =
             "system:" + Settings.System.ANIM_TILE_INTERPOLATOR;
+    public static final String QS_SHOW_BRIGHTNESS_BUTTONS = "qs_show_brightness_buttons";
 
     private static final String TAG = "QSPanel";
 
     protected final Context mContext;
     protected final ArrayList<TileRecord> mRecords = new ArrayList<>();
     protected final View mBrightnessView;
-    protected final ImageView mBrightnessIconView;
     protected final ImageView mAutoBrightnessView;
     private final H mHandler = new H();
     private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
@@ -126,8 +132,12 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private BrightnessMirrorController mBrightnessMirrorController;
     private View mDivider;
 
+    private ImageView mMinBrightness;
+    private ImageView mMaxBrightness;
     private int mBrightnessSlider = 1;
     private int animStyle, animDuration, interpolatorType;
+
+    private final Vibrator mVibrator;
 
     public QSPanel(Context context) {
         this(context, null);
@@ -138,11 +148,14 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     }
 
     @Inject
-    public QSPanel(@Named(VIEW_CONTEXT) Context context, AttributeSet attrs,
+    public QSPanel(@Named(VIEW_CONTEXT) final Context context, AttributeSet attrs,
             DumpController dumpController) {
         super(context, attrs);
         mContext = context;
 
+        final ContentResolver resolver = context.getContentResolver();
+
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         setOrientation(VERTICAL);
 
         mBrightnessView = LayoutInflater.from(mContext).inflate(
@@ -155,16 +168,61 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         mQsTileRevealController = new QSTileRevealController(mContext, this,
                 (PagedTileLayout) mTileLayout);
 
+        mMinBrightness = mBrightnessView.findViewById(R.id.brightness_left);
+        mMinBrightness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentValue = Settings.System.getIntForUser(resolver,
+                        Settings.System.SCREEN_BRIGHTNESS, 0, UserHandle.USER_CURRENT);
+                int brightness = currentValue - 2;
+                if (currentValue != 0) {
+                    int math = Math.max(0, brightness);
+                    Settings.System.putIntForUser(resolver,
+                            Settings.System.SCREEN_BRIGHTNESS, math, UserHandle.USER_CURRENT);
+                }
+            }
+        });
+        mMinBrightness.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                setBrightnessMinMax(true);
+                mVibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                return true;
+            }
+        });
+
+        mMaxBrightness = mBrightnessView.findViewById(R.id.brightness_right);
+        mMaxBrightness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentValue = Settings.System.getIntForUser(resolver,
+                        Settings.System.SCREEN_BRIGHTNESS, 0, UserHandle.USER_CURRENT);
+                int brightness = currentValue + 2;
+                if (currentValue != 255) {
+                    int math = Math.min(255, brightness);
+                    Settings.System.putIntForUser(resolver,
+                            Settings.System.SCREEN_BRIGHTNESS, math, UserHandle.USER_CURRENT);
+                }
+            }
+        });
+        mMaxBrightness.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                setBrightnessMinMax(false);
+                mVibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                return true;
+            }
+        });
+
         mFooter = new QSSecurityFooter(this, context);
 
         addQSPanel();
 
-        mBrightnessController = new BrightnessController(getContext(),
+        mBrightnessController = new BrightnessController(context,
                 findViewById(R.id.brightness_icon),
                 findViewById(R.id.brightness_slider));
         mDumpController = dumpController;
 
-        mBrightnessIconView = findViewById(R.id.brightness_icon_left);
         mAutoBrightnessView = findViewById(R.id.brightness_icon);
 
         mIsAutomaticBrightnessAvailable = getResources().getBoolean(
@@ -240,6 +298,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         tunerService.addTunable(this, ANIM_TILE_STYLE);
         tunerService.addTunable(this, ANIM_TILE_DURATION);
         tunerService.addTunable(this, ANIM_TILE_INTERPOLATOR);
+        tunerService.addTunable(this, QS_SHOW_BRIGHTNESS_BUTTONS);
 
         if (mHost != null) {
             setTiles(mHost.getTiles());
@@ -274,12 +333,14 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     @Override
     public void onTuningChanged(String key, String newValue) {
         if (QS_SHOW_AUTO_BRIGHTNESS.equals(key) && mIsAutomaticBrightnessAvailable) {
-            updateViewVisibilityForTuningValue(mBrightnessIconView, newValue);
             updateViewVisibilityForTuningValue(mAutoBrightnessView, newValue);
         } else if (QS_SHOW_BRIGHTNESS_SLIDER.equals(key)) {
             mBrightnessSlider = TunerService.parseInteger(newValue, 1);
             mBrightnessView.setVisibility(mBrightnessSlider != 0 ? VISIBLE : GONE);
             restartQSPanel();
+        } else if (QS_SHOW_BRIGHTNESS_BUTTONS.equals(key)) {
+            updateViewVisibilityForTuningValue(mMinBrightness, newValue);
+            updateViewVisibilityForTuningValue(mMaxBrightness, newValue);
         } else if (ANIM_TILE_STYLE.equals(key)) {
             animStyle = TunerService.parseInteger(newValue, 0);
             if (mHost != null) {
@@ -852,4 +913,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             });
         }
     }
+
+    private void setBrightnessMinMax(boolean min) {
+        mBrightnessController.setBrightnessFromSliderButtons(min ? 0 : GAMMA_SPACE_MAX);
+    }
+
 }

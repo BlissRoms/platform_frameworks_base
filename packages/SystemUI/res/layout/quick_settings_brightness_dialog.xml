@@ -20,19 +20,19 @@
     android:layout_gravity="center_vertical"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
     style="@style/BrightnessDialogContainer">
 
-    <ImageView
-        android:id="@+id/brightness_icon_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageButton
+        android:id="@+id/brightness_left"
+        android:layout_width="36dp"
+        android:layout_height="48dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/ic_qs_brightness"
-        android:contentDescription="@null"
-        android:visibility="gone" />
+        android:layout_marginStart="-2dp"
+        android:src="@drawable/ic_brightness_left"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@null" />
 
     <com.android.systemui.settings.ToggleSliderView
         android:id="@+id/brightness_slider"
@@ -40,18 +40,30 @@
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:paddingLeft="-4dp"
+        android:paddingRight="-4dp"
         android:contentDescription="@string/accessibility_brightness"
         android:importantForAccessibility="no"
         systemui:text="@string/status_bar_settings_auto_brightness_label" />
 
-    <ImageView
-        android:id="@+id/brightness_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageButton
+        android:id="@+id/brightness_right"
+        android:layout_width="36dp"
+        android:layout_height="48dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_brightness_right"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@null" />
+
+    <ImageButton
+        android:id="@+id/brightness_icon"
+        android:layout_width="36dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_qs_brightness_auto_off"
-        android:contentDescription="@null"
-        android:visibility="gone" />
+        android:contentDescription="@null" />
 
 </LinearLayout>
