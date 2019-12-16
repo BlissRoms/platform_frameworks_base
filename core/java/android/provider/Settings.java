@@ -5579,6 +5579,12 @@ public final class Settings {
         private static final Validator LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * FOD icon picker
+         * @hide
+         */
+        public static final String FOD_ICON = "fod_icon";
+
+        /**
          * Show Settings icon in QS Footer
          *
          * @hide
