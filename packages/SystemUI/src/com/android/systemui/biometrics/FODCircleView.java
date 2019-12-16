@@ -18,6 +18,7 @@ package com.android.systemui.biometrics;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,6 +28,7 @@ import android.graphics.Point;
 import android.hardware.biometrics.BiometricSourceType;
 import android.hardware.display.DisplayManager;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.os.IHwBinder;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -109,7 +111,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
 
             mHandler.post(() -> {
                 setDim(false);
-                setImageResource(R.drawable.fod_icon_default);
+                setFODIcon();
 
                 invalidate();
             });
@@ -217,7 +219,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         mPaintFingerprint.setAntiAlias(true);
         mPaintFingerprint.setColor(res.getColor(R.color.config_fodColor));
 
-        setImageResource(R.drawable.fod_icon_default);
+        setFODIcon();
 
         mPaintShow.setAntiAlias(true);
         mPaintShow.setColor(res.getColor(R.color.config_fodColor));
@@ -322,7 +324,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         if (event.getAction() == MotionEvent.ACTION_UP) {
             newInside = false;
             setDim(false);
-            setImageResource(R.drawable.fod_icon_default);
+            setFODIcon();
         }
 
         if (newInside == mIsInsideCircle) {
@@ -334,7 +336,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         invalidate();
 
         if (!mIsInsideCircle) {
-            setImageResource(R.drawable.fod_icon_default);
+            setFODIcon();
             return false;
         }
 
@@ -399,6 +401,25 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         return mFingerprintInscreenDaemon;
     }
 
+    private int getFODIcon() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FOD_ICON, 0);
+    }
+
+    private void setFODIcon() {
+        int fodicon = getFODIcon();
+
+        if (fodicon == 0) {
+            this.setImageResource(R.drawable.fod_icon_default);
+        } else if (fodicon == 1) {
+            this.setImageResource(R.drawable.fod_icon_default_1);
+        } else if (fodicon == 2) {
+            this.setImageResource(R.drawable.fod_icon_default_2);
+        } else if (fodicon == 3) {
+            this.setImageResource(R.drawable.fod_icon_default_3);
+        }
+    }
+
     public void show() {
         if (mIsViewAdded) {
             return;
@@ -424,7 +445,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         mParams.gravity = Gravity.TOP | Gravity.LEFT;
 
-        setImageResource(R.drawable.fod_icon_default);
+        setFODIcon();
 
         mWindowManager.addView(this, mParams);
         mIsViewAdded = true;
