@@ -462,7 +462,8 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                     mHasLogoutButton = true;
                 }
             } else if (GLOBAL_ACTION_KEY_EMERGENCY.equals(actionKey)) {
-                if (!mEmergencyAffordanceManager.needsEmergencyAffordance() && !mIsRestartMenu) {
+                if (Settings.Global.getInt(mContext.getContentResolver(),
+                        Settings.Global.POWER_MENU_EMERGENCY_AFFORDANCE, 1) == 1) {
                     mItems.add(new EmergencyDialerAction());
                 }
             } else {
