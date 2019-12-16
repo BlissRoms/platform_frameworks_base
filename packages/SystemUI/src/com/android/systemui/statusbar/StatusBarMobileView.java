@@ -301,6 +301,9 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
             case 7:
                 mMobileImsImageView.setImageResource(R.drawable.ic_volte7);
                 break;
+            case 8:
+                mMobileImsImageView.setImageResource(R.drawable.ic_volte8);
+                break;
         }
     }
 
