@@ -218,5 +218,6 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.AICP_LOCKSCREEN_WEATHER_STYLE, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.USE_OLD_MOBILETYPE, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.STATUSBAR_NOTIF_COUNT, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.FLASHLIGHT_ON_CALL, new InclusiveIntegerRangeValidator(0, 3));
     }
 }
