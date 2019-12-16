@@ -18,7 +18,7 @@
   <!-- Default color for hour hand of Bubble clock. -->
   <color name="bubbleHourHandColor">#C97343</color>
   <!-- Default color for minute hand of Bubble clock. -->
-  <color name="bubbleMinuteHandColor">#F5C983</color>
+  <color name="bubbleMinuteHandColor">@*android:color/accent_device_default_light</color>
   <!-- Accent color for Typographic clock. -->
-  <color name="typeClockAccentColor">#F5C983</color>
+  <color name="typeClockAccentColor">@*android:color/accent_device_default_light</color>
 </resources>
