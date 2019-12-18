@@ -18,7 +18,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/type_clock"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:paddingStart="50dp"
     android:textAlignment="viewStart"
     style="@style/widget_big"
