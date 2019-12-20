@@ -18,21 +18,58 @@
 package com.android.internal.util.bliss;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageInfo;
+import android.content.Intent;
+import android.content.om.IOverlayManager;
+import android.content.om.OverlayInfo;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.hardware.fingerprint.FingerprintManager;
-import android.net.ConnectivityManager;
+import android.hardware.input.InputManager;
 import android.net.NetworkInfo;
+import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.UserHandle;
+import android.os.SystemClock;
+import android.provider.Settings;
+import android.text.TextUtils;
+import android.text.format.Time;
+import android.os.Vibrator;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.os.SystemProperties;
+import android.util.Log;
+import android.view.InputDevice;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
+import android.view.IWindowManager;
+import android.view.WindowManagerGlobal;
 
 import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static android.content.Context.VIBRATOR_SERVICE;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Locale;
 
@@ -145,6 +182,57 @@ public class BlissUtils {
                     // do nothing.
                 }
             }
+        }
+    }
+
+    public static boolean isPackageEnabled(String packageName, PackageManager pm) {
+        try {
+            ApplicationInfo ai = pm.getApplicationInfo(packageName, 0);
+            return ai.enabled;
+        } catch (PackageManager.NameNotFoundException notFound) {
+            return false;
+        }
+    }
+
+    public static boolean isPackageEnabled(String packageName, Context context) {
+        return isPackageEnabled(packageName, context.getPackageManager());
+    }
+
+    /**
+     * Checks if a package is available to handle the given action.
+     */
+    public static boolean resolveIntent(Context context, Intent intent) {
+        // check whether the target handler exist in system
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> results = pm.queryIntentActivitiesAsUser(intent,
+                PackageManager.MATCH_SYSTEM_ONLY,
+                UserHandle.myUserId());
+        for (ResolveInfo resolveInfo : results) {
+            // check is it installed in system.img, exclude the application
+            // installed by user
+            if ((resolveInfo.activityInfo.applicationInfo.flags &
+                    ApplicationInfo.FLAG_SYSTEM) != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean resolveIntent(Context context, String action) {
+        return resolveIntent(context, new Intent(action));
+    }
+
+
+    public static boolean isPackageAvailable(String packageName, Context context) {
+        Context mContext = context;
+        final PackageManager pm = mContext.getPackageManager();
+        try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            int enabled = pm.getApplicationEnabledSetting(packageName);
+            return enabled != PackageManager.COMPONENT_ENABLED_STATE_DISABLED &&
+                enabled != PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 }
