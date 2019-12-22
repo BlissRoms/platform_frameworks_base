@@ -173,6 +173,10 @@ public class DefaultClockController implements ClockPlugin {
 
     @Override
     public boolean shouldShowStatusArea() {
-        return true;
+        if (Settings.System.getIntForUser(mContext.getContentResolver(),
+            Settings.System.LOCKSCREEN_DATE_DISPLAY, 1, UserHandle.USER_CURRENT) == 1) {
+            return true;
+        } else {
+            return false;
     }
 }
