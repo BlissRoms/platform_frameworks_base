@@ -25,6 +25,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import android.content.Context;
+import android.os.UserHandle;
+import android.provider.Settings;
+
 import com.android.internal.colorextraction.ColorExtractor;
 import com.android.systemui.R;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
@@ -173,6 +177,12 @@ public class DefaultClockController implements ClockPlugin {
 
     @Override
     public boolean shouldShowStatusArea() {
-        return true;
+        Context mContext;
+        if (Settings.System.getIntForUser(mContext.getContentResolver(),
+            Settings.System.LOCKSCREEN_DATE_DISPLAY, 1, UserHandle.USER_CURRENT) == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
