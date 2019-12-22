@@ -24,6 +24,10 @@ import android.graphics.Paint.Style;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import android.content.Context;
+import android.os.UserHandle;
+import android.provider.Settings;
+
 import com.android.internal.colorextraction.ColorExtractor;
 import com.android.systemui.R;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
@@ -35,6 +39,8 @@ import java.util.TimeZone;
  * Plugin for a custom Typographic clock face that displays the time in words.
  */
 public class TypeClockController implements ClockPlugin {
+
+    Context mContext;
 
     /**
      * Resources used to get title and thumbnail.
@@ -206,6 +212,11 @@ public class TypeClockController implements ClockPlugin {
 
     @Override
     public boolean shouldShowStatusArea() {
-        return true;
+        if (Settings.System.getIntForUser(mContext.getContentResolver(),
+            Settings.System.LOCKSCREEN_DATE_DISPLAY, 1, UserHandle.USER_CURRENT) == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
