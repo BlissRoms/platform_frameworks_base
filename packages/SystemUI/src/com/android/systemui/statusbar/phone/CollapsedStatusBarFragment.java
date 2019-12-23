@@ -296,7 +296,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         for (View batteryBar: mBatteryBars) {
             animateHide(batteryBar, animate, true);
         }
-        animateHide(mStatusBarLogoRight, animate);
+        animateHide(mStatusBarLogoRight, animate, true);
     }
 
     public void showSystemIconArea(boolean animate) {
@@ -334,7 +334,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         animateHide(mNotificationIconAreaInner, animate, true);
         animateHide(mCenteredIconArea, animate, true);
 	animateHide(mCenterClockLayout, animate, true);
-        animateHide(mStatusBarLogo, animate);
+	animateHide(mStatusBarLogo, animate, true);
     }
 
     public void showNotificationIconArea(boolean animate) {
