@@ -493,7 +493,8 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private boolean mSysuiRoundedFwvals;
 
-    private boolean mHeadsUpDisabled, mGamingModeActivated;
+    private boolean mGamingModeActivated;
+    private int mHeadsUpDisabled;
 
     // XXX: gesture research
     private final GestureRecorder mGestureRec = DEBUG_GESTURES
@@ -5088,12 +5089,12 @@ public class StatusBar extends SystemUI implements DemoMode,
             case GAMING_MODE_ACTIVE:
                 mGamingModeActivated =
                         TunerService.parseIntegerSwitch(newValue, false);
-                mNotificationInterruptionStateProvider.setGamingPeekMode(mGamingModeActivated && mHeadsUpDisabled);
+                mNotificationInterruptionStateProvider.setGamingPeekMode(mGamingModeActivated, mHeadsUpDisabled);
                 break;
             case GAMING_MODE_HEADSUP_TOGGLE:
                 mHeadsUpDisabled =
-                        TunerService.parseIntegerSwitch(newValue, true);
-                mNotificationInterruptionStateProvider.setGamingPeekMode(mGamingModeActivated && mHeadsUpDisabled);
+                        TunerService.parseInteger(newValue, 0);
+                mNotificationInterruptionStateProvider.setGamingPeekMode(mGamingModeActivated, mHeadsUpDisabled);
                 break;
             case LOCKSCREEN_CHARGING_ANIMATION:
                 boolean showChargingAnimation =
