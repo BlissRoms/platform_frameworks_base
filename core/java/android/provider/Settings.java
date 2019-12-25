@@ -5585,6 +5585,15 @@ public final class Settings {
         public static final String VIBRATE_ON_NOTIFICATIONS = "vibrate_on_notifications";
 
         /**
+         * Whether to show or hide the edit icon
+         * @hide
+         */
+        public static final String QS_SERVICES_TOGGLE = "qs_services_toggle";
+
+        /** @hide */
+        private static final Validator QS_SERVICES_TOGGLE_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5687,6 +5696,7 @@ public final class Settings {
             SENSOR_BLOCK,
             LOCKSCREEN_WEATHER_SHOW_TEMP,
             LOCKSCREEN_WEATHER_SHOW_CITY,
+            QS_SERVICES_TOGGLE,
         };
 
         /**
@@ -5857,6 +5867,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SENSOR_BLOCK);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_TEMP);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_CITY);
+            PRIVATE_SETTINGS.add(QS_SERVICES_TOGGLE);
         }
 
         /**
@@ -5997,6 +6008,7 @@ public final class Settings {
             VALIDATORS.put(SENSOR_BLOCK, SENSOR_BLOCK_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_TEMP, LOCKSCREEN_WEATHER_SHOW_TEMP_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_CITY, LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR);
+            VALIDATORS.put(QS_SERVICES_TOGGLE, QS_SERVICES_TOGGLE_VALIDATOR);
         }
 
         /**
