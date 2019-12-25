@@ -331,7 +331,7 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
         mSettingsContainer.findViewById(R.id.tuner_icon).setVisibility(
                 TunerService.isTunerEnabled(mContext) ? View.VISIBLE : View.INVISIBLE);
         final boolean isDemo = UserManager.isDeviceInDemoMode(mContext);
-        mMultiUserSwitch.setVisibility(showUserSwitcher() ? View.VISIBLE : View.INVISIBLE);
+        mMultiUserSwitch.setVisibility(showUserSwitcher() ? (isUserEnabled() ? View.VISIBLE : View.INVISIBLE) : View.INVISIBLE);
         mEditContainer.setVisibility(isDemo || !mExpanded ? View.INVISIBLE : View.VISIBLE);
         mSettingsButton.setVisibility(isDemo || !mExpanded ? View.VISIBLE : View.VISIBLE);
         mRunningServicesButton.setVisibility(isServicesEnabled() ? (!isDemo && mExpanded ? View.VISIBLE : View.INVISIBLE) : View.GONE);
@@ -361,6 +361,11 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
     public boolean isServicesEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.QS_SERVICES_TOGGLE, 0) == 1;
+    }
+
+    public boolean isUserEnabled() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.QS_USER_TOGGLE, 1) == 1;
     }
 
     @Override
