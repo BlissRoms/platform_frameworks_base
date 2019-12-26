@@ -152,4 +152,6 @@
     <!-- Whether key handler sends intent when changing slider position -->
     <string name="config_alertSliderIntent"></string>
 
+    <bool name="config_has_Soli">false</bool>
+
 </resources>
