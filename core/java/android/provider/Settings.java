@@ -5602,6 +5602,13 @@ public final class Settings {
         /** @hide */
         private static final Validator QS_USER_TOGGLE_VALIDATOR = BOOLEAN_VALIDATOR;
 
+        /** @hide */
+        public static final String GESTURE_PILL_TOGGLE = "gesture_pill_toggle";
+
+        /** @hide */
+        private static final Validator GESTURE_PILL_TOGGLE_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -5707,6 +5714,7 @@ public final class Settings {
             LOCKSCREEN_WEATHER_SHOW_CITY,
             QS_SERVICES_TOGGLE,
             QS_USER_TOGGLE,
+            GESTURE_PILL_TOGGLE,
         };
 
         /**
@@ -5879,6 +5887,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_CITY);
             PRIVATE_SETTINGS.add(QS_SERVICES_TOGGLE);
             PRIVATE_SETTINGS.add(QS_USER_TOGGLE);
+            PRIVATE_SETTINGS.add(GESTURE_PILL_TOGGLE);
         }
 
         /**
@@ -6021,6 +6030,7 @@ public final class Settings {
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_CITY, LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR);
             VALIDATORS.put(QS_SERVICES_TOGGLE, QS_SERVICES_TOGGLE_VALIDATOR);
             VALIDATORS.put(QS_USER_TOGGLE, QS_USER_TOGGLE_VALIDATOR);
+            VALIDATORS.put(GESTURE_PILL_TOGGLE, GESTURE_PILL_TOGGLE_VALIDATOR);
         }
 
         /**
