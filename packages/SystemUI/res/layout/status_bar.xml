@@ -144,6 +144,7 @@
 
             <include layout="@layout/system_icons" />
         </com.android.keyguard.AlphaOptimizedLinearLayout>
+
     </LinearLayout>
 
     <com.android.keyguard.AlphaOptimizedLinearLayout
