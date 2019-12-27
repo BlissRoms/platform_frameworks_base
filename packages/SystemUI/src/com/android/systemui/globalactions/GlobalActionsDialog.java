@@ -468,9 +468,12 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                     mHasLogoutButton = true;
                 }
             } else if (GLOBAL_ACTION_KEY_EMERGENCY.equals(actionKey)) {
-                if (!mEmergencyAffordanceManager.needsEmergencyAffordance() && !mIsRestartMenu) {
-                    mItems.add(new EmergencyDialerAction());
-                }
+		if (Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                            Settings.Secure.EMERGENCY_IN_POWER_MENU, 0, getCurrentUser().id) != 0) {
+                    if (!mEmergencyAffordanceManager.needsEmergencyAffordance() && !mIsRestartMenu) {
+                        mItems.add(new EmergencyDialerAction());
+                    }
+		}
             } else {
                 Log.e(TAG, "Invalid global action key " + actionKey);
             }

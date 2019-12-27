@@ -9988,6 +9988,15 @@ public final class Settings {
 
         private static final Validator LOCKDOWN_IN_POWER_MENU_VALIDATOR = BOOLEAN_VALIDATOR;
 
+	/**
+         * Whether the Emergency button should be shown in the power menu.
+         * @hide
+         */
+        public static final String EMERGENCY_IN_POWER_MENU = "emergency_in_power_menu";
+
+        private static final Validator EMERGENCY_IN_POWER_MENU_VALIDATOR = BOOLEAN_VALIDATOR;
+
+
         /**
          * Backup manager behavioral parameters.
          * This is encoded as a key=value list, separated by commas. Ex:
@@ -10378,6 +10387,7 @@ public final class Settings {
             SCREENSAVER_ACTIVATE_ON_DOCK,
             SCREENSAVER_ACTIVATE_ON_SLEEP,
             LOCKDOWN_IN_POWER_MENU,
+            EMERGENCY_IN_POWER_MENU,
             SHOW_FIRST_CRASH_DIALOG_DEV_OPTION,
             VOLUME_HUSH_GESTURE,
             MANUAL_RINGER_TOGGLE_COUNT,
@@ -10562,6 +10572,7 @@ public final class Settings {
             VALIDATORS.put(SCREENSAVER_ACTIVATE_ON_DOCK, SCREENSAVER_ACTIVATE_ON_DOCK_VALIDATOR);
             VALIDATORS.put(SCREENSAVER_ACTIVATE_ON_SLEEP, SCREENSAVER_ACTIVATE_ON_SLEEP_VALIDATOR);
             VALIDATORS.put(LOCKDOWN_IN_POWER_MENU, LOCKDOWN_IN_POWER_MENU_VALIDATOR);
+            VALIDATORS.put(EMERGENCY_IN_POWER_MENU, EMERGENCY_IN_POWER_MENU_VALIDATOR);
             VALIDATORS.put(SHOW_FIRST_CRASH_DIALOG_DEV_OPTION,
                     SHOW_FIRST_CRASH_DIALOG_DEV_OPTION_VALIDATOR);
             VALIDATORS.put(VOLUME_HUSH_GESTURE, VOLUME_HUSH_GESTURE_VALIDATOR);
