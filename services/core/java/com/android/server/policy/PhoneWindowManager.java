@@ -535,6 +535,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private boolean mHandleVolumeKeysInWM;
 
+    boolean mKillAppLongpressBack;
     int mKillTimeout;
 
     int mDeviceHardwareKeys;
@@ -986,6 +987,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DOZE_TRIGGER_DOUBLETAP), false, this,
+                    UserHandle.USER_ALL);
+	    resolver.registerContentObserver(LineageSettings.Secure.getUriFor(
+                    LineageSettings.Secure.KILL_APP_LONGPRESS_BACK), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -2587,6 +2591,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Global.POWER_BUTTON_VERY_LONG_PRESS,
                     mContext.getResources().getInteger(
                             com.android.internal.R.integer.config_veryLongPressOnPowerBehavior));
+	    mKillAppLongpressBack = LineageSettings.Secure.getInt(resolver,
+                    LineageSettings.Secure.KILL_APP_LONGPRESS_BACK, 0) == 1;
 
         }
         if (updateRotation) {
@@ -3514,7 +3520,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (down) {
                 if (repeatCount == 0 && mBackLongPressAction == Action.APP_SWITCH) {
                      preloadRecentApps();
-                } else if (longPress) {
+                } else if (mKillAppLongpressBack && repeatCount == 0) {
+		     closeApp();
+		} else if (longPress) {
                      if (!keyguardOn && mBackLongPressAction != Action.NOTHING
                              && !mBackConsumed) {
                         if (mBackLongPressAction != Action.APP_SWITCH) {
