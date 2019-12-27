@@ -5681,6 +5681,12 @@ public final class Settings {
          */
         public static final String FOD_ICON_WALLPAPER_COLOR = "fod_icon_wallpaper_color";
 
+        /** @hide */
+        public static final String GESTURE_PILL_TOGGLE = "gesture_pill_toggle";
+
+        /** @hide */
+        private static final Validator GESTURE_PILL_TOGGLE_VALIDATOR = BOOLEAN_VALIDATOR;
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -5787,6 +5793,7 @@ public final class Settings {
             BLISS_FOOTER_TEXT_SHOW,
             BLISS_FOOTER_TEXT_STRING,
             HIDE_SMART_REPLIES,
+            GESTURE_PILL_TOGGLE,
         };
 
         /**
@@ -5960,6 +5967,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(BLISS_FOOTER_TEXT_SHOW);
             PRIVATE_SETTINGS.add(BLISS_FOOTER_TEXT_STRING);
             PRIVATE_SETTINGS.add(HIDE_SMART_REPLIES);
+            PRIVATE_SETTINGS.add(GESTURE_PILL_TOGGLE);
         }
 
         /**
@@ -6103,6 +6111,7 @@ public final class Settings {
             VALIDATORS.put(BLISS_FOOTER_TEXT_SHOW, BLISS_FOOTER_TEXT_SHOW_VALIDATOR);
             VALIDATORS.put(BLISS_FOOTER_TEXT_STRING, BLISS_FOOTER_TEXT_STRING_VALIDATOR);
             VALIDATORS.put(HIDE_SMART_REPLIES, HIDE_SMART_REPLIES_VALIDATOR);
+            VALIDATORS.put(GESTURE_PILL_TOGGLE, GESTURE_PILL_TOGGLE_VALIDATOR);
         }
 
         /**
