@@ -33,7 +33,7 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     private final float mIconAlphaWhenOpaque;
 
     private View mLeftSide, mStatusIcons, mBattery;
-    private View mBlissLogo, mBlissLogoRight;
+    private View mBlissLogo, mBlissLogoRight, mWeatherTextView, mWeatherImageView;
     private Animator mCurrentAnimation;
 
     public PhoneStatusBarTransitions(PhoneStatusBarView view) {
@@ -49,6 +49,8 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
         mBattery = mView.findViewById(R.id.battery);
         mBlissLogo = mView.findViewById(R.id.bliss_logo);
         mBlissLogoRight = mView.findViewById(R.id.bliss_logo_right);
+        mWeatherTextView = mView.findViewById(R.id.weather_temp);
+        mWeatherImageView = mView.findViewById(R.id.weather_image);
         applyModeBackground(-1, getMode(), false /*animate*/);
         applyMode(getMode(), false /*animate*/);
     }
@@ -94,6 +96,8 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
                     animateTransitionTo(mBattery, newAlphaBC),
                     animateTransitionTo(mBlissLogo, newAlpha),
                     animateTransitionTo(mBlissLogoRight, newAlpha)
+                    animateTransitionTo(mWeatherTextView, newAlphaBC),
+                    animateTransitionTo(mWeatherImageView, newAlphaBC)
                     );
             if (isLightsOut(mode)) {
                 anims.setDuration(LIGHTS_OUT_DURATION);
@@ -106,6 +110,8 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
             mBattery.setAlpha(newAlphaBC);
             mBlissLogo.setAlpha(newAlpha);
             mBlissLogoRight.setAlpha(newAlpha);
+            mWeatherTextView.setAlpha(newAlphaBC);
+            mWeatherImageView.setAlpha(newAlphaBC);
         }
     }
 }
