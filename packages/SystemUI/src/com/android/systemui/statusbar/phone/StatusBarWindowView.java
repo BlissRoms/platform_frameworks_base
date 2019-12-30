@@ -103,7 +103,6 @@ public class StatusBarWindowView extends FrameLayout {
     private DragDownHelper mDragDownHelper;
     private NotificationStackScrollLayout mStackScrollLayout;
     private NotificationPanelView mNotificationPanel;
-    private View mBrightnessMirror;
     private LockIcon mLockIcon;
     private PhoneStatusBarView mStatusBarView;
     private PhoneStatusBarTransitions mBarTransitions;
@@ -307,7 +306,6 @@ public class StatusBarWindowView extends FrameLayout {
         super.onFinishInflate();
         mStackScrollLayout = findViewById(R.id.notification_stack_scroller);
         mNotificationPanel = findViewById(R.id.notification_panel);
-        mBrightnessMirror = findViewById(R.id.brightness_mirror);
         mLockIcon = findViewById(R.id.lock_icon);
         mDismissAllButton = (ImageButton) findViewById(R.id.clear_notifications);
     }
@@ -321,9 +319,6 @@ public class StatusBarWindowView extends FrameLayout {
     @Override
     public void onViewAdded(View child) {
         super.onViewAdded(child);
-        if (child.getId() == R.id.brightness_mirror) {
-            mBrightnessMirror = child;
-        }
     }
 
     /**
@@ -451,14 +446,6 @@ public class StatusBarWindowView extends FrameLayout {
         }
         mFalsingManager.onTouchEvent(ev, getWidth(), getHeight());
         mGestureDetector.onTouchEvent(ev);
-        if (mBrightnessMirror != null && mBrightnessMirror.getVisibility() == VISIBLE) {
-            // Disallow new pointers while the brightness mirror is visible. This is so that you
-            // can't touch anything other than the brightness slider while the mirror is showing
-            // and the rest of the panel is transparent.
-            if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
-                return false;
-            }
-        }
         if (isDown) {
             getStackScrollLayout().closeControlsIfOutsideTouch(ev);
         }
