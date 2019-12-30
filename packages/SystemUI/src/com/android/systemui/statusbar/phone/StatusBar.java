@@ -2273,6 +2273,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_PANEL_BG_USE_NEW_TINT),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_SHOW_BATTERY_ESTIMATE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2285,6 +2288,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                 setPulseOnNewTracks();
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_SHOW_BATTERY_PERCENT))) {
                 setQsBatteryPercentMode();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_SHOW_BATTERY_ESTIMATE))) {
+                setQsBatteryEstimate();
             } else if (uri.equals(Settings.Secure.getUriFor(Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS))) {
                 setFpToDismissNotifications();
             } else if (uri.equals(Settings.System.getUriFor(
@@ -2318,13 +2323,20 @@ public class StatusBar extends SystemUI implements DemoMode,
             setFpToDismissNotifications();
             updateNavigationBar(false);
             setOldMobileType();
+            setQsBatteryEstimate();
             updateQsPanelResources();
         }
     }
 
     private void setQsBatteryPercentMode() {
         if (mQSBarHeader != null) {
-            ((QuickStatusBarHeader) mQSBarHeader).setBatteryPercentMode();
+            ((QuickStatusBarHeader) mQSBarHeader).updateQSBatteryPercent();
+        }
+    }
+
+    private void setQsBatteryEstimate() {
+        if (mQSBarHeader != null) {
+            ((QuickStatusBarHeader) mQSBarHeader).updateQSBatteryEstimate();
         }
     }
 
