@@ -90,7 +90,7 @@ public class BatteryMeterView extends LinearLayout implements
     public static final int MODE_DEFAULT = 0;
     public static final int MODE_ON = 1;
     public static final int MODE_OFF = 2;
-    public static final int MODE_ESTIMATE = 3;
+    public static final int MODE_ESTIMATE = 3; // Not to be used
 
     private final BatteryMeterDrawableBase mXDrawable;
     private final ThemedBatteryDrawable mDrawable;
@@ -116,6 +116,7 @@ public class BatteryMeterView extends LinearLayout implements
     private boolean mCharging;
     public int mBatteryStyle = BATTERY_STYLE_PORTRAIT;
     public int mShowBatteryPercent;
+    public int mShowBatteryEstimate = 0;
     private boolean mBatteryPercentCharging;
     private boolean mShowPercentAvailable;
     private int mTextChargingSymbol;
@@ -401,20 +402,7 @@ public class BatteryMeterView extends LinearLayout implements
         }
 
         if (mBatteryPercentView != null) {
-            if (mShowPercentMode == MODE_ESTIMATE && !mCharging) {
-                mBatteryController.getEstimatedTimeRemainingString((String estimate) -> {
-                    if (estimate != null) {
-                        mBatteryPercentView.setText(estimate);
-                        setContentDescription(getContext().getString(
-                                R.string.accessibility_battery_level_with_estimate,
-                                mLevel, estimate));
-                    } else {
-                        setPercentTextAtCurrentLevel();
-                    }
-                });
-            } else {
-                setPercentTextAtCurrentLevel();
-            }
+            setPercentTextAtCurrentLevel();
         } else {
             setContentDescription(
                     getContext().getString(mCharging ? R.string.accessibility_battery_level_charging
@@ -423,28 +411,40 @@ public class BatteryMeterView extends LinearLayout implements
     }
 
     private void setPercentTextAtCurrentLevel() {
-        String pct = NumberFormat.getPercentInstance().format(mLevel / 100f);
 
-        if (mCharging && (mBatteryStyle == BATTERY_STYLE_HIDDEN)
-                && mTextChargingSymbol > 0) {
-            switch (mTextChargingSymbol) {
-                case 1:
-                default:
-                    pct = "⚡️ " + pct;
-                   break;
-                case 2:
-                    pct = "~ " + pct;
-                    break;
-            }
+        String text = NumberFormat.getPercentInstance().format(mLevel / 100f);
+
+        if (mShowBatteryEstimate != 0 && !mCharging) {
+            mBatteryController.getEstimatedTimeRemainingString((String estimate) -> {
+                if (estimate != null) {
+                    if (mShowPercentMode == MODE_ON || mShowBatteryPercent == 2) {
+                        mBatteryPercentView.setText(text + " · " + estimate);
+                    } else {
+                        mBatteryPercentView.setText(estimate);
+                    }
+                    setContentDescription(getContext().getString(
+                            R.string.accessibility_battery_level_with_estimate,
+                            mLevel, estimate));
+                }
+            });
+        } else {
+                if (mCharging && (mBatteryStyle == BATTERY_STYLE_HIDDEN)
+                        && mTextChargingSymbol > 0) {
+                    switch (mTextChargingSymbol) {
+                        case 1:
+                        default:
+                            text = "⚡️ " + text;
+                           break;
+                        case 2:
+                            text = "~ " + text;
+                            break;
+                    }
+                 mBatteryPercentView.setText(text);
+                 setContentDescription(
+                         getContext().getString(mCharging ? R.string.accessibility_battery_level_charging
+                                 : R.string.accessibility_battery_level, mLevel));
+                }
         }
-
-        setContentDescription(
-                getContext().getString(mCharging ? R.string.accessibility_battery_level_charging
-                        : R.string.accessibility_battery_level, mLevel));
-
-        if (mBatteryIconView != null) pct = pct + " ";
-
-        mBatteryPercentView.setText(pct);
     }
 
     private void removeBatteryPercentView() {
@@ -456,15 +456,17 @@ public class BatteryMeterView extends LinearLayout implements
 
     private void updateShowPercent() {
         final boolean showing = mBatteryPercentView != null;
-        final boolean drawPercentInside = mShowBatteryPercent == 1;
-        final boolean showPercent = mShowBatteryPercent == 2
+        final boolean drawPercentInside = mShowBatteryPercent == 1
+                                    && !mCharging;
+        final boolean addPecentView = mShowBatteryPercent == 2
                                     || (mBatteryPercentCharging && mCharging)
                                     || mShowPercentMode == MODE_ON
-                                    || mShowPercentMode == MODE_ESTIMATE;
+                                    || mShowBatteryEstimate != 0;
 
-        if (showPercent) {
-            mDrawable.setShowPercent(false);
-            mXDrawable.setShowPercent(false);
+        mDrawable.setShowPercent(drawPercentInside);
+        mXDrawable.setShowPercent(drawPercentInside);
+
+        if (addPecentView) {
             if (!showing) {
                 mBatteryPercentView = loadPercentView();
                 if (mPercentageStyleId != 0) { // Only set if specified as attribute
@@ -486,8 +488,6 @@ public class BatteryMeterView extends LinearLayout implements
             }
         } else {
             removeBatteryPercentView();
-            mDrawable.setShowPercent(drawPercentInside);
-            mXDrawable.setShowPercent(drawPercentInside);
         }
     }
 
