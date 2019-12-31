@@ -123,13 +123,18 @@ public class SystemUIFactory {
     }
 
     public ScrimController createScrimController(ScrimView scrimBehind, ScrimView scrimInFront,
-            ScrimView scrimForBubble,
             LockscreenWallpaper lockscreenWallpaper,
             TriConsumer<ScrimState, Float, GradientColors> scrimStateListener,
             Consumer<Integer> scrimVisibleListener, DozeParameters dozeParameters,
+<<<<<<< HEAD
             AlarmManager alarmManager, KeyguardMonitor keyguardMonitor) {
         return new ScrimController(scrimBehind, scrimInFront, scrimForBubble, scrimStateListener,
                 scrimVisibleListener, dozeParameters, alarmManager, keyguardMonitor);
+=======
+            AlarmManager alarmManager) {
+        return new ScrimController(scrimBehind, scrimInFront, scrimStateListener,
+                scrimVisibleListener, dozeParameters, alarmManager);
+>>>>>>> parent of bde48202e7b... New scrim behind bubble stack
     }
 
     public NotificationIconAreaController createNotificationIconAreaController(Context context,
