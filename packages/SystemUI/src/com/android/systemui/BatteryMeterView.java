@@ -433,7 +433,7 @@ public class BatteryMeterView extends LinearLayout implements
     private void setPercentTextAtCurrentLevel() {
         String pct = NumberFormat.getPercentInstance().format(mLevel / 100f);
 
-        if (mTextChargingSymbol > 0) {
+        if (mTextChargingSymbol > 0 && mCharging) {
             switch (mTextChargingSymbol) {
                 case 1:
                 default:
