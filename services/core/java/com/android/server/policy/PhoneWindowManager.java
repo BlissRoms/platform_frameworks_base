@@ -3520,22 +3520,29 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (down) {
                 if (repeatCount == 0 && mBackLongPressAction == Action.APP_SWITCH) {
                      preloadRecentApps();
-                } else if (mKillAppLongpressBack && repeatCount == 0) {
-		     closeApp();
 		} else if (longPress) {
-                     if (!keyguardOn && mBackLongPressAction != Action.NOTHING
-                             && !mBackConsumed) {
-                        if (mBackLongPressAction != Action.APP_SWITCH) {
-                            cancelPreloadRecentApps();
+		     if (!keyguardOn && !mBackConsumed) {
+		     	if (mKillAppLongpressBack) {
+		            closeApp();
+		            mBackConsumed = true;
+			    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, false,
+                                    "Menu - Long Press");
+
+                        } else if (mBackLongPressAction != Action.NOTHING) {
+                            if (mBackLongPressAction != Action.APP_SWITCH) {
+                                cancelPreloadRecentApps();
+                            }
+
+                            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, false,
+                                    "Menu - Long Press");
+                            performKeyAction(mBackLongPressAction, event);
+                            if (mBackLongPressAction != Action.SLEEP) {
+                                mBackConsumed = true;
+                            }
                         }
-                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, false,
-                                "Menu - Long Press");
-                        performKeyAction(mBackLongPressAction, event);
-                        if (mBackLongPressAction != Action.SLEEP) {
-                            mBackConsumed = true;
-                        }
+
                         return -1;
-                    }
+		    }
                 }
             } else {
                 if (mBackConsumed) {
