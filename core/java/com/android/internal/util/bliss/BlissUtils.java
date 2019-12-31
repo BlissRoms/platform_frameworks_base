@@ -17,6 +17,7 @@
 package com.android.internal.util.bliss;
 
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -419,5 +420,15 @@ public class BlissUtils {
         if (deviceSupportsVibrator(context)) {
             ((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(pattern, -1);
         }
+    }
+    
+    // Enable/Disable Package Components
+    public static void setComponentState(Context context, String packageName,
+            String componentClassName, boolean enabled) {
+        PackageManager pm  = context.getApplicationContext().getPackageManager();
+        ComponentName componentName = new ComponentName(packageName, componentClassName);
+        int state = enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+        pm.setComponentEnabledSetting(componentName, state, PackageManager.DONT_KILL_APP);
     }
 }
