@@ -95,7 +95,8 @@
                 android:id="@+id/settings_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_bg_bottom_background">
+                android:background="@drawable/rounded_bg_bottom_background"
+                android:backgroundTint="@color/volume_dialog_bottom_tint">
                 <com.android.keyguard.AlphaOptimizedImageButton
                     android:id="@+id/settings"
                     android:src="@drawable/ic_tune_black_16dp"

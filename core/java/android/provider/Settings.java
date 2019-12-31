@@ -5557,6 +5557,50 @@ public final class Settings {
         public static final String STATUS_BAR_SHOW_WEATHER_LOCATION = "status_bar_show_weather_location";
 
         /**
+         * @hide
+         */
+        public static final String LOCKSCREEN_WEATHER_SHOW_TEMP = "lockscreen_weather_show_temp";
+
+        /** @hide */
+        private static final Validator LOCKSCREEN_WEATHER_SHOW_TEMP_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
+         * @hide
+         */
+        public static final String LOCKSCREEN_WEATHER_SHOW_CITY = "lockscreen_weather_show_city";
+
+        /** @hide */
+        private static final Validator LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
+         * Show Settings icon in QS Footer
+         *
+         * @hide
+         */
+        public static final String QS_FOOTER_SHOW_SETTINGS = "qs_footer_show_settings";
+
+        /**
+         * Show Running Services icon in QS Footer.
+         *
+         * @hide
+         */
+        public static final String QS_FOOTER_SHOW_SERVICES = "qs_footer_show_services";
+
+        /**
+         * Show Edit icon in QS Footer.
+         *
+         * @hide
+         */
+        public static final String QS_FOOTER_SHOW_EDIT = "qs_footer_show_edit";
+
+        /**
+         * Show User switcher icon in QS Footer.
+         *
+         * @hide
+         */
+        public static final String QS_FOOTER_SHOW_USER = "qs_footer_show_user";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5657,6 +5701,8 @@ public final class Settings {
             LOCK_SCREEN_CUSTOM_NOTIF,
             LOCKSCREEN_MAX_NOTIF_CONFIG,
             SENSOR_BLOCK,
+            LOCKSCREEN_WEATHER_SHOW_TEMP,
+            LOCKSCREEN_WEATHER_SHOW_CITY,
         };
 
         /**
@@ -5825,6 +5871,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCK_SCREEN_CUSTOM_NOTIF);
             PRIVATE_SETTINGS.add(LOCKSCREEN_MAX_NOTIF_CONFIG);
             PRIVATE_SETTINGS.add(SENSOR_BLOCK);
+            PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_TEMP);
+            PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_CITY);
         }
 
         /**
@@ -5963,6 +6011,8 @@ public final class Settings {
             VALIDATORS.put(LOCK_SCREEN_CUSTOM_NOTIF, LOCK_SCREEN_CUSTOM_NOTIF_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_MAX_NOTIF_CONFIG, LOCKSCREEN_MAX_NOTIF_CONFIG_VALIDATOR);
             VALIDATORS.put(SENSOR_BLOCK, SENSOR_BLOCK_VALIDATOR);
+            VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_TEMP, LOCKSCREEN_WEATHER_SHOW_TEMP_VALIDATOR);
+            VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_CITY, LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR);
         }
 
         /**
