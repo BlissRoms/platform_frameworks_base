@@ -5158,6 +5158,12 @@ public final class Settings {
         public static final String GAMING_MODE_HEADSUP_TOGGLE = "gaming_mode_headsup_toggle";
 
         /**
+         * Whether to disable notifications feedback gaming mode
+         * @hide
+         */
+        public static final String GAMING_MODE_NOTIFICATIONS_FEEDBACK = "gaming_mode_notifications_feedback";
+
+        /**
          * Ringer in gaming mode (0:OFF, 1:Vibrate, 2:DND, 3:Silent)
          * @hide
          */
@@ -5599,6 +5605,12 @@ public final class Settings {
          * @hide
          */
         public static final String QS_FOOTER_SHOW_USER = "qs_footer_show_user";
+
+        /**
+         * Whether to vibrate on notifications
+         * @hide
+         */
+        public static final String VIBRATE_ON_NOTIFICATIONS = "vibrate_on_notifications";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
