@@ -108,7 +108,7 @@ public class MobileSignalController extends SignalController<
     private ImsManager mImsManager;
     private ImsManager.Connector mImsManagerConnector;
     private int mCallState = TelephonyManager.CALL_STATE_IDLE;
-    private boolean mVoLTEicon;
+    private int mVoLTEicon = 0;
 
     public static final String ROAMING_INDICATOR_ICON =
             "system:" + Settings.System.ROAMING_INDICATOR_ICON;
@@ -118,8 +118,8 @@ public class MobileSignalController extends SignalController<
             "system:" + Settings.System.DATA_DISABLED_ICON;
     public static final String USE_OLD_MOBILETYPE =
             "system:" + Settings.System.USE_OLD_MOBILETYPE;
-    public static final String SHOW_VOLTE_ICON =
-            "system:" + Settings.System.SHOW_VOLTE_ICON;
+    public static final String VOLTE_ICON_STYLE =
+            "system:" + Settings.System.VOLTE_ICON_STYLE;
 
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
@@ -191,7 +191,7 @@ public class MobileSignalController extends SignalController<
         Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
         Dependency.get(TunerService.class).addTunable(this, DATA_DISABLED_ICON);
         Dependency.get(TunerService.class).addTunable(this, USE_OLD_MOBILETYPE);
-        Dependency.get(TunerService.class).addTunable(this, SHOW_VOLTE_ICON);
+        Dependency.get(TunerService.class).addTunable(this, VOLTE_ICON_STYLE);
     }
 
     @Override
@@ -215,9 +215,9 @@ public class MobileSignalController extends SignalController<
             case USE_OLD_MOBILETYPE:
                 notifyListeners();
                 break;
-            case SHOW_VOLTE_ICON:
+            case VOLTE_ICON_STYLE:
                 mVoLTEicon =
-                    TunerService.parseIntegerSwitch(newValue, false);
+                    TunerService.parseInteger(newValue, 0);
                 updateTelephony();
                 break;
             default:
@@ -402,14 +402,38 @@ public class MobileSignalController extends SignalController<
     }
 
     private boolean isVolteSwitchOn() {
-        return mImsManager != null && mImsManager.isEnhanced4gLteModeSettingEnabledByUser();
+        return mImsManager != null && mVoLTEicon > 0;
     }
 
     private int getVolteResId() {
         int resId = 0;
         if ( (mCurrentState.voiceCapable || mCurrentState.videoCapable)
-                &&  mCurrentState.imsRegistered && mVoLTEicon) {
-            resId = R.drawable.ic_volte;
+                &&  mCurrentState.imsRegistered) {
+            switch (mVoLTEicon) {
+                case 1:
+                    resId = R.drawable.ic_volte1;
+                    break;
+                case 2:
+                    resId = R.drawable.ic_volte2;
+                    break;
+                case 3:
+                    resId = R.drawable.ic_volte3;
+                    break;
+                case 4:
+                    resId = R.drawable.ic_volte4;
+                    break;
+                case 5:
+                    resId = R.drawable.ic_volte5;
+                    break;
+                case 6:
+                    resId = R.drawable.ic_volte6;
+                    break;
+                case 7:
+                    resId = R.drawable.ic_volte7;
+                    break;
+                default:
+                    break;
+            }
         }
         return resId;
     }
