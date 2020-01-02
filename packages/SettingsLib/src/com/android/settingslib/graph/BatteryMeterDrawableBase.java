@@ -52,9 +52,9 @@ public class BatteryMeterDrawableBase extends Drawable {
     public static final int BATTERY_STYLE_CIRCLE = 1;
     public static final int BATTERY_STYLE_DOTTED_CIRCLE = 2;
     public static final int BATTERY_STYLE_SQUARE = 3; // not functional
-    public static final int BATTERY_STYLE_PA_CIRCLE = 4;
-    public static final int BATTERY_STYLE_TEXT = 5;
-    public static final int BATTERY_STYLE_HIDDEN = 6;
+    public static final int BATTERY_STYLE_TEXT = 4;
+    public static final int BATTERY_STYLE_HIDDEN = 5;
+    public static final int BATTERY_STYLE_SOLID = 6;
 
     protected final Context mContext;
     protected final Paint mFramePaint;
@@ -73,8 +73,7 @@ public class BatteryMeterDrawableBase extends Drawable {
     protected boolean mPowerSaveAsColorError = true;
     private boolean mShowPercent;
 
-    private boolean mFastCharging;
-    private boolean mAnimateCharging = true;
+    private boolean mAnimateCharging;
     private ValueAnimator mChargingAnimator;
     private int mBatteryAlpha;
 
@@ -208,18 +207,29 @@ public class BatteryMeterDrawableBase extends Drawable {
         }
     }
 
+   private boolean canAnimate() {
+        return (mMeterStyle == BATTERY_STYLE_SOLID ||
+                mMeterStyle == BATTERY_STYLE_DOTTED_CIRCLE ||
+                mMeterStyle == BATTERY_STYLE_CIRCLE);
+   }
+
+   private boolean checkChargingAnimation() {
+        if (canAnimate() && mCharging) {
+            if (!mAnimateCharging) {
+                mAnimateCharging = true;
+                startChargingAnimation();
+            }
+            return true;
+        }
+        cancelChargingAnimation();
+        mAnimateCharging = false;
+        return false;
+    }
+
     public void setCharging(boolean val) {
         if (mCharging != val) {
-            boolean previousCharging = mCharging;
             mCharging = val;
-            if (shouldAnimateCharging() && val) {
-                if (!previousCharging) {
-                    startChargingAnimation(2);
-                }
-            } else {
-                cancelChargingAnimation();
-                postInvalidate();
-            }
+            postInvalidate();
         }
     }
 
@@ -229,14 +239,8 @@ public class BatteryMeterDrawableBase extends Drawable {
 
     public void setBatteryLevel(int val) {
         if (mLevel != val) {
-            if (shouldAnimateCharging() && mChargingAnimator == null
-                    && mCharging && val > mLevel) {
-                mLevel = val;
-                startChargingAnimation(0);
-            } else {
-                mLevel = val;
-                postInvalidate();
-            }
+            mLevel = val;
+            postInvalidate();
         }
     }
 
@@ -259,37 +263,22 @@ public class BatteryMeterDrawableBase extends Drawable {
         mPowerSaveAsColorError = asError;
     }
 
-    public void setFastCharging(boolean val) {
-        if (mFastCharging == val) {
-            mFastCharging = val;
-            cancelChargingAnimation();
-            postInvalidate();
-        }
-    }
-
     public void setMeterStyle(int style) {
         mMeterStyle = style;
-        cancelChargingAnimation();
         updateSize();
         postInvalidate();
     }
 
     // an approximation of View.postInvalidate()
     protected void postInvalidate() {
+        if (checkChargingAnimation()) return;
         unscheduleSelf(this::invalidateSelf);
         scheduleSelf(this::invalidateSelf, 0);
     }
 
-    public void setAnimateCharging(boolean val) {
-        mAnimateCharging = val;
-    }
+    private void startChargingAnimation() {
+        cancelChargingAnimation();
 
-    private boolean shouldAnimateCharging() {
-        // this is used by PA style battery to animate the icon
-	    return mMeterStyle == BATTERY_STYLE_PA_CIRCLE ? true : false;
-    }
-
-    private void startChargingAnimation(int repeat) {
         int alpha = mBatteryPaint.getAlpha();
         mChargingAnimator = ValueAnimator.ofInt(alpha, 0, alpha);
         mChargingAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -314,7 +303,7 @@ public class BatteryMeterDrawableBase extends Drawable {
                 mChargingAnimator = null;
             }
         });
-        mChargingAnimator.setRepeatCount(repeat);
+        mChargingAnimator.setRepeatCount(ValueAnimator.INFINITE);
         mChargingAnimator.setDuration(2000);
         mChargingAnimator.setStartDelay(500);
         mChargingAnimator.start();
@@ -426,8 +415,8 @@ public class BatteryMeterDrawableBase extends Drawable {
             default:
                 drawCircle(c);
                 break;
-            case BATTERY_STYLE_PA_CIRCLE:
-                drawPACircle(c);
+            case BATTERY_STYLE_SOLID:
+                drawSolid(c);
                 break;
         }
     }
@@ -462,6 +451,9 @@ public class BatteryMeterDrawableBase extends Drawable {
 
         // set the battery charging color
         mBatteryPaint.setColor(batteryColorForLevel(level));
+        if (mChargingAnimator != null) {
+            mBoltPaint.setAlpha(mBatteryAlpha);
+        }
 
         if (mCharging) {
             // define the bolt shape
@@ -720,7 +712,7 @@ public class BatteryMeterDrawableBase extends Drawable {
         }
     }
 
-    private void drawPACircle(Canvas c) {
+    private void drawSolid(Canvas c) {
         final int level = mLevel;
 
         if (level == -1)
@@ -755,12 +747,29 @@ public class BatteryMeterDrawableBase extends Drawable {
             drawFrac = 0f;
         }
 
-        final float levelTop = drawFrac == 1f ? mBoltFrame.top
-                : (mFrame.top + (mFrame.height() * (1f - drawFrac)));
+        if (!mCharging && level != 100 && !mPowerSaveEnabled && mShowPercent) {
+            // compute percentage text
+            float pctX = 0, pctY = 0;
+            String pctText = null;
+            mTextPaint.setColor(getColorForLevel(level));
+            mTextPaint.setTextSize(mHeight *
+                    (SINGLE_DIGIT_PERCENT ? 0.86f : 0.62f));
+            mTextHeight = -mTextPaint.getFontMetrics().ascent;
+            pctText = level > mCriticalLevel ?
+                    String.valueOf(SINGLE_DIGIT_PERCENT ? (level / 10) : level) : mWarningString;
+            pctX = mWidth * 0.5f;
+            pctY = (mHeight + mTextHeight) * 0.47f;
 
-        if (mPowerSaveEnabled) {
+            mTextPath.reset();
+            mTextPaint.getTextPath(pctText, 0, pctText.length(), pctX, pctY, mTextPath);
+            // cut the percentage text out of the overall shape
+            c.clipOutPath(mTextPath);
+
+            // draw extra outer circle
+            c.drawCircle(mFrame.centerX(), mFrame.centerY(), circleRadius, mFramePaint);
+        } else if (!mCharging && mPowerSaveEnabled) {
             // define the plus shape
-            final float pw = mFrame.width() * 2 / 5;
+            final float pw = mFrame.width() / 2;
             final float pl = mFrame.left + (mFrame.width() - pw) / 2;
             final float pt = mFrame.top + (mFrame.height() - pw) / 2;
             final float pr = mFrame.right - (mFrame.width() - pw) / 2;
@@ -781,21 +790,19 @@ public class BatteryMeterDrawableBase extends Drawable {
                         mPlusFrame.left + mPlusPoints[0] * mPlusFrame.width(),
                         mPlusFrame.top + mPlusPoints[1] * mPlusFrame.height());
             }
+
+            c.clipOutPath(mPlusPath);
+            c.drawPath(mPlusPath, mPlusPaint);
+            c.drawArc(mFrame, 270, 360, false, mPowersavePaint);
         }
 
-        // draw outer circle first
+        // draw outer circle
         c.drawCircle(mFrame.centerX(), mFrame.centerY(), circleRadius, mFramePaint);
 
         // draw colored circle representing charge level
         if (level > 0) {
             c.drawCircle(mFrame.centerX(), mFrame.centerY(), circleRadius * (level / 100f),
                     mBatteryPaint);
-        }
-
-        // Draw the powersave plus & outline last
-        if (!mCharging && mPowerSaveEnabled && mPowerSaveAsColorError) {
-            c.drawPath(mPlusPath, mPlusPaint);
-            c.drawArc(mFrame, 270, 360, false, mPowersavePaint);
         }
     }
 
