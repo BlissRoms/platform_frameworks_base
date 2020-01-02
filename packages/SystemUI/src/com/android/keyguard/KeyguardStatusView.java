@@ -27,6 +27,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -83,6 +84,8 @@ public class KeyguardStatusView extends GridLayout implements
     private int mIconTopMargin;
     private int mIconTopMarginWithHeader;
     private boolean mShowingHeader;
+
+    private int mClockSelection;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -215,7 +218,6 @@ public class KeyguardStatusView extends GridLayout implements
         updateLogoutView();
         updateDark();
         updateSettings();
-
     }
 
     public KeyguardSliceView getKeyguardSliceView() {
@@ -272,6 +274,20 @@ public class KeyguardStatusView extends GridLayout implements
 
     private void refreshTime() {
         mClockView.refresh();
+
+        if (mClockSelection == 2) {
+            mClockView.setFormat12Hour(Patterns.clockView12);
+            mClockView.setFormat24Hour(Patterns.clockView24);
+        } else if (mClockSelection == 3) {
+            mClockView.setFormat12Hour(Html.fromHtml("<strong>h</strong>:mm"));
+            mClockView.setFormat24Hour(Html.fromHtml("<strong>kk</strong>:mm"));
+        } else if (mClockSelection == 4) {
+            mClockView.setFormat12Hour("hh\nmm");
+            mClockView.setFormat24Hour("kk\nmm");
+        } else {
+            mClockView.setFormat12Hour(Html.fromHtml("<strong>hh</strong><br>mm"));
+            mClockView.setFormat24Hour(Html.fromHtml("<strong>kk</strong><br>mm"));
+        }
     }
 
     private void updateTimeZone(TimeZone timeZone) {
@@ -481,6 +497,28 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.LOCKSCREEN_WEATHER_STYLE, 0,
                 UserHandle.USER_CURRENT) == 0;
 
+        mClockSelection = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.LOCKSCREEN_CLOCK_SELECTION, 2, UserHandle.USER_CURRENT);
+
+        mClockView = findViewById(R.id.keyguard_clock_container);
+
+        switch (mClockSelection) {
+            case 1: // hidden
+                mClockView.setVisibility(View.GONE);
+                break;
+            case 2: // default
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 3: // default (bold)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 4: // sammy
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 5: // sammy (bold)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+
         if (mWeatherView != null) {
             if (mShowWeather && mOmniStyle) {
                 mWeatherView.setVisibility(View.VISIBLE);
@@ -491,6 +529,10 @@ public class KeyguardStatusView extends GridLayout implements
                 mWeatherView.disableUpdates();
             }
         }
+    }
+
+    public void updateAll() {
+        updateSettings();
     }
 
 }
