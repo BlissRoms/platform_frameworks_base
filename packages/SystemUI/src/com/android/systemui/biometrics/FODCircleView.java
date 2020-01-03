@@ -16,15 +16,20 @@
 
 package com.android.systemui.biometrics;
 
+import android.app.WallpaperColors;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.ContentResolver;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.biometrics.BiometricSourceType;
 import android.hardware.display.DisplayManager;
 import android.os.Handler;
@@ -43,6 +48,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import androidx.palette.graphics.Palette;
 
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -90,6 +96,8 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
     private PowerManager.WakeLock mWakeLock;
 
     private Timer mBurnInProtectionTimer;
+    private WallpaperManager mWallManager;
+    private int iconcolor = 0xFF3980FF;
 
     private IFingerprintInscreenCallback mFingerprintInscreenCallback =
             new IFingerprintInscreenCallback.Stub() {
@@ -401,6 +409,11 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         return mFingerprintInscreenDaemon;
     }
 
+    private boolean useWallpaperColor() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FOD_ICON_WALLPAPER_COLOR, 0) != 0;
+    }
+
     private int getFODIcon() {
         return Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.FOD_ICON, 0);
@@ -416,6 +429,43 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         } else if (fodicon == 2) {
             this.setImageResource(R.drawable.fod_icon_default_2);
         }
+
+
+        if (useWallpaperColor()) {
+            try {
+                WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
+                Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+                Bitmap bitmap = ((BitmapDrawable)wallpaperDrawable).getBitmap();
+                if (bitmap != null) {
+                    Palette p = Palette.from(bitmap).generate();
+                    int wallColor = p.getDominantColor(iconcolor);
+                    if (iconcolor != wallColor) {
+                        iconcolor = wallColor;
+                    }
+                    this.setColorFilter(lighter(iconcolor, 3));
+                }
+            } catch (Exception e) {
+                // Nothing to do
+            }
+        } else {
+            this.setColorFilter(null);  
+        }
+    }
+
+    private static int lighter(int color, int factor) {
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+
+        blue = blue * factor;
+        green = green * factor;
+        blue = blue * factor;
+
+        blue = blue > 255 ? 255 : blue;
+        green = green > 255 ? 255 : green;
+        red = red > 255 ? 255 : red;
+
+        return Color.argb(Color.alpha(color), red, green, blue);
     }
 
     public void show() {
