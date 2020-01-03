@@ -5356,6 +5356,20 @@ public final class Settings {
         private static final Validator DOZE_ON_CHARGE_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * QS battery style
+         * @hide
+         */
+        public static final String QS_BATTERY_STYLE = "qs_battery_style";
+
+        /**
+         * QS battery location
+         * 0: QS Panel
+         * 1: Quick Statusbar
+         * @hide
+         */
+        public static final String QS_BATTERY_LOCATION = "qs_battery_location";
+
+        /**
          * hidden stting of the current atate of DOZE only when charging
          * @hide
          */
