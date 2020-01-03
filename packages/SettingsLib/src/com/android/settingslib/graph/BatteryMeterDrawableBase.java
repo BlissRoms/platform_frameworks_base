@@ -314,7 +314,7 @@ public class BatteryMeterDrawableBase extends Drawable {
                 mChargingAnimator = null;
             }
         });
-        mChargingAnimator.setRepeatCount(repeat);
+        mChargingAnimator.setRepeatCount(ValueAnimator.INFINITE);
         mChargingAnimator.setDuration(2000);
         mChargingAnimator.setStartDelay(500);
         mChargingAnimator.start();
@@ -755,12 +755,29 @@ public class BatteryMeterDrawableBase extends Drawable {
             drawFrac = 0f;
         }
 
-        final float levelTop = drawFrac == 1f ? mBoltFrame.top
-                : (mFrame.top + (mFrame.height() * (1f - drawFrac)));
+        if (!mCharging && level != 100 && !mPowerSaveEnabled && mShowPercent) {
+            // compute percentage text
+            float pctX = 0, pctY = 0;
+            String pctText = null;
+            mTextPaint.setColor(getColorForLevel(level));
+            mTextPaint.setTextSize(mHeight *
+                    (SINGLE_DIGIT_PERCENT ? 0.86f : 0.62f));
+            mTextHeight = -mTextPaint.getFontMetrics().ascent;
+            pctText = level > mCriticalLevel ?
+                    String.valueOf(SINGLE_DIGIT_PERCENT ? (level / 10) : level) : mWarningString;
+            pctX = mWidth * 0.5f;
+            pctY = (mHeight + mTextHeight) * 0.47f;
 
-        if (mPowerSaveEnabled) {
+            mTextPath.reset();
+            mTextPaint.getTextPath(pctText, 0, pctText.length(), pctX, pctY, mTextPath);
+            // cut the percentage text out of the overall shape
+            c.clipOutPath(mTextPath);
+
+            // draw extra outer circle
+            c.drawCircle(mFrame.centerX(), mFrame.centerY(), circleRadius, mFramePaint);
+        } else if (!mCharging && mPowerSaveEnabled) {
             // define the plus shape
-            final float pw = mFrame.width() * 2 / 5;
+            final float pw = mFrame.width() / 2;
             final float pl = mFrame.left + (mFrame.width() - pw) / 2;
             final float pt = mFrame.top + (mFrame.height() - pw) / 2;
             final float pr = mFrame.right - (mFrame.width() - pw) / 2;
@@ -781,21 +798,19 @@ public class BatteryMeterDrawableBase extends Drawable {
                         mPlusFrame.left + mPlusPoints[0] * mPlusFrame.width(),
                         mPlusFrame.top + mPlusPoints[1] * mPlusFrame.height());
             }
+
+            c.clipOutPath(mPlusPath);
+            c.drawPath(mPlusPath, mPlusPaint);
+            c.drawArc(mFrame, 270, 360, false, mPowersavePaint);
         }
 
-        // draw outer circle first
+        // draw outer circle
         c.drawCircle(mFrame.centerX(), mFrame.centerY(), circleRadius, mFramePaint);
 
         // draw colored circle representing charge level
         if (level > 0) {
             c.drawCircle(mFrame.centerX(), mFrame.centerY(), circleRadius * (level / 100f),
                     mBatteryPaint);
-        }
-
-        // Draw the powersave plus & outline last
-        if (!mCharging && mPowerSaveEnabled && mPowerSaveAsColorError) {
-            c.drawPath(mPlusPath, mPlusPaint);
-            c.drawArc(mFrame, 270, 360, false, mPowersavePaint);
         }
     }
 
