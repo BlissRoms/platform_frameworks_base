@@ -40,6 +40,12 @@ public class ScreenRecordTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
+    public boolean isAvailable() {
+        return mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_showScreenRecord);
+    }
+
+    @Override
     public BooleanState newTileState() {
         return new BooleanState();
     }
