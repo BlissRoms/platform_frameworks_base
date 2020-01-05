@@ -989,6 +989,8 @@ public class Resources {
                             || AccentUtils.isResourceLightAccent(resName)
                             || AccentUtils.isResourceGradientStart(resName))
                             value.data = AccentUtils.getNewAccentColor(value.data);
+                        if (AccentUtils.isResourceGradient(resName))
+                            value.data = AccentUtils.getNewGradientColor(value.data);
                     } catch (NotFoundException ignored) {
                     } catch (Exception ex) {
                         Log.e(TAG, ex.getMessage());
