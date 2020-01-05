@@ -27,8 +27,16 @@ public class AccentUtils {
                 || resName.contains("accent_device_default_dark");
     }
 
+    static boolean isResourceGradient(String resName) {
+        return resName.contains("gradient_end");
+    }
+
     public static int getNewAccentColor(int defaultColor) {
         return getAccentColor(defaultColor, ACCENT_COLOR_PROP);
+    }
+
+    public static int getNewGradientColor(int defaultColor) {
+        return getAccentColor(defaultColor, GRADIENT_COLOR_PROP);
     }
 
     private static int getAccentColor(int defaultColor, String property) {
