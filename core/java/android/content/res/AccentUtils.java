@@ -21,14 +21,23 @@ public class AccentUtils {
     private static final String TAG = "AccentUtils";
 
     private static final String ACCENT_COLOR_PROP = "persist.sys.theme.accentcolor";
+    private static final String GRADIENT_COLOR_PROP = "persist.sys.theme.gradientcolor";
 
     static boolean isResourceAccent(String resName) {
         return resName.contains("accent_device_default_light")
                 || resName.contains("accent_device_default_dark");
     }
 
+    static boolean isResourceGradient(String resName) {
+        return resName.contains("gradient_end");
+    }
+
     public static int getNewAccentColor(int defaultColor) {
         return getAccentColor(defaultColor, ACCENT_COLOR_PROP);
+    }
+
+    public static int getNewGradientColor(int defaultColor) {
+        return getAccentColor(defaultColor, GRADIENT_COLOR_PROP);
     }
 
     private static int getAccentColor(int defaultColor, String property) {

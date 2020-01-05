@@ -6259,6 +6259,12 @@ public final class Settings {
          */
         public static final String ACCENT_COLOR = "accent_color";
 
+        /**
+         * Gradient Color
+         * @hide
+         */
+        public static final String GRADIENT_COLOR = "gradient_color";
+
         /** @hide */
         private static final Validator ACCENT_COLOR_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
