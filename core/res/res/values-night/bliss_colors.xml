@@ -20,7 +20,7 @@
     <color name="toast_text">@color/white</color>
 
     <!-- Gradient Shit -->
-    <color name="gradient_start">#ff8ab4f8</color>
-    <color name="gradient_end">#ff8ab4f8</color>
+    <color name="gradient_start">#ff1a73e8</color>
+    <color name="gradient_end">#ff1ad8e8</color>
 
 </resources>

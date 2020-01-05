@@ -16,7 +16,11 @@ public class AccentUtils {
                     "accent_device_default_dark",
                     "gradient_start"));
 
+    private static ArrayList<String> gradientResources = new ArrayList<>(
+            Arrays.asList("gradient_end"));
+
     private static final String ACCENT_COLOR_PROP = "persist.sys.theme.accentcolor";
+    private static final String GRADIENT_COLOR_PROP = "persist.sys.theme.gradientcolor";
 
     static boolean isResourceAccent(String resName) {
         for (String ar : accentResources)
@@ -25,8 +29,19 @@ public class AccentUtils {
         return false;
     }
 
+    static boolean isResourceGradient(String resName) {
+        for (String gr : gradientResources)
+            if (resName.contains(gr))
+                return true;
+        return false;
+    }
+
     public static int getNewAccentColor(int defaultColor) {
         return getAccentColor(defaultColor, ACCENT_COLOR_PROP);
+    }
+
+    public static int getNewGradientColor(int defaultColor) {
+        return getAccentColor(defaultColor, GRADIENT_COLOR_PROP);
     }
 
     private static int getAccentColor(int defaultColor, String property) {
