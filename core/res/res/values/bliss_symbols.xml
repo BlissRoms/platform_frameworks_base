@@ -105,4 +105,8 @@
     <java-symbol type="string" name="alert_slider_mode_silent" />
     <java-symbol type="string" name="alert_slider_mode_dnd" />
 
+    <!-- Light / Regular style fonts -->
+    <java-symbol type="string" name="config_lightFontFamily" />
+    <java-symbol type="string" name="config_regularFontFamily" />
+
 </resources>
