@@ -464,6 +464,8 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
             this.setImageResource(R.drawable.fod_icon_spiral_blue);
         } else if (fodicon == 20) {
             this.setImageResource(R.drawable.fod_icon_sun_metro);
+        } else if (fodicon == 21) {
+            this.setImageResource(R.drawable.fod_icon_default_21);
         }
 
 
