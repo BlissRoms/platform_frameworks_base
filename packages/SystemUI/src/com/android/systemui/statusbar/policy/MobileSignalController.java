@@ -98,14 +98,16 @@ public class MobileSignalController extends SignalController<
     private boolean mShow4gForLte;
     private boolean mDataDisabledIcon;
 
-    private static final String SHOW_VOLTE_ICON =
-            "system:" + Settings.System.SHOW_VOLTE_ICON;
+    private static final String VOLTE_ICON_STYLE =
+            "system:" + Settings.System.VOLTE_ICON_STYLE;
     private static final String ROAMING_INDICATOR_ICON =
             "system:" + Settings.System.ROAMING_INDICATOR_ICON;
     private static final String SHOW_FOURG_ICON =
             "system:" + Settings.System.SHOW_FOURG_ICON;
     private static final String DATA_DISABLED_ICON =
             "system:" + Settings.System.DATA_DISABLED_ICON;
+    private static final String USE_OLD_MOBILETYPE =
+            "system:" + Settings.System.USE_OLD_MOBILETYPE;
 
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
@@ -154,16 +156,17 @@ public class MobileSignalController extends SignalController<
             }
         };
 
-        Dependency.get(TunerService.class).addTunable(this, SHOW_VOLTE_ICON);
+        Dependency.get(TunerService.class).addTunable(this, VOLTE_ICON_STYLE);
         Dependency.get(TunerService.class).addTunable(this, ROAMING_INDICATOR_ICON);
         Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
         Dependency.get(TunerService.class).addTunable(this, DATA_DISABLED_ICON);
+        Dependency.get(TunerService.class).addTunable(this, USE_OLD_MOBILETYPE);
     }
 
     @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
-            case SHOW_VOLTE_ICON:
+            case VOLTE_ICON_STYLE:
                      mVoLTEicon =
                         TunerService.parseIntegerSwitch(newValue, false);
                      updateTelephony();
@@ -183,6 +186,9 @@ public class MobileSignalController extends SignalController<
                         TunerService.parseIntegerSwitch(newValue, true);
                      updateTelephony();                
                 break; 
+            case USE_OLD_MOBILETYPE:
+                notifyListeners();
+                break;
             default:
                 break;
         }

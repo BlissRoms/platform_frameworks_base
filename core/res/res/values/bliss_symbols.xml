@@ -167,4 +167,12 @@
 
     <java-symbol type="array" name="config_customPermissionsList" />
 
+    <!-- Whether to use old mobile type icons as default -->
+    <java-symbol type="bool" name="config_useOldMobileIcons" />
+
+    <!-- Screen recorder -->
+    <java-symbol type="drawable" name="ic_screenrecord" />
+    <java-symbol type="string" name="global_action_screenrecord" />
+    <java-symbol type="bool" name="config_showScreenRecord" />
+
 </resources>

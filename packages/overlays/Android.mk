@@ -32,6 +32,20 @@ LOCAL_REQUIRED_MODULES := \
 	FontGoogleSansOverlay \
 	FontNotoSerifSourceOverlay \
 	FontRubikRubikOverlay \
+	FontAclonicaSourceOverlay \
+	FontAmaranteSourceOverlay \
+	FontBariolSourceOverlay \
+	FontCagliostroSourceOverlay \
+	FontComicSansSourceOverlay \
+	FontCoolstorySourceOverlay \
+	FontGoogleSansSourceOverlay \
+	FontLGSmartGothicSourceOverlay \
+	FontNotoSerifSourceOverlay \
+	FontOneplusSlateSource \
+	FontRosemarySourceOverlay \
+	FontSamsungOneSourceOverlay \
+	FontSonySketchSourceOverlay \
+	FontSurferSourceOverlay \
 	IconPackCircularAndroidOverlay \
 	IconPackCircularPixelLauncherOverlay \
 	IconPackCircularPixelThemePickerOverlay \
@@ -47,10 +61,18 @@ LOCAL_REQUIRED_MODULES := \
 	IconPackRoundedPixelThemePickerOverlay \
 	IconPackRoundedSettingsOverlay \
 	IconPackRoundedSystemUIOverlay \
+        IconShapeCylinderOverlay \
+	IconShapeHexagonOverlay \
 	IconShapeRoundedRectOverlay \
+	IconShapeSquareOverlay \
 	IconShapeSquircleOverlay \
 	IconShapeTeardropOverlay \
-        PrimaryColorBlissBlackOverlay \
+	PrimaryColorBlissBlackOverlay \
+	PrimaryColorDarkBlueOverlay \
+	PrimaryColorAlmostBlackOverlay \
+	PrimaryColorBlissOverlay \
+	PrimaryColorBlissClearOverlay \
+	PrimaryColorEyeSootherOverlay \
 	NavigationBarMode3ButtonOverlay \
 	NavigationBarMode2ButtonOverlay \
 	NavigationBarModeGesturalOverlay \

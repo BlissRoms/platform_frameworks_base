@@ -72,7 +72,6 @@ import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.ArraySet;
-//import android.util.FeatureFlagUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -177,6 +176,7 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
     private String[] mRestartMenuActions;
     private String[] mCurrentMenuActions;
     private boolean mIsRestartMenu;
+    private boolean mScreenRecordAvailable;
 
     /**
      * @param context everything needs a context :(
@@ -237,6 +237,8 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                 com.android.internal.R.array.config_globalActionsList);
         mRestartMenuActions = mContext.getResources().getStringArray(
                 org.lineageos.platform.internal.R.array.config_restartActionsList);
+        mScreenRecordAvailable = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_showScreenRecord);
 
         updatePowerMenuActions();
     }
@@ -461,6 +463,8 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                 mItems.add(new RestartSystemUIAction());
             } else if (GLOBAL_ACTION_KEY_SCREENSHOT.equals(actionKey)) {
                 mItems.add(new ScreenshotAction());
+            } else if (mScreenRecordAvailable && GLOBAL_ACTION_KEY_SCREENRECORD.equals(actionKey)) {
+                mItems.add(new ScreenrecordAction());
             } else if (GLOBAL_ACTION_KEY_LOGOUT.equals(actionKey)) {
                 if (mDevicePolicyManager.isLogoutEnabled()
                         && getCurrentUser().id != UserHandle.USER_SYSTEM) {
@@ -846,12 +850,49 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
 
         @Override
         public boolean onLongPress() {
-            //if (FeatureFlagUtils.isEnabled(mContext, FeatureFlagUtils.SCREENRECORD_LONG_PRESS)) {
-                mScreenRecordHelper.launchRecordPrompt();
-            /*} else {
-                onPress();
-            }*/
+            // Add a little delay before executing, to give the
+            // dialog a chance to go away before it takes a
+            // screenshot.
+            // TODO: instead, omit global action dialog layer
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mScreenshotHelper.takeScreenshot(2, true, true, mHandler, null);
+                    MetricsLogger.action(mContext,
+                            MetricsEvent.ACTION_SCREENSHOT_POWER_MENU);
+                }
+            }, 500);
             return true;
+        }
+    }
+
+    private class ScreenrecordAction extends SinglePressAction {
+        public ScreenrecordAction() {
+            super(R.drawable.ic_screenrecord, R.string.global_action_screenrecord);
+        }
+
+        @Override
+        public void onPress() {
+            // Add a little delay before executing, to give the
+            // dialog a chance to go away before it shows
+            // screenrecord prompt.
+            // TODO: instead, omit global action dialog layer
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mScreenRecordHelper.launchRecordPrompt();
+                }
+            }, 500);
+        }
+
+        @Override
+        public boolean showDuringKeyguard() {
+            return true;
+        }
+
+        @Override
+        public boolean showBeforeProvisioning() {
+            return false;
         }
     }
 

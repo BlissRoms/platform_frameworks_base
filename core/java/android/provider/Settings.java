@@ -4592,7 +4592,7 @@ public final class Settings {
          * Whether to display VoLTE icon when VoLTE present
          * @hide
          */
-        public static final String SHOW_VOLTE_ICON = "show_volte_icon";
+        public static final String VOLTE_ICON_STYLE = "volte_icon_style";
 
         /**
          * Whether to display roaming indicator for roaming signal connection
@@ -5629,6 +5629,12 @@ public final class Settings {
          * @hide
          */
         public static final String VIBRATE_ON_NOTIFICATIONS = "vibrate_on_notifications";
+
+        /**
+         * Whether to show lock icon on lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_LOCK_ICON = "lockscreen_lock_icon";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
