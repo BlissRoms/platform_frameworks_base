@@ -166,17 +166,11 @@ public class BatteryMeterView extends LinearLayout implements
                 com.android.internal.R.string.status_bar_battery);
         mBatteryIconView = new ImageView(context);
         mBatteryIconView.setImageDrawable(mDrawable);
-	mBatteryIconView.setPaddingRelative(
-		getResources().getDimensionPixelSize(R.dimen.battery_level_padding_start), 0, 0, 0);
-
         final MarginLayoutParams mlp = new MarginLayoutParams(
                 getResources().getDimensionPixelSize(R.dimen.status_bar_battery_icon_width),
                 getResources().getDimensionPixelSize(R.dimen.status_bar_battery_icon_height));
-
-	mlp.setMargins(
-		0, 0, 0,
-               	getResources().getDimensionPixelOffset(R.dimen.battery_margin_bottom));
-
+        mlp.setMargins(0, 0, 0,
+                getResources().getDimensionPixelOffset(R.dimen.battery_margin_bottom));
         addView(mBatteryIconView, mlp);
 
         updateShowPercent();
@@ -444,7 +438,7 @@ public class BatteryMeterView extends LinearLayout implements
             switch (mTextChargingSymbol) {
                 case 1:
                 default:
-                    pct = "⚡️" + pct;
+                    pct = "⚡️ " + pct;
                    break;
                 case 2:
                     pct = "~ " + pct;
@@ -456,7 +450,7 @@ public class BatteryMeterView extends LinearLayout implements
                 getContext().getString(mCharging ? R.string.accessibility_battery_level_charging
                         : R.string.accessibility_battery_level, mLevel));
 
-        if (mBatteryIconView != null && mBatteryStyle != BATTERY_STYLE_HIDDEN) pct = " " + pct;
+        if (mBatteryIconView != null) pct = pct + " ";
 
         mBatteryPercentView.setText(pct);
     }
@@ -491,7 +485,13 @@ public class BatteryMeterView extends LinearLayout implements
                                 LayoutParams.WRAP_CONTENT,
                                 LayoutParams.MATCH_PARENT));
             }
-            mBatteryPercentView.setPaddingRelative(0, 0, 0, 0);
+            if (mBatteryStyle == BATTERY_STYLE_HIDDEN) {
+                mBatteryPercentView.setPaddingRelative(0, 0, 0, 0);
+            } else {
+                Resources res = getContext().getResources();
+                mBatteryPercentView.setPaddingRelative(
+                        res.getDimensionPixelSize(R.dimen.battery_level_padding_start), 0, 0, 0);
+            }
         } else {
             removeBatteryPercentView();
             mDrawable.setShowPercent(drawPercentInside);
