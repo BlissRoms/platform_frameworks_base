@@ -234,7 +234,7 @@ static bool FlattenXml(IAaptContext* context, const xml::XmlResource& xml_res,
 
       io::BigBufferInputStream input_stream(&buffer);
       return io::CopyInputStreamToArchive(context, &input_stream, path.to_string(),
-                                          0u, writer);
+                                          ArchiveEntry::kCompress, writer);
     } break;
 
     case OutputFormat::kProto: {
@@ -243,7 +243,8 @@ static bool FlattenXml(IAaptContext* context, const xml::XmlResource& xml_res,
       SerializeXmlOptions options;
       options.remove_empty_text_nodes = (path == kAndroidManifestPath);
       SerializeXmlResourceToPb(xml_res, &pb_node);
-      return io::CopyProtoToArchive(context, &pb_node, path.to_string(), 0u, writer);
+      return io::CopyProtoToArchive(context, &pb_node, path.to_string(), ArchiveEntry::kCompress,
+                                    writer);
     } break;
   }
   return false;
@@ -383,7 +384,21 @@ ResourceFileFlattener::ResourceFileFlattener(const ResourceFileFlattenerOptions&
 // TODO(rtmitchell): turn this function into a variable that points to a method that retrieves the
 // compression flag
 uint32_t ResourceFileFlattener::GetCompressionFlags(const StringPiece& str) {
-  return 0;
+  if (options_.do_not_compress_anything) {
+    return 0;
+  }
+
+  if (options_.regex_to_not_compress
+      && std::regex_search(str.to_string(), options_.regex_to_not_compress.value())) {
+    return 0;
+  }
+
+  for (const std::string& extension : options_.extensions_to_not_compress) {
+    if (util::EndsWith(str, extension)) {
+      return 0;
+    }
+  }
+  return ArchiveEntry::kCompress;
 }
 
 static bool IsTransitionElement(const std::string& name) {
@@ -1052,7 +1067,7 @@ class Linker {
         pb::ResourceTable pb_table;
         SerializeTableToPb(*table, &pb_table, context_->GetDiagnostics());
         return io::CopyProtoToArchive(context_, &pb_table, kProtoResourceTablePath,
-                                      0u, writer);
+                                      ArchiveEntry::kCompress, writer);
       } break;
     }
     return false;
@@ -1532,7 +1547,18 @@ class Linker {
     }
 
     for (auto& entry : merged_assets) {
-      if (!io::CopyFileToArchive(context_, entry.second.get(), entry.first, 0u, writer)) {
+      uint32_t compression_flags = ArchiveEntry::kCompress;
+      std::string extension = file::GetExtension(entry.first).to_string();
+
+      if (options_.do_not_compress_anything
+          || options_.extensions_to_not_compress.count(extension) > 0
+          || (options_.regex_to_not_compress
+              && std::regex_search(extension, options_.regex_to_not_compress.value()))) {
+        compression_flags = 0u;
+      }
+
+      if (!io::CopyFileToArchive(context_, entry.second.get(), entry.first, compression_flags,
+                                 writer)) {
         return false;
       }
     }
