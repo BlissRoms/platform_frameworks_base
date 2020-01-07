@@ -4859,6 +4859,15 @@ public final class Settings {
         private static final Validator BACK_GESTURE_HEIGHT_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
         /**
+         * Enable\Disable visibility of smart replies in notifications
+         * @hide
+         */
+        public static final String HIDE_SMART_REPLIES = "hide_smart_replies";
+
+        /** @hide */
+        private static final Validator HIDE_SMART_REPLIES_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Three Finger Gesture from Oppo
          * @hide
          */
@@ -5637,6 +5646,12 @@ public final class Settings {
         public static final String LOCKSCREEN_LOCK_ICON = "lockscreen_lock_icon";
 
         /**
+         * DismissAll Button
+         * @hide
+         */
+        public static final String DISMISS_ALL_BUTTON = "dismiss_all_button";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5741,6 +5756,7 @@ public final class Settings {
             LOCKSCREEN_WEATHER_SHOW_CITY,
             BLISS_FOOTER_TEXT_SHOW,
             BLISS_FOOTER_TEXT_STRING,
+            HIDE_SMART_REPLIES,
         };
 
         /**
@@ -5913,6 +5929,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_CITY);
             PRIVATE_SETTINGS.add(BLISS_FOOTER_TEXT_SHOW);
             PRIVATE_SETTINGS.add(BLISS_FOOTER_TEXT_STRING);
+            PRIVATE_SETTINGS.add(HIDE_SMART_REPLIES);
         }
 
         /**
@@ -6055,6 +6072,7 @@ public final class Settings {
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_CITY, LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR);
             VALIDATORS.put(BLISS_FOOTER_TEXT_SHOW, BLISS_FOOTER_TEXT_SHOW_VALIDATOR);
             VALIDATORS.put(BLISS_FOOTER_TEXT_STRING, BLISS_FOOTER_TEXT_STRING_VALIDATOR);
+            VALIDATORS.put(HIDE_SMART_REPLIES, HIDE_SMART_REPLIES_VALIDATOR);
         }
 
         /**
