@@ -14,5 +14,8 @@
      limitations under the License.
 -->
 <resources>
+    <style name="widget_big_thin" parent="widget_big" >
+        <item name="android:fontFamily">sans-serif-thin</item>
+    </style>
 
 </resources>
