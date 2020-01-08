@@ -19,8 +19,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval" >
 
-    <solid android:color="#303030" />
+    <solid android:color="@color/analog_clock_bg_color" />
+    <stroke android:width="3dp"
+            android:color="@android:color/black" />
     <stroke android:width="2dp"
-            android:color="?attr/wallpaperTextColor" />
-
+            android:color="@android:color/white" />
 </shape>
