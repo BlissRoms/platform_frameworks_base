@@ -5458,6 +5458,12 @@ public final class Settings {
         public static final String LOCK_DATE_FONT_STYLE = "lock_date_font_style";
 
         /**
+         * Change text size for system lockscreen clock widget
+         * @hide
+         */
+        public static final String LOCK_CLOCK_TEXT_SIZE = "lock_clock_text_size";
+
+        /**
          * User definable value of pulse notification screen brightness
          *
          * @hide
