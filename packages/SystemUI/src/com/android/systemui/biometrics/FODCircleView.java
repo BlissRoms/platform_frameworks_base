@@ -16,17 +16,24 @@
 
 package com.android.systemui.biometrics;
 
+import android.app.WallpaperColors;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.ContentResolver;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.biometrics.BiometricSourceType;
 import android.hardware.display.DisplayManager;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.os.IHwBinder;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -41,6 +48,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import androidx.palette.graphics.Palette;
 
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -88,6 +96,8 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
     private PowerManager.WakeLock mWakeLock;
 
     private Timer mBurnInProtectionTimer;
+    private WallpaperManager mWallManager;
+    private int iconcolor = 0xFF3980FF;
 
     private IFingerprintInscreenCallback mFingerprintInscreenCallback =
             new IFingerprintInscreenCallback.Stub() {
@@ -109,7 +119,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
 
             mHandler.post(() -> {
                 setDim(false);
-                setImageResource(R.drawable.fod_icon_default);
+                setFODIcon();
 
                 invalidate();
             });
@@ -217,7 +227,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         mPaintFingerprint.setAntiAlias(true);
         mPaintFingerprint.setColor(res.getColor(R.color.config_fodColor));
 
-        setImageResource(R.drawable.fod_icon_default);
+        setFODIcon();
 
         mPaintShow.setAntiAlias(true);
         mPaintShow.setColor(res.getColor(R.color.config_fodColor));
@@ -322,7 +332,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         if (event.getAction() == MotionEvent.ACTION_UP) {
             newInside = false;
             setDim(false);
-            setImageResource(R.drawable.fod_icon_default);
+            setFODIcon();
         }
 
         if (newInside == mIsInsideCircle) {
@@ -334,7 +344,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         invalidate();
 
         if (!mIsInsideCircle) {
-            setImageResource(R.drawable.fod_icon_default);
+            setFODIcon();
             return false;
         }
 
@@ -399,6 +409,103 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
         return mFingerprintInscreenDaemon;
     }
 
+    private boolean useWallpaperColor() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FOD_ICON_WALLPAPER_COLOR, 0) != 0;
+    }
+
+    private int getFODIcon() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FOD_ICON, 0);
+    }
+
+    private void setFODIcon() {
+        int fodicon = getFODIcon();
+
+        if (fodicon == 0) {
+            this.setImageResource(R.drawable.fod_icon_default);
+        } else if (fodicon == 1) {
+            this.setImageResource(R.drawable.fod_icon_bliss);
+        } else if (fodicon == 2) {
+            this.setImageResource(R.drawable.fod_icon_default_2);
+        } else if (fodicon == 3) {
+            this.setImageResource(R.drawable.fod_icon_default_3);
+        } else if (fodicon == 4) {
+            this.setImageResource(R.drawable.fod_icon_default_4);
+        } else if (fodicon == 5) {
+            this.setImageResource(R.drawable.fod_icon_default_5);
+        } else if (fodicon == 6) {
+            this.setImageResource(R.drawable.fod_icon_arc_reactor);
+        } else if (fodicon == 7) {
+            this.setImageResource(R.drawable.fod_icon_cpt_america_flat);
+        } else if (fodicon == 8) {
+            this.setImageResource(R.drawable.fod_icon_cpt_america_flat_gray);
+        } else if (fodicon == 9) {
+            this.setImageResource(R.drawable.fod_icon_dragon_black_flat);
+        } else if (fodicon == 10) {
+            this.setImageResource(R.drawable.fod_icon_future);
+        } else if (fodicon == 11) {
+            this.setImageResource(R.drawable.fod_icon_glow_circle);
+        } else if (fodicon == 12) {
+            this.setImageResource(R.drawable.fod_icon_neon_arc);
+        } else if (fodicon == 13) {
+            this.setImageResource(R.drawable.fod_icon_neon_arc_gray);
+        } else if (fodicon == 14) {
+            this.setImageResource(R.drawable.fod_icon_neon_circle_pink);
+        } else if (fodicon == 15) {
+            this.setImageResource(R.drawable.fod_icon_neon_triangle);
+        } else if (fodicon == 16) {
+            this.setImageResource(R.drawable.fod_icon_paint_splash_circle);
+        } else if (fodicon == 17) {
+            this.setImageResource(R.drawable.fod_icon_rainbow_horn);
+        } else if (fodicon == 18) {
+            this.setImageResource(R.drawable.fod_icon_shooky);
+        } else if (fodicon == 19) {
+            this.setImageResource(R.drawable.fod_icon_spiral_blue);
+        } else if (fodicon == 20) {
+            this.setImageResource(R.drawable.fod_icon_sun_metro);
+        } else if (fodicon == 21) {
+            this.setImageResource(R.drawable.fod_icon_default_1);
+        }
+
+
+        if (useWallpaperColor()) {
+            try {
+                WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
+                Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+                Bitmap bitmap = ((BitmapDrawable)wallpaperDrawable).getBitmap();
+                if (bitmap != null) {
+                    Palette p = Palette.from(bitmap).generate();
+                    int wallColor = p.getDominantColor(iconcolor);
+                    if (iconcolor != wallColor) {
+                        iconcolor = wallColor;
+                    }
+                    this.setColorFilter(lighter(iconcolor, 3));
+                }
+            } catch (Exception e) {
+                // Nothing to do
+            }
+        } else {
+            this.setColorFilter(null);  
+        }
+    }
+
+    private static int lighter(int color, int factor) {
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+
+        blue = blue * factor;
+        green = green * factor;
+        blue = blue * factor;
+
+        blue = blue > 255 ? 255 : blue;
+        green = green > 255 ? 255 : green;
+        red = red > 255 ? 255 : red;
+
+        return Color.argb(Color.alpha(color), red, green, blue);
+    }
+
     public void show() {
         if (mIsViewAdded) {
             return;
@@ -424,7 +531,7 @@ public class FODCircleView extends ImageView implements OnTouchListener, Configu
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
         mParams.gravity = Gravity.TOP | Gravity.LEFT;
 
-        setImageResource(R.drawable.fod_icon_default);
+        setFODIcon();
 
         mWindowManager.addView(this, mParams);
         mIsViewAdded = true;

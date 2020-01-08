@@ -27,6 +27,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
@@ -83,6 +84,8 @@ public class KeyguardStatusView extends GridLayout implements
     private int mIconTopMargin;
     private int mIconTopMarginWithHeader;
     private boolean mShowingHeader;
+
+    private int mClockSelection;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -215,7 +218,6 @@ public class KeyguardStatusView extends GridLayout implements
         updateLogoutView();
         updateDark();
         updateSettings();
-
     }
 
     public KeyguardSliceView getKeyguardSliceView() {
@@ -272,6 +274,38 @@ public class KeyguardStatusView extends GridLayout implements
 
     private void refreshTime() {
         mClockView.refresh();
+
+        if (mClockSelection == 2) {
+            mClockView.setFormat12Hour(Patterns.clockView12);
+            mClockView.setFormat24Hour(Patterns.clockView24);
+        } else if (mClockSelection == 3) {
+            mClockView.setFormat12Hour(Html.fromHtml("<strong>h</strong>:mm"));
+            mClockView.setFormat24Hour(Html.fromHtml("<strong>kk</strong>:mm"));
+        } else if (mClockSelection == 4) {
+	        mClockView.setFormat12Hour(Html.fromHtml("<strong>h:mm</strong>"));
+            mClockView.setFormat24Hour(Html.fromHtml("<strong>kk:mm</strong>"));
+        } else if (mClockSelection == 5) {
+            mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">h:mm</font>"));
+            mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">kk:m</font>"));
+        } else if (mClockSelection == 6) {
+            mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">h</font>:mm"));
+            mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">kk</font>:mm"));
+        } else if (mClockSelection == 7) {
+            mClockView.setFormat12Hour(Html.fromHtml("h<font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">:mm</font>"));
+            mClockView.setFormat24Hour(Html.fromHtml("kk<font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">:mm</font>"));
+        } else if (mClockSelection == 8) {
+            mClockView.setFormat12Hour("hh\nmm");
+            mClockView.setFormat24Hour("kk\nmm");
+        } else if (mClockSelection == 10) {
+            mClockView.setFormat12Hour(Html.fromHtml("hh<br><font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">mm</font>"));
+            mClockView.setFormat24Hour(Html.fromHtml("kk<br><font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">mm</font>"));
+        } else if (mClockSelection == 11) {
+            mClockView.setFormat12Hour(Html.fromHtml("<font color='#454545'>hh</font><br><font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">mm</font>"));
+            mClockView.setFormat24Hour(Html.fromHtml("<font color='#454545'>kk</font><br><font color=" + getResources().getColor(R.color.sammy_minutes_accent) + ">mm</font>"));
+        } else {
+            mClockView.setFormat12Hour(Html.fromHtml("<strong>hh</strong><br>mm"));
+            mClockView.setFormat24Hour(Html.fromHtml("<strong>kk</strong><br>mm"));
+        }
     }
 
     private void updateTimeZone(TimeZone timeZone) {
@@ -481,6 +515,56 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.LOCKSCREEN_WEATHER_STYLE, 0,
                 UserHandle.USER_CURRENT) == 0;
 
+        mClockSelection = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.LOCKSCREEN_CLOCK_SELECTION, 2, UserHandle.USER_CURRENT);
+
+        mClockView = findViewById(R.id.keyguard_clock_container);
+
+        // Set smaller Clock, Date and OwnerInfo text size if the user selects the small clock type
+	    if (mClockSelection == 4) {
+    	    mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimensionPixelSize(R.dimen.widget_clock_small_font_size));
+    	} else {
+	        mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
+	    }
+
+        switch (mClockSelection) {
+            case 1: // hidden
+                mClockView.setVisibility(View.GONE);
+                break;
+            case 2: // default
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 3: // default (bold)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 4: // default (small font)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 5: // default (accent)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 6: // default (accent hr)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 7: // default (accent min)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 8: // sammy
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 9: // sammy (bold)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 10: // sammy (accent)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 11: // sammy (accent alt)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+         }
+
         if (mWeatherView != null) {
             if (mShowWeather && mOmniStyle) {
                 mWeatherView.setVisibility(View.VISIBLE);
@@ -491,6 +575,10 @@ public class KeyguardStatusView extends GridLayout implements
                 mWeatherView.disableUpdates();
             }
         }
+    }
+
+    public void updateAll() {
+        updateSettings();
     }
 
 }

@@ -5652,6 +5652,18 @@ public final class Settings {
         public static final String DISMISS_ALL_BUTTON = "dismiss_all_button";
 
         /**
+         * FOD icon picker
+         * @hide
+         */
+        public static final String FOD_ICON = "fod_icon";
+
+        /**
+         * FOD use wallpaper color
+         * @hide
+         */
+        public static final String FOD_ICON_WALLPAPER_COLOR = "fod_icon_wallpaper_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -10109,6 +10121,12 @@ public final class Settings {
                 return valid;
             }
         };
+
+        /**
+         * Select which lockscreen clock style to display
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK_SELECTION = "lockscreen_clock_selection";
 
         /**
          * Whether the Lockdown button should be shown in the power menu.
