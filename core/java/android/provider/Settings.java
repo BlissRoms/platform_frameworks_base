@@ -5489,6 +5489,12 @@ public final class Settings {
         public static final String LOCKSCREEN_DATE_SELECTION = "lockscreen_date_selection";
 
         /**
+         * Change text size for system lockscreen clock widget
+         * @hide
+         */
+        public static final String LOCK_CLOCK_FONT_SIZE = "lock_clock_font_size";
+
+        /**
          * User definable value of pulse notification screen brightness
          *
          * @hide
