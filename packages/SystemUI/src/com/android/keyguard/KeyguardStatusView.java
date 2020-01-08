@@ -117,11 +117,14 @@ public class KeyguardStatusView extends GridLayout implements
     private int mClockSelection;
     private int mLockClockFontStyle;
     private int mLockDateFontStyle;
+    private int mLockClockTextSize;
 
     private static final String LOCK_CLOCK_FONT_STYLE =
             "system:" + Settings.System.LOCK_CLOCK_FONT_STYLE;
     private static final String LOCK_DATE_FONT_STYLE =
             "system:" + Settings.System.LOCK_DATE_FONT_STYLE;
+    private static final String LOCK_CLOCK_TEXT_SIZE =
+            "system:" + Settings.System.LOCK_CLOCK_TEXT_SIZE;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -186,6 +189,7 @@ public class KeyguardStatusView extends GridLayout implements
         final TunerService tunerService = Dependency.get(TunerService.class);
         tunerService.addTunable(this, LOCK_CLOCK_FONT_STYLE);
         tunerService.addTunable(this, LOCK_DATE_FONT_STYLE);
+        tunerService.addTunable(this, LOCK_CLOCK_TEXT_SIZE);
         onDensityOrFontScaleChanged();
     }
 
@@ -293,8 +297,7 @@ public class KeyguardStatusView extends GridLayout implements
     @Override
     public void onDensityOrFontScaleChanged() {
         if (mClockView != null) {
-            mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
+            setTextSize(mClockView, mLockClockTextSize);
             setFontStyle(mClockView, mLockClockFontStyle);
         }
         if (mOwnerInfo != null) {
@@ -440,6 +443,13 @@ public class KeyguardStatusView extends GridLayout implements
                 } catch (NumberFormatException ex) {}
                 onDensityOrFontScaleChanged();
                 break;
+            case LOCK_CLOCK_TEXT_SIZE:
+                mLockClockTextSize = 14;
+                try {
+                    mLockClockTextSize = Integer.valueOf(newValue);
+                } catch (NumberFormatException ex) {}
+                onDensityOrFontScaleChanged();
+                break;
             default:
                 break;
         }
@@ -523,6 +533,379 @@ public class KeyguardStatusView extends GridLayout implements
                 view.setTextFont(Typeface.create("serif", Typeface.BOLD_ITALIC));
                 break;
             default:
+                break;
+        }
+    }
+
+    private void setTextSize(KeyguardClockSwitch view, int size) {
+        switch (size) {
+            case 10:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_10));
+                break;
+            case 11:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_11));
+                break;
+            case 12:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_12));
+                break;
+            case 13:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_13));
+                break;
+            case 14:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_14));
+                break;
+            case 15:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_15));
+                break;
+            case 16:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_16));
+                break;
+            case 17:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_17));
+                break;
+            case 18:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_18));
+                break;
+            case 19:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_19));
+                break;
+            case 20:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_20));
+                break;
+            case 21:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_21));
+                break;
+            case 22:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_22));
+                break;
+            case 23:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_23));
+                break;
+            case 24:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_24));
+                break;
+            case 25:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_25));
+                break;
+            case 26:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_26));
+                break;
+            case 27:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_27));
+                break;
+            case 28:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_28));
+                break;
+            case 29:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_29));
+                break;
+            case 30:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_30));
+                break;
+            case 31:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_31));
+                break;
+            case 32:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_32));
+                break;
+            case 33:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_33));
+                break;
+            case 34:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_34));
+                break;
+            case 35:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_35));
+                break;
+            case 36:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_36));
+                break;
+            case 37:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_37));
+                break;
+            case 38:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_38));
+                break;
+            case 39:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_39));
+                break;
+            case 40:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_40));
+                break;
+            case 41:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_41));
+                break;
+            case 42:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_42));
+                break;
+            case 43:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_43));
+                break;
+            case 44:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_44));
+                break;
+            case 45:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_45));
+                break;
+            case 46:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_46));
+                break;
+            case 47:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_47));
+                break;
+            case 48:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_48));
+                break;
+            case 49:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_49));
+                break;
+            case 50:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_50));
+                break;
+            case 51:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_51));
+                break;
+            case 52:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_52));
+                break;
+            case 53:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_53));
+                break;
+            case 54:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_54));
+                break;
+            case 55:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_55));
+                break;
+            case 56:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_56));
+                break;
+            case 57:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_57));
+                break;
+            case 58:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_58));
+                break;
+            case 59:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_59));
+                break;
+            case 60:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_60));
+                break;
+            case 61:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_61));
+                break;
+            case 62:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_62));
+                break;
+            case 63:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_63));
+                break;
+            case 64:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_64));
+                break;
+            case 65:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_65));
+                break;
+            case 66:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_66));
+                break;
+            case 67:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_67));
+                break;
+            case 68:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_68));
+                break;
+            case 69:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_69));
+                break;
+            case 70:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_70));
+                break;
+            case 71:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_71));
+                break;
+            case 72:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_72));
+                break;
+            case 73:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_73));
+                break;
+            case 74:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_74));
+                break;
+            case 75:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_75));
+                break;
+            case 76:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_76));
+                break;
+            case 77:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_77));
+                break;
+            case 78:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_78));
+                break;
+            case 79:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_79));
+                break;
+            case 80:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_80));
+                break;
+            case 81:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_81));
+                break;
+            case 82:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_82));
+                break;
+            case 83:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_83));
+                break;
+            case 84:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_84));
+                break;
+            case 85:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_85));
+                break;
+            case 86:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_86));
+                break;
+            case 87:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_87));
+                break;
+            case 88:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_88));
+                break;
+            case 89:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_89));
+                break;
+            case 90:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_90));
+                break;
+            case 91:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_91));
+                break;
+            case 92:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_92));
+                break;
+            case 93:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_93));
+                break;
+            case 94:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_94));
+                break;
+            case 95:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_95));
+                break;
+            case 96:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_96));
+                break;
+            case 97:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_97));
+                break;
+            case 98:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_98));
+                break;
+            case 99:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_99));
+                break;
+            case 100:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_100));
+                break;
+            case 101:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_101));
                 break;
         }
     }
