@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28726cb8_937014bb",
+        "filename": "packages/SystemUI/src/com/android/keyguard/KeyguardStatusView.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-01-08T09:34:01Z",
+      "side": 1,
+      "message": "should be 6",
+      "revId": "9e5e9d51f8b1b4b51b82c120725d6365823ad206",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bcc40e4_4b438a7c",
+        "filename": "packages/SystemUI/src/com/android/keyguard/KeyguardStatusView.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-01-08T09:34:01Z",
+      "side": 1,
+      "message": "thus 7",
+      "revId": "9e5e9d51f8b1b4b51b82c120725d6365823ad206",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    }
+  ]
+}
