@@ -19,4 +19,7 @@
     <color name="toast_bg">@color/white</color>
     <color name="toast_text">@color/black</color>
 
+    <!-- QS Accent -->
+    <color name="qs_accent">@color/accent_device_default_light</color>
+
 </resources>
