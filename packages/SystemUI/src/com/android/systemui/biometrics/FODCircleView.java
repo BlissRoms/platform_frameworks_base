@@ -167,7 +167,7 @@ public class FODCircleView extends ImageView {
 
         mParams.setTitle("Fingerprint on display");
         mParams.packageName = "android";
-        mParams.type = WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY;
+        mParams.type = WindowManager.LayoutParams.TYPE_DISPLAY_OVERLAY;
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                 WindowManager.LayoutParams.FLAG_DIM_BEHIND |
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
