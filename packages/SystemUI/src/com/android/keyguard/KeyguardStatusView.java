@@ -433,23 +433,20 @@ public class KeyguardStatusView extends GridLayout implements
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
             case LOCK_CLOCK_FONT_STYLE:
-                mLockClockFontStyle = 4;
                 try {
-                    mLockClockFontStyle = Integer.valueOf(newValue);
+                    mLockClockFontStyle = TunerService.parseInteger(newValue, 4);
                 } catch (NumberFormatException ex) {}
                 onDensityOrFontScaleChanged();
                 break;
             case LOCK_DATE_FONT_STYLE:
-                mLockDateFontStyle = 14;
                 try {
-                    mLockDateFontStyle = Integer.valueOf(newValue);
+                    mLockDateFontStyle = TunerService.parseInteger(newValue, 14);
                 } catch (NumberFormatException ex) {}
                 onDensityOrFontScaleChanged();
                 break;
             case LOCK_CLOCK_TEXT_SIZE:
-                mLockClockTextSize = 54;
                 try {
-                    mLockClockTextSize = Integer.valueOf(newValue);
+                    mLockClockTextSize = TunerService.parseInteger(newValue, 54);
                 } catch (NumberFormatException ex) {}
                 onDensityOrFontScaleChanged();
                 break;
