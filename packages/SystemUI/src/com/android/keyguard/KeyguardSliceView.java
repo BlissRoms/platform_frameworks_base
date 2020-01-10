@@ -111,6 +111,19 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
     private static final int FONT_NOTOSERIF_ITALIC = 22;
     private static final int FONT_NOTOSERIF_BOLD = 23;
     private static final int FONT_NOTOSERIF_BOLD_ITALIC = 24;
+    private static final int FONT_ACLONICA = 25;
+    private static final int FONT_AMARANTE = 26;
+    private static final int FONT_BARIOL = 27;
+    private static final int FONT_CAGLIOSTRO = 28;
+    private static final int FONT_COOLSTORY = 29;
+    private static final int FONT_LGSMARTGOTHIC = 30;
+    private static final int FONT_ROSEMARY = 31;
+    private static final int FONT_SONYSKETCH = 32;
+    private static final int FONT_SURFER = 33;
+    private static final int FONT_COMICSANS = 34;
+    private static final int FONT_GOOGLESANS = 35;
+    private static final int FONT_ONEPLUSSLATE = 36;
+    private static final int FONT_SAMSUNGONE = 37;
 
     public static final int DEFAULT_ANIM_DURATION = 550;
 
@@ -484,6 +497,46 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
                 break;
             case FONT_NOTOSERIF_BOLD_ITALIC:
                 view.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
+
+            case FONT_ACLONICA:
+                view.setTypeface(Typeface.create("aclonica", Typeface.NORMAL));
+                break;
+            case FONT_AMARANTE:
+                view.setTypeface(Typeface.create("amarante", Typeface.NORMAL));
+                break;
+            case FONT_BARIOL:
+                view.setTypeface(Typeface.create("bariol", Typeface.NORMAL));
+                break;
+            case FONT_CAGLIOSTRO:
+                view.setTypeface(Typeface.create("cagliostro", Typeface.NORMAL));
+                break;
+            case FONT_COOLSTORY:
+                view.setTypeface(Typeface.create("coolstory", Typeface.NORMAL));
+                break;
+            case FONT_LGSMARTGOTHIC:
+                view.setTypeface(Typeface.create("lgsmartgothic", Typeface.NORMAL));
+                break;
+            case FONT_ROSEMARY:
+                view.setTypeface(Typeface.create("rosemary", Typeface.NORMAL));
+                break;
+            case FONT_SONYSKETCH:
+                view.setTypeface(Typeface.create("sonysketch", Typeface.NORMAL));
+                break;
+            case FONT_SURFER:
+                view.setTypeface(Typeface.create("surfer", Typeface.NORMAL));
+                break;
+            case FONT_COMICSANS:
+                view.setTypeface(Typeface.create("comicsans", Typeface.NORMAL));
+                break;
+            case FONT_GOOGLESANS:
+                view.setTypeface(Typeface.create("googlesans", Typeface.NORMAL));
+                break;
+            case FONT_ONEPLUSSLATE:
+                view.setTypeface(Typeface.create("oneplusslate", Typeface.NORMAL));
+                break;
+            case FONT_SAMSUNGONE:
+                view.setTypeface(Typeface.create("samsungone", Typeface.NORMAL));
                 break;
         }
     }
