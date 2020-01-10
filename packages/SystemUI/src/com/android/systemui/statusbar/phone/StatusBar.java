@@ -1932,9 +1932,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                           Settings.System.LOCKSCREEN_MAX_NOTIF_CONFIG),
                           false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.LOCKSCREEN_CLOCK_SELECTION),
-                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -1955,8 +1952,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                 setPulseOnNewTracks();
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.DISPLAY_CUTOUT_HIDDEN))) {
                 updateCutoutOverlay();
-            } else if (uri.equals(Settings.Secure.getUriFor(Settings.Secure.LOCKSCREEN_CLOCK_SELECTION))) {
-                updateKeyguardStatusSettings();
             }
         }
 
@@ -1968,7 +1963,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             setPulseOnNewTracks();
             updateCutoutOverlay();
             setMaxKeyguardNotifConfig();
-            updateKeyguardStatusSettings();
         }
     }
 
@@ -1997,10 +1991,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                     Settings.System.PULSE_ON_NEW_TRACKS, 1,
                     UserHandle.USER_CURRENT) == 1);
         }
-    }
-
-    private void updateKeyguardStatusSettings() {
-        mNotificationPanel.updateKeyguardStatusSettings();
     }
 
     /**
