@@ -296,7 +296,46 @@ public class KeyguardStatusView extends GridLayout implements
 
     @Override
     public void onDensityOrFontScaleChanged() {
-        if (mClockView != null) {
+        if (mClockView != null) { // needed or remove ?
+        switch (mClockSelection) {
+            case 1: // hidden
+                mClockView.setVisibility(View.GONE);
+                break;
+            case 2: // default
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 3: // default (bold)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 4: // default (small font)
+                mClockView.setVisibility(View.VISIBLE);
+                // not sure abt this just yet
+                mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.widget_clock_small_font_size));
+                break;
+            case 5: // default (accent)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 6: // default (accent hr)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 7: // default (accent min)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 8: // sammy
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 9: // sammy (bold)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 10: // sammy (accent)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            case 11: // sammy (accent alt)
+                mClockView.setVisibility(View.VISIBLE);
+                break;
+            }
+            refreshFormat();
             setTextSize(mClockView, mLockClockTextSize);
             setFontStyle(mClockView, mLockClockFontStyle);
         }
@@ -868,56 +907,6 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.LOCKSCREEN_WEATHER_STYLE, 0,
                 UserHandle.USER_CURRENT) == 0;
 
-        mClockSelection = Settings.Secure.getIntForUser(resolver,
-                Settings.Secure.LOCKSCREEN_CLOCK_SELECTION, 2, UserHandle.USER_CURRENT);
-
-        mClockView = findViewById(R.id.keyguard_clock_container);
-
-        // Set smaller Clock, Date and OwnerInfo text size if the user selects the small clock type
-	    if (mClockSelection == 4) {
-    	        mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    getResources().getDimensionPixelSize(R.dimen.widget_clock_small_font_size));
-            } else {
-	        mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
-	    }
-
-        switch (mClockSelection) {
-            case 1: // hidden
-                mClockView.setVisibility(View.GONE);
-                break;
-            case 2: // default
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 3: // default (bold)
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 4: // default (small font)
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 5: // default (accent)
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 6: // default (accent hr)
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 7: // default (accent min)
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 8: // sammy
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 9: // sammy (bold)
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 10: // sammy (accent)
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-            case 11: // sammy (accent alt)
-                mClockView.setVisibility(View.VISIBLE);
-                break;
-         }
-
         if (mWeatherView != null) {
             if (mShowWeather && mOmniStyle) {
                 mWeatherView.setVisibility(View.VISIBLE);
@@ -929,9 +918,4 @@ public class KeyguardStatusView extends GridLayout implements
             }
         }
     }
-
-    public void updateAll() {
-        updateSettings();
-    }
-
 }
