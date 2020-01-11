@@ -86,6 +86,19 @@ public class KeyguardStatusView extends GridLayout implements
     private static final int FONT_NOTOSERIF_ITALIC = 22;
     private static final int FONT_NOTOSERIF_BOLD = 23;
     private static final int FONT_NOTOSERIF_BOLD_ITALIC = 24;
+    private static final int FONT_ACLONICA = 25;
+    private static final int FONT_AMARANTE = 26;
+    private static final int FONT_BARIOL = 27;
+    private static final int FONT_CAGLIOSTRO = 28;
+    private static final int FONT_COOLSTORY = 29;
+    private static final int FONT_LGSMARTGOTHIC = 30;
+    private static final int FONT_ROSEMARY = 31;
+    private static final int FONT_SONYSKETCH = 32;
+    private static final int FONT_SURFER = 33;
+    private static final int FONT_COMICSANS = 34;
+    private static final int FONT_GOOGLESANS = 35;
+    private static final int FONT_ONEPLUSSLATE = 36;
+    private static final int FONT_SAMSUNGONE = 37;
 
     private final LockPatternUtils mLockPatternUtils;
     private final IActivityManager mIActivityManager;
@@ -567,6 +580,45 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case FONT_NOTOSERIF_BOLD_ITALIC:
                 view.setTextFont(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_ACLONICA:
+                view.setTextFont(Typeface.create("aclonica", Typeface.NORMAL));
+                break;
+            case FONT_AMARANTE:
+                view.setTextFont(Typeface.create("amarante", Typeface.NORMAL));
+                break;
+            case FONT_BARIOL:
+                view.setTextFont(Typeface.create("bariol", Typeface.NORMAL));
+                break;
+            case FONT_CAGLIOSTRO:
+                view.setTextFont(Typeface.create("cagliostro", Typeface.NORMAL));
+                break;
+            case FONT_COOLSTORY:
+                view.setTextFont(Typeface.create("coolstory", Typeface.NORMAL));
+                break;
+            case FONT_LGSMARTGOTHIC:
+                view.setTextFont(Typeface.create("lgsmartgothic", Typeface.NORMAL));
+                break;
+            case FONT_ROSEMARY:
+                view.setTextFont(Typeface.create("rosemary", Typeface.NORMAL));
+                break;
+            case FONT_SONYSKETCH:
+                view.setTextFont(Typeface.create("sonysketch", Typeface.NORMAL));
+                break;
+            case FONT_SURFER:
+                view.setTextFont(Typeface.create("surfer", Typeface.NORMAL));
+                break;
+            case FONT_COMICSANS:
+                view.setTextFont(Typeface.create("comicsans", Typeface.NORMAL));
+                break;
+            case FONT_GOOGLESANS:
+                view.setTextFont(Typeface.create("googlesans", Typeface.NORMAL));
+                break;
+            case FONT_ONEPLUSSLATE:
+                view.setTextFont(Typeface.create("oneplusslate", Typeface.NORMAL));
+                break;
+            case FONT_SAMSUNGONE:
+                view.setTextFont(Typeface.create("samsungone", Typeface.NORMAL));
                 break;
             default:
                 break;
