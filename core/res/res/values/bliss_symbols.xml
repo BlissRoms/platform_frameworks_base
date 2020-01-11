@@ -179,4 +179,7 @@
   <java-symbol type="string" name="config_lightFontFamily" />
   <java-symbol type="string" name="config_regularFontFamily" />
 
+  <!-- Device has OnePlus haptic motor -->
+  <java-symbol type="bool" name="config_hasOnePlusHapticMotor" />
+
 </resources>
