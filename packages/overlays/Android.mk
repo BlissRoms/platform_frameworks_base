@@ -74,6 +74,7 @@ LOCAL_REQUIRED_MODULES := \
 	PrimaryColorBlissClearOverlay \
 	PrimaryColorEyeSootherOverlay \
 	PrimaryColorOceanOverlay \
+	PrimaryColorNatureOverlay \
 	NavigationBarMode3ButtonOverlay \
 	NavigationBarMode2ButtonOverlay \
 	NavigationBarModeGesturalOverlay \
