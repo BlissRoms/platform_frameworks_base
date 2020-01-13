@@ -36,6 +36,7 @@ LOCAL_REQUIRED_MODULES := \
 	FontAmaranteSourceOverlay \
 	FontBariolSourceOverlay \
 	FontCagliostroSourceOverlay \
+	FontComfortaaSourceOverlay \
 	FontComicSansSourceOverlay \
 	FontCoolstorySourceOverlay \
 	FontGoogleSansSourceOverlay \
@@ -73,6 +74,8 @@ LOCAL_REQUIRED_MODULES := \
 	PrimaryColorBlissOverlay \
 	PrimaryColorBlissClearOverlay \
 	PrimaryColorEyeSootherOverlay \
+	PrimaryColorOceanOverlay \
+	PrimaryColorNatureOverlay \
 	NavigationBarMode3ButtonOverlay \
 	NavigationBarMode2ButtonOverlay \
 	NavigationBarModeGesturalOverlay \
