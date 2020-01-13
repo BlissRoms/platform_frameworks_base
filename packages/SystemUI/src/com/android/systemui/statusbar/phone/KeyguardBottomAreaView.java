@@ -88,6 +88,10 @@ import com.android.systemui.statusbar.policy.PreviewInflater;
 import com.android.systemui.tuner.LockscreenFragment.LockButtonFactory;
 import com.android.systemui.tuner.TunerService;
 
+import lineageos.app.LineageContextConstants;
+
+import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
+
 /**
  * Implementation for the bottom area of the Keyguard, including camera/phone affordance and status
  * text.
@@ -176,8 +180,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private int mBurnInXOffset;
     private int mBurnInYOffset;
     private ActivityIntentHelper mActivityIntentHelper;
-
-    private static final String FOD = "vendor.pa.biometrics.fingerprint.inscreen";
 
     public KeyguardBottomAreaView(Context context) {
         this(context, null);
@@ -439,8 +441,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     private boolean hasInDisplayFingerprint() {
-        return mContext.getPackageManager().hasSystemFeature(FOD)
-                && mIsFingerprintRunning;
+        PackageManager packageManager = mContext.getPackageManager();
+        boolean hasInDisplayFingerprint = packageManager.hasSystemFeature(LineageContextConstants.Features.FOD);
+        return hasInDisplayFingerprint && mIsFingerprintRunning;
     }
 
     public boolean isLeftVoiceAssist() {
