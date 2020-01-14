@@ -171,4 +171,8 @@
 
     <dimen name="header_font_size">20dp</dimen>
 
+    <!-- Custom text clock -->
+    <dimen name="custom_clock_left_padding">55dp</dimen>
+    <dimen name="custom_clock_top_margin">80dp</dimen>
+
 </resources>
