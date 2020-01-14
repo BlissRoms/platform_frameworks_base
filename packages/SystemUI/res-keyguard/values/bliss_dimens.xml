@@ -114,6 +114,7 @@
     <dimen name="lock_clock_font_size_108">108dp</dimen>
 
     <!-- Lock date font size parameters -->
+    <dimen name="lock_date_font_size_0">0dp</dimen>
     <dimen name="lock_date_font_size_1">1dp</dimen>
     <dimen name="lock_date_font_size_2">2dp</dimen>
     <dimen name="lock_date_font_size_3">3dp</dimen>
@@ -167,8 +168,10 @@
 
     <dimen name="clock_oronos_outline_size">4dp</dimen>
 
-    <dimen name="custom_clock_left_padding">50dp</dimen>
-
     <dimen name="header_font_size">20dp</dimen>
+
+    <!-- Custom text clock -->
+    <dimen name="custom_clock_left_padding">50dp</dimen>
+    <dimen name="custom_clock_top_margin">80dp</dimen>
 
 </resources>
