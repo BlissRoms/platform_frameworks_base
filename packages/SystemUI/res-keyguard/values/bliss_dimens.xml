@@ -167,8 +167,10 @@
 
     <dimen name="clock_oronos_outline_size">4dp</dimen>
 
-    <dimen name="custom_clock_left_padding">50dp</dimen>
-
     <dimen name="header_font_size">20dp</dimen>
+
+    <!-- Custom text clock -->
+    <dimen name="custom_clock_left_padding">50dp</dimen>
+    <dimen name="custom_clock_top_margin">80dp</dimen>
 
 </resources>
