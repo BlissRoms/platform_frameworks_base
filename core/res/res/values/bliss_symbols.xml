@@ -117,6 +117,7 @@
     <java-symbol type="style" name="Animation.Toast.SlideLeftRight" />
 
     <!-- Smart charging -->
+    <java-symbol type="bool" name="config_smartChargingAvailable" />
     <java-symbol type="integer" name="config_smartChargingBatteryLevel" />
     <java-symbol type="integer" name="config_smartChargingBatteryResumeLevel" />
     <java-symbol type="string" name="config_SmartChargingSysfsNode" />
