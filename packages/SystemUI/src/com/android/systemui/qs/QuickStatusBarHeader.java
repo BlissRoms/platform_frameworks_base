@@ -296,6 +296,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 QS_SHOW_BATTERY_PERCENT,
                 QS_SHOW_BATTERY_ESTIMATE,
                 STATUS_BAR_BATTERY_STYLE,
+                OMNI_STATUS_BAR_CUSTOM_HEADER,
                 QS_BATTERY_STYLE,
                 QS_BATTERY_LOCATION);
     }
@@ -798,6 +799,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             case OMNI_STATUS_BAR_CUSTOM_HEADER:
                 mHeaderImageEnabled =
                         TunerService.parseIntegerSwitch(newValue, true);
+                updateResources();
                 updateStatusbarProperties();
                 break;
             case QSFooterImpl.QS_SHOW_DRAG_HANDLE:
