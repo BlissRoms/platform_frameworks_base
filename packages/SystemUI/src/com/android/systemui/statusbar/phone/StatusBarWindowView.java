@@ -117,7 +117,7 @@ public class StatusBarWindowView extends FrameLayout {
     private FalsingManager mFalsingManager;
 
     private boolean mDoubleTapToSleepEnabled;
-    private int mQuickQsTotalHeight;
+    private int mQuickQsOffsetHeight;
 
     // Implements the floating action mode for TextView's Cut/Copy/Past menu. Normally provided by
     // DecorView, but since this is a special window we have to roll our own.
@@ -153,7 +153,7 @@ public class StatusBarWindowView extends FrameLayout {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             if (!mService.isDozing() && mDoubleTapToSleepEnabled
-                    && e.getY() < mQuickQsTotalHeight) {
+                    && e.getY() <= mQuickQsOffsetHeight) {
                 PowerManager pm = mContext.getSystemService(PowerManager.class);
                 if (pm != null) {
                     pm.goToSleep(e.getEventTime());
@@ -218,8 +218,8 @@ public class StatusBarWindowView extends FrameLayout {
                 DOUBLE_TAP_SLEEP_GESTURE,
                 Settings.Secure.DOUBLE_TAP_TO_WAKE,
                 Settings.System.DOZE_TRIGGER_DOUBLETAP);
-        mQuickQsTotalHeight = getResources().getDimensionPixelSize(
-                com.android.internal.R.dimen.quick_qs_total_height);
+        mQuickQsOffsetHeight = getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.quick_qs_offset_height);
         mStaticContext = context;
     }
 
