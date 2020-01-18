@@ -14,7 +14,7 @@
 <resources>
 
     <color name="accent_device_default_light">@*android:color/accent_device_default_light</color>
-    <color name="recents_dismiss_all_background_color">@android:color/white</color>
+    <color name="recents_dismiss_all_background_color">@*android:color/accent_device_default_light</color>
     <color name="recents_dismiss_all_icon_color">#8a000000</color>
 
     <!-- Quicksettings main QS background-->
