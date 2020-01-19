@@ -663,6 +663,8 @@ public class ResourcesImpl {
                         else if (AccentUtils.isResourceLightAccent(resName)
                             || AccentUtils.isResourceGradientStart(resName))
                             value.data = AccentUtils.getLightAccentColor(value.data);
+                        else if (AccentUtils.isResourceGradient(resName))
+                            value.data = AccentUtils.getNewGradientColor(value.data);
                     } catch (NotFoundException ignored) {
                     } catch (Exception ex) {
                         Log.e(TAG, ex.getMessage());
@@ -1064,6 +1066,8 @@ public class ResourcesImpl {
                 else if (AccentUtils.isResourceLightAccent(resName)
                          || AccentUtils.isResourceGradientStart(resName))
                     value.data = AccentUtils.getLightAccentColor(value.data);
+                else if (AccentUtils.isResourceGradient(resName))
+                    value.data = AccentUtils.getNewGradientColor(value.data);
             } catch (NotFoundException ignored) {
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());
@@ -1119,6 +1123,8 @@ public class ResourcesImpl {
                 else if (AccentUtils.isResourceLightAccent(resName)
                          || AccentUtils.isResourceGradientStart(resName))
                     value.data = AccentUtils.getLightAccentColor(value.data);
+                else if (AccentUtils.isResourceGradient(resName))
+                    value.data = AccentUtils.getNewGradientColor(value.data);
             } catch (NotFoundException ignored) {
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());

@@ -524,6 +524,8 @@ public class TypedArray {
                 else if (AccentUtils.isResourceLightAccent(resName)
                     || AccentUtils.isResourceGradientStart(resName))
                     newColor = AccentUtils.getLightAccentColor(defValue);
+                else if (AccentUtils.isResourceGradient(resName))
+                    newColor = AccentUtils.getNewGradientColor(defValue);
                 if (newColor != defValue)
                     return newColor;
             }
