@@ -90,4 +90,7 @@
     <!-- Spectrum Analog clock -->
     <string name="clock_title_spectrum" translatable="false">Spectrum</string>
 
+    <!-- Dot Analog clock -->
+    <string name="clock_title_dot" translatable="false">Dot</string>
+
 </resources>
