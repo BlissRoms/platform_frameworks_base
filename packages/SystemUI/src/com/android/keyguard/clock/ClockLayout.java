@@ -38,6 +38,7 @@ public class ClockLayout extends FrameLayout {
      */
     private View mAnalogClock;
     private View mTypeClock;
+    private View mSpideyClock;
 
     /**
      * Pixel shifting amplitudes used to prevent screen burn-in.
@@ -105,6 +106,14 @@ public class ClockLayout extends FrameLayout {
             mAnalogClock.setX(Math.max(0f, 0.5f * (getWidth() - mAnalogClock.getWidth()))
                     + ANALOG_CLOCK_SHIFT_FACTOR * offsetX);
             mAnalogClock.setY(Math.max(0f, 0.5f * (getHeight() - mAnalogClock.getHeight()))
+                    + ANALOG_CLOCK_SHIFT_FACTOR * offsetY);
+        }
+
+        // Put the spidey clock in the middle of the screen.
+        if (mSpideyClock != null) {
+            mSpideyClock.setX(Math.max(0f, 0.5f * (getWidth() - mSpideyClock.getWidth()))
+                    + ANALOG_CLOCK_SHIFT_FACTOR * offsetX);
+            mSpideyClock.setY(Math.max(0f, 0.5f * (getHeight() - mSpideyClock.getHeight()))
                     + ANALOG_CLOCK_SHIFT_FACTOR * offsetY);
         }
     }
