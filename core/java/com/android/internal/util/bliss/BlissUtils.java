@@ -82,6 +82,11 @@ public class BlissUtils {
     public static final String CUSTOM_DOZE_PACKAGE_NAME = "com.custom.ambient.display";
     public static final String ONEPLUS_DOZE_PACKAGE_NAME = "OnePlusDoze";
 
+    public static final String[] SOLARIZED_DARK = {
+            "com.android.theme.solarizeddark.system",
+            "com.android.theme.solarizeddark.systemui",
+    };
+
      // Switch themes
     private static final String[] SWITCH_THEMES = {
         "com.android.system.switch.stock", // 0
