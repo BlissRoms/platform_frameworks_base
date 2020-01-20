@@ -80,4 +80,9 @@ public class ThemesUtils {
     public static final String[] STOCK = {
             "com.android.theme.stock.system",
     };
+
+    public static final String[] SOLARIZED_DARK = {
+            "com.android.theme.solarizeddark.system",
+            "com.android.theme.solarizeddark.systemui",
+    };
 }

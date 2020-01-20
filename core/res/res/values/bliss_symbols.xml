@@ -224,4 +224,7 @@
      <java-symbol type="style" name="Animation.Toast.Translucent" />
      <java-symbol type="style" name="Animation.Toast.SlideRightLeft" />
      <java-symbol type="style" name="Animation.Toast.SlideLeftRight" />
+
+   <!-- Themes -->
+   <java-symbol type="color" name="theme_generic_semi_transparent_color" />
 </resources>

@@ -15,4 +15,7 @@
 -->
 <resources>
 
+    <!-- Themes -->
+    <color name="theme_generic_semi_transparent_color">#EAFFFFFF</color>
+
 </resources>
