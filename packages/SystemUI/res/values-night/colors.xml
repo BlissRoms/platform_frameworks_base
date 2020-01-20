@@ -85,7 +85,7 @@
 
     <color name="volume_dialog_bottom_tint">#26000000</color>
 
-    <color name="recents_dismiss_all_background_color">#141414</color>
+    <color name="recents_dismiss_all_background_color">@*android:color/accent_device_default_dark</color>
     <color name="recents_dismiss_all_icon_color">@android:color/white</color>
 
 </resources>

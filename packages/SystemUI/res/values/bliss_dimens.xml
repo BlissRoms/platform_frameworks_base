@@ -87,7 +87,7 @@
     <dimen name="status_bar_mobile_type_padding">2dp</dimen>
     <dimen name="status_bar_mobile_type_padding_limit">10dp</dimen>
 
-    <dimen name="quick_qs_drag_handle_height">20dp</dimen>
+    <dimen name="quick_qs_drag_handle_height">5dp</dimen>
 
     <dimen name="dismiss_all_button_elevation">10dp</dimen>
     <dimen name="dismiss_all_button_height">55dp</dimen>
