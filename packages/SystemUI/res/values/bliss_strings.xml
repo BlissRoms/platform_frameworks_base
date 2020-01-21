@@ -160,4 +160,16 @@
 
     <string name="qs_footer_bliss_text" translatable="false">#BlissRoms</string>
 
+    <!-- Spidey Analog clock -->
+    <string name="clock_title_spidey" translatable="false">Spidey</string>
+
+    <!-- Spectrum Analog clock -->
+    <string name="clock_title_spectrum" translatable="false">Spectrum</string>
+
+    <!-- Dot Analog clock -->
+    <string name="clock_title_dot" translatable="false">Dot</string>
+
+    <!-- Sneeky Analog clock -->
+    <string name="clock_title_sneeky" translatable="false">Sneeky</string>
+
 </resources>
