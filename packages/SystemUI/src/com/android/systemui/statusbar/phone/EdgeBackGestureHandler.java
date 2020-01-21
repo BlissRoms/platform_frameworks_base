@@ -94,7 +94,11 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
         @Override
         public void onImeVisibilityChanged(boolean imeVisible, int imeHeight) {
             // No need to thread jump, assignments are atomic
-            mImeHeight = imeVisible ? imeHeight : 0;
+            if (mBlockImeSpace) {
+                mImeHeight = imeVisible ? imeHeight : 0;
+            } else {
+                mImeHeight = 0;
+            }
             // TODO: Probably cancel any existing gesture
         }
 
@@ -190,6 +194,8 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
     private static final int HAPTIC_DURATION = 20;
 
     private final Vibrator mVibrator;
+    // should back gesture be movewd above ime if its visible
+    private boolean mBlockImeSpace = true;
 
     public EdgeBackGestureHandler(Context context, OverviewProxyService overviewProxyService) {
         final Resources res = context.getResources();
@@ -215,6 +221,7 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
         mFingerOffset = res.getDimensionPixelSize(R.dimen.navigation_edge_finger_offset);
         updateEdgeHaptic();
         updateCurrentUserResources(res);
+        onSettingsChanged();
     }
 
     public void updateCurrentUserResources(Resources res) {
@@ -279,6 +286,8 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
     public void onSettingsChanged() {
         updateEdgeHeightValue();
         updateEdgeHaptic();
+        mBlockImeSpace = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.BACK_GESTURE_BLOCK_IME, 1, UserHandle.USER_CURRENT) == 1;
     }
 
     public void setStateForBackArrowGesture() {
