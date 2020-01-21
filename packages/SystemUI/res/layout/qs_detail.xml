@@ -30,7 +30,7 @@
         android:id="@+id/qs_detail_top_space"
         android:layout_width="match_parent"
         android:layout_height="@*android:dimen/quick_qs_offset_height"
-        android:background="@android:color/transparent" />
+        android:background="@color/quick_settings_status_bar_background_color" />
 
     <com.android.keyguard.AlphaOptimizedLinearLayout
         android:id="@+id/detail_container"
