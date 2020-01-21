@@ -104,4 +104,7 @@
 
     <!-- Qs visibility -->
     <dimen name="qs_tile_height_wo_label">64dp</dimen>
+
+    <!-- Daily data usage -->
+    <dimen name="data_usage_padding_start">4dp</dimen>
 </resources>
