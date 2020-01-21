@@ -99,4 +99,6 @@
     <!-- Bliss Analog clock -->
     <string name="clock_title_bliss" translatable="false">Bliss</string>
 
+    <!-- Custom num Analog clock -->
+    <string name="clock_title_custom_num" translatable="false">Custom-Num</string>
 </resources>
