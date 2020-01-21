@@ -172,4 +172,7 @@
     <!-- Sneeky Analog clock -->
     <string name="clock_title_sneeky" translatable="false">Sneeky</string>
 
+    <!-- Bliss Analog clock -->
+    <string name="clock_title_bliss" translatable="false">Bliss</string>
+
 </resources>
