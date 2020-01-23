@@ -361,6 +361,38 @@
     <alias name="fantasy" to="fifa2018" />
     <alias name="ITC Stone Serif" to="fifa2018" />
 
+    <family name="roadrage">
+        <font weight="400" style="normal">Road_Rage.ttf</font>
+    </family>
+    <alias name="roadrage-light" to="roadrage" weight="300" />
+    <alias name="roadrage-medium" to="roadrage" weight="500" />
+    <alias name="roadrage-semi-bold" to="roadrage" weight="600" />
+    <alias name="roadrage-bold" to="roadrage" weight="700" />
+    <alias name="times" to="roadrage" />
+    <alias name="times new roman" to="roadrage" />
+    <alias name="palatino" to="roadrage" />
+    <alias name="georgia" to="roadrage" />
+    <alias name="baskerville" to="roadrage" />
+    <alias name="goudy" to="roadrage" />
+    <alias name="fantasy" to="roadrage" />
+    <alias name="ITC Stone Serif" to="roadrage" />
+
+    <family name="20seven">
+        <font weight="400" style="normal">20SEVEN.ttf</font>
+    </family>
+    <alias name="20seven-light" to="20seven" weight="300" />
+    <alias name="20seven-medium" to="20seven" weight="500" />
+    <alias name="20seven-semi-bold" to="20seven" weight="600" />
+    <alias name="20seven-bold" to="20seven" weight="700" />
+    <alias name="times" to="20seven" />
+    <alias name="times new roman" to="20seven" />
+    <alias name="palatino" to="20seven" />
+    <alias name="georgia" to="20seven" />
+    <alias name="baskerville" to="20seven" />
+    <alias name="goudy" to="20seven" />
+    <alias name="fantasy" to="20seven" />
+    <alias name="ITC Stone Serif" to="20seven" />
+
     <family name="monospace">
         <font weight="400" style="normal">DroidSansMono.ttf</font>
     </family>
