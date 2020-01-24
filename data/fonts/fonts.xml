@@ -281,6 +281,118 @@
     <alias name="fantasy" to="comfortaa" />
     <alias name="ITC Stone Serif" to="comfortaa" />
 
+    <family name="exotwo">
+        <font weight="400" style="normal">Exotwo.ttf</font>
+    </family>
+
+    <alias name="exotwo-medium" to="exotwo" weight="500" />
+    <alias name="exotwo-semi-bold" to="exotwo" weight="600" />
+    <alias name="exotwo-bold" to="exotwo" weight="700" />
+    <alias name="times" to="exotwo" />
+    <alias name="times new roman" to="exotwo" />
+    <alias name="palatino" to="exotwo" />
+    <alias name="georgia" to="exotwo" />
+    <alias name="baskerville" to="exotwo" />
+    <alias name="goudy" to="exotwo" />
+    <alias name="fantasy" to="exotwo" />
+    <alias name="ITC Stone Serif" to="exotwo" />
+
+    <family name="storopia">
+        <font weight="400" style="normal">Storopia.ttf</font>
+    </family>
+
+    <alias name="storopia-medium" to="storopia" weight="500" />
+    <alias name="storopia-semi-bold" to="storopia" weight="600" />
+    <alias name="storopia-bold" to="storopia" weight="700" />
+    <alias name="times" to="storopia" />
+    <alias name="times new roman" to="storopia" />
+    <alias name="palatino" to="storopia" />
+    <alias name="georgia" to="storopia" />
+    <alias name="baskerville" to="storopia" />
+    <alias name="goudy" to="storopia" />
+    <alias name="fantasy" to="storopia" />
+    <alias name="ITC Stone Serif" to="storopia" />
+
+    <family name="ubuntu">
+        <font weight="400" style="normal">Ubuntu.ttf</font>
+    </family>
+
+    <alias name="ubuntu-medium" to="ubuntu" weight="500" />
+    <alias name="ubuntu-semi-bold" to="ubuntu" weight="600" />
+    <alias name="ubuntu-bold" to="ubuntu" weight="700" />
+    <alias name="times" to="ubuntu" />
+    <alias name="times new roman" to="ubuntu" />
+    <alias name="palatino" to="ubuntu" />
+    <alias name="georgia" to="ubuntu" />
+    <alias name="baskerville" to="ubuntu" />
+    <alias name="goudy" to="ubuntu" />
+    <alias name="fantasy" to="ubuntu" />
+    <alias name="ITC Stone Serif" to="ubuntu" />
+
+    <family name="nokiapure">
+        <font weight="400" style="normal">Nokia_Pure.ttf</font>
+    </family>
+    <alias name="nokiapure-light" to="nokiapure" weight="300" />
+    <alias name="nokiapure-medium" to="nokiapure" weight="500" />
+    <alias name="nokiapure-semi-bold" to="nokiapure" weight="600" />
+    <alias name="nokiapure-bold" to="nokiapure" weight="700" />
+    <alias name="times" to="nokiapure" />
+    <alias name="times new roman" to="nokiapure" />
+    <alias name="palatino" to="nokiapure" />
+    <alias name="georgia" to="nokiapure" />
+    <alias name="baskerville" to="nokiapure" />
+    <alias name="goudy" to="nokiapure" />
+    <alias name="fantasy" to="nokiapure" />
+    <alias name="ITC Stone Serif" to="nokiapure" />
+
+    <family name="fifa2018">
+        <font weight="400" style="normal">Fifa_2018.ttf</font>
+    </family>
+    <alias name="fifa2018-light" to="fifa2018" weight="300" />
+    <alias name="fifa2018-medium" to="fifa2018" weight="500" />
+    <alias name="fifa2018-semi-bold" to="fifa2018" weight="600" />
+    <alias name="fifa2018-bold" to="fifa2018" weight="700" />
+    <alias name="times" to="fifa2018" />
+    <alias name="times new roman" to="fifa2018" />
+    <alias name="palatino" to="fifa2018" />
+    <alias name="georgia" to="fifa2018" />
+    <alias name="baskerville" to="fifa2018" />
+    <alias name="goudy" to="fifa2018" />
+    <alias name="fantasy" to="fifa2018" />
+    <alias name="ITC Stone Serif" to="fifa2018" />
+
+    <family name="roadrage">
+        <font weight="400" style="normal">Road_Rage.ttf</font>
+    </family>
+    <alias name="roadrage-light" to="roadrage" weight="300" />
+    <alias name="roadrage-medium" to="roadrage" weight="500" />
+    <alias name="roadrage-semi-bold" to="roadrage" weight="600" />
+    <alias name="roadrage-bold" to="roadrage" weight="700" />
+    <alias name="times" to="roadrage" />
+    <alias name="times new roman" to="roadrage" />
+    <alias name="palatino" to="roadrage" />
+    <alias name="georgia" to="roadrage" />
+    <alias name="baskerville" to="roadrage" />
+    <alias name="goudy" to="roadrage" />
+    <alias name="fantasy" to="roadrage" />
+    <alias name="ITC Stone Serif" to="roadrage" />
+
+    <family name="20seven">
+        <font weight="400" style="normal">20SEVEN.ttf</font>
+    </family>
+    <alias name="20seven-light" to="20seven" weight="300" />
+    <alias name="20seven-medium" to="20seven" weight="500" />
+    <alias name="20seven-semi-bold" to="20seven" weight="600" />
+    <alias name="20seven-bold" to="20seven" weight="700" />
+    <alias name="times" to="20seven" />
+    <alias name="times new roman" to="20seven" />
+    <alias name="palatino" to="20seven" />
+    <alias name="georgia" to="20seven" />
+    <alias name="baskerville" to="20seven" />
+    <alias name="goudy" to="20seven" />
+    <alias name="fantasy" to="20seven" />
+    <alias name="ITC Stone Serif" to="20seven" />
+
     <family name="monospace">
         <font weight="400" style="normal">DroidSansMono.ttf</font>
     </family>

@@ -37,6 +37,9 @@ LOCAL_REQUIRED_MODULES := \
 	FontBariolSourceOverlay \
 	FontCagliostroSourceOverlay \
 	FontComfortaaSourceOverlay \
+	FontExotwoSourceOverlay \
+	FontStoropiaSourceOverlay \
+	FontUbuntuSourceOverlay \
 	FontComicSansSourceOverlay \
 	FontCoolstorySourceOverlay \
 	FontGoogleSansSourceOverlay \
@@ -47,6 +50,10 @@ LOCAL_REQUIRED_MODULES := \
 	FontSamsungOneSourceOverlay \
 	FontSonySketchSourceOverlay \
 	FontSurferSourceOverlay \
+	FontNokiaPureSourceOverlay \
+	FontFifa2018SourceOverlay \
+	Font20SevenSourceOverlay \
+	FontRoadRageSourceOverlay \
 	IconPackCircularAndroidOverlay \
 	IconPackCircularPixelLauncherOverlay \
 	IconPackCircularPixelThemePickerOverlay \
