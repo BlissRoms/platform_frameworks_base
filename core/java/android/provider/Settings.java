@@ -10910,6 +10910,12 @@ public final class Settings {
         private static final Validator TAP_GESTURE_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Accent color
+         * @hide
+         */
+        public static final String ACCENT_COLOR_PROP = "accent_color_prop";
+
+        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
