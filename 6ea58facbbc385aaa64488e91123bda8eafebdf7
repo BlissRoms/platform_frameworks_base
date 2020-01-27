@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "949d6bda_b14262a0",
+        "filename": "packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-01-27T02:21:51Z",
+      "side": 1,
+      "message": "Change this to 1,1 we need running services icon , and that is anyway on expanded qs , so quickbar won\u0027t be affected",
+      "revId": "6ea58facbbc385aaa64488e91123bda8eafebdf7",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fbd4b01d_87a220e1",
+        "filename": "packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-01-27T02:21:51Z",
+      "side": 1,
+      "message": "Again go back to previous as we need persistent settings icon so switch to view.VISIBLE",
+      "revId": "6ea58facbbc385aaa64488e91123bda8eafebdf7",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    }
+  ]
+}
