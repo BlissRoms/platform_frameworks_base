@@ -70,12 +70,7 @@
         android:layout_toStartOf="@id/system_icons_container"
         android:gravity="center_vertical"
         android:ellipsize="marquee"
-        android:marqueeRepeatLimit="marquee_forever"
         android:textDirection="locale"
-        android:textAppearance="@style/TextAppearance.StatusBar.Clock"
-        android:textColor="?attr/wallpaperTextColorSecondary"
-        android:singleLine="true"
-        systemui:showMissingSim="true"
-        systemui:showAirplaneMode="true" />
+        android:singleLine="true" />
 
 </com.android.systemui.statusbar.phone.KeyguardStatusBarView>
