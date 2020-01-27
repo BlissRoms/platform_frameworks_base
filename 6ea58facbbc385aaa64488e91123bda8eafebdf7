@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ac3a03b8_474ca614",
+        "filename": "packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-01-27T06:17:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "949d6bda_b14262a0",
+      "revId": "6ea58facbbc385aaa64488e91123bda8eafebdf7",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fbd4b01d_87a220e1",
         "filename": "packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java",
         "patchSetId": 3
@@ -33,6 +51,24 @@
       "revId": "6ea58facbbc385aaa64488e91123bda8eafebdf7",
       "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f60ccfa6_6a793458",
+        "filename": "packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-01-27T06:17:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fbd4b01d_87a220e1",
+      "revId": "6ea58facbbc385aaa64488e91123bda8eafebdf7",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": false
     }
   ]
 }
