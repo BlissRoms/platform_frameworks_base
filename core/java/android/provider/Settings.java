@@ -5797,6 +5797,16 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
+         * Whether to use accent color for pulse
+         * @hide
+         */
+        public static final String AMBIENT_NOTIFICATION_LIGHT_ACCENT = "ambient_notification_light_accent";
+
+        /** @hide */
+        private static final Validator AMBIENT_NOTIFICATION_LIGHT_ACCENT_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * Ambient edge light color
          * @hide
          */
@@ -6057,6 +6067,7 @@ public final class Settings {
             AMBIENT_NOTIFICATION_LIGHT_ACTIVATED,
             AMBIENT_NOTIFICATION_LIGHT_ENABLED,
             AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD,
+            AMBIENT_NOTIFICATION_LIGHT_ACCENT,
             PULSE_AMBIENT_LIGHT_COLOR,
             PULSE_AMBIENT_LIGHT_DURATION,
         };
@@ -6393,6 +6404,7 @@ public final class Settings {
             VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ACTIVATED, AMBIENT_NOTIFICATION_LIGHT_ACTIVATED_VALIDATOR);
             VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ENABLED, AMBIENT_NOTIFICATION_LIGHT_ENABLED_VALIDATOR);
             VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD, AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD_VALIDATOR);
+            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ACCENT, AMBIENT_NOTIFICATION_LIGHT_ACCENT_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_COLOR, PULSE_AMBIENT_LIGHT_COLOR_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_DURATION, PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR);
         }
