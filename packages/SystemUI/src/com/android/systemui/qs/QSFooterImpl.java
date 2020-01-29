@@ -397,11 +397,6 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
 
     @Override
     public void onClick(View v) {
-        // Don't do anything until view are unhidden
-        if (!mExpanded) {
-            return;
-        }
-
         if (v == mSettingsButton) {
             if (!mDeviceProvisionedController.isCurrentUserSetup()) {
                 // If user isn't setup just unlock the device and dump them back at SUW.
