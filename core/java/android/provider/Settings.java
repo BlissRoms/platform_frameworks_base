@@ -5792,6 +5792,27 @@ public final class Settings {
         public static final String STATUS_BAR_CARRIER_FONT_STYLE = "status_bar_carrier_font_style";
 
         /**
+         * @hide
+         */
+        public static final String QS_QUICKBAR_COLUMNS = "qs_quickbar_columns";
+
+        /**
+         * QS blur
+         * @hide
+         */
+        public static final String QS_BLUR = "qs_blur";
+        /** @hide */
+        private static final Validator QS_BLUR_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
+         * QS blur alpha
+         * @hide
+         */
+        public static final String QS_BLUR_ALPHA = "qs_blur_alpha";
+        /** @hide */
+        private static final Validator QS_BLUR_ALPHA_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5903,6 +5924,8 @@ public final class Settings {
             QS_PANEL_BG_USE_WALL,
             QS_PANEL_BG_USE_FW,
             QS_PANEL_BG_USE_ACCENT,
+            QS_BLUR,
+            QS_BLUR_ALPHA,
         };
 
         /**
@@ -6231,6 +6254,8 @@ public final class Settings {
             VALIDATORS.put(QS_PANEL_BG_USE_WALL, QS_PANEL_BG_USE_WALL_VALIDATOR);
             VALIDATORS.put(QS_PANEL_BG_USE_FW, QS_PANEL_BG_USE_FW_VALIDATOR);
             VALIDATORS.put(QS_PANEL_BG_USE_ACCENT, QS_PANEL_BG_USE_ACCENT_VALIDATOR);
+            VALIDATORS.put(QS_BLUR, QS_BLUR_VALIDATOR);
+            VALIDATORS.put(QS_BLUR_ALPHA, QS_BLUR_ALPHA_VALIDATOR);
         }
 
         /**
