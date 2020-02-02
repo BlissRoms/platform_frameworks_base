@@ -137,6 +137,8 @@ public class KeyguardStatusView extends GridLayout implements
             "system:" + Settings.System.LOCK_DATE_FONT_STYLE;
     private static final String LOCKSCREEN_CLOCK_SELECTION =
             "system:" + Settings.System.LOCKSCREEN_CLOCK_SELECTION;
+    private static final String LOCKSCREEN_CLOCK =
+            "system:" + Settings.System.LOCKSCREEN_CLOCK;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -202,6 +204,7 @@ public class KeyguardStatusView extends GridLayout implements
         tunerService.addTunable(this, LOCK_CLOCK_FONT_STYLE);
         tunerService.addTunable(this, LOCK_DATE_FONT_STYLE);
         tunerService.addTunable(this, LOCKSCREEN_CLOCK_SELECTION);
+        tunerService.addTunable(this, LOCKSCREEN_CLOCK);
         onDensityOrFontScaleChanged();
     }
 
@@ -321,43 +324,14 @@ public class KeyguardStatusView extends GridLayout implements
                     getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
             }
 
-            switch (mClockSelection) {
-                case 1: // hidden
-                    mClockView.setVisibility(View.GONE);
-                    break;
-                case 2: // default
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 3: // default (bold)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 4: // default (small font)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 5: // default (accent)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 6: // default (accent hr)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 7: // default (accent min)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 8: // sammy
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 9: // sammy (bold)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 10: // sammy (accent)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 11: // sammy (accent alt)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                }
-            refreshFormat();
-            setFontStyle(mClockView, mLockClockFontStyle);
+        if (mShowClock)
+            mClockView.setVisibility(View.VISIBLE);
+        else
+            mClockView.setVisibility(View.GONE);
+
+        }
+        refreshFormat();
+        setFontStyle(mClockView, mLockClockFontStyle);
         }
         if (mOwnerInfo != null) {
             mOwnerInfo.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -501,6 +475,10 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case LOCKSCREEN_CLOCK_SELECTION:
                     mClockSelection = TunerService.parseInteger(newValue, 2);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCKSCREEN_CLOCK:
+                    mShowClock = TunerService.parseInteger(newValue, 1);
                 onDensityOrFontScaleChanged();
                 break;
             default:
