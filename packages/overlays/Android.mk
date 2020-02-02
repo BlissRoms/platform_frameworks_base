@@ -52,6 +52,28 @@ LOCAL_REQUIRED_MODULES := \
 	FontGrandHotelSourceOverlay \
 	FontRedressedSourceOverlay \
 	FontSanFranciscoDisplayProSourceOverlay \
+        FontBigNoodle \
+        FontBikoHanken \
+        FontComicNeue \
+        FontExo2 \
+        FontFinlandica \
+        FontGoodlight \
+        FontGravity \
+        FontInter \
+        FontLeagueMonoNarrow \
+        FontLeonSans \
+        FontMescla \
+        FontMittelschrift \
+        FontOdibee \
+        FontPanamericana \
+        FontPissel \
+        FontPTSansMono \
+        FontReemKufi \
+        FontRoboto \
+        FontRouterGothicNarrow \
+        FontRoutedGothicRobotoCondensed \
+        FontSofiaSans \
+        FontSofiaSansSemiCondensed \
 	IconPackCircularAndroidOverlay \
 	IconPackCircularPixelLauncherOverlay \
 	IconPackCircularPixelThemePickerOverlay \
