@@ -326,6 +326,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.STATUS_BAR_TICKER_ANIMATION_MODE;
     private static final String STATUS_BAR_TICKER_TICK_DURATION =
             "system:" + Settings.System.STATUS_BAR_TICKER_TICK_DURATION;
+    private static final String BRIGHTNESS_SLIDER_QS_UNEXPANDED =
+            "system:" + Settings.System.BRIGHTNESS_SLIDER_QS_UNEXPANDED;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -718,6 +720,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             (SysuiStatusBarStateController) Dependency.get(StatusBarStateController.class);
 
     private boolean mDisplayCutoutHidden;
+    private boolean mUnexpandedQSBrightnessSlider;
 
     private final KeyguardUpdateMonitorCallback mUpdateCallback =
             new KeyguardUpdateMonitorCallback() {
@@ -831,6 +834,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         tunerService.addTunable(this, LOCKSCREEN_CHARGING_ANIMATION);
         tunerService.addTunable(this, STATUS_BAR_TICKER_ANIMATION_MODE);
         tunerService.addTunable(this, STATUS_BAR_TICKER_TICK_DURATION);
+        tunerService.addTunable(this, BRIGHTNESS_SLIDER_QS_UNEXPANDED);
 
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
@@ -1948,6 +1952,23 @@ public class StatusBar extends SystemUI implements DemoMode,
     @Override
     public void onColorsChanged(ColorExtractor extractor, int which) {
         updateTheme();
+    }
+
+    public void updateBrightnessSliderOverlay() {
+        boolean UnexpandedQSBrightnessSlider = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.BRIGHTNESS_SLIDER_QS_UNEXPANDED, 0, UserHandle.USER_CURRENT) == 1;
+        if (mUnexpandedQSBrightnessSlider != UnexpandedQSBrightnessSlider){
+            mUnexpandedQSBrightnessSlider = UnexpandedQSBrightnessSlider;
+            mUiOffloadThread.submit(() -> {
+                final IOverlayManager mOverlayManager = IOverlayManager.Stub.asInterface(
+                                ServiceManager.getService(Context.OVERLAY_SERVICE));
+                try {
+                    mOverlayManager.setEnabled("com.extendedui.overlay.brightnessslider",
+                                mUnexpandedQSBrightnessSlider, mLockscreenUserManager.getCurrentUserId());
+                } catch (RemoteException ignored) {
+                }
+            });
+        }
     }
 
     private void updateCutoutOverlay() {
@@ -5564,6 +5585,14 @@ public class StatusBar extends SystemUI implements DemoMode,
                         TunerService.parseInteger(newValue, 3000);
                 if (mTicker != null) {
                     mTicker.updateTickDuration(mTickerTickDuration);
+                }
+                break;
+            case BRIGHTNESS_SLIDER_QS_UNEXPANDED:
+                mUnexpandedQSBrightnessSlider =
+                        TunerService.parseIntegerSwitch(newValue, false);
+                updateBrightnessSliderOverlay();
+                if (mQSPanel != null) {
+                    mQSPanel.updateResources();
                 }
                 break;
             default:
