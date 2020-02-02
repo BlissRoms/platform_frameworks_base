@@ -138,6 +138,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private int animStyle, animDuration, interpolatorType;
 
     private final Vibrator mVibrator;
+    private boolean mQSBrightnessSlider;
 
     public QSPanel(Context context) {
         this(context, null);
@@ -236,6 +237,10 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         } else {
             addView((View) mTileLayout);
             addView(mBrightnessView);
+        }
+
+        if (mQSBrightnessSlider) {
+            removeView(mBrightnessView);
         }
 
         addDivider();
@@ -338,6 +343,11 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             mBrightnessSlider = TunerService.parseInteger(newValue, 1);
             mBrightnessView.setVisibility(mBrightnessSlider != 0 ? VISIBLE : GONE);
             restartQSPanel();
+        } else if (BRIGHTNESS_SLIDER_QS_UNEXPANDED.equals(key)) {
+            mQSBrightnessSlider  = TunerService.parseIntegerSwitch(newValue, false);
+            if (mQSBrightnessSlider) {
+                removeView(mBrightnessView);
+            }
         } else if (QS_SHOW_BRIGHTNESS_BUTTONS.equals(key)) {
             updateViewVisibilityForTuningValue(mMinBrightness, newValue);
             updateViewVisibilityForTuningValue(mMaxBrightness, newValue);
@@ -469,7 +479,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     }
 
     public void updateBrightnessMirror() {
-        if (mBrightnessMirrorController != null) {
+        if (mBrightnessMirrorController != null && !mQSBrightnessSlider) {
             ToggleSliderView brightnessSlider = findViewById(R.id.brightness_slider);
             ToggleSliderView mirrorSlider = mBrightnessMirrorController.getMirror()
                     .findViewById(R.id.brightness_slider);
