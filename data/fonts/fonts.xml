@@ -471,6 +471,97 @@
     <alias name="fantasy" to="sanfrancisco" />
     <alias name="ITC Stone Serif" to="sanfrancisco" />
 
+    <family name="bignoodle-italic">
+        <font weight="300" style="normal">BigNoodleTilting-Italic.ttf</font>
+    </family>
+    <family name="bignoodle-regular">
+        <font weight="300" style="normal">BigNoodleTilting-Regular.ttf</font>
+    </family>
+    <family name="hanken">
+        <font weight="300" style="normal">Hanken-Light.ttf</font>
+    </family>
+    <family name="mittelschrift">
+        <font weight="300" style="normal">din1451alt.ttf</font>
+    </family>
+    <family name="reemkufi">
+        <font weight="300" style="normal">ReemKufi-Regular.ttf</font>
+    </family>
+    <family name="comic-neue-bold">
+        <font weight="300" style="normal">ComicNeue-Bold.ttf</font>
+    </family>
+    <family name="comic-neue">
+        <font weight="300" style="normal">ComicNeue-Regular.ttf</font>
+    </family>
+    <family name="exo2-regular">
+        <font weight="300" style="normal">Exo2-Regular.ttf</font>
+    </family>
+    <family name="exo2-semibold">
+        <font weight="300" style="normal">Exo2-SemiBold.ttf</font>
+    </family>
+    <family name="finlandica">
+        <font weight="300" style="normal">Finlandica-Regular.ttf</font>
+    </family>
+    <family name="goodlight">
+        <font weight="300" style="normal">Goodlight.ttf</font>
+    </family>
+    <family name="gravity-regular">
+        <font weight="300" style="normal">Gravity-Regular.ttf</font>
+    </family>
+    <family name="inter-regular">
+        <font weight="300" style="normal">Inter-Regular.ttf</font>
+    </family>
+    <family name="inter-medium-italic">
+        <font weight="300" style="normal">Inter-MediumItalic.ttf</font>
+    </family>
+    <family name="league-mono-n-regular">
+        <font weight="300" style="normal">LeagueMono-RegularNarrow.ttf</font>
+    </family>
+    <family name="league-mono-n-medium">
+        <font weight="300" style="normal">LeagueMono-MediumNarrow.ttf</font>
+    </family>
+    <family name="league-mono-n-bold">
+        <font weight="300" style="normal">LeagueMono-BoldNarrow.ttf</font>
+    </family>
+    <family name="league-mono-n-semibold">
+        <font weight="300" style="normal">LeagueMono-SemiBoldNarrow.ttf</font>
+    </family>
+    <family name="leonsans-regular">
+        <font weight="300" style="normal">LeonSans-Regular.ttf</font>
+    </family>
+    <family name="mescla-regular">
+        <font weight="300" style="normal">mescla_regular.ttf</font>
+    </family>
+    <family name="odibee-sans">
+        <font weight="300" style="normal">OdibeeSans-Regular.ttf</font>
+    </family>
+    <family name="panamericana">
+        <font weight="300" style="normal">Panamericana-Display.ttf</font>
+    </family>
+    <family name="pt-sans">
+        <font weight="300" style="normal">PTSans-Regular.ttf</font>
+    </family>
+    <family name="pt-mono">
+        <font weight="300" style="normal">PTMono-Regular.ttf</font>
+    </family>
+    <family name="rounded-gothic-narrow">
+        <font weight="300" style="normal">routed-gothic-narrow.ttf</font>
+    </family>
+    <family name="rounded-gothic-narrow-half-italic">
+        <font weight="300" style="normal">routed-gothic-narrow-half-italic.ttf</font>
+    </family>
+    <family name="sofia-sans-regular">
+        <font weight="300" style="normal">SofiaSans-Regular.ttf</font>
+    </family>
+    <family name="sofia-sans-medium">
+        <font weight="300" style="normal">SofiaSans-Medium.ttf</font>
+    </family>
+    <family name="sofia-semicondensed-regular">
+        <font weight="300" style="normal">SofiaSansSemiCond-Regular.ttf</font>
+    </family>
+    <family name="sofia-semicondensed-medium">
+        <font weight="300" style="normal">SofiaSansSemiCond-Medium.ttf</font>
+    </family>
+
     <family name="monospace">
         <font weight="400" style="normal">DroidSansMono.ttf</font>
     </family>
