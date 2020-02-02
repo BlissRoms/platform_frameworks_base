@@ -324,12 +324,9 @@ public class KeyguardStatusView extends GridLayout implements
                     getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
             }
 
-        if (mShowClock)
-            mClockView.setVisibility(View.VISIBLE);
-        else
-            mClockView.setVisibility(View.GONE);
+        mClockView.setVisibility(mDarkAmount != 1
+                ? (mShowClock ? View.VISIBLE : View.GONE) : View.VISIBLE);
 
-        }
         refreshFormat();
         setFontStyle(mClockView, mLockClockFontStyle);
         }
