@@ -2117,6 +2117,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_BLUR_ALPHA),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_CLOCK),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2149,6 +2152,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mQSPanel.getHost().reloadAllTiles();
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_BLUR_ALPHA))) {
                 updateBlurVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.LOCKSCREEN_CLOCK))) {
+                updateKeyguardStatusSettings();
             }
         }
 
@@ -2162,6 +2167,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             setMaxKeyguardNotifConfig();
             updateQSPanel();
             setHideArrowForBackGesture();
+            updateKeyguardStatusSettings();
         }
     }
 
@@ -2184,6 +2190,10 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mQuickQSPanel != null) {
             mQuickQSPanel.updateSettings();
         }
+    }
+
+    private void updateKeyguardStatusSettings() {
+        mNotificationPanel.updateKeyguardStatusSettings();
     }
 
     private void setHideArrowForBackGesture() {

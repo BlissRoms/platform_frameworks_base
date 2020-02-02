@@ -118,6 +118,7 @@ public class KeyguardStatusView extends GridLayout implements
     private CurrentWeatherView mWeatherView;
     private boolean mShowWeather;
     private boolean mOmniStyle;
+    private boolean mShowClock;
 
     /**
      * Bottom margin that defines the margin between bottom of smart space and top of notification
@@ -321,43 +322,8 @@ public class KeyguardStatusView extends GridLayout implements
                     getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
             }
 
-            switch (mClockSelection) {
-                case 1: // hidden
-                    mClockView.setVisibility(View.GONE);
-                    break;
-                case 2: // default
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 3: // default (bold)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 4: // default (small font)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 5: // default (accent)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 6: // default (accent hr)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 7: // default (accent min)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 8: // sammy
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 9: // sammy (bold)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 10: // sammy (accent)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 11: // sammy (accent alt)
-                    mClockView.setVisibility(View.VISIBLE);
-                    break;
-                }
-            refreshFormat();
-            setFontStyle(mClockView, mLockClockFontStyle);
+        refreshFormat();
+        setFontStyle(mClockView, mLockClockFontStyle);
         }
         if (mOwnerInfo != null) {
             mOwnerInfo.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -761,6 +727,18 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.LOCKSCREEN_WEATHER_STYLE, 0,
                 UserHandle.USER_CURRENT) == 0;
 
+        mShowClock = Settings.System.getIntForUser(resolver,
+                Settings.System.LOCKSCREEN_CLOCK, 1,
+				UserHandle.USER_CURRENT) == 1;
+
+        mClockView = findViewById(R.id.keyguard_clock_container);
+        if (mShowClock)
+            mClockView.setVisibility(View.VISIBLE);
+        else
+            mClockView.setVisibility(View.GONE);
+
+        }
+
         if (mWeatherView != null) {
             if (mShowWeather && mOmniStyle) {
                 mWeatherView.setVisibility(View.VISIBLE);
@@ -771,5 +749,9 @@ public class KeyguardStatusView extends GridLayout implements
                 mWeatherView.disableUpdates();
             }
         }
+    }
+
+    public void updateAll() {
+        updateSettings();
     }
 }
