@@ -671,6 +671,7 @@ public class KeyguardStatusView extends GridLayout implements
         final int blendedTextColor = ColorUtils.blendARGB(mTextColor, Color.WHITE, mDarkAmount);
         mKeyguardSlice.setDarkAmount(mDarkAmount);
         mClockView.setTextColor(blendedTextColor);
+        updateSettings();
     }
 
     private void layoutOwnerInfo() {
@@ -732,12 +733,8 @@ public class KeyguardStatusView extends GridLayout implements
 				UserHandle.USER_CURRENT) == 1;
 
         mClockView = findViewById(R.id.keyguard_clock_container);
-        if (mShowClock)
-            mClockView.setVisibility(View.VISIBLE);
-        else
-            mClockView.setVisibility(View.GONE);
-
-        }
+        mClockView.setVisibility(mDarkAmount != 1
+                ? (mShowClock ? View.VISIBLE : View.GONE) : View.VISIBLE);
 
         if (mWeatherView != null) {
             if (mShowWeather && mOmniStyle) {
