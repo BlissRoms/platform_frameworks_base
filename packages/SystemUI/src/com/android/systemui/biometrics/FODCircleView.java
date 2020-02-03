@@ -256,8 +256,14 @@ public class FODCircleView extends ImageView implements ConfigurationListener, T
 
         @Override
         public void onScreenTurnedOff() {
-            hideCircle();
+            hide();
         }
+
+        @Override
+        public void onScreenTurnedOn() {
+            if (mUpdateMonitor.isFingerprintDetectionRunning()) {
+                show();
+            }
 
         @Override
         public void onBiometricHelp(int msgId, String helpString,
@@ -555,6 +561,11 @@ public class FODCircleView extends ImageView implements ConfigurationListener, T
     }
 
     public void show() {
+        if (!mUpdateMonitor.isScreenOn()) {
+            // Keyguard is shown just after screen turning off
+            return;
+        }
+
         if (mIsBouncer && !isPinOrPattern(mUpdateMonitor.getCurrentUser())) {
             // Ignore show calls when Keyguard password screen is being shown
             return;
