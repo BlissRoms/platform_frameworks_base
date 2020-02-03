@@ -7077,6 +7077,18 @@ public final class Settings {
         public static final String UDFPS_ANIM_STYLE = "udfps_anim_style";
 
         /**
+         * Which Vibration Pattern to use
+         * 0: dzzz-dzzz
+         * 1: dzzz-da
+         * 2: mm-mm-mm
+         * 3: da-da-dzzz
+         * 4: da-dzzz-da
+         * @hide
+         */
+        @Readable
+        public static final String RINGTONE_VIBRATION_PATTERN = "ringtone_vibration_pattern";
+
+        /**
          * Whether keyguard will rotate
          * 0 = false, 1 = true
          */
