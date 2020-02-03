@@ -74,6 +74,9 @@ public class NotificationLightsView extends RelativeLayout {
         boolean useAccent = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_PULSE_ACCENT,
                 0, UserHandle.USER_CURRENT) != 0;
+        int repeat = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.AMBIENT_LIGHT_REPEAT_COUNT, 0,
+                UserHandle.USER_CURRENT);
         int color = useAccent ?
                 Utils.getColorAccentDefaultColor(getContext()) : usercolor;
         if (DEBUG) Log.d(TAG, "color = " + Integer.toHexString(color));
@@ -83,7 +86,11 @@ public class NotificationLightsView extends RelativeLayout {
         rightView.setColorFilter(color);
         mLightAnimator = ValueAnimator.ofFloat(new float[]{0.0f, 2.0f});
         mLightAnimator.setDuration(duration);
-        mLightAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            if (repeat == 0) {
+                mLightAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            } else {
+                mLightAnimator.setRepeatCount(repeat - 1);
+            }
         mLightAnimator.setRepeatMode(ValueAnimator.RESTART);
         mLightAnimator.addUpdateListener(new AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
