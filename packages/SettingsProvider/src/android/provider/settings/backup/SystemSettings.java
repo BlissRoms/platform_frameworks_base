@@ -89,5 +89,6 @@ public class SystemSettings {
         Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
         Settings.System.NOTIFICATION_HEADERS,
         Settings.System.USE_OLD_MOBILETYPE,
+        Settings.System.RINGTONE_VIBRATION_PATTERN,
     };
 }
