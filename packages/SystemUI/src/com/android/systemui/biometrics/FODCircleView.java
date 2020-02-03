@@ -69,6 +69,7 @@ public class FODCircleView extends ImageView {
 
     private IFingerprintInscreen mFingerprintInscreenDaemon;
 
+    private int mDreamingOffsetX;
     private int mDreamingOffsetY;
 
     private boolean mIsBouncer;
@@ -198,7 +199,32 @@ public class FODCircleView extends ImageView {
         super.onDraw(canvas);
 
         if (mIsCircleShowing) {
-            canvas.drawCircle(mSize / 2, mSize / 2, mSize / 2.0f, mPaintFingerprint);
+            if (getFODPressedState() == 0) {
+                //canvas.drawCircle(mSize / 2, mSize / 2, mSize / 2.0f, mPaintFingerprint);
+                setImageResource(R.drawable.fod_icon_pressed);
+            } else if (getFODPressedState() == 1) {
+                //canvas.drawCircle(mSize / 2, mSize / 2, mSize / 2.0f, mPaintFingerprint);
+                setImageResource(R.drawable.fod_icon_pressed_white);
+            } else if (getFODPressedState() == 2) {
+                canvas.drawCircle(mSize / 2, mSize / 2, mSize / 2.0f, mPaintFingerprint);
+            }
+        }
+    }
+
+    private int getFODPressedState() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FOD_PRESSED_STATE, 0);
+    }
+
+    private void setFODPressedState() {
+        int fodpressed = getFODPressedState();
+
+        if (fodpressed == 0) {
+            setImageResource(R.drawable.fod_icon_pressed);
+        } else if (fodpressed == 1) {
+            setImageResource(R.drawable.fod_icon_pressed_white);
+        } else if (fodpressed == 2) {
+            setImageDrawable(null);
         }
     }
 
@@ -296,11 +322,14 @@ public class FODCircleView extends ImageView {
 
         setKeepScreenOn(true);
 
-        if (mIsDreaming) mWakeLock.acquire(500);
+        if (mIsDreaming) {
+            mWakeLock.acquire(300);
+        }
+
         setDim(true);
         updateAlpha();
 
-        setImageDrawable(null);
+        setFODPressedState();
         invalidate();
     }
 
@@ -435,8 +464,6 @@ public class FODCircleView extends ImageView {
     private void updateAlpha() {
         if (mIsCircleShowing) {
             setAlpha(1.0f);
-        } else {
-            setAlpha(mIsDreaming ? 0.5f : 1.0f);
         }
     }
 
@@ -474,6 +501,7 @@ public class FODCircleView extends ImageView {
         }
 
         if (mIsDreaming) {
+            mParams.x += mDreamingOffsetX;
             mParams.y += mDreamingOffsetY;
         }
 
@@ -510,8 +538,19 @@ public class FODCircleView extends ImageView {
         @Override
         public void run() {
             long now = System.currentTimeMillis() / 1000 / 60;
+
+            mDreamingOffsetX = (int) (now % (mDreamingMaxOffset * 4));
+            if (mDreamingOffsetX > mDreamingMaxOffset * 2) {
+                mDreamingOffsetX = mDreamingMaxOffset * 4 - mDreamingOffsetX;
+            }
+
             // Let y to be not synchronized with x, so that we get maximum movement
             mDreamingOffsetY = (int) ((now + mDreamingMaxOffset / 3) % (mDreamingMaxOffset * 2));
+            if (mDreamingOffsetY > mDreamingMaxOffset * 2) {
+                mDreamingOffsetY = mDreamingMaxOffset * 4 - mDreamingOffsetY;
+            }
+
+            mDreamingOffsetX -= mDreamingMaxOffset;
             mDreamingOffsetY -= mDreamingMaxOffset;
 
             mHandler.post(() -> updatePosition());
