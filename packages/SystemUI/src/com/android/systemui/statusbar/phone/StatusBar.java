@@ -271,6 +271,8 @@ import com.android.systemui.volume.VolumeComponent;
 
 import lineageos.providers.LineageSettings;
 import com.google.android.systemui.keyguard.KeyguardSliceProviderGoogle;
+import com.google.android.systemui.NotificationLockscreenUserManagerGoogle;
+import com.google.android.systemui.smartspace.SmartSpaceController;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -947,6 +949,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         int disabledFlags2 = result.mDisabledFlags2;
         Dependency.get(InitController.class).addPostInitTask(
                 () -> setUpDisableFlags(disabledFlags1, disabledFlags2));
+        ((NotificationLockscreenUserManagerGoogle) Dependency.get(NotificationLockscreenUserManager.class)).updateAodVisibilitySettings();
     }
 
     private void initCoreOverlays(){
@@ -3308,6 +3311,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mFlashlightController != null) {
             mFlashlightController.dump(fd, pw, args);
         }
+
+        SmartSpaceController.get(this.mContext).dump(fd, pw, args);
     }
 
     static void dumpBarTransitions(PrintWriter pw, String var, BarTransitions transitions) {
@@ -3618,6 +3623,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (mWallpaperSupported) {
             mWallpaperChangedReceiver.onReceive(mContext, null);
         }
+        SmartSpaceController.get(this.mContext).reloadData();
     }
 
     /**
