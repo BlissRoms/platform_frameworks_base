@@ -6363,6 +6363,24 @@ public final class Settings {
         private static final Validator GESTURE_NAVBAR_SHOW_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Text clock alignment
+         * @hide
+         */
+        public static final String TEXT_CLOCK_ALIGNMENT = "text_clock_alignment";
+
+        /** @hide */
+        private static final Validator TEXT_CLOCK_ALIGNMENT_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
+        /**
+         * Text clock padding
+         * @hide
+         */
+        public static final String TEXT_CLOCK_PADDING = "text_clock_padding";
+
+        /** @hide */
+        private static final Validator TEXT_CLOCK_PADDING_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
+        /**
          * Header height
          * @hide
          */
@@ -6551,6 +6569,8 @@ public final class Settings {
             GESTURE_NAVBAR_SHOW,
             DISPLAY_CUTOUT_MODE,
             STOCK_STATUSBAR_IN_HIDE,
+            TEXT_CLOCK_ALIGNMENT,
+            TEXT_CLOCK_PADDING,
         };
 
         /**
@@ -6754,6 +6774,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(GESTURE_NAVBAR_SHOW);
             PRIVATE_SETTINGS.add(DISPLAY_CUTOUT_MODE);
             PRIVATE_SETTINGS.add(STOCK_STATUSBAR_IN_HIDE);
+            PRIVATE_SETTINGS.add(TEXT_CLOCK_ALIGNMENT);
+            PRIVATE_SETTINGS.add(TEXT_CLOCK_PADDING);
         }
 
         /**
@@ -6945,6 +6967,8 @@ public final class Settings {
             VALIDATORS.put(GESTURE_NAVBAR_SHOW,GESTURE_NAVBAR_SHOW_VALIDATOR);
             VALIDATORS.put(DISPLAY_CUTOUT_MODE, DISPLAY_CUTOUT_MODE_VALIDATOR);
             VALIDATORS.put(STOCK_STATUSBAR_IN_HIDE, STOCK_STATUSBAR_IN_HIDE_VALIDATOR);
+            VALIDATORS.put(TEXT_CLOCK_ALIGNMENT, TEXT_CLOCK_ALIGNMENT_VALIDATOR);
+            VALIDATORS.put(TEXT_CLOCK_PADDING, TEXT_CLOCK_PADDING_VALIDATOR);
         }
 
         /**
