@@ -146,4 +146,7 @@
 
     <!-- Padding on the end of the quick statusbar (not top-most statusbar) -->
     <dimen name="qs_header_end_padding">@dimen/status_bar_padding_end</dimen>
+
+    <!-- Smartspace -->
+    <dimen name="smartspace_icon_shadow">1dp</dimen>
 </resources>
