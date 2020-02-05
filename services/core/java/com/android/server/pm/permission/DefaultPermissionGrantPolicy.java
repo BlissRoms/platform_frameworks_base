@@ -17,6 +17,7 @@
 package com.android.server.pm.permission;
 
 import static android.os.Process.FIRST_APPLICATION_UID;
+import static org.omnirom.omni.OmniJawsClient.SERVICE_PACKAGE;
 
 import android.Manifest;
 import android.annotation.NonNull;
@@ -587,6 +588,9 @@ public final class DefaultPermissionGrantPolicy {
         grantPermissionsToSystemPackage(
                 getDefaultSystemHandlerActivityPackageForCategory(Intent.CATEGORY_APP_MAPS, userId),
                 userId, ALWAYS_LOCATION_PERMISSIONS);
+
+        // OmniJaws
+        grantPermissionsToSystemPackage(SERVICE_PACKAGE, userId, ALWAYS_LOCATION_PERMISSIONS);
 
         // Gallery
         grantPermissionsToSystemPackage(
