@@ -47,7 +47,7 @@ public class CustomTextClock extends TextView {
 
     private String mDescFormat;
     private String[] mHours;
-    private final String[] mMinutes;
+    private String[] mMinutes;
     private final Resources mResources;
     private final Calendar mTime = Calendar.getInstance(TimeZone.getDefault());
     private TimeZone mTimeZone;
@@ -84,7 +84,8 @@ public class CustomTextClock extends TextView {
         h24 = DateFormat.is24HourFormat(getContext());
         if (!h24) mHours = mResources.getStringArray(R.array.type_clock_hours_12);
             else mHours = mResources.getStringArray(R.array.type_clock_hours_24);
-        mMinutes = mResources.getStringArray(R.array.type_clock_minutes);
+        if (qpie()) mMinutes = mResources.getStringArray(R.array.type_clock_minutes);
+            else mMinutes = mResources.getStringArray(R.array.type_clock_minutes_alt);
         mAccentColor = mResources.getColor(R.color.accent_device_default_light);
     }
 
@@ -99,6 +100,8 @@ public class CustomTextClock extends TextView {
              mHours = mResources.getStringArray(R.array.type_clock_hours_24);
              hours = mTime.get(Calendar.HOUR_OF_DAY);
         }
+        if (qpie()) mMinutes = mResources.getStringArray(R.array.type_clock_minutes);
+            else mMinutes = mResources.getStringArray(R.array.type_clock_minutes_alt);
         final int minutes = mTime.get(Calendar.MINUTE) % 60;
         SpannedString rawFormat = (SpannedString) mResources.getQuantityText(R.plurals.type_clock_header, hours);
         Annotation[] annotationArr = (Annotation[]) rawFormat.getSpans(0, rawFormat.length(), Annotation.class);
@@ -156,6 +159,11 @@ public class CustomTextClock extends TextView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         refreshLockFont();
+    }
+
+    private boolean qpie() {
+        return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.LOCKSCREEN_CLOCK_SELECTION, 0, UserHandle.USER_CURRENT) == 10;
     }
 
     private int getLockClockFont() {
