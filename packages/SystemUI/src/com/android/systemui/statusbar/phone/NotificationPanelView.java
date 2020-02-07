@@ -31,6 +31,7 @@ import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -471,6 +472,10 @@ public class NotificationPanelView extends PanelView implements
      * the keyguard is dismissed to show the status bar.
      */
     private boolean mDelayShowingKeyguardStatusBar;
+
+    public static final String CANCEL_NOTIFICATION_PULSE_ACTION = "cancel_notification_pulse";
+
+    private boolean mAmbientPulseLightRunning;
 
     private int mOneFingerQuickSettingsIntercept;
 
@@ -3416,11 +3421,13 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void updatePulseLightState(boolean dozing) {
+        boolean pulseLights = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.PULSE_AMBIENT_LIGHT, 0, UserHandle.USER_CURRENT) != 0;
         boolean mAmbientLights = Settings.System.getIntForUser(
                 mContext.getContentResolver(), Settings.System.AMBIENT_NOTIFICATION_LIGHT_ENABLED,
                 0, UserHandle.USER_CURRENT) != 0;
 
-        if (mAmbientLights) {
+        if (pulseLights && mAmbientLights) {
             if (DEBUG_PULSE_LIGHT) {
                 Log.d(TAG, "updatePulseLightState dozing = " + dozing + " mAmbientLights = "  + mAmbientLights);
             }
@@ -3727,7 +3734,7 @@ public class NotificationPanelView extends PanelView implements
         mPulseLightsView.setVisibility(View.GONE);
         mPulseLightsView.stopAnimateNotification();
         Settings.System.putIntForUser(mContext.getContentResolver(),
-                Settings.System.AOD_NOTIFICATION_PULSE_TRIGGER, 0,
+                Settings.System.AMBIENT_NOTIFICATION_LIGHT, 0,
                 UserHandle.USER_CURRENT);
         boolean doShowAodContent = true;
         if (mAmbientPulseLightRunning) {
