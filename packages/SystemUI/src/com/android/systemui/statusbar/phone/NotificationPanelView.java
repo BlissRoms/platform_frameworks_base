@@ -3419,11 +3419,13 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void updatePulseLightState(boolean dozing) {
+        boolean pulseLights = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.PULSE_AMBIENT_LIGHT, 0, UserHandle.USER_CURRENT) != 0;
         boolean mAmbientLights = Settings.System.getIntForUser(
                 mContext.getContentResolver(), Settings.System.AOD_NOTIFICATION_PULSE,
                 0, UserHandle.USER_CURRENT) != 0;
 
-        if (mAmbientLights) {
+        if (pulseLights && mAmbientLights) {
             if (DEBUG_PULSE_LIGHT) {
                 Log.d(TAG, "updatePulseLightState dozing = " + dozing + " mAmbientLights = "  + mAmbientLights);
             }
