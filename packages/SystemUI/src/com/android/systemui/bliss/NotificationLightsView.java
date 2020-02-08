@@ -136,4 +136,10 @@ public class NotificationLightsView extends RelativeLayout {
         mLightAnimator.start();
     }
 
+    public void stopNotification() {
+        try {
+            mLightAnimator.end();
+        } catch (Exception e) { }
+    }
+
 }

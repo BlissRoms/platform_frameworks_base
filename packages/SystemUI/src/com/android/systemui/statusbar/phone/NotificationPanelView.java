@@ -3441,6 +3441,7 @@ public class NotificationPanelView extends PanelView implements
                     showAodContent(true);
                 }
                 mPulseLightsView.setVisibility(View.GONE);
+                mPulseLightsView.stopNotification();
                 Settings.System.putIntForUser(mContext.getContentResolver(),
                          Settings.System.AMBIENT_NOTIFICATION_LIGHT, 0,
                          UserHandle.USER_CURRENT);
@@ -3504,6 +3505,7 @@ public class NotificationPanelView extends PanelView implements
                         // bars can still be visible as leftover
                         // but we dont want them here
                         mPulseLightsView.setVisibility(View.GONE);
+                        mPulseLightsView.stopNotification();
                     }
                     if (ambientLights) {
                         mPulseLightHandled = false;
@@ -3530,6 +3532,7 @@ public class NotificationPanelView extends PanelView implements
                 } else {
                     // no active notifications or just pulse without aod - so no reason to continue
                     mPulseLightsView.setVisibility(View.GONE);
+                    mPulseLightsView.stopNotification();
                     Settings.System.putIntForUser(mContext.getContentResolver(),
                             Settings.System.AMBIENT_NOTIFICATION_LIGHT, 0,
                             UserHandle.USER_CURRENT);
