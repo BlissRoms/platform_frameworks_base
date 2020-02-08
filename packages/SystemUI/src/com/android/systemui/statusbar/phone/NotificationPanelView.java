@@ -3552,9 +3552,13 @@ public class NotificationPanelView extends PanelView implements
         if (DEBUG_PULSE_LIGHT) {
             Log.d(TAG, "showAodContent show = " + show);
         }
-        mKeyguardStatusView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-        mKeyguardStatusBar.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-        mKeyguardBottomArea.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        boolean mAlwaysOnByDefault = mContext.getResources().getBoolean(com.android.internal.R.bool.config_dozeAlwaysOnEnabled);
+        boolean mAODDisabled = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.DOZE_ALWAYS_ON, mAlwaysOnByDefault ? 1 : 0,
+                UserHandle.USER_CURRENT) == 0;
+        mKeyguardStatusView.setVisibility(show ? View.VISIBLE : (mAODDisabled ? View.INVISIBLE : View.VISIBLE));
+        mKeyguardStatusBar.setVisibility(show ? View.VISIBLE : (mAODDisabled ? View.INVISIBLE : View.VISIBLE));
+        mKeyguardBottomArea.setVisibility(show ? View.VISIBLE : (mAODDisabled ? View.INVISIBLE : View.VISIBLE));
     }
 
     public void setAmbientIndicationBottomPadding(int ambientIndicationBottomPadding) {
