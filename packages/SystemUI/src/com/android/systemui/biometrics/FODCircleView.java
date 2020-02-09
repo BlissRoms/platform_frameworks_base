@@ -109,7 +109,9 @@ public class FODCircleView extends ImageView {
         R.drawable.fod_icon_shooky,
         R.drawable.fod_icon_spiral_blue,
         R.drawable.fod_icon_sun_metro,
-        R.drawable.fod_icon_default_1
+        R.drawable.fod_icon_default_1,
+        R.drawable.fod_icon_scratch_red_blue,
+        R.drawable.fod_icon_scratch_pink_blue
     };
 
     private int mPressedIcon;
