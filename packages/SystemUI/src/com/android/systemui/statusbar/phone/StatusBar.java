@@ -1232,6 +1232,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         filter.addAction(DevicePolicyManager.ACTION_SHOW_DEVICE_MONITORING_DIALOG);
         filter.addAction(BlissUtils.ACTION_DISMISS_KEYGUARD);
         filter.addAction(lineageos.content.Intent.ACTION_SCREEN_CAMERA_GESTURE);
+        filter.addAction(NotificationPanelView.CANCEL_NOTIFICATION_PULSE_ACTION);
         context.registerReceiverAsUser(mBroadcastReceiver, UserHandle.ALL, filter, null, null);
 
         IntentFilter demoFilter = new IntentFilter();
@@ -3400,6 +3401,9 @@ public class StatusBar extends SystemUI implements DemoMode,
                     Intent launchIntent = (Intent) intent.getParcelableExtra(BlissUtils.DISMISS_KEYGUARD_EXTRA_INTENT);
                     startActivityDismissingKeyguard(launchIntent, true, true);
                 }
+            }
+            else if (NotificationPanelView.CANCEL_NOTIFICATION_PULSE_ACTION.equals(action)) {
+                mNotificationPanel.stopNotificationPulse();
             }
             else if (lineageos.content.Intent.ACTION_SCREEN_CAMERA_GESTURE.equals(action)) {
                 boolean userSetupComplete = Settings.Secure.getInt(mContext.getContentResolver(),

@@ -5770,7 +5770,6 @@ public final class Settings {
          * Whether to enable Ambient Edge lights
          * @hide
          */
-
         public static final String AMBIENT_NOTIFICATION_LIGHT = "ambient_notification_light";
 
         private static final Validator AMBIENT_NOTIFICATION_LIGHT_VALIDATOR =
@@ -5846,6 +5845,15 @@ public final class Settings {
         /** @hide */
         private static final Validator PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL_VALIDATOR =
                 BOOLEAN_VALIDATOR;
+
+        /**
+         * Timeout for ambient pulse in seconds - 0 is no timeout
+         * @hide
+         */
+        public static final String AOD_NOTIFICATION_PULSE_TIMEOUT = "ambient_notification_light_timeout";
+
+        private static final Validator AOD_NOTIFICATION_PULSE_TIMEOUT_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
 
         /**
          * helper setting to contain the current pulse reason so we can check
@@ -6093,6 +6101,7 @@ public final class Settings {
             PULSE_AMBIENT_LIGHT_DURATION,
             PULSE_AMBIENT_LIGHT_REPEAT_COUNT,
             PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL,
+            AOD_NOTIFICATION_PULSE_TIMEOUT,
         };
 
         /**
@@ -6275,6 +6284,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL);
             PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT);
             PRIVATE_SETTINGS.add(AMBIENT_NOTIFICATION_LIGHT_ENABLED);
+            PRIVATE_SETTINGS.add(AOD_NOTIFICATION_PULSE_TIMEOUT);
         }
 
         /**
@@ -6434,6 +6444,7 @@ public final class Settings {
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_DURATION, PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_REPEAT_COUNT, PULSE_AMBIENT_LIGHT_REPEAT_COUNT_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL, PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL_VALIDATOR);
+            VALIDATORS.put(AOD_NOTIFICATION_PULSE_TIMEOUT, AOD_NOTIFICATION_PULSE_TIMEOUT_VALIDATOR);
         }
 
         /**
