@@ -5803,6 +5803,15 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
+         * Timeout for ambient pulse in seconds - 0 is no timeout
+         * @hide
+         */
+        public static final String AOD_NOTIFICATION_PULSE_TIMEOUT = "ambient_notification_light_timeout";
+
+        private static final Validator AOD_NOTIFICATION_PULSE_TIMEOUT_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
+        /**
          * Whether to use accent color for pulse
          * @hide
          */
@@ -6100,6 +6109,7 @@ public final class Settings {
             QS_BLUR_INTENSITY,
             AOD_NOTIFICATION_PULSE,
             AOD_NOTIFICATION_PULSE_CLEAR,
+            AOD_NOTIFICATION_PULSE_TIMEOUT,
             NOTIFICATION_PULSE,
             NOTIFICATION_PULSE_ACCENT,
             PULSE_AMBIENT_LIGHT_COLOR,
@@ -6290,6 +6300,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_NEW_TINT);
             PRIVATE_SETTINGS.add(AOD_NOTIFICATION_PULSE);
             PRIVATE_SETTINGS.add(AOD_NOTIFICATION_PULSE_CLEAR);
+            PRIVATE_SETTINGS.add(AOD_NOTIFICATION_PULSE_TIMEOUT);
             PRIVATE_SETTINGS.add(NOTIFICATION_PULSE);
             PRIVATE_SETTINGS.add(NOTIFICATION_PULSE_ACCENT);
         }
@@ -6445,6 +6456,7 @@ public final class Settings {
             VALIDATORS.put(NOTIFICATION_PULSE_ACCENT, NOTIFICATION_PULSE_ACCENT_VALIDATOR);
             VALIDATORS.put(AOD_NOTIFICATION_PULSE, AOD_NOTIFICATION_PULSE_VALIDATOR);
             VALIDATORS.put(AOD_NOTIFICATION_PULSE_CLEAR, AOD_NOTIFICATION_PULSE_CLEAR_VALIDATOR);
+            VALIDATORS.put(AOD_NOTIFICATION_PULSE_TIMEOUT, AOD_NOTIFICATION_PULSE_TIMEOUT_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_COLOR, PULSE_AMBIENT_LIGHT_COLOR_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_DURATION, PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_REPEAT_COUNT, PULSE_AMBIENT_LIGHT_REPEAT_COUNT_VALIDATOR);
