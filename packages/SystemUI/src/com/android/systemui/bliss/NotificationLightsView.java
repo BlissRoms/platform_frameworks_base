@@ -91,7 +91,7 @@ public class NotificationLightsView extends RelativeLayout {
                 Settings.System.PULSE_AMBIENT_LIGHT_DURATION, 2,
                 UserHandle.USER_CURRENT) * 1000;
         boolean useAccent = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.AMBIENT_NOTIFICATION_LIGHT_ACCENT,
+                Settings.System.NOTIFICATION_PULSE_ACCENT,
                 0, UserHandle.USER_CURRENT) != 0;
         int color = useAccent ?
                 Utils.getColorAccentDefaultColor(getContext()) : usercolor;
