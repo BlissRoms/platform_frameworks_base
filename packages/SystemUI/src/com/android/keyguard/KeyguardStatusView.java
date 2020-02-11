@@ -257,7 +257,7 @@ public class KeyguardStatusView extends GridLayout implements
             mLogoutView.setOnClickListener(this::onLogoutClicked);
         }
 
-        mClockView = findViewById(R.id.keyguard_clock_container);
+        mClockView = findViewById(R.id.clock_view);
         mClockView.setShowCurrentUserTime(true);
         mOwnerInfo = findViewById(R.id.owner_info);
         mKeyguardSlice = findViewById(R.id.keyguard_status_area);
