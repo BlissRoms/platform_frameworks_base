@@ -119,6 +119,7 @@ public class KeyguardStatusView extends GridLayout implements
     private CurrentWeatherView mWeatherView;
     private boolean mShowWeather;
     private boolean mOmniStyle;
+    private boolean mLockDateHide;
 
     /**
      * Bottom margin that defines the margin between bottom of smart space and top of notification
@@ -138,6 +139,8 @@ public class KeyguardStatusView extends GridLayout implements
             "system:" + Settings.System.LOCK_DATE_FONT_STYLE;
     private static final String LOCKSCREEN_CLOCK_SELECTION =
             "system:" + Settings.System.LOCKSCREEN_CLOCK_SELECTION;
+    private static final String LOCKSCREEN_DATE_HIDE =
+            "system:" + Settings.System.LOCKSCREEN_DATE_HIDE;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -203,6 +206,7 @@ public class KeyguardStatusView extends GridLayout implements
         tunerService.addTunable(this, LOCK_CLOCK_FONT_STYLE);
         tunerService.addTunable(this, LOCK_DATE_FONT_STYLE);
         tunerService.addTunable(this, LOCKSCREEN_CLOCK_SELECTION);
+        tunerService.addTunable(this, LOCKSCREEN_DATE_HIDE);
         onDensityOrFontScaleChanged();
     }
 
@@ -370,6 +374,12 @@ public class KeyguardStatusView extends GridLayout implements
         }
         if (mKeyguardSlice != null) {
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
+
+            if (mLockDateHide) {
+                 mKeyguardSlice.setVisibility(View.GONE);
+            } else {
+                 mKeyguardSlice.setVisibility(View.VISIBLE);
+            }
         }
         loadBottomMargin();
     }
@@ -503,6 +513,10 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case LOCKSCREEN_CLOCK_SELECTION:
                     mClockSelection = TunerService.parseInteger(newValue, 2);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCKSCREEN_DATE_HIDE:
+                    mLockDateHide = TunerService.parseIntegerSwitch(newValue, false);
                 onDensityOrFontScaleChanged();
                 break;
             default:
