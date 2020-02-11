@@ -1,5 +1,6 @@
 /*
 * Copyright (C) 2017 The OmniROM Project
+* Copyright (C) 2019 The RevengeOS Project
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -37,6 +38,7 @@ import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -60,38 +62,25 @@ public class DetailedWeatherView extends FrameLayout {
     static final String TAG = "DetailedWeatherView";
     static final boolean DEBUG = false;
 
+    private LinearLayout weatheritemview;
+    private LinearLayout weatherforecastitemcontainer;
+    private Drawable forecastdrawable;
+    private String dayShort;
+    private String lowtemperature;
+    private String hightemperature;
+    private int forecastimagesize;
     private TextView mWeatherCity;
     private TextView mWeatherTimestamp;
     private TextView mWeatherData;
-    private ImageView mCurrentImage;
-    private ImageView mForecastImage0;
-    private ImageView mForecastImage1;
-    private ImageView mForecastImage2;
-    private ImageView mForecastImage3;
-    private ImageView mForecastImage4;
-    private TextView mForecastText0;
-    private TextView mForecastText1;
-    private TextView mForecastText2;
-    private TextView mForecastText3;
-    private TextView mForecastText4;
     private ActivityStarter mActivityStarter;
     private OmniJawsClient mWeatherClient;
-    private boolean mWithBackgroundColor;
-    private boolean mShowCurrent = true;
-    private View mCurrentView;
-    private TextView mCurrentText;
+
     private View mProgressContainer;
     private TextView mStatusMsg;
     private View mEmptyView;
     private ImageView mEmptyViewImage;
     private View mWeatherLine;
     private TextView mProviderName;
-
-    /** The background colors of the app, it changes thru out the day to mimic the sky. **/
-    public static final String[] BACKGROUND_SPECTRUM = { "#212121", "#27232e", "#2d253a",
-            "#332847", "#382a53", "#3e2c5f", "#442e6c", "#393a7a", "#2e4687", "#235395", "#185fa2",
-            "#0d6baf", "#0277bd", "#0d6cb1", "#1861a6", "#23569b", "#2d4a8f", "#383f84", "#433478",
-            "#3d3169", "#382e5b", "#322b4d", "#2c273e", "#272430" };
 
     public DetailedWeatherView(Context context) {
         this(context, null);
@@ -120,28 +109,13 @@ public class DetailedWeatherView extends FrameLayout {
         mWeatherCity  = (TextView) findViewById(R.id.current_weather_city);
         mWeatherTimestamp  = (TextView) findViewById(R.id.current_weather_timestamp);
         mWeatherData  = (TextView) findViewById(R.id.current_weather_data);
-        mForecastImage0  = (ImageView) findViewById(R.id.forecast_image_0);
-        mForecastImage1  = (ImageView) findViewById(R.id.forecast_image_1);
-        mForecastImage2  = (ImageView) findViewById(R.id.forecast_image_2);
-        mForecastImage3  = (ImageView) findViewById(R.id.forecast_image_3);
-        mForecastImage4  = (ImageView) findViewById(R.id.forecast_image_4);
-        mForecastText0 = (TextView) findViewById(R.id.forecast_text_0);
-        mForecastText1 = (TextView) findViewById(R.id.forecast_text_1);
-        mForecastText2 = (TextView) findViewById(R.id.forecast_text_2);
-        mForecastText3 = (TextView) findViewById(R.id.forecast_text_3);
-        mForecastText4 = (TextView) findViewById(R.id.forecast_text_4);
-        mCurrentView = findViewById(R.id.current);
-        mCurrentImage  = (ImageView) findViewById(R.id.current_image);
-        mCurrentText = (TextView) findViewById(R.id.current_text);
         mStatusMsg = (TextView) findViewById(R.id.status_msg);
         mEmptyView = findViewById(android.R.id.empty);
         mEmptyViewImage = (ImageView) findViewById(R.id.empty_weather_image);
         mWeatherLine = findViewById(R.id.current_weather);
         mProviderName = (TextView) findViewById(R.id.current_weather_provider);
-
-        if (!mShowCurrent) {
-            mCurrentView.setVisibility(View.GONE);
-        }
+        weatherforecastitemcontainer = findViewById(R.id.weather_forecast_items);
+        forecastimagesize = getResources().getDimensionPixelSize(R.dimen.ForecastImageSize);
 
         mEmptyViewImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -168,6 +142,7 @@ public class DetailedWeatherView extends FrameLayout {
 
     public void updateWeatherData(OmniJawsClient.WeatherInfo weatherData) {
         if (DEBUG) Log.d(TAG, "updateWeatherData");
+        weatherforecastitemcontainer.removeAllViews();
         mProgressContainer.setVisibility(View.GONE);
 
         if (weatherData == null || !mWeatherClient.isOmniJawsEnabled()) {
@@ -183,117 +158,77 @@ public class DetailedWeatherView extends FrameLayout {
         }
         mEmptyView.setVisibility(View.GONE);
         mWeatherLine.setVisibility(View.VISIBLE);
-
+        weatherforecastitemcontainer.setVisibility(View.VISIBLE);
         mWeatherCity.setText(weatherData.city);
         mProviderName.setText(weatherData.provider);
+        mWeatherData.setText(weatherData.windSpeed + " " + weatherData.windUnits + " " + weatherData.pinWheel +" - " + weatherData.humidity);
+
         Long timeStamp = weatherData.timeStamp;
         String format = DateFormat.is24HourFormat(mContext) ? "HH:mm" : "hh:mm a";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         mWeatherTimestamp.setText(getResources().getString(R.string.omnijaws_service_last_update) + " " + sdf.format(timeStamp));
-        if (mShowCurrent) {
-            mWeatherData.setText(weatherData.windSpeed + " " + weatherData.windUnits + " " + weatherData.pinWheel +" - " +
-                    weatherData.humidity);
-        } else {
-            mWeatherData.setText(weatherData.temp + weatherData.tempUnits + " - " +
-                    weatherData.windSpeed + " " + weatherData.windUnits + " " + weatherData.pinWheel +" - " +
-                    weatherData.humidity);
+        for (int i= -1; i<5; i++) {
+            View forecastitem = LayoutInflater.from(mContext).inflate(R.layout.detailed_weather_view_item, null);
+            weatheritemview = forecastitem.findViewById(R.id.weather_item);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT,
+                1.0f
+            );
+            weatheritemview.setLayoutParams(param);
+
+            if (i<0) {
+                forecastdrawable = mWeatherClient.getWeatherConditionImage(weatherData.conditionCode);
+                lowtemperature = weatherData.temp;
+                hightemperature = null;
+                dayShort = getResources().getString(R.string.omnijaws_current_text);
+            } else {
+                forecastdrawable = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(i).conditionCode);
+                lowtemperature = weatherData.forecasts.get(i).low;
+                hightemperature = weatherData.forecasts.get(i).high;
+
+                sdf = new SimpleDateFormat("EE");
+                Calendar cal = Calendar.getInstance();
+                if (i != 0) {
+                    cal.add(Calendar.DATE, i);
+                }
+                dayShort = sdf.format(new Date(cal.getTimeInMillis()));
+            }
+
+            ImageView ForecastImage = new ImageView(mContext);
+            ForecastImage.setLayoutParams(new LayoutParams(forecastimagesize, forecastimagesize));
+            ForecastImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            ForecastImage.setImageDrawable(forecastdrawable);
+
+            weatheritemview.addView(ForecastImage);
+
+            TextView temperaturetextview = new TextView(mContext);
+            temperaturetextview.setTextAppearance(mContext, R.style.WeatherForecastTemperature);
+            temperaturetextview.setGravity(Gravity.CENTER_HORIZONTAL);
+            LayoutParams temperatureparams = new LayoutParams(
+                LayoutParams.WRAP_CONTENT,      
+                LayoutParams.WRAP_CONTENT
+            );
+            temperatureparams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.TemperatureTextMarginTop), 0, 0);
+            temperaturetextview.setLayoutParams(temperatureparams);
+            String str = null;
+            if (hightemperature != null) {
+                str = lowtemperature + "/" + hightemperature + weatherData.tempUnits;
+            } else {
+                str = lowtemperature + weatherData.tempUnits;
+            }
+            temperaturetextview.setText(str);
+
+            weatheritemview.addView(temperaturetextview);
+
+            TextView forecastdayview = new TextView(mContext);
+            forecastdayview.setTextAppearance(mContext, R.style.WeatherDayViewText);
+            forecastdayview.setGravity(Gravity.CENTER_HORIZONTAL);
+            forecastdayview.setText(dayShort);
+
+            weatheritemview.addView(forecastdayview);
+            weatherforecastitemcontainer.addView(weatheritemview);
         }
-
-        sdf = new SimpleDateFormat("EE");
-        Calendar cal = Calendar.getInstance();
-        String dayShort = sdf.format(new Date(cal.getTimeInMillis()));
-
-        Drawable d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(0).conditionCode);
-        d = overlay(mContext.getResources(), d, weatherData.forecasts.get(0).low, weatherData.forecasts.get(0).high,
-                weatherData.tempUnits);
-        mForecastImage0.setImageDrawable(d);
-        mForecastText0.setText(dayShort);
-
-        cal.add(Calendar.DATE, 1);
-        dayShort = sdf.format(new Date(cal.getTimeInMillis()));
-
-        d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(1).conditionCode);
-        d = overlay(mContext.getResources(), d, weatherData.forecasts.get(1).low, weatherData.forecasts.get(1).high,
-                weatherData.tempUnits);
-        mForecastImage1.setImageDrawable(d);
-        mForecastText1.setText(dayShort);
-
-        cal.add(Calendar.DATE, 1);
-        dayShort = sdf.format(new Date(cal.getTimeInMillis()));
-
-        d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(2).conditionCode);
-        d = overlay(mContext.getResources(), d, weatherData.forecasts.get(2).low, weatherData.forecasts.get(2).high,
-                weatherData.tempUnits);
-        mForecastImage2.setImageDrawable(d);
-        mForecastText2.setText(dayShort);
-
-        cal.add(Calendar.DATE, 1);
-        dayShort = sdf.format(new Date(cal.getTimeInMillis()));
-
-        d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(3).conditionCode);
-        d = overlay(mContext.getResources(), d, weatherData.forecasts.get(3).low, weatherData.forecasts.get(3).high,
-                weatherData.tempUnits);
-        mForecastImage3.setImageDrawable(d);
-        mForecastText3.setText(dayShort);
-
-        cal.add(Calendar.DATE, 1);
-        dayShort = sdf.format(new Date(cal.getTimeInMillis()));
-
-        d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(4).conditionCode);
-        d = overlay(mContext.getResources(), d, weatherData.forecasts.get(4).low, weatherData.forecasts.get(4).high,
-                weatherData.tempUnits);
-        mForecastImage4.setImageDrawable(d);
-        mForecastText4.setText(dayShort);
-
-        if (mShowCurrent) {
-            d = mWeatherClient.getWeatherConditionImage(weatherData.conditionCode);
-            d = overlay(mContext.getResources(), d, weatherData.temp, null, weatherData.tempUnits);
-            mCurrentImage.setImageDrawable(d);
-            mCurrentText.setText(mContext.getResources().getText(R.string.omnijaws_current_text));
-        }
-
-        if (mWithBackgroundColor) {
-            setBackgroundColor(getCurrentHourColor());
-        }
-    }
-
-    private Drawable overlay(Resources resources, Drawable image, String min, String max, String tempUnits) {
-        if (image instanceof VectorDrawable) {
-            image = applyTint(image);
-        }
-        final Canvas canvas = new Canvas();
-        canvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG,
-                Paint.FILTER_BITMAP_FLAG));
-        final float density = resources.getDisplayMetrics().density;
-        final int footerHeight = Math.round(18 * density);
-        final int imageWidth = image.getIntrinsicWidth();
-        final int imageHeight = image.getIntrinsicHeight();
-        final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        Typeface font = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
-        textPaint.setTypeface(font);
-        textPaint.setColor(getTintColor());
-        textPaint.setTextAlign(Paint.Align.LEFT);
-        final int textSize= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14f, resources.getDisplayMetrics());
-        textPaint.setTextSize(textSize);
-        final int height = imageHeight + footerHeight;
-        final int width = imageWidth;
-
-        final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(bmp);
-        image.setBounds(0, 0, imageWidth, imageHeight);
-        image.draw(canvas);
-
-        String str = null;
-        if (max != null) {
-            str = min +"/"+max + tempUnits;
-        } else {
-            str = min + tempUnits;
-        }
-        Rect bounds = new Rect();
-        textPaint.getTextBounds(str, 0, str.length(), bounds);
-        canvas.drawText(str, width / 2 - bounds.width() / 2, height - textSize / 2, textPaint);
-
-        return new BitmapDrawable(resources, bmp);
     }
 
     private Drawable applyTint(Drawable icon) {
@@ -313,12 +248,8 @@ public class DetailedWeatherView extends FrameLayout {
         mWeatherClient.updateWeather();
     }
 
-    public static int getCurrentHourColor() {
-        final int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        return Color.parseColor(BACKGROUND_SPECTRUM[hourOfDay]);
-    }
-
     private void setErrorView() {
+        weatherforecastitemcontainer.setVisibility(View.GONE);
         mEmptyView.setVisibility(View.VISIBLE);
         mWeatherLine.setVisibility(View.GONE);
     }
@@ -338,6 +269,7 @@ public class DetailedWeatherView extends FrameLayout {
     }
 
     public void startProgress() {
+        weatherforecastitemcontainer.setVisibility(View.GONE);
         mEmptyView.setVisibility(View.GONE);
         mWeatherLine.setVisibility(View.GONE);
         mProgressContainer.setVisibility(View.VISIBLE);

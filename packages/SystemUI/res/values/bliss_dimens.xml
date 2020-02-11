@@ -46,18 +46,27 @@
     <dimen name="tri_state_dialog_elevation">4.0dip</dimen>
     <dimen name="tri_state_dialog_icon_size">24.0dip</dimen>
     <dimen name="tri_state_dialog_padding">8.0dip</dimen>
-    <dimen name="tri_state_down_bottom_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_down_bottom_right_radius">24.0dip</dimen>
-    <dimen name="tri_state_down_top_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_down_top_right_radius">0.0dip</dimen>
     <dimen name="tri_state_mid_bottom_left_radius">24.0dip</dimen>
     <dimen name="tri_state_mid_bottom_right_radius">24.0dip</dimen>
     <dimen name="tri_state_mid_top_left_radius">24.0dip</dimen>
     <dimen name="tri_state_mid_top_right_radius">24.0dip</dimen>
-    <dimen name="tri_state_up_bottom_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_up_bottom_right_radius">0.0dip</dimen>
-    <dimen name="tri_state_up_top_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_up_top_right_radius">24.0dip</dimen>
+
+    <dimen name="left_tri_state_down_bottom_left_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_down_bottom_right_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_down_top_left_radius">0.0dip</dimen>
+    <dimen name="left_tri_state_down_top_right_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_up_bottom_left_radius">0.0dip</dimen>
+    <dimen name="left_tri_state_up_bottom_right_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_up_top_left_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_up_top_right_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_down_bottom_left_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_down_bottom_right_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_down_top_left_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_down_top_right_radius">0.0dip</dimen>
+    <dimen name="right_tri_state_up_bottom_left_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_up_bottom_right_radius">0.0dip</dimen>
+    <dimen name="right_tri_state_up_top_left_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_up_top_right_radius">24.0dip</dimen>
 
     <!-- OmniWeather image size -->
     <dimen name="current_weather_image_size">30dp</dimen>
@@ -111,4 +120,6 @@
     <!-- Custom Carrier Label -->
     <dimen name="status_bar_carrier_height">14dp</dimen>
 
+    <!-- Volume panel -->
+    <dimen name="volume_dialog_panel_transparent_padding_left">20dp</dimen>
 </resources>

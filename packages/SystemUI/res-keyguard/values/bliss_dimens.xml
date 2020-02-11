@@ -34,4 +34,9 @@
     <dimen name="analog_clock_height">100dp</dimen>
     <dimen name="digital_clock_two_line_spacing">-20dp</dimen>
     <dimen name="clock_bottom_margin">8dp</dimen>
+
+    <!-- Weather tile forecast icons  -->
+    <dimen name="ForecastImageSize">50dp</dimen>
+    <dimen name="TemperatureTextMarginTop">5dp</dimen>
+    <dimen name="ForecastItemsMarginVertical">10dp</dimen>
 </resources>

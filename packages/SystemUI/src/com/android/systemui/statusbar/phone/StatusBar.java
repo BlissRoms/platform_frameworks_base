@@ -267,6 +267,7 @@ import com.android.systemui.util.InjectionInflationController;
 import com.android.systemui.volume.VolumeComponent;
 
 import lineageos.providers.LineageSettings;
+import com.google.android.systemui.keyguard.KeyguardSliceProviderGoogle;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -805,7 +806,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mBubbleController = Dependency.get(BubbleController.class);
         mBubbleController.setExpandListener(mBubbleExpandListener);
         mActivityIntentHelper = new ActivityIntentHelper(mContext);
-        final KeyguardSliceProvider sliceProvider = KeyguardSliceProvider.getAttachedInstance();
+        final KeyguardSliceProvider sliceProvider = KeyguardSliceProviderGoogle.getAttachedInstance();
         if (sliceProvider != null) {
             sliceProvider.initDependencies(mMediaManager, mStatusBarStateController,
                     mKeyguardBypassController, DozeParameters.getInstance(mContext));
@@ -1250,6 +1251,10 @@ public class StatusBar extends SystemUI implements DemoMode,
         ThreadedRenderer.overrideProperty("ambientRatio", String.valueOf(1.5f));
     }
 
+    public static void setHasClearableNotifications(boolean state) {
+        mClearableNotifications = state;
+    }
+
     public static void setDismissAllVisible(boolean visible) {
 
         if(mClearableNotifications && mState != StatusBarState.KEYGUARD && visible && isDismissAllButtonEnabled()) {
@@ -1301,13 +1306,17 @@ public class StatusBar extends SystemUI implements DemoMode,
               Settings.System.QS_BLUR_ALPHA, 100);
         int QSBlurAlpha = Math.round(255.0f *
                 mNotificationPanel.getExpandedFraction() * (float)((float) QSUserAlpha / 100.0));
+        int QSBlurIntensity = Settings.System.getInt(mContext.getContentResolver(),
+              Settings.System.QS_BLUR_INTENSITY, 30); // defaulting to 7.5f radius
+        boolean enoughBlurData = (QSBlurAlpha > 0 && QSBlurIntensity > 0);
 
-        if (QSBlurAlpha > 0 && !blurperformed && !mIsKeyguard && isQSBlurEnabled()) {
-            Bitmap bittemp = ImageUtilities.blurImage(mContext, ImageUtilities.screenshotSurface(mContext));
+        if (enoughBlurData && !blurperformed && !mIsKeyguard && isQSBlurEnabled()) {
+            Bitmap bittemp = ImageUtilities.blurImage(mContext,
+                                ImageUtilities.screenshotSurface(mContext), QSBlurIntensity);
             Drawable blurbackground = new BitmapDrawable(mContext.getResources(), bittemp);
             blurperformed = true;
             mQSBlurView.setBackgroundDrawable(blurbackground);
-        } else if (QSBlurAlpha == 0 || mState == StatusBarState.KEYGUARD) {
+        } else if (!enoughBlurData || mState == StatusBarState.KEYGUARD) {
             blurperformed = false;
             mQSBlurView.setBackgroundColor(Color.TRANSPARENT);
         }
@@ -2117,6 +2126,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_BLUR_ALPHA),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BLUR_INTENSITY),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2147,7 +2159,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_PANEL_BG_COLOR_WALL)) ||
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_PANEL_BG_USE_ACCENT))) {
                 mQSPanel.getHost().reloadAllTiles();
-            } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_BLUR_ALPHA))) {
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_BLUR_ALPHA)) ||
+                    uri.equals(Settings.System.getUriFor(Settings.System.QS_BLUR_INTENSITY))) {
                 updateBlurVisibility();
             }
         }
@@ -2193,11 +2206,18 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     private void setPulseOnNewTracks() {
-        final KeyguardSliceProvider sliceProvider = KeyguardSliceProvider.getAttachedInstance();
+        final KeyguardSliceProvider sliceProvider = KeyguardSliceProviderGoogle.getAttachedInstance();
         if (sliceProvider != null) {
             sliceProvider.setPulseOnNewTracks(Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.PULSE_ON_NEW_TRACKS, 1,
                     UserHandle.USER_CURRENT) == 1);
+        }
+    }
+
+    @Override
+    public void setBlockedGesturalNavigation(boolean blocked) {
+        if (getNavigationBarView() != null) {
+            getNavigationBarView().setBlockedGesturalNavigation(blocked);
         }
     }
 
@@ -5034,7 +5054,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     public boolean isDoubleTapOnMusicTicker(float eventX, float eventY) {
-        final KeyguardSliceProvider sliceProvider = KeyguardSliceProvider.getAttachedInstance();
+        final KeyguardSliceProvider sliceProvider = KeyguardSliceProviderGoogle.getAttachedInstance();
         View trackTitleView = null;
         if (mNotificationPanel != null) {
             trackTitleView = mNotificationPanel.getKeyguardStatusView().getKeyguardSliceView().getTitleView();

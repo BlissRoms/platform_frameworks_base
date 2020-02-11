@@ -114,4 +114,7 @@ interface IStatusBarService
     void showInDisplayFingerprintView();
     void hideInDisplayFingerprintView();
     void setAutoRotate(boolean enabled);
+
+    // Used to block or unblock usage of gestural navigation
+    void setBlockedGesturalNavigation(boolean blocked);
 }

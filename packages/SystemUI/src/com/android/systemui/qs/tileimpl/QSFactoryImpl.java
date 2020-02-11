@@ -46,11 +46,13 @@ import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.GamingModeTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
+import com.android.systemui.qs.tiles.ImmersiveTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LiveDisplayTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.LteTile;
 import com.android.systemui.qs.tiles.MusicTile;
+import com.android.systemui.qs.tiles.MonoToggleTile;
 import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.ProfilesTile;
@@ -125,6 +127,8 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<RebootTile> mRebootTileProvider;
     private final Provider<GamingModeTile> mGamingModeTileProvider;
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
+    private final Provider<ImmersiveTile> mImmersiveTileProvider;
+    private final Provider<MonoToggleTile> mMonoToggleTileProvider;
 
     private QSTileHost mHost;
 
@@ -171,7 +175,9 @@ public class QSFactoryImpl implements QSFactory {
             Provider<ScreenRecordTile> screenRecordTileProvider,
             Provider<RebootTile> RebootTileProvider,
             Provider<GamingModeTile> GamingModeTileProvider,
-            Provider<DataSwitchTile> dataSwitchTileProvider) {
+            Provider<DataSwitchTile> dataSwitchTileProvider,
+            Provider<ImmersiveTile> immersiveTileProvider,
+            Provider<MonoToggleTile> monoToggleTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -215,6 +221,8 @@ public class QSFactoryImpl implements QSFactory {
         mRebootTileProvider = RebootTileProvider;
         mGamingModeTileProvider = GamingModeTileProvider;
         mDataSwitchTileProvider = dataSwitchTileProvider;
+        mImmersiveTileProvider = immersiveTileProvider;
+        mMonoToggleTileProvider = monoToggleTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -319,6 +327,10 @@ public class QSFactoryImpl implements QSFactory {
                 return new WeatherTile(mHost);
             case "dataswitch":
                 return mDataSwitchTileProvider.get();
+            case "immersive":
+                return mImmersiveTileProvider.get();
+            case "mono":
+                return mMonoToggleTileProvider.get();
         }
 
         // Intent tiles.

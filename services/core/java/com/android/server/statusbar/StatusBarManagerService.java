@@ -59,6 +59,7 @@ import com.android.server.LocalServices;
 import com.android.server.notification.NotificationDelegate;
 import com.android.server.policy.GlobalActionsProvider;
 import com.android.server.power.ShutdownThread;
+import com.android.server.UiThread;
 import com.android.server.wm.WindowManagerService;
 
 import java.io.FileDescriptor;
@@ -686,6 +687,17 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
         }
     }
 
+    @Override
+    public void setBlockedGesturalNavigation(boolean blocked) {
+        if (mBar != null) {
+            try {
+                mBar.setBlockedGesturalNavigation(blocked);
+            } catch (RemoteException ex) {
+                // do nothing
+            }
+        }
+    }
+
     // TODO(b/117478341): make it aware of multi-display if needed.
     @Override
     public void disable(int what, IBinder token, String pkg) {
@@ -1093,7 +1105,7 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
     }
 
     private void notifyBarAttachChanged() {
-        mHandler.post(() -> {
+        UiThread.getHandler().post(() -> {
             if (mGlobalActionListener == null) return;
             mGlobalActionListener.onGlobalActionsAvailableChanged(mBar != null);
         });
