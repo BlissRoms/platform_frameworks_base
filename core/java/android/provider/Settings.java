@@ -5466,6 +5466,12 @@ public final class Settings {
         public static final String LOCK_DATE_FONT_STYLE = "lock_date_font_style";
 
         /**
+         * Hide lockscreen date widget and other slices
+         * @hide
+         */
+        public static final String LOCKSCREEN_DATE_HIDE = "lockscreen_date_hide";
+
+        /**
          * Select which lockscreen clock style to display
          * @hide
          */
