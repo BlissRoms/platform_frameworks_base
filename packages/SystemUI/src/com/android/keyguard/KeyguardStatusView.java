@@ -119,6 +119,7 @@ public class KeyguardStatusView extends GridLayout implements
     private LinearLayout mStatusViewContainer;
     private TextView mLogoutView;
     private KeyguardClockSwitch mClockView;
+    private View mSmallClockView;
     private TextView mOwnerInfo;
     private KeyguardSliceView mKeyguardSlice;
     private View mNotificationIcons;
@@ -292,6 +293,7 @@ public class KeyguardStatusView extends GridLayout implements
 
         mClockView = findViewById(R.id.keyguard_clock_container);
         mClockView.setShowCurrentUserTime(true);
+        mSmallClockView  = findViewById(R.id.clock_view);
         mOwnerInfo = findViewById(R.id.owner_info);
         mKeyguardSlice = findViewById(R.id.keyguard_status_area);
 
@@ -355,37 +357,37 @@ public class KeyguardStatusView extends GridLayout implements
 
             switch (mClockSelection) {
                 case 1: // hidden
-                    mClockView.setVisibility(View.GONE);
+                    mSmallClockView.setVisibility(View.GONE);
                     break;
                 case 2: // default
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 3: // default (bold)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 4: // default (small font)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 5: // default (accent)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 6: // default (accent hr)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 7: // default (accent min)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 8: // sammy
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 9: // sammy (bold)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 10: // sammy (accent)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 11: // sammy (accent alt)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 }
             refreshFormat();
