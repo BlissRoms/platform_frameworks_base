@@ -73,6 +73,8 @@ public class NetworkTraffic extends TextView {
 
     private boolean mScreenOn = true;
 
+    private ConnectivityManager mConnectivityManager;
+
     private Handler mTrafficHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -199,6 +201,10 @@ public class NetworkTraffic extends TextView {
         }
     };
 
+    protected boolean restoreViewQuickly() {
+        return getConnectAvailable() && mAutoHideThreshold == 0;
+    }
+
     protected void makeVisible() {
         setVisibility(View.VISIBLE);
     }
@@ -226,6 +232,8 @@ public class NetworkTraffic extends TextView {
         mTintColor = resources.getColor(android.R.color.white);
         setMode();
         Handler mHandler = new Handler();
+        mConnectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
         update();
@@ -312,9 +320,7 @@ public class NetworkTraffic extends TextView {
     };
 
     private boolean getConnectAvailable() {
-        ConnectivityManager connManager =
-                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo network = (connManager != null) ? connManager.getActiveNetworkInfo() : null;
+        NetworkInfo network = (mConnectivityManager != null) ? mConnectivityManager.getActiveNetworkInfo() : null;
         return network != null;
     }
 
@@ -341,6 +347,7 @@ public class NetworkTraffic extends TextView {
         mAutoHideThreshold = Settings.System.getIntForUser(resolver,
                 Settings.System.NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD, 1,
                 UserHandle.USER_CURRENT);
+        setVisibility(View.GONE);
     }
 
     private void clearHandlerCallbacks() {
