@@ -110,4 +110,22 @@
     <dimen name="lock_clock_font_size_107">107dp</dimen>
     <dimen name="lock_clock_font_size_108">108dp</dimen>
 
+    <!-- Lock date font size parameters -->
+    <dimen name="lock_date_font_size_10">10dp</dimen>
+    <dimen name="lock_date_font_size_11">11dp</dimen>
+    <dimen name="lock_date_font_size_12">12dp</dimen>
+    <dimen name="lock_date_font_size_13">13dp</dimen>
+    <dimen name="lock_date_font_size_14">14dp</dimen>
+    <dimen name="lock_date_font_size_15">15dp</dimen>
+    <dimen name="lock_date_font_size_16">16dp</dimen>
+    <dimen name="lock_date_font_size_17">17dp</dimen>
+    <dimen name="lock_date_font_size_18">18dp</dimen>
+    <dimen name="lock_date_font_size_19">19dp</dimen>
+    <dimen name="lock_date_font_size_20">20dp</dimen>
+    <dimen name="lock_date_font_size_21">21dp</dimen>
+    <dimen name="lock_date_font_size_22">22dp</dimen>
+    <dimen name="lock_date_font_size_23">23dp</dimen>
+    <dimen name="lock_date_font_size_24">24dp</dimen>
+    <dimen name="lock_date_font_size_25">25dp</dimen>
+
 </resources>
