@@ -194,7 +194,7 @@
   <java-symbol type="integer" name="config_sysBatteryTempMultiplier" />
 
   <!-- Ambiant Pulse Light -->
-  <java-symbol type="integer" name="config_AmbiantPulseLightColor" />
+  <java-symbol type="integer" name="config_ambientNotificationDefaultColor" />
 
   <!-- Whether key handler sends intent when changing slider position -->
   <java-symbol type="string" name="config_alertSliderIntent" />
