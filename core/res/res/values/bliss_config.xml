@@ -146,9 +146,6 @@
     <integer name="config_sysCPUTempMultiplier">1</integer>
     <integer name="config_sysBatteryTempMultiplier">1</integer>
 
-    <!-- Default value for Ambiant Pulse light color -->
-    <integer name="pulse_ambient_light_color">0x3980FF</integer>
-
     <!-- Ambient notification light color -->
-    <integer name="config_ambientNotificationDefaultColor">0x3980FF</integer>
+    <integer name="config_ambientNotificationDefaultColor">0xFF3980FF</integer>
 </resources>
