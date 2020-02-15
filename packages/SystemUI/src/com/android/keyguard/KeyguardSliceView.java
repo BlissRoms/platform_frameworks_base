@@ -44,6 +44,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.lifecycle.LiveData;
@@ -136,6 +137,7 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
     private Uri mKeyguardSliceUri;
     @VisibleForTesting
     TextView mTitle;
+    private RelativeLayout mRowContainer;
     private Row mRow;
     private int mTextColor;
     private float mDarkAmount = 0;
@@ -153,10 +155,11 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
     private boolean mHasHeader;
     private final int mRowWithHeaderPadding;
     private final int mRowPadding;
-    private float mRowTextSize;
+    private int mRowTextSize;
     private float mRowWithHeaderTextSize;
 
     private int mLockDateFontStyle = 14;
+    private int mLockDateSize = 10;
 
     @Inject
     public KeyguardSliceView(@Named(VIEW_CONTEXT) Context context, AttributeSet attrs,
@@ -189,12 +192,13 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTitle = findViewById(R.id.title);
+        mRowContainer = findViewById(R.id.row_maincenter);
         mRow = findViewById(R.id.row);
         mTextColor = Utils.getColorAttrDefaultColor(mContext, R.attr.wallpaperTextColor);
-        mIconSize = (int) mContext.getResources().getDimension(R.dimen.widget_icon_size);
+        mIconSize = mRowTextSize;
         mIconSizeWithHeader = (int) mContext.getResources().getDimension(R.dimen.header_icon_size);
         mRowTextSize = mContext.getResources().getDimensionPixelSize(
-                R.dimen.widget_label_font_size);
+                R.dimen.lock_date_font_size_18);
         mRowWithHeaderTextSize = mContext.getResources().getDimensionPixelSize(
                 R.dimen.header_row_font_size);
         mTitle.setOnClickListener(this);
@@ -292,9 +296,6 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         final int blendedColor = getTextColor();
         final int startIndex = mHasHeader ? 1 : 0; // First item is header; skip it
         mRow.setVisibility(subItemsCount > 0 ? VISIBLE : GONE);
-        LinearLayout.LayoutParams layoutParams = (LayoutParams) mRow.getLayoutParams();
-        layoutParams.topMargin = mHasHeader ? mRowWithHeaderPadding : mRowPadding;
-        mRow.setLayoutParams(layoutParams);
 
         for (int i = startIndex; i < subItemsCount; i++) {
             RowContent rc = (RowContent) subItems.get(i);
@@ -375,6 +376,34 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
                 ((Button) v).setTextColor(blendedColor);
             }
         }
+    }
+
+    public void setViewsTextStyles(float textSp, boolean textAllCaps) {
+        int childCount = mRow.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View v = mRow.getChildAt(i);
+            if (v instanceof Button) {
+                ((Button) v).setLetterSpacing(textSp);
+                ((Button) v).setAllCaps(textAllCaps);
+            }
+        }
+    }
+
+    public void setViewBackground(Drawable drawRes) {
+        setViewBackground(drawRes, 255);
+    }
+
+    public void setViewBackground(Drawable drawRes, int bgAlpha) {
+        mRow.setBackground(drawRes);
+        mRow.getBackground().setAlpha(bgAlpha);
+    }
+
+    public void setViewBackgroundResource(int drawRes) {
+        mRow.setBackgroundResource(drawRes);
+    }
+
+    public void setViewPadding(int left, int top, int right, int bottom) {
+        mRow.setPadding(left,top,right,bottom);
     }
 
     @Override
@@ -551,6 +580,61 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         }
     }
 
+    public void setDateSize(int size) {
+        mLockDateSize = size;
+
+        switch (size) {
+            case 10:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_10);
+                break;
+            case 11:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_11);
+                break;
+            case 12:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_12);
+                break;
+            case 13:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_13);
+                break;
+            case 14:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_14);
+                break;
+            case 15:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_15);
+                break;
+            case 16:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_16);
+                break;
+            case 17:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_17);
+                break;
+            case 18:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_18);
+                break;
+            case 19:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_19);
+                break;
+            case 20:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_20);
+                break;
+            case 21:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_21);
+                break;
+            case 22:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_22);
+                break;
+            case 23:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_23);
+                break;
+            case 24:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_24);
+                break;
+            case 25:
+                mRowTextSize = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_25);
+                break;
+        }
+    }
+
     @VisibleForTesting
     int getTextColor() {
         return ColorUtils.blendARGB(mTextColor, Color.WHITE, mDarkAmount);
@@ -564,10 +648,10 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
 
     @Override
     public void onDensityOrFontScaleChanged() {
-        mIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.widget_icon_size);
+        mIconSize = mRowTextSize;
         mIconSizeWithHeader = (int) mContext.getResources().getDimension(R.dimen.header_icon_size);
         mRowTextSize = mContext.getResources().getDimensionPixelSize(
-                R.dimen.widget_label_font_size);
+                R.dimen.lock_date_font_size_18);
         mRowWithHeaderTextSize = mContext.getResources().getDimensionPixelSize(
                 R.dimen.header_row_font_size);
         mWeatherIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.weather_icon_size);
@@ -681,7 +765,7 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
             int childCount = getChildCount();
             for (int i = 0; i < childCount; i++) {
                 View child = getChildAt(i);
-                if (child instanceof KeyguardSliceButton) {
+                if (child instanceof KeyguardSliceButton && childCount > 3) {
                     ((KeyguardSliceButton) child).setMaxWidth(width / childCount);
                 }
             }

@@ -61,6 +61,7 @@ import android.widget.TextView;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.config.sysui.SystemUiDeviceConfigFlags;
+import org.lineageos.internal.util.FileUtils;
 import com.android.settingslib.Utils;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.Dependency;
@@ -103,6 +104,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         ZenModeController.Callback, TunerService.Tunable {
     private static final String TAG = "QuickStatusBarHeader";
     private static final boolean DEBUG = false;
+
+    public static final String QS_SHOW_INFO_HEADER = "qs_show_info_header";
 
     /** Delay for auto fading out the long press tooltip after it's fully visible (in ms). */
     private static final long AUTO_FADE_OUT_DELAY_MS = DateUtils.SECOND_IN_MILLIS * 6;
@@ -161,6 +164,18 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private int mStatusBarBatteryStyle, mQSBatteryStyle;
 
+    // System Info
+    private TextView mSystemInfoText;
+    private int mSystemInfoMode;
+    private ImageView mSystemInfoIcon;
+    private View mSystemInfoLayout;
+    private String mSysCPUTemp;
+    private String mSysBatTemp;
+    private String mSysGPUFreq;
+    private String mSysGPULoad;
+    private int mSysCPUTempMultiplier;
+    private int mSysBatTempMultiplier;
+
     private static final String SHOW_QS_CLOCK =
             "system:" + Settings.System.SHOW_QS_CLOCK;
     private static final String QS_SHOW_BATTERY_PERCENT =
@@ -176,6 +191,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             "system:" + Settings.System.QS_BATTERY_STYLE;
     public static final String QS_BATTERY_LOCATION =
             "system:" + Settings.System.QS_BATTERY_LOCATION;
+    public static final String QS_SYSTEM_INFO =
+            "system:" + Settings.System.QS_SYSTEM_INFO;
 
     private final BroadcastReceiver mRingerReceiver = new BroadcastReceiver() {
         @Override
@@ -255,6 +272,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mPrivacyChip.setOnClickListener(this::onClick);
         mCarrierGroup = findViewById(R.id.carrier_group);
 
+        mSystemInfoLayout = findViewById(R.id.system_info_layout);
+        mSystemInfoIcon = findViewById(R.id.system_info_icon);
+        mSystemInfoText = findViewById(R.id.system_info_text);
 
         updateResources();
 
@@ -300,6 +320,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 STATUS_BAR_BATTERY_STYLE,
                 OMNI_STATUS_BAR_CUSTOM_HEADER,
                 QS_BATTERY_STYLE,
+                QS_SYSTEM_INFO,
                 QS_BATTERY_LOCATION);
     }
 
@@ -326,6 +347,48 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             mStatusSeparator.setVisibility(alarmVisible && ringerVisible ? View.VISIBLE
                     : View.GONE);
         }
+    }
+
+    private void updateSystemInfoText() {
+        mSystemInfoText.setVisibility(View.GONE);
+        mSystemInfoIcon.setVisibility(View.GONE);
+        if (mSystemInfoMode == 0) return;
+        int defaultMultiplier = 1;
+        String systemInfoText = "";
+        switch (mSystemInfoMode) {
+            case 1:
+                mSystemInfoIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_thermometer));
+                systemInfoText = getSystemInfo(mSysCPUTemp, mSysCPUTempMultiplier, "\u2103", true);
+                break;
+            case 2:
+                mSystemInfoIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_thermometer));
+                systemInfoText = getSystemInfo(mSysBatTemp, mSysBatTempMultiplier, "\u2103", true);
+                break;
+            case 3:
+                mSystemInfoIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_gpu));
+                systemInfoText = getSystemInfo(mSysGPUFreq, defaultMultiplier, "MHz", true);
+                break;
+            case 4:
+                mSystemInfoIcon.setImageDrawable(getContext().getDrawable(R.drawable.ic_gpu));
+                systemInfoText = getSystemInfo(mSysGPULoad, defaultMultiplier, "", false);
+                break;
+        }
+        if (systemInfoText != null && !systemInfoText.isEmpty()) {
+            mSystemInfoText.setText(systemInfoText);
+            mSystemInfoIcon.setVisibility(View.VISIBLE);
+            mSystemInfoText.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private String getSystemInfo(String sysPath, int multiplier, String unit, boolean returnFormatted) {
+      try {
+         if (!sysPath.isEmpty() && FileUtils.fileExists(sysPath)) {
+             String value = FileUtils.readOneLine(sysPath);
+             return returnFormatted ? String.format("%s", Integer.parseInt(value) / multiplier) + unit : value;
+         }
+      } catch (Exception e) {
+      }
+      return null;
     }
 
     private void setChipVisibility(boolean chipVisible) {
@@ -471,6 +534,22 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         updatePrivacyChipAlphaAnimator();
     }
 
+    private void updateSysInfoResources(){
+        Resources resources = mContext.getResources();
+        mSysCPUTemp = resources.getString(
+                  com.android.internal.R.string.config_sysCPUTemp);
+        mSysBatTemp = resources.getString(
+                  com.android.internal.R.string.config_sysBatteryTemp);
+        mSysGPUFreq = resources.getString(
+                  com.android.internal.R.string.config_sysGPUFreq);
+        mSysGPULoad = resources.getString(
+                  com.android.internal.R.string.config_sysGPULoad);
+        mSysCPUTempMultiplier = resources.getInteger(
+                  com.android.internal.R.integer.config_sysCPUTempMultiplier);
+        mSysBatTempMultiplier = resources.getInteger(
+                  com.android.internal.R.integer.config_sysBatteryTempMultiplier);
+    }
+
     private void updateStatusIconAlphaAnimator() {
         mStatusIconsAlphaAnimator = new TouchAnimator.Builder()
                 .addFloat(mQuickQsStatusIcons, "alpha", 1, 0, 0)
@@ -493,6 +572,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         if (mExpanded == expanded) return;
         mExpanded = expanded;
         mHeaderQsPanel.setExpanded(expanded);
+        updateSystemInfoText();
         updateEverything();
     }
 
@@ -531,6 +611,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             mPrivacyChip.setExpanded(expansionFraction > 0.5);
             mPrivacyChipAlphaAnimator.setPosition(keyguardExpansionFraction);
         }
+        updateSystemInfoText();
     }
 
     public void disable(int state1, int state2, boolean animate) {
@@ -696,6 +777,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mBatteryRemainingIcon.onDarkChanged(tintArea, intensity, fillColor);
         mBatteryIcon.setColorsFromContext(mHost.getContext());
         mBatteryIcon.onDarkChanged(new Rect(), 0, DarkIconDispatcher.DEFAULT_ICON_TINT);
+
+        if(mSystemInfoText != null &&  mSystemInfoIcon != null) {
+            updateSystemInfoText();
+        }
     }
 
     public void setCallback(Callback qsPanelCallback) {
@@ -808,6 +893,12 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 mHideDragHandle =
                         TunerService.parseIntegerSwitch(newValue, true);
                 updateResources();
+                break;
+            case QS_SYSTEM_INFO:
+                mSystemInfoMode =
+                        TunerService.parseInteger(newValue, 0);
+                updateSystemInfoText();
+                updateSysInfoResources();
                 break;
             default:
                 break;

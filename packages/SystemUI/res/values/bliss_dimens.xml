@@ -122,4 +122,7 @@
 
     <!-- Volume panel -->
     <dimen name="volume_dialog_panel_transparent_padding_left">20dp</dimen>
+
+    <!-- QS System Info -->
+    <dimen name="qs_temperatur_icon_size">16sp</dimen>
 </resources>

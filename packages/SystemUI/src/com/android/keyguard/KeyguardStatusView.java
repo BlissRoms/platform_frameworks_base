@@ -106,6 +106,7 @@ public class KeyguardStatusView extends GridLayout implements
     private LinearLayout mStatusViewContainer;
     private TextView mLogoutView;
     private KeyguardClockSwitch mClockView;
+    private View mSmallClockView;
     private TextView mOwnerInfo;
     private KeyguardSliceView mKeyguardSlice;
     private View mNotificationIcons;
@@ -118,6 +119,7 @@ public class KeyguardStatusView extends GridLayout implements
     private CurrentWeatherView mWeatherView;
     private boolean mShowWeather;
     private boolean mOmniStyle;
+    private boolean mLockDateHide;
 
     /**
      * Bottom margin that defines the margin between bottom of smart space and top of notification
@@ -130,6 +132,13 @@ public class KeyguardStatusView extends GridLayout implements
     private int mClockSelection;
     private int mLockClockFontStyle;
     private int mLockDateFontStyle;
+    private int mDateSelection;
+
+    // Date styles paddings
+    private int mDateVerPadding;
+    private int mDateHorPadding;
+    private int mLockClockFontSize;
+    private int mLockDateFontSize;
 
     private static final String LOCK_CLOCK_FONT_STYLE =
             "system:" + Settings.System.LOCK_CLOCK_FONT_STYLE;
@@ -137,6 +146,14 @@ public class KeyguardStatusView extends GridLayout implements
             "system:" + Settings.System.LOCK_DATE_FONT_STYLE;
     private static final String LOCKSCREEN_CLOCK_SELECTION =
             "system:" + Settings.System.LOCKSCREEN_CLOCK_SELECTION;
+    private static final String LOCKSCREEN_DATE_HIDE =
+            "system:" + Settings.System.LOCKSCREEN_DATE_HIDE;
+    private static final String LOCKSCREEN_DATE_SELECTION =
+            "system:" + Settings.System.LOCKSCREEN_DATE_SELECTION;
+    private static final String LOCK_CLOCK_FONT_SIZE =
+            "system:" + Settings.System.LOCK_CLOCK_FONT_SIZE;
+    private static final String LOCK_DATE_FONT_SIZE =
+            "system:" + Settings.System.LOCK_DATE_FONT_SIZE;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -202,6 +219,10 @@ public class KeyguardStatusView extends GridLayout implements
         tunerService.addTunable(this, LOCK_CLOCK_FONT_STYLE);
         tunerService.addTunable(this, LOCK_DATE_FONT_STYLE);
         tunerService.addTunable(this, LOCKSCREEN_CLOCK_SELECTION);
+        tunerService.addTunable(this, LOCKSCREEN_DATE_HIDE);
+        tunerService.addTunable(this, LOCKSCREEN_DATE_SELECTION);
+        tunerService.addTunable(this, LOCK_CLOCK_FONT_SIZE);
+        tunerService.addTunable(this, LOCK_DATE_FONT_SIZE);
         onDensityOrFontScaleChanged();
     }
 
@@ -259,6 +280,7 @@ public class KeyguardStatusView extends GridLayout implements
 
         mClockView = findViewById(R.id.keyguard_clock_container);
         mClockView.setShowCurrentUserTime(true);
+        mSmallClockView  = findViewById(R.id.clock_view);
         mOwnerInfo = findViewById(R.id.owner_info);
         mKeyguardSlice = findViewById(R.id.keyguard_status_area);
 
@@ -317,13 +339,12 @@ public class KeyguardStatusView extends GridLayout implements
                 mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     getResources().getDimensionPixelSize(R.dimen.widget_clock_small_font_size));
             } else {
-	        mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
+                setFontSize(mClockView, mLockClockFontSize);
             }
 
             switch (mClockSelection) {
                 case 1: // hidden
-                    mClockView.setVisibility(View.GONE);
+                    mSmallClockView.setVisibility(View.GONE);
                     break;
                 case 2: // default
                     mClockView.setVisibility(View.VISIBLE);
@@ -359,6 +380,7 @@ public class KeyguardStatusView extends GridLayout implements
             refreshFormat();
             setFontStyle(mClockView, mLockClockFontStyle);
         }
+
         if (mOwnerInfo != null) {
             mOwnerInfo.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
@@ -368,7 +390,109 @@ public class KeyguardStatusView extends GridLayout implements
         }
         if (mKeyguardSlice != null) {
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
+            mKeyguardSlice.setDateSize(mLockDateFontSize);
+
+            if (mLockDateHide) {
+                 mKeyguardSlice.setVisibility(View.GONE);
+            } else {
+                 mKeyguardSlice.setVisibility(View.VISIBLE);
+            }
         }
+
+        switch (mDateSelection) {
+            case 0: // default
+            default:
+                try {
+                    mKeyguardSlice.setViewBackgroundResource(0);
+                    mDateVerPadding = 0;
+                    mDateHorPadding = 0;
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.05f, false);
+                } catch (Exception e) {
+                }
+                break;
+            case 1: // semi-transparent box
+                try {
+                    mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_box_str_border));
+                    mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_box_padding_hor),getResources().getDisplayMetrics()));
+                    mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_box_padding_ver),getResources().getDisplayMetrics()));
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.05f, false);
+                } catch (Exception e) {
+                }
+                break;
+            case 2: // semi-transparent box (round)
+                try {
+                    mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_str_border));
+                    mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_box_padding_hor),getResources().getDisplayMetrics()));
+                    mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_box_padding_ver),getResources().getDisplayMetrics()));
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.05f, false);
+                } catch (Exception e) {
+                }
+                break;
+            case 3: // Q-Now Playing background
+                try {
+                    mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.ambient_indication_pill_background));
+                    mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.q_nowplay_pill_padding_hor),getResources().getDisplayMetrics()));
+                    mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.q_nowplay_pill_padding_ver),getResources().getDisplayMetrics()));
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.05f, false);
+                } catch (Exception e) {
+                }
+                break;
+            case 4: // accent box
+                try {
+                    mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_str_accent));
+                    mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_hor),getResources().getDisplayMetrics()));
+                    mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_ver),getResources().getDisplayMetrics()));
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.15f, true);
+                } catch (Exception e) {
+                }
+                break;
+            case 5: // accent box transparent
+                try {
+                    mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_str_accent), 160);
+                    mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_hor),getResources().getDisplayMetrics()));
+                    mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_ver),getResources().getDisplayMetrics()));
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.15f, true);
+                } catch (Exception e) {
+                }
+                break;
+            case 6: // gradient box
+                try {
+                    mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_str_gradient));
+                    mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_hor),getResources().getDisplayMetrics()));
+                    mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_ver),getResources().getDisplayMetrics()));
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.15f, true);
+                } catch (Exception e) {
+                }
+                break;
+            case 7: // Dark Accent border
+                try {
+                    mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_str_borderacc));
+                    mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_hor),getResources().getDisplayMetrics()));
+                    mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_ver),getResources().getDisplayMetrics()));
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.08f, true);
+                } catch (Exception e) {
+                }
+                break;
+            case 8: // Dark Gradient border
+                try {
+                    mKeyguardSlice.setViewBackground(getResources().getDrawable(R.drawable.date_str_bordergrad));
+                    mDateHorPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_hor),getResources().getDisplayMetrics()));
+                    mDateVerPadding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.widget_date_accent_box_padding_ver),getResources().getDisplayMetrics()));
+                    mKeyguardSlice.setViewPadding(mDateHorPadding,mDateVerPadding,mDateHorPadding,mDateVerPadding);
+                    mKeyguardSlice.setViewsTextStyles(0.08f, true);
+                } catch (Exception e) {
+                }
+                break;
+        }
+
         loadBottomMargin();
     }
 
@@ -503,6 +627,22 @@ public class KeyguardStatusView extends GridLayout implements
                     mClockSelection = TunerService.parseInteger(newValue, 2);
                 onDensityOrFontScaleChanged();
                 break;
+            case LOCKSCREEN_DATE_HIDE:
+                    mLockDateHide = TunerService.parseIntegerSwitch(newValue, false);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCKSCREEN_DATE_SELECTION:
+                    mDateSelection = TunerService.parseInteger(newValue, 0);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCK_CLOCK_FONT_SIZE:
+                    mLockClockFontSize = TunerService.parseInteger(newValue, 58);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCK_DATE_FONT_SIZE:
+                    mLockDateFontSize = TunerService.parseInteger(newValue, 18);
+                onDensityOrFontScaleChanged();
+                break;
             default:
                 break;
         }
@@ -623,6 +763,233 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case FONT_SAMSUNGONE:
                 view.setTextFont(Typeface.create("samsungone", Typeface.NORMAL));
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void setFontSize(KeyguardClockSwitch view, int size) {
+        switch (size) {
+            case 54:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_54));
+                break;
+            case 55:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_55));
+                break;
+            case 56:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_56));
+                break;
+            case 57:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_57));
+                break;
+            case 58:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_58));
+                break;
+            case 59:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_59));
+                break;
+            case 60:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_60));
+                break;
+            case 61:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_61));
+                break;
+            case 62:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_62));
+                break;
+            case 63:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_63));
+                break;
+            case 64:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_64));
+                break;
+            case 65:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_65));
+                break;
+            case 66:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_66));
+                break;
+            case 67:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_67));
+                break;
+            case 68:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_68));
+                break;
+            case 69:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_69));
+                break;
+            case 70:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_70));
+                break;
+            case 71:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_71));
+                break;
+            case 72:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_72));
+                break;
+            case 73:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_73));
+                break;
+            case 74:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_74));
+                break;
+            case 75:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_75));
+                break;
+            case 76:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_76));
+                break;
+            case 77:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_77));
+                break;
+            case 78:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_78));
+                break;
+            case 79:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_79));
+                break;
+            case 80:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_80));
+                break;
+            case 81:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_81));
+                break;
+            case 82:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_82));
+                break;
+            case 83:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_83));
+                break;
+            case 84:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_84));
+                break;
+            case 85:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_85));
+                break;
+            case 86:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_86));
+                break;
+            case 87:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_87));
+                break;
+            case 88:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_88));
+                break;
+            case 89:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_89));
+                break;
+            case 90:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_90));
+                break;
+            case 91:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_91));
+                break;
+            case 92:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_92));
+                break;
+            case 93:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_93));
+                break;
+            case 94:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_94));
+                break;
+            case 95:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_95));
+                break;
+            case 96:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_96));
+                break;
+            case 97:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_97));
+                break;
+            case 98:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_98));
+                break;
+            case 99:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_99));
+                break;
+            case 100:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_100));
+                break;
+            case 101:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_101));
+                break;
+            case 102:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_102));
+                break;
+            case 103:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_103));
+                break;
+            case 104:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_104));
+                break;
+            case 105:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_105));
+                break;
+            case 106:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_106));
+                break;
+            case 107:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_107));
+                break;
+            case 108:
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_108));
                 break;
             default:
                 break;

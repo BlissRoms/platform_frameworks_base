@@ -3542,6 +3542,11 @@ public final class Settings {
         private static final Validator SCREEN_BRIGHTNESS_MODE_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Shows system info in QS OFF:0, CPU temp:1, battery temp:2, cpu speed: 3 , gpu clock: 4, gpu busy: 5
+         */
+        public static final String QS_SYSTEM_INFO = "qs_system_info";
+
+        /**
          * Adjustment to auto-brightness to make it generally more (>0.0 <1.0)
          * or less (<0.0 >-1.0) bright.
          * @hide
@@ -5466,10 +5471,35 @@ public final class Settings {
         public static final String LOCK_DATE_FONT_STYLE = "lock_date_font_style";
 
         /**
+         * Hide lockscreen date widget and other slices
+         * @hide
+         */
+        public static final String LOCKSCREEN_DATE_HIDE = "lockscreen_date_hide";
+
+        /**
          * Select which lockscreen clock style to display
          * @hide
          */
         public static final String LOCKSCREEN_CLOCK_SELECTION = "lockscreen_clock_selection";
+
+        /**
+         * Select which lockscreen date style to display
+         * @hide
+         */
+        public static final String LOCKSCREEN_DATE_SELECTION = "lockscreen_date_selection";
+
+        /**
+         * Change text size for system lockscreen clock widget
+         * @hide
+         */
+        public static final String LOCK_CLOCK_FONT_SIZE = "lock_clock_font_size";
+
+        /**
+         * Change font size for the system lockscreen date
+         *
+         * @hide
+         */
+        public static final String LOCK_DATE_FONT_SIZE = "lock_date_font_size";
 
         /**
          * User definable value of pulse notification screen brightness
