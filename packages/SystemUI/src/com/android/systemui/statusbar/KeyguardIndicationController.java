@@ -202,13 +202,13 @@ public class KeyguardIndicationController implements StateListener,
     }
 
     public void setIndicationArea(ViewGroup indicationArea) {
-      mChargingIndicationView = (LottieAnimationView) indicationArea.findViewById(
-              R.id.charging_indication);
         mIndicationArea = indicationArea;
         mTextView = indicationArea.findViewById(R.id.keyguard_indication_text);
         mInitialTextColorState = mTextView != null ?
                 mTextView.getTextColors() : ColorStateList.valueOf(Color.WHITE);
         mDisclosure = indicationArea.findViewById(R.id.keyguard_indication_enterprise_disclosure);
+        mChargingIndicationView = (LottieAnimationView) indicationArea.findViewById(
+              R.id.charging_indication);
         updateIndication(false /* animate */);
     }
 
@@ -450,8 +450,11 @@ public class KeyguardIndicationController implements StateListener,
 
     private void updateChargingIndication() {
         if (mChargingIndication && mPowerPluggedIn && !hasActiveInDisplayFp()) {
-            mChargingIndicationView.setVisibility(View.VISIBLE);
-            mChargingIndicationView.playAnimation();
+            try {
+               mChargingIndicationView.setVisibility(View.VISIBLE);
+               mChargingIndicationView.playAnimation();
+            } catch (Exception e) {
+            }
         } else {
             mChargingIndicationView.setVisibility(View.GONE);
         }
