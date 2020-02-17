@@ -453,7 +453,9 @@ public class KeyguardIndicationController implements StateListener,
             mChargingIndicationView.setVisibility(View.VISIBLE);
             mChargingIndicationView.playAnimation();
         } else {
-            mChargingIndicationView.setVisibility(View.GONE);
+            if (mChargingIndicationView != null) {
+                mChargingIndicationView.setVisibility(View.GONE);
+            }
         }
     }
 
