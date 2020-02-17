@@ -5517,7 +5517,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 break;
             case LOCKSCREEN_CHARGING_ANIMATION:
                 boolean showChargingAnimation =
-                        TunerService.parseIntegerSwitch(newValue, true);
+                        TunerService.parseIntegerSwitch(newValue, false);
                 if (mKeyguardIndicationController != null)
                     mKeyguardIndicationController.updateChargingIndication(showChargingAnimation);
                 break;
