@@ -10506,6 +10506,20 @@ public final class Settings {
                 "packages_to_clear_data_before_full_restore";
 
         /**
+         * Select various actions for squeeze gesture
+         *
+         * @hide
+         */
+        public static final String SHORT_SQUEEZE_SELECTION = "short_squeeze_selection";
+
+        /**
+         * Select various actions for squeeze gesture
+         *
+         * @hide
+         */
+        public static final String LONG_SQUEEZE_SELECTION = "long_squeeze_selection";
+
+        /**
          * Setting to determine whether to use the new notification priority handling features.
          * @hide
          */
