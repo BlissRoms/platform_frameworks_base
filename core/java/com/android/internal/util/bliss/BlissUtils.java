@@ -30,6 +30,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.input.InputManager;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.Looper;
@@ -50,6 +51,7 @@ import android.view.IWindowManager;
 import android.view.WindowManagerGlobal;
 
 import com.android.internal.R;
+import com.android.internal.statusbar.IStatusBarService;
 
 import java.util.List;
 
@@ -312,12 +314,20 @@ public class BlissUtils {
         int newAlpha = (int) (emptyAlpha + ((fullAlpha-emptyAlpha)*blendFactor));
         return Color.HSVToColor(newAlpha, newColor);
     }
-
+    
+    // Screen off
     public static void switchScreenOff(Context ctx) {
         PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
-        if (pm!= null) {
+        if (pm!= null && pm.isScreenOn()) {
             pm.goToSleep(SystemClock.uptimeMillis());
         }
+    }
+
+    // Screen on
+    public static void switchScreenOn(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (pm == null) return;
+        pm.wakeUp(SystemClock.uptimeMillis(), "com.android.systemui:CAMERA_GESTURE_PREVENT_LOCK");
     }
 
     public static void sendKeycode(int keycode) {
@@ -430,5 +440,39 @@ public class BlissUtils {
         int state = enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
         pm.setComponentEnabledSetting(componentName, state, PackageManager.DONT_KILL_APP);
+    }
+    
+    public static void toggleCameraFlash() {
+        FireActions.toggleCameraFlash();
+    }
+
+    private static final class FireActions {
+        private static IStatusBarService mStatusBarService = null;
+        private static IStatusBarService getStatusBarService() {
+            synchronized (FireActions.class) {
+                if (mStatusBarService == null) {
+                    mStatusBarService = IStatusBarService.Stub.asInterface(
+                            ServiceManager.getService("statusbar"));
+                }
+                return mStatusBarService;
+            }
+        }
+
+        public static void toggleCameraFlash() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.toggleCameraFlash();
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
+            }
+        }
+    }
+    
+    // Volume panel
+    public static void toggleVolumePanel(Context context) {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        am.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
     }
 }

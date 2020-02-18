@@ -10515,6 +10515,20 @@ public final class Settings {
                 "packages_to_clear_data_before_full_restore";
 
         /**
+         * Select various actions for squeeze gesture
+         *
+         * @hide
+         */
+        public static final String SHORT_SQUEEZE_SELECTION = "short_squeeze_selection";
+
+        /**
+         * Select various actions for squeeze gesture
+         *
+         * @hide
+         */
+        public static final String LONG_SQUEEZE_SELECTION = "long_squeeze_selection";
+
+        /**
          * Setting to determine whether to use the new notification priority handling features.
          * @hide
          */
@@ -15494,6 +15508,14 @@ public final class Settings {
         @TestApi
         public static final String LOCATION_GLOBAL_KILL_SWITCH =
                 "location_global_kill_switch";
+
+        /**
+         * If set to 1, the device identifier check will be relaxed to the previous READ_PHONE_STATE
+         * permission check for all apps.
+         * @hide
+         */
+        public static final String PRIVILEGED_DEVICE_IDENTIFIER_CHECK_RELAXED =
+                "privileged_device_identifier_check_relaxed";
 
         /**
          * If set to 1, SettingsProvider's restoreAnyVersion="true" attribute will be ignored

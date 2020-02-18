@@ -54,6 +54,11 @@ LOCAL_REQUIRED_MODULES := \
 	FontFifa2018SourceOverlay \
 	Font20SevenSourceOverlay \
 	FontRoadRageSourceOverlay \
+	FontCoconSourceOverlay \
+	FontQuandoSourceOverlay \
+	FontGrandHotelSourceOverlay \
+	FontRedressedSourceOverlay \
+	FontSanFranciscoDisplayProSourceOverlay \
 	IconPackCircularAndroidOverlay \
 	IconPackCircularPixelLauncherOverlay \
 	IconPackCircularPixelThemePickerOverlay \
