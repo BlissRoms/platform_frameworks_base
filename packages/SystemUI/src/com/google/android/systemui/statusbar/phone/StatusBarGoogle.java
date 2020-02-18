@@ -12,8 +12,11 @@ public class StatusBarGoogle extends StatusBar {
 
     @Override
     public void start() {
-        super.start();
-        ((NotificationLockscreenUserManagerGoogle) Dependency.get(NotificationLockscreenUserManager.class)).updateAodVisibilitySettings();
+        try {
+           super.start();
+           ((NotificationLockscreenUserManagerGoogle) Dependency.get(NotificationLockscreenUserManager.class)).updateAodVisibilitySettings();
+        } catch (Exception e) {
+        }
     }
 
     @Override
