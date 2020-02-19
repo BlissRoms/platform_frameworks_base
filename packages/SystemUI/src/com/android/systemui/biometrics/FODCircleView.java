@@ -450,6 +450,8 @@ public class FODCircleView extends ImageView {
         mIsShowing = true;
         mIsAuthenticated = false;
 
+        updatePosition();
+
         dispatchShow();
         setVisibility(View.VISIBLE);
     }
