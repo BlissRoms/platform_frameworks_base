@@ -99,6 +99,19 @@ public class KeyguardStatusView extends GridLayout implements
     private static final int FONT_GOOGLESANS = 35;
     private static final int FONT_ONEPLUSSLATE = 36;
     private static final int FONT_SAMSUNGONE = 37;
+    private static final int FONT_COMFORTAA = 38;
+    private static final int FONT_EXOTWO = 39;
+    private static final int FONT_STOROPIA = 40;
+    private static final int FONT_UBUNTU = 41;
+    private static final int FONT_NOKIAPURE = 42;
+    private static final int FONT_FIFA2018 = 43;
+    private static final int FONT_ROADRAGE = 44;
+    private static final int FONT_20SEVEN = 45;
+    private static final int FONT_COCON = 46;
+    private static final int FONT_QUANDO = 47;
+    private static final int FONT_GRANDHOTEL = 48;
+    private static final int FONT_REDRESSED = 49;
+    private static final int FONT_SANFRANSISCO = 50;
 
     private final LockPatternUtils mLockPatternUtils;
     private final IActivityManager mIActivityManager;
@@ -763,6 +776,45 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case FONT_SAMSUNGONE:
                 view.setTextFont(Typeface.create("samsungone", Typeface.NORMAL));
+                break;
+            case FONT_COMFORTAA:
+                view.setTextFont(Typeface.create("comfortaa", Typeface.NORMAL));
+                break;
+            case FONT_EXOTWO:
+                view.setTextFont(Typeface.create("exotwo", Typeface.NORMAL));
+                break;
+            case FONT_STOROPIA:
+                view.setTextFont(Typeface.create("storopia", Typeface.NORMAL));
+                break;
+            case FONT_UBUNTU:
+                view.setTextFont(Typeface.create("ubuntu", Typeface.NORMAL));
+                break;
+            case FONT_NOKIAPURE:
+                view.setTextFont(Typeface.create("nokiapure", Typeface.NORMAL));
+                break;
+            case FONT_FIFA2018:
+                view.setTextFont(Typeface.create("fifa2018", Typeface.NORMAL));
+                break;
+            case FONT_ROADRAGE:
+                view.setTextFont(Typeface.create("roadrage", Typeface.NORMAL));
+                break;
+            case FONT_20SEVEN:
+                view.setTextFont(Typeface.create("20seven", Typeface.NORMAL));
+                break;
+            case FONT_COCON:
+                view.setTextFont(Typeface.create("cocon", Typeface.NORMAL));
+                break;
+            case FONT_QUANDO:
+                view.setTextFont(Typeface.create("quando", Typeface.NORMAL));
+                break;
+            case FONT_GRANDHOTEL:
+                view.setTextFont(Typeface.create("grandhotel", Typeface.NORMAL));
+                break;
+            case FONT_REDRESSED:
+                view.setTextFont(Typeface.create("redressed", Typeface.NORMAL));
+                break;
+            case FONT_SANFRANSISCO:
+                view.setTextFont(Typeface.create("sanfransisco", Typeface.NORMAL));
                 break;
             default:
                 break;
