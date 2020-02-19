@@ -92,6 +92,11 @@ public class BlissUtils {
             "com.android.theme.pitchblack.systemui",
     };
 
+    public static final String[] DARK_GREY = {
+            "com.android.theme.darkgrey.system",
+            "com.android.theme.darkgrey.systemui",
+    };
+
      // Switch themes
     private static final String[] SWITCH_THEMES = {
         "com.android.system.switch.stock", // 0
