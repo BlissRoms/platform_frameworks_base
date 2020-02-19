@@ -6718,6 +6718,13 @@ public final class Settings {
         public static final String CLIPBOARD_TOAST_INFO = "clipboard_toast_info";
 
         /**
+         * @hide
+         */
+        public static final String AUTO_BRIGHTNESS_MIN_VALUE = "auto_brightness_min_value";
+
+        private static final Validator AUTO_BRIGHTNESS_MIN_VALUE_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -6877,6 +6884,7 @@ public final class Settings {
             FORCE_FULLSCREEN_CUTOUT_APPS,
             LOCKSCREEN_WEATHER_SHOW_IMAGE,
             NAVIGATION_HANDLE_HEIGHT,
+            AUTO_BRIGHTNESS_MIN_VALUE,
         };
 
         /**
@@ -7086,6 +7094,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_IMAGE);
             PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_HEIGHT);
             PRIVATE_SETTINGS.add(QS_HEADER_STYLE);
+            PRIVATE_SETTINGS.add(AUTO_BRIGHTNESS_MIN_VALUE);
         }
 
         /**
@@ -7282,6 +7291,7 @@ public final class Settings {
             VALIDATORS.put(FORCE_FULLSCREEN_CUTOUT_APPS, FORCE_FULLSCREEN_CUTOUT_APPS_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_IMAGE, LOCKSCREEN_WEATHER_SHOW_IMAGE_VALIDATOR);
             VALIDATORS.put(NAVIGATION_HANDLE_HEIGHT, NAVIGATION_HANDLE_HEIGHT_VALIDATOR);
+            VALIDATORS.put(AUTO_BRIGHTNESS_MIN_VALUE, AUTO_BRIGHTNESS_MIN_VALUE_VALIDATOR);
         }
 
         /**
