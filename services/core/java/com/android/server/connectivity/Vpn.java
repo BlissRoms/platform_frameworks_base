@@ -1621,7 +1621,7 @@ public class Vpn {
                     intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT, user);
             final Notification.Builder builder =
                     new Notification.Builder(mContext, SystemNotificationChannels.VPN)
-                            .setSmallIcon(R.drawable.vpn_connected)
+                            //.setSmallIcon(R.drawable.vpn_connected)
                             .setContentTitle(mContext.getString(R.string.vpn_lockdown_disconnected))
                             .setContentText(mContext.getString(R.string.vpn_lockdown_config))
                             .setContentIntent(configIntent)
