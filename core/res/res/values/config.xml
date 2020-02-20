@@ -3397,6 +3397,7 @@
          "emergency" = Launch emergency dialer
          "lockdown" = Lock down device until the user authenticates
          "logout" =  Logout the current user
+         "panic" = Trigger a panic
          -->
     <string-array translatable="false" name="config_globalActionsList">
         <item>emergency</item>
@@ -3406,6 +3407,7 @@
         <item>logout</item>
         <item>screenshot</item>
         <item>bugreport</item>
+        <item>panic</item>
     </string-array>
 
     <!-- Number of milliseconds to hold a wake lock to ensure that drawing is fully
