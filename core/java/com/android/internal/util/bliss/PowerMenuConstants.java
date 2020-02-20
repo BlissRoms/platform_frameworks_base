@@ -33,6 +33,7 @@ public class PowerMenuConstants {
     public static final String GLOBAL_ACTION_KEY_LOGOUT = "logout";
     public static final String GLOBAL_ACTION_KEY_EMERGENCY = "emergency";
     public static final String GLOBAL_ACTION_KEY_DEVICECONTROLS = "devicecontrols";
+    public static final String GLOBAL_ACTION_KEY_PANIC = "panic";
 
     /**
      * Advanced restart menu actions
@@ -41,6 +42,13 @@ public class PowerMenuConstants {
     public static final String GLOBAL_ACTION_KEY_RESTART_BOOTLOADER = "restart_bootloader";
     public static final String GLOBAL_ACTION_KEY_RESTART_DOWNLOAD = "restart_download";
     public static final String GLOBAL_ACTION_KEY_RESTART_FASTBOOT = "restart_fastboot";
+
+    /**
+     * Panic button package
+     */
+    public static final String PANIC_PACKAGE = "org.calyxos.ripple";
+    public static final String PANIC_ACTIVITY = "org.calyxos.ripple.CountDownActivity";
+    public static final String PANIC_SETTINGS = "org.calyxos.ripple.SettingsActivityLink";
 
     private static String[] ALL_ACTIONS = {
         GLOBAL_ACTION_KEY_EMERGENCY,
@@ -56,6 +64,7 @@ public class PowerMenuConstants {
         GLOBAL_ACTION_KEY_VOICEASSIST,
         GLOBAL_ACTION_KEY_ASSIST,
         GLOBAL_ACTION_KEY_DEVICECONTROLS,
+        GLOBAL_ACTION_KEY_PANIC,
         GLOBAL_ACTION_KEY_LOGOUT,
     };
 

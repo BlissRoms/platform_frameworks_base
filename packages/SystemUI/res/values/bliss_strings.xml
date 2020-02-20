@@ -48,6 +48,7 @@
     <!-- Label for current user in power menu options dialog -->
     <string name="global_action_current_user">Current</string>
     <string name="global_action_users">Users</string>
+    <string name="global_action_panic">Panic trigger</string>
 
     <!-- Navigation bar dpad -->
     <string name="accessibility_dpad_left">Cursor left</string>
