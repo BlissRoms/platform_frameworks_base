@@ -120,4 +120,9 @@
         android:title="@string/tuner_show_drag_handle"
         sysui:defValue="true" />
 
+    <com.android.systemui.tuner.TunerSwitch
+        android:key="qs_show_secure"
+        android:title="@string/tuner_show_secure_title"
+        sysui:defValue="true" />
+
 </PreferenceScreen>

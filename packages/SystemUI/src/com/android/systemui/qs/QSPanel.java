@@ -100,6 +100,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     public static final String ANIM_TILE_INTERPOLATOR =
             "system:" + Settings.System.ANIM_TILE_INTERPOLATOR;
     public static final String QS_SHOW_BRIGHTNESS_BUTTONS = "qs_show_brightness_buttons";
+    public static final String QS_SHOW_SECURITY = "qs_show_secure";
 
     private static final String TAG = "QSPanel";
 
@@ -299,7 +300,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         tunerService.addTunable(this, ANIM_TILE_DURATION);
         tunerService.addTunable(this, ANIM_TILE_INTERPOLATOR);
         tunerService.addTunable(this, QS_SHOW_BRIGHTNESS_BUTTONS);
-
+        tunerService.addTunable(this, QS_SHOW_SECURITY);
         if (mHost != null) {
             setTiles(mHost.getTiles());
         }
@@ -356,6 +357,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             if (mHost != null) {
                 setTiles(mHost.getTiles());
             }
+        } else if (QS_SHOW_SECURITY.equals(key)) {
+            mFooter.setForceHide(newValue != null && Integer.parseInt(newValue) == 0);
         }
     }
 
