@@ -5458,6 +5458,8 @@ public final class Settings {
         private static final Validator PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR =
                 ANY_INTEGER_VALIDATOR;
 
+        public static final String QS_SHOW_SECURITY = "qs_show_secure";
+
         /**
          * Change font style for the system lockscreen clock widget
          * @hide

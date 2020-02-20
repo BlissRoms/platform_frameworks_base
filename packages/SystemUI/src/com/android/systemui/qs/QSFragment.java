@@ -18,10 +18,12 @@ import static android.app.StatusBarManager.DISABLE2_QUICK_SETTINGS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -59,6 +61,7 @@ public class QSFragment extends LifecycleFragment implements QS, CommandQueue.Ca
     private static final String EXTRA_EXPANDED = "expanded";
     private static final String EXTRA_LISTENING = "listening";
 
+    private Context mContext;
     private final Rect mQsBounds = new Rect();
     private final StatusBarStateController mStatusBarStateController;
     private boolean mQsExpanded;
@@ -80,6 +83,7 @@ public class QSFragment extends LifecycleFragment implements QS, CommandQueue.Ca
     private QSFooter mFooter;
     private float mLastQSExpansion = -1;
     private boolean mQsDisabled;
+    private boolean mshowSecurityFooter;
 
     private final RemoteInputQuickSettingsDisabler mRemoteInputQuickSettingsDisabler;
     private final InjectionInflationController mInjectionInflater;
@@ -105,6 +109,7 @@ public class QSFragment extends LifecycleFragment implements QS, CommandQueue.Ca
                 .observe(getLifecycle(), this);
         mHost = qsTileHost;
         mStatusBarStateController = statusBarStateController;
+        mContext = context;
     }
 
     @Override
@@ -463,6 +468,10 @@ public class QSFragment extends LifecycleFragment implements QS, CommandQueue.Ca
         mContainer.updateExpansion();
         mQSPanel.setVisibility(!mQSCustomizer.isCustomizing() ? View.VISIBLE : View.INVISIBLE);
         mFooter.setVisibility(!mQSCustomizer.isCustomizing() ? View.VISIBLE : View.INVISIBLE);
+        mshowSecurityFooter = Settings.System.getInt(mContext.getContentResolver(),
+                                  Settings.System.QS_SHOW_SECURITY, 1) == 1;
+
+        mQSPanel.getFooter().setForceHide(mshowSecurityFooter);
         // Let the panel know the position changed and it needs to update where notifications
         // and whatnot are.
         mPanelView.onQsHeightChanged();
