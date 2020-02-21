@@ -63,6 +63,10 @@ public class BlissUtils {
 
     public static final String INTENT_SCREENSHOT = "action_take_screenshot";
     public static final String INTENT_REGION_SCREENSHOT = "action_take_region_screenshot";
+    public static final String DOZE_PACKAGE_NAME = "Doze";
+    public static final String LINEAGE_DOZE_PACKAGE_NAME = "org.lineageos.settings.doze";
+    public static final String CUSTOM_DOZE_PACKAGE_NAME = "com.custom.ambient.display";
+    public static final String ONEPLUS_DOZE_PACKAGE_NAME = "OnePlusDoze";
 
     public static boolean isChineseLanguage() {
        return Resources.getSystem().getConfiguration().locale.getLanguage().startsWith(
@@ -469,10 +473,17 @@ public class BlissUtils {
             }
         }
     }
-    
+
     // Volume panel
     public static void toggleVolumePanel(Context context) {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         am.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+    }
+
+    public static boolean isDozePackageAvailable(Context context) {
+        return isPackageAvailable(context, DOZE_PACKAGE_NAME) ||
+            isPackageAvailable(context, ONEPLUS_DOZE_PACKAGE_NAME) ||
+            isPackageAvailable(context, LINEAGE_DOZE_PACKAGE_NAME) ||
+            isPackageAvailable(context, CUSTOM_DOZE_PACKAGE_NAME);
     }
 }
