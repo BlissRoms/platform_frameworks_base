@@ -72,6 +72,9 @@ public class FODAnimation extends ImageView {
         "fod_recog_animation_smoke",
         "fod_recog_animation_strings",
         "fod_recog_animation_quantum",
+        "fod_blue_firework_recognizing_anim",
+        "fod_coloros7_1_recognizing_anim",
+        "fod_coloros7_2_recognizing_anim"
     };
 
     private final String mFodAnimationPackage;
