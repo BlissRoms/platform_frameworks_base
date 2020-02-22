@@ -719,6 +719,8 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private boolean mDisplayCutoutHidden;
 
+    private boolean mUnexpandedQSBrightnessSlider;
+
     private final KeyguardUpdateMonitorCallback mUpdateCallback =
             new KeyguardUpdateMonitorCallback() {
                 @Override
@@ -1967,6 +1969,23 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     }
 
+    public void updateBrightnessSliderOverlay() {
+        boolean UnexpandedQSBrightnessSlider = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.BRIGHTNESS_SLIDER_QS_UNEXPANDED, 0, UserHandle.USER_CURRENT) == 1;
+        if (mUnexpandedQSBrightnessSlider != UnexpandedQSBrightnessSlider){
+            mUnexpandedQSBrightnessSlider = UnexpandedQSBrightnessSlider;
+            mUiOffloadThread.submit(() -> {
+                final IOverlayManager mOverlayManager = IOverlayManager.Stub.asInterface(
+                                ServiceManager.getService(Context.OVERLAY_SERVICE));
+                try {
+                    mOverlayManager.setEnabled("com.extendedui.overlay.brightnessslider",
+                                mUnexpandedQSBrightnessSlider, mLockscreenUserManager.getCurrentUserId());
+                } catch (RemoteException ignored) {
+                }
+            });
+        }
+    }
+
     @Nullable
     public View getAmbientIndicationContainer() {
         return mAmbientIndicationContainer;
@@ -2139,6 +2158,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_MEDIA_BLUR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.BRIGHTNESS_SLIDER_QS_UNEXPANDED),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2173,7 +2195,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_BLUR_ALPHA)) ||
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_BLUR_INTENSITY))) {
                 updateBlurVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.BRIGHTNESS_SLIDER_QS_UNEXPANDED))) {
+                updateBrightnessSliderOverlay();
             }
+            update();
         }
 
         public void update() {

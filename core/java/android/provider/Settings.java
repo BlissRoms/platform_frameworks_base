@@ -3568,6 +3568,22 @@ public final class Settings {
         public static final int SCREEN_BRIGHTNESS_MODE_AUTOMATIC = 1;
 
         /**
+         * Bottom brightness slider
+         * @hide
+         */
+        public static final String QS_BOTTOM_BRIGHTNESS = "qs_bottom_brightness";
+
+        /**
+         * Display cutout
+         * @hide
+         */
+        public static final String BRIGHTNESS_SLIDER_QS_UNEXPANDED = "brightness_slider_qs_unexpanded";
+
+        /** @hide */
+        private static final Validator BRIGHTNESS_SLIDER_QS_UNEXPANDED_VALIDATOR = new
+                SettingsValidators.InclusiveIntegerRangeValidator(0, 1);
+
+        /**
          * Control whether to enable adaptive sleep mode.
          * @hide
          */
@@ -6285,6 +6301,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT);
             PRIVATE_SETTINGS.add(AMBIENT_NOTIFICATION_LIGHT_ENABLED);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_NEW_TINT);
+            PRIVATE_SETTINGS.add(BRIGHTNESS_SLIDER_QS_UNEXPANDED);
         }
 
         /**
@@ -6445,6 +6462,7 @@ public final class Settings {
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_REPEAT_COUNT, PULSE_AMBIENT_LIGHT_REPEAT_COUNT_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL, PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL_VALIDATOR);
             VALIDATORS.put(QS_PANEL_BG_USE_NEW_TINT, QS_PANEL_BG_USE_NEW_TINT_VALIDATOR);
+            VALIDATORS.put(BRIGHTNESS_SLIDER_QS_UNEXPANDED, BRIGHTNESS_SLIDER_QS_UNEXPANDED_VALIDATOR);
         }
 
         /**
