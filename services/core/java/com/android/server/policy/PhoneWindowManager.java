@@ -1960,6 +1960,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case CLEAR_ALL_NOTIFICATIONS:
                 BlissUtils.clearAllNotifications();
                 break;
+            case NOTIFICATIONS:
+                BlissUtils.toggleNotifications();
+                break;
             default:
                 break;
         }
