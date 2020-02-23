@@ -87,6 +87,11 @@ public class BlissUtils {
             "com.android.theme.solarizeddark.systemui",
     };
 
+    public static final String[] PITCH_BLACK = {
+            "com.android.theme.pitchblack.system",
+            "com.android.theme.pitchblack.systemui",
+    };
+
      // Switch themes
     private static final String[] SWITCH_THEMES = {
         "com.android.system.switch.stock", // 0
