@@ -85,4 +85,9 @@ public class ThemesUtils {
             "com.android.theme.solarizeddark.system",
             "com.android.theme.solarizeddark.systemui",
     };
+
+    public static final String[] PITCH_BLACK = {
+            "com.android.theme.pitchblack.system",
+            "com.android.theme.pitchblack.systemui",
+    };
 }
