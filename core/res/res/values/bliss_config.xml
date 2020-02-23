@@ -91,6 +91,7 @@
 
     <!-- Whether device has SuperDart charging support -->
     <bool name="config_hasSuperDartCharger">false</bool>
+
     <!-- Whether device has physical tri state switch -->
     <bool name="config_hasAlertSlider">false</bool>
 
@@ -98,4 +99,8 @@
          0: Left side
          1: Right side -->
     <integer name="config_alertSliderLocation">0</integer>
+
+    <!-- Whether key handler sends intent when changing slider position -->
+    <string name="config_alertSliderIntent"></string>
+
 </resources>
