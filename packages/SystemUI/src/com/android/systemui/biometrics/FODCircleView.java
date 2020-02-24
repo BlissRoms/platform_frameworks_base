@@ -122,7 +122,8 @@ public class FODCircleView extends ImageView {
         R.drawable.fod_icon_pressed_vivo_cyan_shadow,
         R.drawable.fod_icon_pressed_vivo_cyan_shadow_et713,
         R.drawable.fod_icon_pressed_vivo_green,
-        R.drawable.fod_icon_pressed_vivo_yellow_shadow
+        R.drawable.fod_icon_pressed_vivo_yellow_shadow,
+        R.drawable.fod_icon_pressed_accent
     };
 
     private IFingerprintInscreenCallback mFingerprintInscreenCallback =
