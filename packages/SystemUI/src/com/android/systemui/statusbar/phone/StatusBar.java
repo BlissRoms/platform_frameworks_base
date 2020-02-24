@@ -1273,7 +1273,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     }
 
-    public static void updateDismissAllButton(int backgroundcolor, int iconcolor) {
+    public static void updateDismissAllButton(int iconcolor) {
         if (mDismissAllButton != null) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mDismissAllButton.getLayoutParams();
             layoutParams.width = mStaticContext.getResources().getDimensionPixelSize(R.dimen.dismiss_all_button_width);
@@ -1281,12 +1281,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             layoutParams.bottomMargin = mStaticContext.getResources().getDimensionPixelSize(R.dimen.dismiss_all_button_margin_bottom);
             mDismissAllButton.setElevation(mStaticContext.getResources().getDimension(R.dimen.dismiss_all_button_elevation));
 
-            GradientDrawable shape = new GradientDrawable();
-            shape.setShape(GradientDrawable.OVAL);
-            shape.setColor(backgroundcolor);
-
             mDismissAllButton.setColorFilter(iconcolor);
-            mDismissAllButton.setBackground(shape);
+            mDismissAllButton.setBackground(mStaticContext.getResources().getDrawable(R.drawable.oos_dismiss_all_bcg));
         }
     }
 
@@ -2124,6 +2120,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
 	            Settings.System.QS_PANEL_BG_USE_ACCENT),
 	            false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_PANEL_BG_USE_NEW_TINT),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.SHOW_BACK_ARROW_GESTURE),
                     false, this, UserHandle.USER_ALL);
@@ -2132,6 +2131,9 @@ public class StatusBar extends SystemUI implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_BLUR_INTENSITY),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_MEDIA_BLUR),
                     false, this, UserHandle.USER_ALL);
         }
 
@@ -2159,6 +2161,7 @@ public class StatusBar extends SystemUI implements DemoMode,
                 updateQSPanel();
                 mQSPanel.getHost().reloadAllTiles();
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_PANEL_BG_USE_FW)) ||
+                    uri.equals(Settings.System.getUriFor(Settings.System.QS_PANEL_BG_USE_NEW_TINT)) ||
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_PANEL_BG_COLOR)) ||
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_PANEL_BG_COLOR_WALL)) ||
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_PANEL_BG_USE_ACCENT))) {
@@ -2179,6 +2182,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             setMaxKeyguardNotifConfig();
             updateQSPanel();
             setHideArrowForBackGesture();
+            if (mMediaManager != null) {
+                mMediaManager.setLockScreenMediaBlurLevel();
+            }
         }
     }
 

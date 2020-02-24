@@ -5422,43 +5422,6 @@ public final class Settings {
         private static final Validator USE_OLD_MOBILETYPE_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
-         * Whether to enable Ambient edge light
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_LIGHT = "pulse_ambient_light";
-
-        /** @hide */
-        private static final Validator PULSE_AMBIENT_LIGHT_VALIDATOR = BOOLEAN_VALIDATOR;
-
-        /**
-         * What color to use for Ambient edge light
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_LIGHT_COLOR = "pulse_ambient_light_color";
-
-        /** @hide */
-        private static final Validator PULSE_AMBIENT_LIGHT_COLOR_VALIDATOR = ANY_STRING_VALIDATOR;
-
-        /**
-         * Wether to use color from wallpaper for Ambient edge light
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_AUTO_COLOR = "pulse_ambient_auto_color";
-
-        /** @hide */
-        private static final Validator PULSE_AMBIENT_AUTO_COLOR_VALIDATOR = BOOLEAN_VALIDATOR;
-
-        /**
-         * Duration of Ambient edge light in seconds
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_LIGHT_DURATION = "pulse_ambient_light_duration";
-
-        /** @hide */
-        private static final Validator PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR =
-                ANY_INTEGER_VALIDATOR;
-
-        /**
          * Change font style for the system lockscreen clock widget
          * @hide
          */
@@ -5785,6 +5748,111 @@ public final class Settings {
         public static final String STATUS_BAR_TICKER_ANIMATION_MODE =
                 "status_bar_ticker_animation_mode";
 
+         /**
+         * Whether to enable PULSE Edge lights
+         * @hide
+         */
+        public static final String PULSE_AMBIENT_LIGHT = "pulse_ambient_light";
+
+        private static final Validator PULSE_AMBIENT_LIGHT_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+         /**
+         * Whether to enable Ambient Edge lights
+         * @hide
+         */
+
+        public static final String AMBIENT_NOTIFICATION_LIGHT_ENABLED = "ambient_notification_light_enabled";
+
+        private static final Validator AMBIENT_NOTIFICATION_LIGHT_ENABLED_VALIDATOR = BOOLEAN_VALIDATOR;
+
+         /**
+         * Whether to enable Ambient Edge lights
+         * @hide
+         */
+
+        public static final String AMBIENT_NOTIFICATION_LIGHT = "ambient_notification_light";
+
+        private static final Validator AMBIENT_NOTIFICATION_LIGHT_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+         /**
+         * Whether Ambient Edge lights are activated
+         * @hide
+         */
+
+        public static final String AMBIENT_NOTIFICATION_LIGHT_ACTIVATED = "ambient_notification_light_activated";
+
+        private static final Validator AMBIENT_NOTIFICATION_LIGHT_ACTIVATED_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
+         * Whether hide everything on aod when ambient lights are enabled
+         * @hide
+         */
+        public static final String AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD = "ambient_notification_light_hide_aod";
+
+        private static final Validator AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
+         * Whether to use accent color for pulse
+         * @hide
+         */
+        public static final String AMBIENT_NOTIFICATION_LIGHT_ACCENT = "ambient_notification_light_accent";
+
+        /** @hide */
+        private static final Validator AMBIENT_NOTIFICATION_LIGHT_ACCENT_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
+         * Ambient edge light color
+         * @hide
+         */
+        public static final String PULSE_AMBIENT_LIGHT_COLOR = "pulse_ambient_light_color";
+
+        /** @hide */
+        private static final Validator PULSE_AMBIENT_LIGHT_COLOR_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
+        /**
+         * Duration of Ambient edge light in seconds
+         * @hide
+         */
+        public static final String PULSE_AMBIENT_LIGHT_DURATION = "pulse_ambient_light_duration";
+
+        /** @hide */
+        private static final Validator PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
+        /**
+         * Number of times to repeat animations of Ambient edge light
+         * 0 is infinite
+         * @hide
+         */
+        public static final String PULSE_AMBIENT_LIGHT_REPEAT_COUNT = "pulse_ambient_light_repeat_count";
+
+        /** @hide */
+        private static final Validator PULSE_AMBIENT_LIGHT_REPEAT_COUNT_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
+
+        /**
+         * Wether to show edge light for all doze events
+         * @hide
+         */
+        public static final String PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL = "pulse_ambient_light_pulse_for_all";
+
+        /** @hide */
+        private static final Validator PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
+         * helper setting to contain the current pulse reason so we can check
+         * if it has been triggered from a notification or a gesture
+         * @hide
+         */
+        public static final String PULSE_TRIGGER_REASON = "pulse_trigger_reason";
+
         /**
          * Status bar ticker duration in milliseconds.
          * @hide
@@ -5892,6 +5960,15 @@ public final class Settings {
         public static final String AUTO_ANSWER_CALL_KEY = "auto_answer_call_key";
 
         /**
+         * Whether to use new QS panel bg tint or not
+         * @hide
+         */
+        public static final String QS_PANEL_BG_USE_NEW_TINT = "qs_panel_bg_use_new_tint";
+
+        /** @hide */
+        private static final Validator QS_PANEL_BG_USE_NEW_TINT_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Which Vibration Pattern to use
          * 0: dzzz-dzzz
          * 1: dzzz-da
@@ -5993,10 +6070,6 @@ public final class Settings {
             OMNI_STATUS_BAR_FILE_HEADER_IMAGE,
             DOZE_ON_CHARGE,
             USE_OLD_MOBILETYPE,
-            PULSE_AMBIENT_AUTO_COLOR,
-            PULSE_AMBIENT_LIGHT,
-            PULSE_AMBIENT_LIGHT_COLOR,
-            PULSE_AMBIENT_LIGHT_DURATION,
             OMNI_PULSE_BRIGHTNESS,
             OMNI_DOZE_BRIGHTNESS,
             FLASHLIGHT_ON_CALL,
@@ -6018,6 +6091,17 @@ public final class Settings {
             QS_BLUR_ALPHA,
             HEADSET_CONNECT_PLAYER,
             QS_BLUR_INTENSITY,
+            PULSE_AMBIENT_LIGHT,
+            AMBIENT_NOTIFICATION_LIGHT,
+            AMBIENT_NOTIFICATION_LIGHT_ACTIVATED,
+            AMBIENT_NOTIFICATION_LIGHT_ENABLED,
+            AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD,
+            AMBIENT_NOTIFICATION_LIGHT_ACCENT,
+            PULSE_AMBIENT_LIGHT_COLOR,
+            PULSE_AMBIENT_LIGHT_DURATION,
+            PULSE_AMBIENT_LIGHT_REPEAT_COUNT,
+            PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL,
+            QS_PANEL_BG_USE_NEW_TINT,
         };
 
         /**
@@ -6176,10 +6260,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DISPLAY_CUTOUT_HIDDEN);
             PRIVATE_SETTINGS.add(DOZE_ON_CHARGE);
             PRIVATE_SETTINGS.add(USE_OLD_MOBILETYPE);
-            PRIVATE_SETTINGS.add(PULSE_AMBIENT_AUTO_COLOR);
-            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT);
-            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_COLOR);
-            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_DURATION);
             PRIVATE_SETTINGS.add(OMNI_PULSE_BRIGHTNESS);
             PRIVATE_SETTINGS.add(OMNI_DOZE_BRIGHTNESS);
             PRIVATE_SETTINGS.add(FLASHLIGHT_ON_CALL);
@@ -6198,6 +6278,13 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_FW);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_ACCENT);
             PRIVATE_SETTINGS.add(HEADSET_CONNECT_PLAYER);
+            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_COLOR);
+            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_DURATION);
+            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_REPEAT_COUNT);
+            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL);
+            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT);
+            PRIVATE_SETTINGS.add(AMBIENT_NOTIFICATION_LIGHT_ENABLED);
+            PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_NEW_TINT);
         }
 
         /**
@@ -6326,10 +6413,6 @@ public final class Settings {
             VALIDATORS.put(DISPLAY_CUTOUT_HIDDEN, DISPLAY_CUTOUT_HIDDEN_VALIDATOR);
             VALIDATORS.put(DOZE_ON_CHARGE, DOZE_ON_CHARGE_VALIDATOR);
             VALIDATORS.put(USE_OLD_MOBILETYPE, USE_OLD_MOBILETYPE_VALIDATOR);
-            VALIDATORS.put(PULSE_AMBIENT_AUTO_COLOR, PULSE_AMBIENT_AUTO_COLOR_VALIDATOR);
-            VALIDATORS.put(PULSE_AMBIENT_LIGHT, PULSE_AMBIENT_LIGHT_VALIDATOR);
-            VALIDATORS.put(PULSE_AMBIENT_LIGHT_COLOR, PULSE_AMBIENT_LIGHT_COLOR_VALIDATOR);
-            VALIDATORS.put(PULSE_AMBIENT_LIGHT_DURATION, PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR);
             VALIDATORS.put(OMNI_PULSE_BRIGHTNESS, OMNI_PULSE_BRIGHTNESS_VALIDATOR);
             VALIDATORS.put(OMNI_DOZE_BRIGHTNESS, OMNI_DOZE_BRIGHTNESS_VALIDATOR);
             VALIDATORS.put(FLASHLIGHT_ON_CALL, FLASHLIGHT_ON_CALL_VALIDATOR);
@@ -6351,6 +6434,17 @@ public final class Settings {
             VALIDATORS.put(QS_BLUR_ALPHA, QS_BLUR_ALPHA_VALIDATOR);
             VALIDATORS.put(HEADSET_CONNECT_PLAYER, HEADSET_CONNECT_PLAYER_VALIDATOR);
             VALIDATORS.put(QS_BLUR_INTENSITY, QS_BLUR_INTENSITY_VALIDATOR);
+            VALIDATORS.put(PULSE_AMBIENT_LIGHT, PULSE_AMBIENT_LIGHT_VALIDATOR);
+            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT, AMBIENT_NOTIFICATION_LIGHT_VALIDATOR);
+            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ACTIVATED, AMBIENT_NOTIFICATION_LIGHT_ACTIVATED_VALIDATOR);
+            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ENABLED, AMBIENT_NOTIFICATION_LIGHT_ENABLED_VALIDATOR);
+            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD, AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD_VALIDATOR);
+            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ACCENT, AMBIENT_NOTIFICATION_LIGHT_ACCENT_VALIDATOR);
+            VALIDATORS.put(PULSE_AMBIENT_LIGHT_COLOR, PULSE_AMBIENT_LIGHT_COLOR_VALIDATOR);
+            VALIDATORS.put(PULSE_AMBIENT_LIGHT_DURATION, PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR);
+            VALIDATORS.put(PULSE_AMBIENT_LIGHT_REPEAT_COUNT, PULSE_AMBIENT_LIGHT_REPEAT_COUNT_VALIDATOR);
+            VALIDATORS.put(PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL, PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL_VALIDATOR);
+            VALIDATORS.put(QS_PANEL_BG_USE_NEW_TINT, QS_PANEL_BG_USE_NEW_TINT_VALIDATOR);
         }
 
         /**
