@@ -349,6 +349,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final String ACTION_TORCH_OFF =
             "com.android.server.policy.PhoneWindowManager.ACTION_TORCH_OFF";
 
+    private int sshotType;
+
     /**
      * Keyguard stuff
      */
@@ -990,6 +992,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DOZE_TRIGGER_DOUBLETAP), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SCREENSHOT_TYPE), false, this,
+                    UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -1609,11 +1614,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             + SCREENSHOT_CHORD_DEBOUNCE_DELAY_MILLIS) {
                 mScreenshotChordVolumeDownKeyConsumed = true;
                 cancelPendingPowerKeyAction();
-                if (Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT) == 1) {
-                    mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_SELECTED_REGION);
-                } else {
+                if (sshotType == 0) {
                     mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
+                } else if (sshotType == 1) {
+                    mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_SELECTED_REGION);
                 }
                 mHandler.postDelayed(mScreenshotRunnable, getScreenshotChordLongPressDelay());
             }
@@ -1705,8 +1709,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         @Override
         public void run() {
+            if (sshotType == 2) {
                 boolean dockMinimized = mWindowManagerInternal.isMinimizedDock();
                 mDefaultDisplayPolicy.takeScreenshot(mScreenshotType, dockMinimized);
+            }
         }
     }
 
@@ -2631,6 +2637,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (updateRotation) {
             updateRotation(true);
         }
+                sshotType = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
     }
 
     private void updateWakeGestureListenerLp() {
