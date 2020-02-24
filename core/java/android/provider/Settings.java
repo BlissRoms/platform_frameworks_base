@@ -6254,6 +6254,12 @@ public final class Settings {
         public static final String AMBIENT_LIGHT_REPEAT_DIRECTION = "ambient_light_repeat_direction";
 
         /**
+         * Ambient Edge Light Layout
+         * @hide
+         */
+        public static final String AMBIENT_LIGHT_LAYOUT = "ambient_light_layout";
+
+        /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
