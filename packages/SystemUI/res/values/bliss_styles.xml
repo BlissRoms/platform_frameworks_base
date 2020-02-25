@@ -16,11 +16,6 @@
 -->
 <resources>
 
-    <style name="TriStateUiText">
-        <item name="android:textSize">14.0sp</item>
-        <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
-    </style>
-
     <!-- OmniJaws weather -->
     <style name="TextAppearance.StatusBar.Expanded.Weather">
         <item name="android:textSize">12sp</item>
