@@ -16,21 +16,16 @@
 
 package com.android.systemui.biometrics;
 
-import android.app.WallpaperColors;
-import android.app.WallpaperManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.biometrics.BiometricSourceType;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -46,7 +41,6 @@ import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import androidx.palette.graphics.Palette;
 
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -88,8 +82,6 @@ public class FODCircleView extends ImageView {
     private PowerManager.WakeLock mWakeLock;
 
     private Timer mBurnInProtectionTimer;
-    private WallpaperManager mWallManager;
-    private int iconcolor = 0xFF3980FF;
 
     private FODAnimation mFODAnimation;
     private boolean mIsRecognizingAnimEnabled;
@@ -408,48 +400,6 @@ public class FODCircleView extends ImageView {
         updateAlpha();
 
         setKeepScreenOn(false);
-    }
-
-    private boolean useWallpaperColor() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.FOD_ICON_WALLPAPER_COLOR, 0) != 0;
-    }
-
-        if (useWallpaperColor()) {
-            try {
-                WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
-                Drawable wallpaperDrawable = wallpaperManager.getDrawable();
-                Bitmap bitmap = ((BitmapDrawable)wallpaperDrawable).getBitmap();
-                if (bitmap != null) {
-                    Palette p = Palette.from(bitmap).generate();
-                    int wallColor = p.getDominantColor(iconcolor);
-                    if (iconcolor != wallColor) {
-                        iconcolor = wallColor;
-                    }
-                    this.setColorFilter(lighter(iconcolor, 3));
-                }
-            } catch (Exception e) {
-                // Nothing to do
-            }
-        } else {
-            this.setColorFilter(null);
-        }
-    }
-
-    private static int lighter(int color, int factor) {
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-
-        blue = blue * factor;
-        green = green * factor;
-        blue = blue * factor;
-
-        blue = blue > 255 ? 255 : blue;
-        green = green > 255 ? 255 : green;
-        red = red > 255 ? 255 : red;
-
-        return Color.argb(Color.alpha(color), red, green, blue);
     }
 
     public void show() {
