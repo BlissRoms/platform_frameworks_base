@@ -357,7 +357,7 @@ public class KeyguardStatusView extends GridLayout implements
 
             switch (mClockSelection) {
                 case 1: // hidden
-                    mSmallClockView.setVisibility(View.GONE);
+                    mSmallClockView.setVisibility(mDarkAmount != 1 ? View.GONE : View.VISIBLE);
                     break;
                 case 2: // default
                     mSmallClockView.setVisibility(View.VISIBLE);
