@@ -119,7 +119,6 @@ public class KeyguardStatusView extends GridLayout implements
     private LinearLayout mStatusViewContainer;
     private TextView mLogoutView;
     private KeyguardClockSwitch mClockView;
-    private View mSmallClockView;
     private TextView mOwnerInfo;
     private KeyguardSliceView mKeyguardSlice;
     private View mNotificationIcons;
@@ -293,7 +292,6 @@ public class KeyguardStatusView extends GridLayout implements
 
         mClockView = findViewById(R.id.keyguard_clock_container);
         mClockView.setShowCurrentUserTime(true);
-        mSmallClockView  = findViewById(R.id.clock_view);
         mOwnerInfo = findViewById(R.id.owner_info);
         mKeyguardSlice = findViewById(R.id.keyguard_status_area);
 
@@ -357,7 +355,7 @@ public class KeyguardStatusView extends GridLayout implements
 
             switch (mClockSelection) {
                 case 1: // hidden
-                    mSmallClockView.setVisibility(View.GONE);
+                    mClockView.setVisibility(View.GONE);
                     break;
                 case 2: // default
                     mClockView.setVisibility(View.VISIBLE);
