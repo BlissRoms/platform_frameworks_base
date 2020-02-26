@@ -357,37 +357,37 @@ public class KeyguardStatusView extends GridLayout implements
 
             switch (mClockSelection) {
                 case 1: // hidden
-                    mSmallClockView.setVisibility(View.GONE);
+                    mSmallClockView.setVisibility(mDarkAmount != 1 ? View.GONE : View.VISIBLE);
                     break;
                 case 2: // default
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 3: // default (bold)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 4: // default (small font)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 5: // default (accent)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 6: // default (accent hr)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 7: // default (accent min)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 8: // sammy
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 9: // sammy (bold)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 10: // sammy (accent)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 11: // sammy (accent alt)
-                    mClockView.setVisibility(View.VISIBLE);
+                    mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 }
             refreshFormat();
@@ -405,11 +405,8 @@ public class KeyguardStatusView extends GridLayout implements
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
             mKeyguardSlice.setDateSize(mLockDateFontSize);
 
-            if (mLockDateHide) {
-                 mKeyguardSlice.setVisibility(View.GONE);
-            } else {
-                 mKeyguardSlice.setVisibility(View.VISIBLE);
-            }
+            // Dont hide slice view in doze
+            mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
         }
 
         switch (mDateSelection) {
@@ -1124,6 +1121,7 @@ public class KeyguardStatusView extends GridLayout implements
         final int blendedTextColor = ColorUtils.blendARGB(mTextColor, Color.WHITE, mDarkAmount);
         mKeyguardSlice.setDarkAmount(mDarkAmount);
         mClockView.setTextColor(blendedTextColor);
+        onDensityOrFontScaleChanged();
     }
 
     private void layoutOwnerInfo() {
