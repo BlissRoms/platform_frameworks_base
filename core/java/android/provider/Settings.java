@@ -5540,6 +5540,12 @@ public final class Settings {
         public static final String ALERT_SLIDER_ORDER = "alert_slider_order";
 
         /**
+         * Whether to show or hide alert slider notifications on supported devices
+         * @hide
+         */
+        public static final String ALERT_SLIDER_NOTIFICATIONS = "alert_slider_notifications";
+
+        /**
          * Preferred silent mode for Alert Slider..
          * 0: Alarms only.
          * 1: Total silence
