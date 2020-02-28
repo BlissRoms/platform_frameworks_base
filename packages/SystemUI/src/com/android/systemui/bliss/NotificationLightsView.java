@@ -89,7 +89,7 @@ public class NotificationLightsView extends RelativeLayout {
             if (repeat == 0) {
                 mLightAnimator.setRepeatCount(ValueAnimator.INFINITE);
             } else {
-                mLightAnimator.setRepeatCount(repeat);
+                mLightAnimator.setRepeatCount(repeat - 1);
             }
         mLightAnimator.setRepeatMode(ValueAnimator.RESTART);
         mLightAnimator.addUpdateListener(new AnimatorUpdateListener() {
