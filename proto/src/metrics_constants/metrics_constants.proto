@@ -7440,5 +7440,8 @@ message MetricsEvent {
 
     // Blissify
     BLISSIFY = 1990;
+
+    // Panel for Mobile Data
+    PANEL_MOBILE_DATA = 4002;
   }
 }
