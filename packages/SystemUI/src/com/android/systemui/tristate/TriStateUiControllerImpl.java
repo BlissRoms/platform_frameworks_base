@@ -30,6 +30,7 @@ import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.display.DisplayManagerGlobal;
 import android.media.AudioManager;
@@ -39,8 +40,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
-import android.view.OrientationEventListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
@@ -55,11 +56,16 @@ import com.android.systemui.plugins.VolumeDialogController;
 import com.android.systemui.plugins.VolumeDialogController.Callbacks;
 import com.android.systemui.plugins.VolumeDialogController.State;
 import com.android.systemui.statusbar.policy.ConfigurationController;
-import com.android.systemui.statusbar.policy.ConfigurationController.ConfigurationListener;
+import com.android.systemui.tuner.TunerService;
 
-public class TriStateUiControllerImpl implements ConfigurationListener, TriStateUiController {
+public class TriStateUiControllerImpl implements TriStateUiController,
+        ConfigurationController.ConfigurationListener, TunerService.Tunable {
+
 
     private static String TAG = "TriStateUiControllerImpl";
+
+    public static final String ALERT_SLIDER_NOTIFICATIONS =
+            "system:" + Settings.System.ALERT_SLIDER_NOTIFICATIONS;
 
     private static final int MSG_DIALOG_SHOW = 1;
     private static final int MSG_DIALOG_DISMISS = 2;
@@ -118,8 +124,8 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
 
         @Override
         public void onConfigurationChanged() {
-            updateTheme();
-            updateTriStateLayout();
+            mHandler.sendEmptyMessage(MSG_DIALOG_DISMISS);
+            initDialog();
         }
     };
 
@@ -129,13 +135,8 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     private ViewGroup mDialogView;
     private final H mHandler;
     private UserActivityListener mListener;
-    OrientationEventListener mOrientationListener;
-    private int mOrientationType = 0;
     private boolean mShowing = false;
     private int mBackgroundColor = 0;
-    private int mThemeMode = 0;
-    private int mIconColor = 0;
-    private int mTextColor = 0;
     private ImageView mTriStateIcon;
     private TextView mTriStateText;
     private int mTriStateMode = -1;
@@ -146,10 +147,17 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     private String mIntentAction;
     private boolean mIntentActionSupported;
     private boolean mRingModeChanged, mSliderPositionChanged;
+    private boolean mAlertSliderNotification;
 
     private final BroadcastReceiver mRingerStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (!mAlertSliderNotification) {
+                mRingModeChanged = false;
+                mSliderPositionChanged = false;
+                return;
+            }
+
             String action = intent.getAction();
             if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
                 mHandler.sendEmptyMessage(MSG_DIALOG_DISMISS);
@@ -160,7 +168,8 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
                 mPosition = intent.getIntExtra(EXTRA_SLIDER_POSITION, -1);
             }
 
-            if (mRingModeChanged && (mSliderPositionChanged || !mIntentActionSupported)) {
+            if (mRingModeChanged && mAlertSliderNotification &&
+                        (mSliderPositionChanged || !mIntentActionSupported)) {
                 mRingModeChanged = false;
                 mSliderPositionChanged = false;
                 if (mTriStateMode != -1) {
@@ -199,14 +208,9 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     }
 
     public TriStateUiControllerImpl(Context context) {
-        mContext = context;
+        mContext =
+                new ContextThemeWrapper(context, R.style.qs_theme);
         mHandler = new H(this);
-        mOrientationListener = new OrientationEventListener(mContext, 3) {
-            @Override
-            public void onOrientationChanged(int orientation) {
-                checkOrientationType();
-            }
-        };
         mVolumeDialogController = (VolumeDialogController) Dependency.get(VolumeDialogController.class);
         mIntentAction = mContext.getResources().getString(com.android.internal.R.string.config_alertSliderIntent);
         mIntentActionSupported = mIntentAction != null && !mIntentAction.isEmpty();
@@ -216,17 +220,27 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
         if (mIntentActionSupported)
             filter.addAction(mIntentAction);
         mContext.registerReceiver(mRingerStateReceiver, filter);
+
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, ALERT_SLIDER_NOTIFICATIONS);
     }
 
-    private void checkOrientationType() {
-        Display display = DisplayManagerGlobal.getInstance().getRealDisplay(0);
-        if (display != null) {
-            int rotation = display.getRotation();
-            if (rotation != mOrientationType) {
-                mOrientationType = rotation;
-                updateTriStateLayout();
-            }
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case ALERT_SLIDER_NOTIFICATIONS:
+                mAlertSliderNotification
+                        = TunerService.parseIntegerSwitch(newValue, true);
+                mHandler.sendEmptyMessage(MSG_DIALOG_DISMISS);
+                break;
+            default:
+                break;
         }
+    }
+
+    @Override
+    public void onUiModeChanged() {
+        mContext.getTheme().applyStyle(mContext.getThemeResId(), true);
     }
 
     public void init(int windowType, UserActivityListener listener) {
@@ -245,18 +259,21 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     }
 
     private void initDialog() {
-        mDialog = new Dialog(mContext);
+        mDialog = new Dialog(mContext, R.style.qs_theme);
         mShowing = false;
         mWindow = mDialog.getWindow();
         mWindow.requestFeature(Window.FEATURE_NO_TITLE);
-        mWindow.setBackgroundDrawable(new ColorDrawable(0));
-        mWindow.clearFlags(LayoutParams.FLAG_DIM_BEHIND);
+        mWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mWindow.clearFlags(LayoutParams.FLAG_DIM_BEHIND
+                | LayoutParams.FLAG_LAYOUT_INSET_DECOR);
         mWindow.addFlags(LayoutParams.FLAG_NOT_FOCUSABLE
                 | LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | LayoutParams.FLAG_NOT_TOUCH_MODAL
                 | LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        mWindow.setType(LayoutParams.TYPE_VOLUME_OVERLAY);
+        mWindow.setWindowAnimations(com.android.internal.R.style.Animation_Toast);
         mDialog.setCanceledOnTouchOutside(false);
         mWindowLayoutParams = mWindow.getAttributes();
         mWindowLayoutParams.type = mWindowType;
@@ -270,17 +287,6 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
         mDialogView = (ViewGroup) mDialog.findViewById(R.id.tri_state_layout);
         mTriStateIcon = (ImageView) mDialog.findViewById(R.id.tri_state_icon);
         mTriStateText = (TextView) mDialog.findViewById(R.id.tri_state_text);
-        updateTheme();
-    }
-
-    private void registerOrientationListener(boolean enable) {
-        if (mOrientationListener.canDetectOrientation() && enable) {
-            Log.v(TAG, "Can detect orientation");
-            mOrientationListener.enable();
-            return;
-        }
-        Log.v(TAG, "Cannot detect orientation");
-        mOrientationListener.disable();
     }
 
     private void updateTriStateLayout() {
@@ -315,7 +321,14 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
                 } else if (triStatePos == TRI_STATE_UI_POSITION_RIGHT) {
                     isTsKeyRight = true;
                 }
-                switch (mOrientationType) {
+
+                Display display = DisplayManagerGlobal.getInstance().getRealDisplay(0);
+                int orientationType = -1;
+                if (display != null) {
+                    orientationType = display.getRotation();
+                }
+
+                switch (orientationType) {
                     case ROTATION_90:
                         if (isTsKeyRight) {
                             gravity = 51;
@@ -350,7 +363,7 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
                         positionX = res.getDimensionPixelSize(R.dimen.tri_state_up_dialog_position_deep);
                         positionY = res.getDimensionPixelSize(R.dimen.tri_state_up_dialog_position)
                                 + res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
-                        if (mIntentActionSupported) {
+                        if (mPosition >= 0) {
                             if (mPosition != POSITION_TOP) {
                                 if (mPosition != POSITION_MIDDLE) {
                                     if (mPosition == POSITION_BOTTOM) {
@@ -363,7 +376,7 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
                                 positionY = res.getDimensionPixelSize(R.dimen.tri_state_middle_dialog_position)
                                     + res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
                             }
-                        } else if (!mIntentActionSupported && mTriStateMode != MODE_SILENT) {
+                        } else if (mTriStateMode != MODE_SILENT) {
                             if (mTriStateMode != MODE_VIBRATE) {
                                 if (mTriStateMode == MODE_NORMAL) {
                                     positionY = res.getDimensionPixelSize(R.dimen.tri_state_down_dialog_position)
@@ -411,7 +424,7 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
                         }
                         positionX = res.getDimensionPixelSize(R.dimen.tri_state_up_dialog_position_deep);
 
-                        if (mIntentActionSupported) {
+                        if (mPosition >= 0) {
                             if (mPosition != POSITION_TOP) {
                                 if (mPosition != POSITION_MIDDLE) {
                                     if (mPosition == POSITION_BOTTOM) {
@@ -426,7 +439,7 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
                                 bg = R.drawable.dialog_tri_state_middle_bg;
                                 break;
                             }
-                        } else if (!mIntentActionSupported && mTriStateMode != MODE_SILENT) {
+                        } else if (mTriStateMode != MODE_SILENT) {
                             if (mTriStateMode != MODE_VIBRATE) {
                                 if (mTriStateMode == MODE_NORMAL) {
                                     positionY2 = res.getDimensionPixelSize(R.dimen.tri_state_down_dialog_position)
@@ -461,6 +474,8 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
                     }
                     if (mDialogView != null) {
                         mDialogView.setBackgroundDrawable(res.getDrawable(bg));
+                        mBackgroundColor = getAttrColor(android.R.attr.colorPrimary);
+                        mDialogView.setBackgroundTintList(ColorStateList.valueOf(mBackgroundColor));
                     }
                     mDialogPosition = positionY2;
                 }
@@ -477,9 +492,7 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     private void handleShow() {
         mHandler.removeMessages(MSG_DIALOG_SHOW);
         if (!mShowing) {
-            updateTheme();
-            registerOrientationListener(true);
-            checkOrientationType();
+            updateTriStateLayout();
             mShowing = true;
             mDialog.show();
             if (mListener != null) {
@@ -492,7 +505,6 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     private void handleDismiss() {
         mHandler.removeMessages(MSG_DIALOG_DISMISS);
         if (mShowing) {
-            registerOrientationListener(false);
             mShowing = false;
             mDialog.dismiss();
         }
@@ -504,7 +516,6 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
         int ringerMode = am.getRingerModeInternal();
         if (ringerMode != mTriStateMode) {
             mTriStateMode = ringerMode;
-            updateTriStateLayout();
             if (mListener != null) {
                 mListener.onTriStateUserActivity();
             }
@@ -523,17 +534,6 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     public void onDensityOrFontScaleChanged() {
         mHandler.sendEmptyMessage(MSG_DIALOG_DISMISS);
         initDialog();
-        updateTriStateLayout();
-    }
-
-    private void updateTheme() {
-        // Todo: Add some logic to update the theme only when a new theme is applied
-        mIconColor = getAttrColor(android.R.attr.colorAccent);
-        mTextColor = getAttrColor(android.R.attr.textColorPrimary);
-        mBackgroundColor = getAttrColor(android.R.attr.colorPrimary);
-        mDialogView.setBackgroundTintList(ColorStateList.valueOf(mBackgroundColor));
-        mTriStateIcon.setColorFilter(mIconColor);
-        mTriStateText.setTextColor(mTextColor);
     }
 
     public int getAttrColor(int attr) {

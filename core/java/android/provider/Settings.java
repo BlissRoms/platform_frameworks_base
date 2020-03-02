@@ -5768,57 +5768,57 @@ public final class Settings {
          * Whether to enable PULSE Edge lights
          * @hide
          */
-        public static final String PULSE_AMBIENT_LIGHT = "pulse_ambient_light";
+        public static final String NOTIFICATION_PULSE = "pulse_ambient_light";
 
-        private static final Validator PULSE_AMBIENT_LIGHT_VALIDATOR =
+        private static final Validator NOTIFICATION_PULSE_VALIDATOR =
                 BOOLEAN_VALIDATOR;
 
          /**
          * Whether to enable Ambient Edge lights
          * @hide
          */
+        public static final String AOD_NOTIFICATION_PULSE = "ambient_notification_light_enabled";
 
-        public static final String AMBIENT_NOTIFICATION_LIGHT_ENABLED = "ambient_notification_light_enabled";
+        private static final Validator AOD_NOTIFICATION_PULSE_VALIDATOR = BOOLEAN_VALIDATOR;
 
-        private static final Validator AMBIENT_NOTIFICATION_LIGHT_ENABLED_VALIDATOR = BOOLEAN_VALIDATOR;
-
-         /**
-         * Whether to enable Ambient Edge lights
+        /**
+         * Whether to change AOD pulse state
          * @hide
          */
-
-        public static final String AMBIENT_NOTIFICATION_LIGHT = "ambient_notification_light";
-
-        private static final Validator AMBIENT_NOTIFICATION_LIGHT_VALIDATOR =
-                BOOLEAN_VALIDATOR;
+        public static final String AOD_NOTIFICATION_PULSE_TRIGGER = "ambient_notification_light";
 
          /**
          * Whether Ambient Edge lights are activated
          * @hide
          */
-
-        public static final String AMBIENT_NOTIFICATION_LIGHT_ACTIVATED = "ambient_notification_light_activated";
-
-        private static final Validator AMBIENT_NOTIFICATION_LIGHT_ACTIVATED_VALIDATOR =
-                BOOLEAN_VALIDATOR;
+        public static final String AOD_NOTIFICATION_PULSE_ACTIVATED = "ambient_notification_light_activated";
 
         /**
          * Whether hide everything on aod when ambient lights are enabled
          * @hide
          */
-        public static final String AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD = "ambient_notification_light_hide_aod";
+        public static final String AOD_NOTIFICATION_PULSE_CLEAR = "ambient_notification_light_hide_aod";
 
-        private static final Validator AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD_VALIDATOR =
+        private static final Validator AOD_NOTIFICATION_PULSE_CLEAR_VALIDATOR =
                 BOOLEAN_VALIDATOR;
+
+        /**
+         * Timeout for ambient pulse in seconds - 0 is no timeout
+         * @hide
+         */
+        public static final String AOD_NOTIFICATION_PULSE_TIMEOUT = "ambient_notification_light_timeout";
+
+        private static final Validator AOD_NOTIFICATION_PULSE_TIMEOUT_VALIDATOR =
+                ANY_INTEGER_VALIDATOR;
 
         /**
          * Whether to use accent color for pulse
          * @hide
          */
-        public static final String AMBIENT_NOTIFICATION_LIGHT_ACCENT = "ambient_notification_light_accent";
+        public static final String NOTIFICATION_PULSE_ACCENT = "ambient_notification_light_accent";
 
         /** @hide */
-        private static final Validator AMBIENT_NOTIFICATION_LIGHT_ACCENT_VALIDATOR =
+        private static final Validator NOTIFICATION_PULSE_ACCENT_VALIDATOR =
                 BOOLEAN_VALIDATOR;
 
         /**
@@ -5839,17 +5839,6 @@ public final class Settings {
 
         /** @hide */
         private static final Validator PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR =
-                ANY_INTEGER_VALIDATOR;
-
-        /**
-         * Number of times to repeat animations of Ambient edge light
-         * 0 is infinite
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_LIGHT_REPEAT_COUNT = "pulse_ambient_light_repeat_count";
-
-        /** @hide */
-        private static final Validator PULSE_AMBIENT_LIGHT_REPEAT_COUNT_VALIDATOR =
                 ANY_INTEGER_VALIDATOR;
 
         /**
@@ -5996,6 +5985,12 @@ public final class Settings {
         public static final String RINGTONE_VIBRATION_PATTERN = "ringtone_vibration_pattern";
 
         /**
+         * Whether to show or hide alert slider notifications on supported devices
+         * @hide
+         */
+        public static final String ALERT_SLIDER_NOTIFICATIONS = "alert_slider_notifications";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -6107,15 +6102,13 @@ public final class Settings {
             QS_BLUR_ALPHA,
             HEADSET_CONNECT_PLAYER,
             QS_BLUR_INTENSITY,
-            PULSE_AMBIENT_LIGHT,
-            AMBIENT_NOTIFICATION_LIGHT,
-            AMBIENT_NOTIFICATION_LIGHT_ACTIVATED,
-            AMBIENT_NOTIFICATION_LIGHT_ENABLED,
-            AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD,
-            AMBIENT_NOTIFICATION_LIGHT_ACCENT,
+            AOD_NOTIFICATION_PULSE,
+            AOD_NOTIFICATION_PULSE_CLEAR,
+            AOD_NOTIFICATION_PULSE_TIMEOUT,
+            NOTIFICATION_PULSE,
+            NOTIFICATION_PULSE_ACCENT,
             PULSE_AMBIENT_LIGHT_COLOR,
             PULSE_AMBIENT_LIGHT_DURATION,
-            PULSE_AMBIENT_LIGHT_REPEAT_COUNT,
             PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL,
             QS_PANEL_BG_USE_NEW_TINT,
         };
@@ -6296,11 +6289,13 @@ public final class Settings {
             PRIVATE_SETTINGS.add(HEADSET_CONNECT_PLAYER);
             PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_COLOR);
             PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_DURATION);
-            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_REPEAT_COUNT);
             PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL);
-            PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT);
-            PRIVATE_SETTINGS.add(AMBIENT_NOTIFICATION_LIGHT_ENABLED);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_NEW_TINT);
+            PRIVATE_SETTINGS.add(AOD_NOTIFICATION_PULSE);
+            PRIVATE_SETTINGS.add(AOD_NOTIFICATION_PULSE_CLEAR);
+            PRIVATE_SETTINGS.add(AOD_NOTIFICATION_PULSE_TIMEOUT);
+            PRIVATE_SETTINGS.add(NOTIFICATION_PULSE);
+            PRIVATE_SETTINGS.add(NOTIFICATION_PULSE_ACCENT);
         }
 
         /**
@@ -6450,15 +6445,13 @@ public final class Settings {
             VALIDATORS.put(QS_BLUR_ALPHA, QS_BLUR_ALPHA_VALIDATOR);
             VALIDATORS.put(HEADSET_CONNECT_PLAYER, HEADSET_CONNECT_PLAYER_VALIDATOR);
             VALIDATORS.put(QS_BLUR_INTENSITY, QS_BLUR_INTENSITY_VALIDATOR);
-            VALIDATORS.put(PULSE_AMBIENT_LIGHT, PULSE_AMBIENT_LIGHT_VALIDATOR);
-            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT, AMBIENT_NOTIFICATION_LIGHT_VALIDATOR);
-            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ACTIVATED, AMBIENT_NOTIFICATION_LIGHT_ACTIVATED_VALIDATOR);
-            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ENABLED, AMBIENT_NOTIFICATION_LIGHT_ENABLED_VALIDATOR);
-            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD, AMBIENT_NOTIFICATION_LIGHT_HIDE_AOD_VALIDATOR);
-            VALIDATORS.put(AMBIENT_NOTIFICATION_LIGHT_ACCENT, AMBIENT_NOTIFICATION_LIGHT_ACCENT_VALIDATOR);
+            VALIDATORS.put(NOTIFICATION_PULSE, NOTIFICATION_PULSE_VALIDATOR);
+            VALIDATORS.put(NOTIFICATION_PULSE_ACCENT, NOTIFICATION_PULSE_ACCENT_VALIDATOR);
+            VALIDATORS.put(AOD_NOTIFICATION_PULSE, AOD_NOTIFICATION_PULSE_VALIDATOR);
+            VALIDATORS.put(AOD_NOTIFICATION_PULSE_CLEAR, AOD_NOTIFICATION_PULSE_CLEAR_VALIDATOR);
+            VALIDATORS.put(AOD_NOTIFICATION_PULSE_TIMEOUT, AOD_NOTIFICATION_PULSE_TIMEOUT_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_COLOR, PULSE_AMBIENT_LIGHT_COLOR_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_DURATION, PULSE_AMBIENT_LIGHT_DURATION_VALIDATOR);
-            VALIDATORS.put(PULSE_AMBIENT_LIGHT_REPEAT_COUNT, PULSE_AMBIENT_LIGHT_REPEAT_COUNT_VALIDATOR);
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL, PULSE_AMBIENT_LIGHT_PULSE_FOR_ALL_VALIDATOR);
             VALIDATORS.put(QS_PANEL_BG_USE_NEW_TINT, QS_PANEL_BG_USE_NEW_TINT_VALIDATOR);
         }
