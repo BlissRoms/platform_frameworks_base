@@ -6262,6 +6262,14 @@ public final class Settings {
         /** @hide */
         private static final Validator ACCENT_COLOR_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
+        /** Width of the navigation handle.
+         *  @hide
+         */
+        public static final String NAVIGATION_HANDLE_WIDTH = "navigation_handle_width";
+
+        /** @hide */
+        private static final Validator NAVIGATION_HANDLE_WIDTH_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -6411,6 +6419,7 @@ public final class Settings {
             SLIM_RECENTS_CORNER_RADIUS,
             SLIM_RECENTS_BLACKLIST_VALUES,
             SLIM_RECENT_ENTER_EXIT_ANIMATION,
+            NAVIGATION_HANDLE_WIDTH,
         };
 
         /**
@@ -6620,6 +6629,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SLIM_RECENTS_CORNER_RADIUS);
             PRIVATE_SETTINGS.add(SLIM_RECENTS_BLACKLIST_VALUES);
             PRIVATE_SETTINGS.add(SLIM_RECENT_ENTER_EXIT_ANIMATION);
+            PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_WIDTH);
         }
 
         /**
@@ -6806,6 +6816,7 @@ public final class Settings {
             VALIDATORS.put(SLIM_RECENTS_CORNER_RADIUS, SLIM_RECENTS_CORNER_RADIUS_VALIDATOR);
             VALIDATORS.put(SLIM_RECENTS_BLACKLIST_VALUES, SLIM_RECENTS_BLACKLIST_VALUES_VALIDATOR);
             VALIDATORS.put(SLIM_RECENT_ENTER_EXIT_ANIMATION, SLIM_RECENT_ENTER_EXIT_ANIMATION_VALIDATOR);
+            VALIDATORS.put(NAVIGATION_HANDLE_WIDTH, NAVIGATION_HANDLE_WIDTH_VALIDATOR);
         }
 
         /**
