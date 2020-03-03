@@ -6031,6 +6031,15 @@ public final class Settings {
         public static final String BACK_GESTURE_HAPTIC = "back_gesture_haptic";
 
         /**
+         * Width of the navigation handle.
+         * @hide
+         */
+        public static final String NAVIGATION_HANDLE_WIDTH = "navigation_handle_width";
+
+        /** @hide */
+        private static final Validator NAVIGATION_HANDLE_WIDTH_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -6155,6 +6164,7 @@ public final class Settings {
             FOD_PRESSED_STATE,
             FOD_RECOGNIZING_ANIMATION,
             FOD_ANIM,
+            NAVIGATION_HANDLE_WIDTH,
         };
 
         /**
@@ -6340,6 +6350,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(AOD_NOTIFICATION_PULSE_TIMEOUT);
             PRIVATE_SETTINGS.add(NOTIFICATION_PULSE);
             PRIVATE_SETTINGS.add(NOTIFICATION_PULSE_ACCENT);
+            PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_WIDTH);
         }
 
         /**
@@ -6502,6 +6513,7 @@ public final class Settings {
             VALIDATORS.put(FOD_PRESSED_STATE, FOD_PRESSED_STATE_VALIDATOR);
             VALIDATORS.put(FOD_RECOGNIZING_ANIMATION, FOD_RECOGNIZING_ANIMATION_VALIDATOR);
             VALIDATORS.put(FOD_ANIM, FOD_ANIM_VALIDATOR);
+            VALIDATORS.put(NAVIGATION_HANDLE_WIDTH, NAVIGATION_HANDLE_WIDTH_VALIDATOR);
         }
 
         /**
