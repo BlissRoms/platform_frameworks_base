@@ -125,4 +125,6 @@
 
     <!-- QS System Info -->
     <dimen name="qs_temperatur_icon_size">16sp</dimen>
+
+    <dimen name="fod_animation_size">280dp</dimen>
 </resources>
