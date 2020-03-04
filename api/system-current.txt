@@ -8519,6 +8519,7 @@ package android.telephony.ims {
     method public void callSessionMergeStarted(android.telephony.ims.stub.ImsCallSessionImplBase, android.telephony.ims.ImsCallProfile);
     method public void callSessionMultipartyStateChanged(boolean);
     method public void callSessionProgressing(android.telephony.ims.ImsStreamMediaProfile);
+    method public void callSessionPropertyChanged(int);
     method public void callSessionRemoveParticipantsRequestDelivered();
     method public void callSessionRemoveParticipantsRequestFailed(android.telephony.ims.ImsReasonInfo);
     method public void callSessionResumeFailed(android.telephony.ims.ImsReasonInfo);
@@ -9288,6 +9289,7 @@ package android.telephony.ims.stub {
   public class ImsUtImplBase {
     ctor public ImsUtImplBase();
     method public void close();
+    method public int queryCFForServiceClass(int, String, int);
     method public int queryCallBarring(int);
     method public int queryCallBarringForServiceClass(int, int);
     method public int queryCallForward(int, String);
