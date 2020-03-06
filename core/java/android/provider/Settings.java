@@ -6691,6 +6691,12 @@ public final class Settings {
         private static final Validator CENTER_NOTIFICATION_HEADERS_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Switch between different navbar styles
+         * @hide
+         */
+        public static final String NAVBAR_STYLE = "navbar_style";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
