@@ -342,6 +342,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.STOCK_STATUSBAR_IN_HIDE;
     private static final String STATUS_BAR_CUSTOM_HEADER =
             "system:" + Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER;
+    private static final String NAVBAR_STYLE =
+            "system:" + Settings.System.NAVBAR_STYLE;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -682,6 +684,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mWereIconsJustHidden;
     private boolean mBouncerWasShowingWhenHidden;
 
+    private int mNavbarStyle;
     private int mImmerseMode;
     private boolean mStockStatusBar = true;
     private boolean mPortrait = true;
@@ -844,6 +847,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         tunerService.addTunable(this, DISPLAY_CUTOUT_MODE);
         tunerService.addTunable(this, STOCK_STATUSBAR_IN_HIDE);
         tunerService.addTunable(this, STATUS_BAR_CUSTOM_HEADER);
+        tunerService.addTunable(this, NAVBAR_STYLE);
+
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -4428,6 +4433,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         updateQSPanel();
     }
 
+    private void updateNavbarStyle() {
+        mUiOffloadThread.submit(() -> {
+            ThemeAccentUtils.setNavbarStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), mNavbarStyle);
+        });
+    }
+
     private void updateCorners() {
         if (mSysuiRoundedFwvals && !isCurrentRoundedSameAsFw()) {
             float density = Resources.getSystem().getDisplayMetrics().density;
@@ -5912,6 +5923,14 @@ public class StatusBar extends SystemUI implements DemoMode,
                 break;
             case STATUS_BAR_CUSTOM_HEADER:
                 updateTheme();
+                break;
+            case NAVBAR_STYLE:
+                int navbarStyle =
+                        TunerService.parseInteger(newValue, 0);
+                if (mNavbarStyle != navbarStyle) {
+                    mNavbarStyle = navbarStyle;
+                    updateNavbarStyle();
+                }
                 break;
             default:
                 break;
