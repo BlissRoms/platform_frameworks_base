@@ -146,4 +146,12 @@ public static final String TAG = "ThemesUtils";
         "org.blissroms.systemui.wifibar_g",
         "org.blissroms.systemui.wifibar_h",
     };
+
+    // Navbar Styles
+    public static final String[] NAVBAR_STYLES = {
+            "com.android.theme.navbar.asus",
+            "com.android.theme.navbar.oneplus",
+            "com.android.theme.navbar.oneui",
+            "com.android.theme.navbar.tecno",
+    };
 }
