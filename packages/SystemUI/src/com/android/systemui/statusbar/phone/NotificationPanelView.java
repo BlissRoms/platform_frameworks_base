@@ -2530,7 +2530,6 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void setListening(boolean listening) {
-        mKeyguardStatusBar.setListening(listening);
         if (mQs == null) return;
         mQs.setListening(listening);
     }
