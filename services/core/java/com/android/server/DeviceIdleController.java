@@ -627,6 +627,15 @@ public class DeviceIdleController extends SystemService
         }
     };
 
+    /** AlarmListener to start monitoring motion if there are registered stationary listeners. */
+    private final AlarmManager.OnAlarmListener mMotionRegistrationAlarmListener = () -> {
+        synchronized (DeviceIdleController.this) {
+            if (mStationaryListeners.size() > 0) {
+                startMonitoringMotionLocked();
+            }
+        }
+    };
+
     private final AlarmManager.OnAlarmListener mMotionTimeoutAlarmListener = () -> {
         synchronized (DeviceIdleController.this) {
             if (!isStationaryLocked()) {
@@ -762,6 +771,7 @@ public class DeviceIdleController extends SystemService
         @Override
         public void onTrigger(TriggerEvent event) {
             synchronized (DeviceIdleController.this) {
+                active = false;
                 motionLocked();
             }
         }
@@ -769,6 +779,8 @@ public class DeviceIdleController extends SystemService
         @Override
         public void onSensorChanged(SensorEvent event) {
             synchronized (DeviceIdleController.this) {
+                mSensorManager.unregisterListener(this, mMotionSensor);
+                active = false;
                 motionLocked();
             }
         }
@@ -1934,6 +1946,27 @@ public class DeviceIdleController extends SystemService
             return controller.new MyHandler(BackgroundThread.getHandler().getLooper());
         }
 
+        Sensor getMotionSensor() {
+            final SensorManager sensorManager = getSensorManager();
+            Sensor motionSensor = null;
+            int sigMotionSensorId = mContext.getResources().getInteger(
+                    com.android.internal.R.integer.config_autoPowerModeAnyMotionSensor);
+            if (sigMotionSensorId > 0) {
+                motionSensor = sensorManager.getDefaultSensor(sigMotionSensorId, true);
+            }
+            if (motionSensor == null && mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_autoPowerModePreferWristTilt)) {
+                motionSensor = sensorManager.getDefaultSensor(
+                        Sensor.TYPE_WRIST_TILT_GESTURE, true);
+            }
+            if (motionSensor == null) {
+                // As a last ditch, fall back to SMD.
+                motionSensor = sensorManager.getDefaultSensor(
+                        Sensor.TYPE_SIGNIFICANT_MOTION, true);
+            }
+            return motionSensor;
+        }
+
         PowerManager getPowerManager() {
             return mContext.getSystemService(PowerManager.class);
         }
@@ -2085,21 +2118,7 @@ public class DeviceIdleController extends SystemService
                 mSensorManager = mInjector.getSensorManager();
 
                 if (mUseMotionSensor) {
-                    int sigMotionSensorId = getContext().getResources().getInteger(
-                            com.android.internal.R.integer.config_autoPowerModeAnyMotionSensor);
-                    if (sigMotionSensorId > 0) {
-                        mMotionSensor = mSensorManager.getDefaultSensor(sigMotionSensorId, true);
-                    }
-                    if (mMotionSensor == null && getContext().getResources().getBoolean(
-                            com.android.internal.R.bool.config_autoPowerModePreferWristTilt)) {
-                        mMotionSensor = mSensorManager.getDefaultSensor(
-                                Sensor.TYPE_WRIST_TILT_GESTURE, true);
-                    }
-                    if (mMotionSensor == null) {
-                        // As a last ditch, fall back to SMD.
-                        mMotionSensor = mSensorManager.getDefaultSensor(
-                                Sensor.TYPE_SIGNIFICANT_MOTION, true);
-                    }
+                    mMotionSensor = mInjector.getMotionSensor();
                 }
 
                 if (getContext().getResources().getBoolean(
@@ -3474,6 +3493,10 @@ public class DeviceIdleController extends SystemService
         if (mStationaryListeners.size() > 0) {
             postStationaryStatusUpdated();
             scheduleMotionTimeoutAlarmLocked();
+            // We need to re-register the motion listener, but we don't want the sensors to be
+            // constantly active or to churn the CPU by registering too early, register after some
+            // delay.
+            scheduleMotionRegistrationAlarmLocked();
         }
         if (mQuickDozeActivated && !mQuickDozeActivatedWhileIdling) {
             // Don't exit idle due to motion if quick doze is enabled.
@@ -3540,9 +3563,12 @@ public class DeviceIdleController extends SystemService
      */
     private void maybeStopMonitoringMotionLocked() {
         if (DEBUG) Slog.d(TAG, "maybeStopMonitoringMotionLocked()");
-        if (mMotionSensor != null && mMotionListener.active && mStationaryListeners.size() == 0) {
-            mMotionListener.unregisterLocked();
-            cancelMotionTimeoutAlarmLocked();
+        if (mMotionSensor != null && mStationaryListeners.size() == 0) {
+            if (mMotionListener.active) {
+                mMotionListener.unregisterLocked();
+                cancelMotionTimeoutAlarmLocked();
+            }
+            cancelMotionRegistrationAlarmLocked();
         }
     }
 
@@ -3571,6 +3597,10 @@ public class DeviceIdleController extends SystemService
 
     private void cancelMotionTimeoutAlarmLocked() {
         mAlarmManager.cancel(mMotionTimeoutAlarmListener);
+    }
+
+    private void cancelMotionRegistrationAlarmLocked() {
+        mAlarmManager.cancel(mMotionRegistrationAlarmListener);
     }
 
     void cancelSensingTimeoutAlarmLocked() {
@@ -3617,6 +3647,15 @@ public class DeviceIdleController extends SystemService
         mNextLightAlarmTime = SystemClock.elapsedRealtime() + delay;
         mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 mNextLightAlarmTime, "DeviceIdleController.light", mLightAlarmListener, mHandler);
+    }
+
+    private void scheduleMotionRegistrationAlarmLocked() {
+        if (DEBUG) Slog.d(TAG, "scheduleMotionRegistrationAlarmLocked");
+        long nextMotionRegistrationAlarmTime =
+                mInjector.getElapsedRealtime() + mConstants.MOTION_INACTIVE_TIMEOUT / 2;
+        mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextMotionRegistrationAlarmTime,
+                "DeviceIdleController.motion_registration", mMotionRegistrationAlarmListener,
+                mHandler);
     }
 
     private void scheduleMotionTimeoutAlarmLocked() {

@@ -67,14 +67,14 @@ final class AssistHandleReminderExpBehavior implements BehaviorController {
     private static final String LEARNING_EVENT_COUNT_KEY = "reminder_exp_learning_event_count";
     private static final String LEARNED_HINT_LAST_SHOWN_KEY =
             "reminder_exp_learned_hint_last_shown";
-    private static final long DEFAULT_LEARNING_TIME_MS = TimeUnit.DAYS.toMillis(2);
-    private static final int DEFAULT_LEARNING_COUNT = 2;
+    private static final long DEFAULT_LEARNING_TIME_MS = TimeUnit.DAYS.toMillis(10);
+    private static final int DEFAULT_LEARNING_COUNT = 10;
     private static final long DEFAULT_SHOW_AND_GO_DELAYED_SHORT_DELAY_MS = 150;
     private static final long DEFAULT_SHOW_AND_GO_DELAYED_LONG_DELAY_MS =
             TimeUnit.SECONDS.toMillis(1);
     private static final long DEFAULT_SHOW_AND_GO_DELAY_RESET_TIMEOUT_MS =
             TimeUnit.SECONDS.toMillis(3);
-    private static final boolean DEFAULT_SUPPRESS_ON_LOCKSCREEN = true;
+    private static final boolean DEFAULT_SUPPRESS_ON_LOCKSCREEN = false;
     private static final boolean DEFAULT_SUPPRESS_ON_LAUNCHER = false;
     private static final boolean DEFAULT_SUPPRESS_ON_APPS = true;
     private static final boolean DEFAULT_SHOW_WHEN_TAUGHT = false;
@@ -156,7 +156,7 @@ final class AssistHandleReminderExpBehavior implements BehaviorController {
 
     private final Clock mClock;
     private final Handler mHandler;
-    private final PhenotypeHelper mPhenotypeHelper;
+    private final DeviceConfigHelper mDeviceConfigHelper;
     private final Lazy<StatusBarStateController> mStatusBarStateController;
     private final Lazy<ActivityManagerWrapper> mActivityManagerWrapper;
     private final Lazy<OverviewProxyService> mOverviewProxyService;
@@ -188,7 +188,7 @@ final class AssistHandleReminderExpBehavior implements BehaviorController {
     AssistHandleReminderExpBehavior(
             @Named(UPTIME_NAME) Clock clock,
             @Named(ASSIST_HANDLE_THREAD_NAME) Handler handler,
-            PhenotypeHelper phenotypeHelper,
+            DeviceConfigHelper deviceConfigHelper,
             Lazy<StatusBarStateController> statusBarStateController,
             Lazy<ActivityManagerWrapper> activityManagerWrapper,
             Lazy<OverviewProxyService> overviewProxyService,
@@ -196,7 +196,7 @@ final class AssistHandleReminderExpBehavior implements BehaviorController {
             Lazy<PackageManagerWrapper> packageManagerWrapper) {
         mClock = clock;
         mHandler = handler;
-        mPhenotypeHelper = phenotypeHelper;
+        mDeviceConfigHelper = deviceConfigHelper;
         mStatusBarStateController = statusBarStateController;
         mActivityManagerWrapper = activityManagerWrapper;
         mOverviewProxyService = overviewProxyService;
@@ -243,9 +243,9 @@ final class AssistHandleReminderExpBehavior implements BehaviorController {
         mAssistHandleCallbacks = null;
         if (mContext != null) {
             mContext.unregisterReceiver(mDefaultHomeBroadcastReceiver);
-            /*Settings.Secure.putLong(mContext.getContentResolver(), LEARNING_TIME_ELAPSED_KEY, 0);
+            Settings.Secure.putLong(mContext.getContentResolver(), LEARNING_TIME_ELAPSED_KEY, 0);
             Settings.Secure.putInt(mContext.getContentResolver(), LEARNING_EVENT_COUNT_KEY, 0);
-            Settings.Secure.putLong(mContext.getContentResolver(), LEARNED_HINT_LAST_SHOWN_KEY, 0);*/
+            Settings.Secure.putLong(mContext.getContentResolver(), LEARNED_HINT_LAST_SHOWN_KEY, 0);
             mContext = null;
         }
         mStatusBarStateController.get().removeCallback(mStatusBarStateListener);
@@ -457,47 +457,57 @@ final class AssistHandleReminderExpBehavior implements BehaviorController {
     }
 
     private long getLearningTimeMs() {
-        return DEFAULT_LEARNING_TIME_MS;
+        return mDeviceConfigHelper.getLong(
+                SystemUiDeviceConfigFlags.ASSIST_HANDLES_LEARN_TIME_MS,
+                DEFAULT_LEARNING_TIME_MS);
     }
 
     private int getLearningCount() {
-        return DEFAULT_LEARNING_COUNT;
+        return mDeviceConfigHelper.getInt(
+                SystemUiDeviceConfigFlags.ASSIST_HANDLES_LEARN_COUNT,
+                DEFAULT_LEARNING_COUNT);
     }
 
     private long getShowAndGoDelayedShortDelayMs() {
-        return mPhenotypeHelper.getLong(
+        return mDeviceConfigHelper.getLong(
                 SystemUiDeviceConfigFlags.ASSIST_HANDLES_SHOW_AND_GO_DELAYED_SHORT_DELAY_MS,
                 DEFAULT_SHOW_AND_GO_DELAYED_SHORT_DELAY_MS);
     }
 
     private long getShowAndGoDelayedLongDelayMs() {
-        return mPhenotypeHelper.getLong(
+        return mDeviceConfigHelper.getLong(
                 SystemUiDeviceConfigFlags.ASSIST_HANDLES_SHOW_AND_GO_DELAYED_LONG_DELAY_MS,
                 DEFAULT_SHOW_AND_GO_DELAYED_LONG_DELAY_MS);
     }
 
     private long getShowAndGoDelayResetTimeoutMs() {
-        return mPhenotypeHelper.getLong(
+        return mDeviceConfigHelper.getLong(
                 SystemUiDeviceConfigFlags.ASSIST_HANDLES_SHOW_AND_GO_DELAY_RESET_TIMEOUT_MS,
                 DEFAULT_SHOW_AND_GO_DELAY_RESET_TIMEOUT_MS);
     }
 
     private boolean getSuppressOnLockscreen() {
-        return DEFAULT_SUPPRESS_ON_LOCKSCREEN;
+        return mDeviceConfigHelper.getBoolean(
+                SystemUiDeviceConfigFlags.ASSIST_HANDLES_SUPPRESS_ON_LOCKSCREEN,
+                DEFAULT_SUPPRESS_ON_LOCKSCREEN);
     }
 
     private boolean getSuppressOnLauncher() {
-        return mPhenotypeHelper.getBoolean(
+        return mDeviceConfigHelper.getBoolean(
                 SystemUiDeviceConfigFlags.ASSIST_HANDLES_SUPPRESS_ON_LAUNCHER,
                 DEFAULT_SUPPRESS_ON_LAUNCHER);
     }
 
     private boolean getSuppressOnApps() {
-        return DEFAULT_SUPPRESS_ON_APPS;
+        return mDeviceConfigHelper.getBoolean(
+                SystemUiDeviceConfigFlags.ASSIST_HANDLES_SUPPRESS_ON_APPS,
+                DEFAULT_SUPPRESS_ON_APPS);
     }
 
     private boolean getShowWhenTaught() {
-        return DEFAULT_SHOW_WHEN_TAUGHT;
+        return mDeviceConfigHelper.getBoolean(
+                SystemUiDeviceConfigFlags.ASSIST_HANDLES_SHOW_WHEN_TAUGHT,
+                DEFAULT_SHOW_WHEN_TAUGHT);
     }
 
     @Override
