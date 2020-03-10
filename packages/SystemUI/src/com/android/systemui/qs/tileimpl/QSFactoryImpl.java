@@ -45,6 +45,7 @@ import com.android.systemui.qs.tiles.DataSaverTile;
 import com.android.systemui.qs.tiles.DeviceControlsTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.DreamTile;
+import com.android.systemui.qs.tiles.FPSInfoTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.InternetTile;
@@ -118,6 +119,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<AmbientDisplayTile> mAmbientDisplayTileProvider;
     private final Provider<CPUInfoTile> mCPUInfoTileProvider;
     private final Provider<CompassTile> mCompassTileProvider;
+    private final Provider<FPSInfoTile> mFPSInfoTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
     private final Provider<CustomTile.Builder> mCustomTileBuilderProvider;
@@ -165,6 +167,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<AODTile> aodTileProvider,
             Provider<AmbientDisplayTile> ambientDisplayTileProvider,
             Provider<CPUInfoTile> cpuInfoTileProvider,
+            Provider<FPSInfoTile> fpsInfoTileProvider,
             Provider<CompassTile> compassTileProvider) {
 
         mQsHostLazy = qsHostLazy;
@@ -209,6 +212,7 @@ public class QSFactoryImpl implements QSFactory {
         mAmbientDisplayTileProvider = ambientDisplayTileProvider;
         mCPUInfoTileProvider = cpuInfoTileProvider;
         mCompassTileProvider = compassTileProvider;
+        mFPSInfoTileProvider = fpsInfoTileProvider;
     }
 
     /** Creates a tile with a type based on {@code tileSpec} */
@@ -304,6 +308,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mCPUInfoTileProvider.get();
             case "compass":
                 return mCompassTileProvider.get();
+            case "fpsinfo":
+                return mFPSInfoTileProvider.get();
         }
 
         // Custom tiles
