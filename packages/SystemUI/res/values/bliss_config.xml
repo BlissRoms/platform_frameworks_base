@@ -21,7 +21,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_extra" translatable="false">
-        caffeine,refresh_rate,dataswitch,usb_tether,reboot,sound,aod,ambient_display,cpuinfo,compass
+        caffeine,refresh_rate,dataswitch,usb_tether,reboot,sound,aod,ambient_display,cpuinfo,compass,fpsinfo
     </string>
 
     <!-- Whether show refresh rate QS tile -->
@@ -66,4 +66,7 @@
 
     <!-- The CPUs to display in CPUInfoService view -->
     <string name="config_displayCpus" translatable="false"></string>
+
+    <!-- FPSInfoService FPS node file path -->
+    <string name="config_fpsInfoSysNode" translatable="false"></string>
 </resources>

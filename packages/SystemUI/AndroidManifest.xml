@@ -1021,5 +1021,9 @@
                 <action android:name="com.android.systemui.action.DISMISS_VOLUME_PANEL_DIALOG" />
             </intent-filter>
         </receiver>
+
+        <!-- FPS Info -->
+        <service android:name=".FPSInfoService"
+                android:exported="false" />
     </application>
 </manifest>
