@@ -43,6 +43,7 @@ import com.android.systemui.qs.tiles.DataSaverTile;
 import com.android.systemui.qs.tiles.DataSwitchTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
+import com.android.systemui.qs.tiles.FPSInfoTile;
 import com.android.systemui.qs.tiles.GamingModeTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
@@ -133,6 +134,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<MonoToggleTile> mMonoToggleTileProvider;
     private final Provider<ScreenStabilizationTile> mScreenStabilizationTileProvider;
     private final Provider<LocaleTile> mLocaleTileProvider;
+    private final Provider<FPSInfoTile> mFPSInfoTileProvider;
 
     private QSTileHost mHost;
 
@@ -183,7 +185,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<ImmersiveTile> immersiveTileProvider,
             Provider<MonoToggleTile> monoToggleTileProvider,
             Provider<ScreenStabilizationTile> screenStabilizationTileProvider,
-            Provider<LocaleTile> localeTileProvider) {
+            Provider<LocaleTile> localeTileProvider,
+            Provider<FPSInfoTile> fpsInfoTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -231,6 +234,7 @@ public class QSFactoryImpl implements QSFactory {
         mMonoToggleTileProvider = monoToggleTileProvider;
         mScreenStabilizationTileProvider = screenStabilizationTileProvider;
         mLocaleTileProvider = localeTileProvider;
+        mFPSInfoTileProvider = fpsInfoTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -343,6 +347,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mScreenStabilizationTileProvider.get();
             case "locale":
                 return mLocaleTileProvider.get();
+            case "fpsinfo":
+                return mFPSInfoTileProvider.get();
         }
 
         // Intent tiles.
