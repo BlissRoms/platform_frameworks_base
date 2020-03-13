@@ -71,6 +71,10 @@ LOCAL_REQUIRED_MODULES := \
         IconShapeTaperedRectOverlay \
         IconShapeTeardropOverlay \
         IconShapeVesselOverlay \
+        IconShapeCloudyOverlay \
+        IconShapeFlowerOverlay \
+        IconShapeRoundedHexagonOverlay \
+        IconShapeStretchedOverlay \
 	NavigationBarMode2ButtonOverlay \
 	IconPackOOSAndroidOverlay \
 	IconPackOOSSystemUIOverlay \
