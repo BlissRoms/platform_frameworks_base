@@ -79,4 +79,8 @@
     <!-- Name of the firewall status bar icon. -->
     <string name="status_bar_firewall">Firewall</string>
     <string name="status_bar_firewall_slot" translatable="false">firewall</string>
+
+    <!-- Alert slide extras -->
+    <string name="volume_ringer_priority_only">Priority</string>
+    <string name="volume_ringer_alarms_only">Alarms</string>
 </resources>
