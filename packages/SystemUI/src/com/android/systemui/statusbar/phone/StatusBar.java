@@ -2182,9 +2182,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_BLUR_INTENSITY),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_MEDIA_BLUR),
-                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2232,9 +2229,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             setMaxKeyguardNotifConfig();
             updateQSPanel();
             setHideArrowForBackGesture();
-            if (mMediaManager != null) {
-                mMediaManager.setLockScreenMediaBlurLevel();
-            }
         }
     }
 
