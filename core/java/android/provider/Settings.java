@@ -6040,6 +6040,15 @@ public final class Settings {
         private static final Validator NAVIGATION_HANDLE_WIDTH_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
         /**
+         * Accent Color
+         * @hide
+         */
+        public static final String ACCENT_COLOR = "accent_color";
+
+        /** @hide */
+        private static final Validator ACCENT_COLOR_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -6165,6 +6174,7 @@ public final class Settings {
             FOD_RECOGNIZING_ANIMATION,
             FOD_ANIM,
             NAVIGATION_HANDLE_WIDTH,
+            ACCENT_COLOR,
         };
 
         /**
@@ -6351,6 +6361,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(NOTIFICATION_PULSE);
             PRIVATE_SETTINGS.add(NOTIFICATION_PULSE_ACCENT);
             PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_WIDTH);
+            PRIVATE_SETTINGS.add(ACCENT_COLOR);
         }
 
         /**
@@ -6514,6 +6525,7 @@ public final class Settings {
             VALIDATORS.put(FOD_RECOGNIZING_ANIMATION, FOD_RECOGNIZING_ANIMATION_VALIDATOR);
             VALIDATORS.put(FOD_ANIM, FOD_ANIM_VALIDATOR);
             VALIDATORS.put(NAVIGATION_HANDLE_WIDTH, NAVIGATION_HANDLE_WIDTH_VALIDATOR);
+            VALIDATORS.put(ACCENT_COLOR, ACCENT_COLOR_VALIDATOR);
         }
 
         /**
