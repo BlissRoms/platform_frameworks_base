@@ -252,7 +252,6 @@ public class NotificationPanelView extends PanelView implements
     protected FrameLayout mQsFrame;
     @VisibleForTesting
     protected KeyguardStatusView mKeyguardStatusView;
-    private View mQsNavbarScrim;
     protected NotificationsQuickSettingsContainer mNotificationContainerParent;
     protected NotificationStackScrollLayout mNotificationStackScroller;
     private boolean mAnimateNextPositionUpdate;
@@ -424,6 +423,13 @@ public class NotificationPanelView extends PanelView implements
             .setDuration(200)
             .setAnimationFinishListener(mAnimatorListenerAdapter)
             .setCustomInterpolator(PANEL_ALPHA.getProperty(), Interpolators.ALPHA_IN);
+    private final AnimationProperties PANEL_ALPHA_OUT_FAST_PROPERTIES = new AnimationProperties()
+            .setDuration(100)
+            .setCustomInterpolator(PANEL_ALPHA.getProperty(), Interpolators.ALPHA_OUT);
+    private final AnimationProperties PANEL_ALPHA_IN_FAST_PROPERTIES = new AnimationProperties()
+            .setDuration(100)
+            .setAnimationFinishListener(mAnimatorListenerAdapter)
+            .setCustomInterpolator(PANEL_ALPHA.getProperty(), Interpolators.ALPHA_IN);
     private final NotificationEntryManager mEntryManager =
             Dependency.get(NotificationEntryManager.class);
 
@@ -568,7 +574,6 @@ public class NotificationPanelView extends PanelView implements
         mNotificationStackScroller.setOnEmptySpaceClickListener(this);
         addTrackingHeadsUpListener(mNotificationStackScroller::setTrackingHeadsUp);
         mKeyguardBottomArea = findViewById(R.id.keyguard_bottom_area);
-        mQsNavbarScrim = findViewById(R.id.qs_navbar_scrim);
         mLastOrientation = getResources().getConfiguration().orientation;
         mPulseLightsView = (NotificationLightsView) findViewById(R.id.lights_container);
 
@@ -1914,10 +1919,6 @@ public class NotificationPanelView extends PanelView implements
                 mBarState != StatusBarState.KEYGUARD && (!mQsExpanded
                         || mQsExpansionFromOverscroll));
         updateEmptyShadeView();
-        mQsNavbarScrim.setVisibility(mBarState == StatusBarState.SHADE && mQsExpanded
-                && !mStackScrollerOverscrolling && mQsScrimEnabled
-                ? View.VISIBLE
-                : View.INVISIBLE);
         if (mKeyguardUserSwitcher != null && mQsExpanded && !mStackScrollerOverscrolling) {
             mKeyguardUserSwitcher.hideIfNotSimple(true /* animate */);
         }
@@ -1942,10 +1943,6 @@ public class NotificationPanelView extends PanelView implements
                 || mBarState == StatusBarState.KEYGUARD) {
             updateKeyguardBottomAreaAlpha();
             updateBigClockAlpha();
-        }
-        if (mBarState == StatusBarState.SHADE && mQsExpanded
-                && !mStackScrollerOverscrolling && mQsScrimEnabled) {
-            mQsNavbarScrim.setAlpha(getQsExpansionFraction());
         }
 
         if (mAccessibilityManager.isEnabled()) {
@@ -3006,6 +3003,16 @@ public class NotificationPanelView extends PanelView implements
             mPanelAlpha = alpha;
             PropertyAnimator.setProperty(this, PANEL_ALPHA, alpha,
                     alpha == 255 ? PANEL_ALPHA_IN_PROPERTIES : PANEL_ALPHA_OUT_PROPERTIES, animate);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setPanelAlphaFast(int alpha, boolean animate) {
+        if (mPanelAlpha != alpha) {
+            mPanelAlpha = alpha;
+            PropertyAnimator.setProperty(this, PANEL_ALPHA, alpha,
+                    alpha == 255 ? PANEL_ALPHA_IN_FAST_PROPERTIES : PANEL_ALPHA_OUT_FAST_PROPERTIES, animate);
             return true;
         }
         return false;
