@@ -481,39 +481,54 @@ public class KeyguardIndicationController implements StateListener,
         switch (mChargingIndication) {
             default:
             case 1: // Flash
+                try {
                 mChargingIndicationView.setFileName("keyguard_charging_indication.json");
                 mChargingIndicationView.getLayoutParams().height = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_height);
                 mChargingIndicationView.getLayoutParams().width = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_width);
+                } catch (Exception e) {
+                }
                 break;
             case 2: // Battery
+                try {
                 mChargingIndicationView.setFileName("keyguard_charge_battery.json");
                 mChargingIndicationView.getLayoutParams().height = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_width);
                 mChargingIndicationView.getLayoutParams().width = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_height);
+                } catch (Exception e) {
+                }
                 break;
             case 3: // Drop
+                try {
                 mChargingIndicationView.setFileName("keyguard_charge_drop.json");
                 mChargingIndicationView.getLayoutParams().height = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_height);
                 mChargingIndicationView.getLayoutParams().width = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_height);
+                } catch (Exception e) {
+                }
                 break;
             case 4: // Explosion
+                try {
                 mChargingIndicationView.setFileName("keyguard_charge_explosion.json");
                 mChargingIndicationView.getLayoutParams().height = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_height);
                 mChargingIndicationView.getLayoutParams().width = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_height);
+                } catch (Exception e) {
+                }
                 break;
             case 5: // Water
+                try {
                 mChargingIndicationView.setFileName("keyguard_charge_water.json");
                 mChargingIndicationView.getLayoutParams().height = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_height);
                 mChargingIndicationView.getLayoutParams().width = mContext.getResources().getDimensionPixelSize(
                             R.dimen.keyguard_charging_indication_height);
+                } catch (Exception e) {
+                }
                 break;
         }
     }
