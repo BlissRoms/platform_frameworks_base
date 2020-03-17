@@ -1623,11 +1623,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 cancelPendingPowerKeyAction();
                 if (Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT) == 1) {
-                    mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_SELECTED_REGION);
+                    takeScreenshotDelayed(TAKE_SCREENSHOT_SELECTED_REGION, getScreenshotChordLongPressDelay());
                 } else {
-                    mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
+                    takeScreenshotDelayed(TAKE_SCREENSHOT_FULLSCREEN, getScreenshotChordLongPressDelay());
                 }
-                mHandler.postDelayed(mScreenshotRunnable, getScreenshotChordLongPressDelay());
             }
         }
     }
@@ -1724,6 +1723,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private final ScreenshotRunnable mScreenshotRunnable = new ScreenshotRunnable();
 
+    private void takeScreenshot(int screenshotType) {
+        takeScreenshotDelayed(screenshotType, 0);
+    }
+
+    private void takeScreenshotDelayed(int screenshotType, long delay) {
+        mHandler.removeCallbacks(mScreenshotRunnable);
+        mScreenshotRunnable.setScreenshotType(screenshotType);
+        mHandler.postDelayed(mScreenshotRunnable, delay);
+    }
+
     private final Runnable mCloseApp = new Runnable() {
         @Override
         public void run() {
@@ -1775,8 +1784,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     @Override
     public void takeOPScreenshot(int type) {
-        mScreenshotRunnable.setScreenshotType(type);
-        mHandler.post(mScreenshotRunnable);
+        takeScreenshot(type);
     }
 
     boolean isDeviceProvisioned() {
@@ -1946,6 +1954,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
             case TORCH:
                 BlissUtils.toggleCameraFlash();
+                break;
+            case SCREENSHOT:
+                takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN);
                 break;
             default:
                 break;
@@ -2170,7 +2181,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSwipeToScreenshot = new SwipeToScreenshotListener(context, new SwipeToScreenshotListener.Callbacks() {
             @Override
             public void onSwipeThreeFinger() {
-                mHandler.post(mScreenshotRunnable);
+                takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN);
             }
         });
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
@@ -3439,8 +3450,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (down && repeatCount == 0) {
                 int type = event.isShiftPressed() ? TAKE_SCREENSHOT_SELECTED_REGION
                         : TAKE_SCREENSHOT_FULLSCREEN;
-                mScreenshotRunnable.setScreenshotType(type);
-                mHandler.post(mScreenshotRunnable);
+                takeScreenshot(type);
                 return -1;
             }
         } else if (keyCode == KeyEvent.KEYCODE_SLASH && event.isMetaPressed()) {
@@ -3455,8 +3465,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_SYSRQ) {
             if (down && repeatCount == 0) {
-                mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
-                mHandler.post(mScreenshotRunnable);
+                takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN);
             }
             return -1;
         } else if (keyCode == KeyEvent.KEYCODE_BRIGHTNESS_UP
@@ -6364,15 +6373,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (BlissUtils.INTENT_SCREENSHOT.equals(action)) {
                 mContext.enforceCallingOrSelfPermission(Manifest.permission.ACCESS_SURFACE_FLINGER,
                         TAG + "sendCustomAction permission denied");
-                mHandler.removeCallbacks(mScreenshotRunnable);
-                mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
-                mHandler.post(mScreenshotRunnable);
+                takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN);
             } else if (BlissUtils.INTENT_REGION_SCREENSHOT.equals(action)) {
                 mContext.enforceCallingOrSelfPermission(Manifest.permission.ACCESS_SURFACE_FLINGER,
                         TAG + "sendCustomAction permission denied");
-                mHandler.removeCallbacks(mScreenshotRunnable);
-                mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_SELECTED_REGION);
-                mHandler.post(mScreenshotRunnable);
+                takeScreenshot(TAKE_SCREENSHOT_SELECTED_REGION);
             }
         }
     }
