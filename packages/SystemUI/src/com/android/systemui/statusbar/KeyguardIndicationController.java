@@ -210,7 +210,7 @@ public class KeyguardIndicationController implements StateListener,
     }
 
     public void setIndicationArea(ViewGroup indicationArea) {
-      mChargingIndicationView = (LottieAnimationView) indicationArea.findViewById(
+        mChargingIndicationView = (LottieAnimationView) indicationArea.findViewById(
               R.id.charging_indication);
         mIndicationArea = indicationArea;
         mTextView = indicationArea.findViewById(R.id.keyguard_indication_text);
@@ -477,6 +477,7 @@ public class KeyguardIndicationController implements StateListener,
     }
 
     public void updateChargingIndication(int type) {
+        if (mChargingIndicationView == null) return;
         mChargingIndication = type;
         switch (mChargingIndication) {
             default:
