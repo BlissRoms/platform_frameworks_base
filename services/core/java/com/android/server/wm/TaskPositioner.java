@@ -351,7 +351,10 @@ class TaskPositioner implements IBinder.DeathRecipient {
         }
         mDisplayContent.resumeRotationLocked();
         mDisplayContent = null;
+        try {
         mClientCallback.unlinkToDeath(this, 0 /* flags */);
+        } catch (RemoteException e) {
+        }
     }
 
     void startDrag(WindowState win, boolean resize, boolean preserveOrientation, float startX,
