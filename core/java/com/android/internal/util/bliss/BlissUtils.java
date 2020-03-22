@@ -545,6 +545,7 @@ public class BlissUtils {
         Vibrator mVibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
 
         switch (am.getRingerMode()) {
+            default:
             case AudioManager.RINGER_MODE_NORMAL:
                 if (mVibrator.hasVibrator()) {
                     am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
@@ -558,7 +559,7 @@ public class BlissUtils {
                         NotificationManager.INTERRUPTION_FILTER_PRIORITY);
                 break;
             case AudioManager.RINGER_MODE_SILENT:
-                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 break;
         }
     }
