@@ -558,7 +558,7 @@ public class BlissUtils {
                         NotificationManager.INTERRUPTION_FILTER_PRIORITY);
                 break;
             case AudioManager.RINGER_MODE_SILENT:
-                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 break;
         }
     }
