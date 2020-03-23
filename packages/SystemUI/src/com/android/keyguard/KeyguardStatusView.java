@@ -38,6 +38,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import androidx.core.graphics.ColorUtils;
@@ -121,6 +122,7 @@ public class KeyguardStatusView extends GridLayout implements
     private KeyguardClockSwitch mClockView;
     private View mSmallClockView;
     private TextView mOwnerInfo;
+    private TextClock mDefaultClockView;
     private KeyguardSliceView mKeyguardSlice;
     private View mNotificationIcons;
     private Runnable mPendingMarqueeStart;
@@ -292,6 +294,7 @@ public class KeyguardStatusView extends GridLayout implements
         }
 
         mClockView = findViewById(R.id.keyguard_clock_container);
+        mDefaultClockView = findViewById(R.id.default_clock_view);
         mClockView.setShowCurrentUserTime(true);
         mSmallClockView  = findViewById(R.id.clock_view);
         mOwnerInfo = findViewById(R.id.owner_info);
@@ -355,6 +358,9 @@ public class KeyguardStatusView extends GridLayout implements
                 setFontSize(mClockView, mLockClockFontSize);
             }
 
+            if (mClockSelection >= 8 && mClockSelection <= 12)
+                mDefaultClockView.setLineSpacing(0, 0.8f);
+
             switch (mClockSelection) {
                 case 1: // hidden
                     mSmallClockView.setVisibility(mDarkAmount != 1 ? View.GONE : View.VISIBLE);
@@ -386,7 +392,10 @@ public class KeyguardStatusView extends GridLayout implements
                 case 10: // sammy (accent)
                     mSmallClockView.setVisibility(View.VISIBLE);
                     break;
-                case 11: // sammy (accent alt)
+                case 11: // sammy accent hour
+                    mSmallClockView.setVisibility(View.VISIBLE);
+                    break;
+                case 12: // sammy accent darker hour
                     mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 }
@@ -536,9 +545,12 @@ public class KeyguardStatusView extends GridLayout implements
             mClockView.setFormat12Hour("hh\nmm");
             mClockView.setFormat24Hour("kk\nmm");
         } else if (mClockSelection == 10) {
+            mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">hh<br>mm</font>"));
+            mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">kk<br>mm</font>"));
+        } else if (mClockSelection == 11) {
             mClockView.setFormat12Hour(Html.fromHtml("hh<br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
             mClockView.setFormat24Hour(Html.fromHtml("kk<br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
-        } else if (mClockSelection == 11) {
+        } else if (mClockSelection == 12) {
             mClockView.setFormat12Hour(Html.fromHtml("<font color='#454545'>hh</font><br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
             mClockView.setFormat24Hour(Html.fromHtml("<font color='#454545'>kk</font><br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
         } else {
