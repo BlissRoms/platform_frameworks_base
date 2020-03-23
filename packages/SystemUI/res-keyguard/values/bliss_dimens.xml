@@ -166,4 +166,7 @@
     <dimen name="widget_clock_shishu_nerves_height">@dimen/widget_clock_shishu_size</dimen>
     <dimen name="widget_clock_shishu_nerves_font_size">52dp</dimen>
     <dimen name="custom_clock_left_padding">50dp</dimen>
+
+    <dimen name="header_font_size">20dp</dimen>
+
 </resources>
