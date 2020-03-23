@@ -17,6 +17,7 @@
 package com.android.internal.util.bliss;
 
 import android.app.ActivityManager;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -53,6 +54,9 @@ import android.view.WindowManagerGlobal;
 import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static android.content.Context.VIBRATOR_SERVICE;
+
 import java.util.List;
 
 import java.util.Locale;
@@ -63,6 +67,10 @@ public class BlissUtils {
 
     public static final String INTENT_SCREENSHOT = "action_take_screenshot";
     public static final String INTENT_REGION_SCREENSHOT = "action_take_region_screenshot";
+    public static final String DOZE_PACKAGE_NAME = "Doze";
+    public static final String LINEAGE_DOZE_PACKAGE_NAME = "org.lineageos.settings.doze";
+    public static final String CUSTOM_DOZE_PACKAGE_NAME = "com.custom.ambient.display";
+    public static final String ONEPLUS_DOZE_PACKAGE_NAME = "OnePlusDoze";
 
     public static boolean isChineseLanguage() {
        return Resources.getSystem().getConfiguration().locale.getLanguage().startsWith(
@@ -431,7 +439,7 @@ public class BlissUtils {
             ((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(pattern, -1);
         }
     }
-    
+
     // Enable/Disable Package Components
     public static void setComponentState(Context context, String packageName,
             String componentClassName, boolean enabled) {
@@ -441,9 +449,21 @@ public class BlissUtils {
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
         pm.setComponentEnabledSetting(componentName, state, PackageManager.DONT_KILL_APP);
     }
-    
+
     public static void toggleCameraFlash() {
         FireActions.toggleCameraFlash();
+    }
+
+    public static void clearAllNotifications() {
+        FireActions.clearAllNotifications();
+    }
+
+    public static void toggleNotifications() {
+        FireActions.toggleNotifications();
+    }
+
+    public static void toggleQsPanel() {
+        FireActions.toggleQsPanel();
     }
 
     private static final class FireActions {
@@ -468,11 +488,78 @@ public class BlissUtils {
                 }
             }
         }
+
+        // Clear notifications
+        public static void clearAllNotifications() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.onClearAllNotifications(ActivityManager.getCurrentUser());
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
+            }
+        }
+
+        // Toggle notifications panel
+        public static void toggleNotifications() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.togglePanel();
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
+            }
+        }
+
+        // Toggle qs panel
+        public static void toggleQsPanel() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.toggleSettingsPanel();
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
+            }
+        }
     }
-    
+
     // Volume panel
     public static void toggleVolumePanel(Context context) {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         am.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+    }
+
+    public static boolean isDozePackageAvailable(Context context) {
+        return isPackageInstalled(context, DOZE_PACKAGE_NAME) ||
+            isPackageInstalled(context, ONEPLUS_DOZE_PACKAGE_NAME) ||
+            isPackageInstalled(context, LINEAGE_DOZE_PACKAGE_NAME) ||
+            isPackageInstalled(context, CUSTOM_DOZE_PACKAGE_NAME);
+    }
+
+    // Cycle ringer modes
+    public static void toggleRingerModes (Context context) {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Vibrator mVibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+
+        switch (am.getRingerMode()) {
+            case AudioManager.RINGER_MODE_NORMAL:
+                if (mVibrator.hasVibrator()) {
+                    am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                }
+                break;
+            case AudioManager.RINGER_MODE_VIBRATE:
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                NotificationManager notificationManager =
+                        (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.setInterruptionFilter(
+                        NotificationManager.INTERRUPTION_FILTER_PRIORITY);
+                break;
+            case AudioManager.RINGER_MODE_SILENT:
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                break;
+        }
     }
 }

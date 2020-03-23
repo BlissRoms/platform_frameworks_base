@@ -7426,12 +7426,15 @@ message MetricsEvent {
     // CATEGORY: SETTINGS
     // OS: Q
     SETTINGS_AWARE_DISPLAY = 1750;
+
     // ---- End Q Constants, all Q constants go above this line ----
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
     
     // Blissify
     BLISSIFY = 1990;
-    
+
+    // Panel for Mobile Data
+    PANEL_MOBILE_DATA = 2002;
   }
 }

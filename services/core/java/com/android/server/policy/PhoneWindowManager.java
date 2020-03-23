@@ -1958,6 +1958,21 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case SCREENSHOT:
                 takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN);
                 break;
+            case VOLUME_PANEL:
+                BlissUtils.toggleVolumePanel(mContext);
+                break;
+            case CLEAR_ALL_NOTIFICATIONS:
+                BlissUtils.clearAllNotifications();
+                break;
+            case NOTIFICATIONS:
+                BlissUtils.toggleNotifications();
+                break;
+            case QS_PANEL:
+                BlissUtils.toggleQsPanel();
+                break;
+            case RINGER_MODES:
+                BlissUtils.toggleRingerModes(mContext);
+                break;
             default:
                 break;
         }
