@@ -158,6 +158,9 @@ interface IOverlayManager {
      */
     String[] getDefaultOverlayPackages();
 
+    void reloadAssets(in String packageName, in int userId);
+    void reloadAndroidAssets(in int userId);
+
     /**
      * Invalidates and removes the idmap for an overlay,
      * @param packageName The name of the overlay package whose idmap should be deleted.
