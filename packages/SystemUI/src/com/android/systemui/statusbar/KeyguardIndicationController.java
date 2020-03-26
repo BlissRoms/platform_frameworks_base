@@ -67,6 +67,7 @@ import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.phone.UnlockMethodCache;
 import com.android.systemui.statusbar.policy.AccessibilityController;
 import com.android.systemui.statusbar.policy.UserInfoController;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.wakelock.SettableWakeLock;
 import com.android.systemui.util.wakelock.WakeLock;
 
@@ -83,7 +84,7 @@ import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
  * Controls the indications and error messages shown on the Keyguard
  */
 public class KeyguardIndicationController implements StateListener,
-        UnlockMethodCache.OnUnlockMethodChangedListener {
+        UnlockMethodCache.OnUnlockMethodChangedListener, TunerService.Tunable {
 
     private static final String TAG = "KeyguardIndication";
     private static final boolean DEBUG_CHARGING_SPEED = false;
@@ -93,6 +94,9 @@ public class KeyguardIndicationController implements StateListener,
     private static final int MSG_SWIPE_UP_TO_UNLOCK = 3;
     private static final long TRANSIENT_BIOMETRIC_ERROR_TIMEOUT = 1300;
     private static final float BOUNCE_ANIMATION_FINAL_Y = 0f;
+
+    private static final String LOCKSCREEN_CHARGING_ANIMATION_STYLE =
+            "system:" + Settings.System.LOCKSCREEN_CHARGING_ANIMATION_STYLE;
 
     private final Context mContext;
     private final ShadeController mShadeController;
@@ -210,12 +214,29 @@ public class KeyguardIndicationController implements StateListener,
         mStatusBarStateController.addCallback(this);
         mUnlockMethodCache.addListener(this);
 
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, LOCKSCREEN_CHARGING_ANIMATION_STYLE);
+
         mBiometricHelpShowOnlyWhenFailed = res.getBoolean(R.bool.config_biometricHelpShowOnlyWhenFailed);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case LOCKSCREEN_CHARGING_ANIMATION_STYLE:
+                mChargingIndication =
+                        TunerService.parseInteger(newValue, 1);
+                if (mChargingIndicationView != null) updateChargingIndicationStyle();
+                break;
+            default:
+                break;
+        }
     }
 
     public void setIndicationArea(ViewGroup indicationArea) {
         mChargingIndicationView = (LottieAnimationView) indicationArea.findViewById(
               R.id.charging_indication);
+        updateChargingIndicationStyle();
         mIndicationArea = indicationArea;
         mTextView = indicationArea.findViewById(R.id.keyguard_indication_text);
         mInitialTextColorState = mTextView != null ?
@@ -507,9 +528,8 @@ public class KeyguardIndicationController implements StateListener,
         }
     }
 
-    public void updateChargingIndication(int type) {
+    public void updateChargingIndicationStyle() {
         if (mChargingIndicationView == null) return;
-        mChargingIndication = type;
         switch (mChargingIndication) {
             default:
             case 1: // Flash
