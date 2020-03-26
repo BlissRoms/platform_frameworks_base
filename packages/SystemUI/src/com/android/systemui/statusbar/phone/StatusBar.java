@@ -320,8 +320,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.GAMING_MODE_ACTIVE;
     private static final String GAMING_MODE_HEADSUP_TOGGLE =
             "system:" + Settings.System.GAMING_MODE_HEADSUP_TOGGLE;
-    private static final String LOCKSCREEN_CHARGING_ANIMATION_STYLE =
-            "system:" + Settings.System.LOCKSCREEN_CHARGING_ANIMATION_STYLE;
     private static final String STATUS_BAR_TICKER_ANIMATION_MODE =
             "system:" + Settings.System.STATUS_BAR_TICKER_ANIMATION_MODE;
     private static final String STATUS_BAR_TICKER_TICK_DURATION =
@@ -536,8 +534,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mSysuiRoundedFwvals;
 
     private boolean mHeadsUpDisabled, mGamingModeActivated;
-
-    private int mChargingAnimation = 1;
 
     // XXX: gesture research
     private final GestureRecorder mGestureRec = DEBUG_GESTURES
@@ -813,7 +809,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         tunerService.addTunable(this, SYSUI_ROUNDED_FWVALS);
         tunerService.addTunable(this, GAMING_MODE_ACTIVE);
         tunerService.addTunable(this, GAMING_MODE_HEADSUP_TOGGLE);
-        tunerService.addTunable(this, LOCKSCREEN_CHARGING_ANIMATION_STYLE);
         tunerService.addTunable(this, STATUS_BAR_TICKER_ANIMATION_MODE);
         tunerService.addTunable(this, STATUS_BAR_TICKER_TICK_DURATION);
 
@@ -1088,7 +1083,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                 SystemUIFactory.getInstance().createKeyguardIndicationController(mContext,
                         mStatusBarWindow.findViewById(R.id.keyguard_indication_area),
                         mStatusBarWindow.findViewById(R.id.lock_icon));
-        mKeyguardIndicationController.updateChargingIndication(mChargingAnimation);
         mNotificationPanel.setKeyguardIndicationController(mKeyguardIndicationController);
 
         mAmbientIndicationContainer = mStatusBarWindow.findViewById(
@@ -5665,12 +5659,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mHeadsUpDisabled =
                         TunerService.parseIntegerSwitch(newValue, true);
                 mNotificationInterruptionStateProvider.setGamingPeekMode(mGamingModeActivated && mHeadsUpDisabled);
-                break;
-            case LOCKSCREEN_CHARGING_ANIMATION_STYLE:
-                mChargingAnimation =
-                        TunerService.parseInteger(newValue, 1);
-                if (mKeyguardIndicationController != null)
-                    mKeyguardIndicationController.updateChargingIndication(mChargingAnimation);
                 break;
             case STATUS_BAR_TICKER_ANIMATION_MODE:
                 mTickerAnimationMode =
