@@ -33,7 +33,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val COLOR_ALPHA = (255 * 0.7f).toInt()
-//private const val BLUR_RADIUS = 25f
+private const val BLUR_RADIUS = 25f
 private const val DOWNSAMPLE = 6
 
 @Singleton
@@ -41,25 +41,16 @@ class MediaArtworkProcessor @Inject constructor() {
 
     private val mTmpSize = Point()
     private var mArtworkCache: Bitmap? = null
-    private var mDownSample: Int = DOWNSAMPLE
-    private var mColorAlpha: Int = COLOR_ALPHA
 
-    fun processArtwork(context: Context, artwork: Bitmap, blur_radius: Float): Bitmap {
+    fun processArtwork(context: Context, artwork: Bitmap): Bitmap {
         if (mArtworkCache != null) {
             return mArtworkCache!!
         }
 
-        if (blur_radius < 5f) {
-            mDownSample = 2
-            mColorAlpha = (mColorAlpha * 0.5f).toInt()
-        } else if (blur_radius < 1f) {
-            mDownSample = 1
-            mColorAlpha = (mColorAlpha * 0.1f).toInt()
-        }
         context.display.getSize(mTmpSize)
         val renderScript = RenderScript.create(context)
         val rect = Rect(0, 0, artwork.width, artwork.height)
-        MathUtils.fitRect(rect, Math.max(mTmpSize.x / mDownSample, mTmpSize.y / mDownSample))
+        MathUtils.fitRect(rect, Math.max(mTmpSize.x / DOWNSAMPLE, mTmpSize.y / DOWNSAMPLE))
         var inBitmap = Bitmap.createScaledBitmap(artwork, rect.width(), rect.height(),
                 true /* filter */)
         // Render script blurs only support ARGB_8888, we need a conversion if we got a
@@ -75,7 +66,7 @@ class MediaArtworkProcessor @Inject constructor() {
                 Bitmap.Config.ARGB_8888)
         val output = Allocation.createFromBitmap(renderScript, outBitmap)
         val blur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript))
-        blur.setRadius(blur_radius)
+        blur.setRadius(BLUR_RADIUS)
         blur.setInput(input)
         blur.forEach(output)
         output.copyTo(outBitmap)
