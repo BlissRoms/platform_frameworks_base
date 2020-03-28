@@ -150,4 +150,7 @@
 
     <!-- Face unlock -->
     <java-symbol type="array" name="face_error_custom" />
+
+    <!-- Enable face auth only when swiping security view -->
+    <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
 </resources>
