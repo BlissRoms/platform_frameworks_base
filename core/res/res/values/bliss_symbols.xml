@@ -90,4 +90,7 @@
 
   <!-- Cycle through ringer modes -->
   <java-symbol type="string" name="volume_dialog_ringer_guidance_normal" />
+
+    <!-- Enable face auth only when swiping security view -->
+    <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
 </resources>
