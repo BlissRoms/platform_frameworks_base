@@ -4752,6 +4752,12 @@ public final class Settings {
         public static final String SCREENSHOT_SOUND = "screenshot_sound";
 
         /**
+         * media artwork wallpaper blur level on lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_MEDIA_BLUR = "lockscreen_media_blur";
+
+        /**
          * Change quick settings tiles animation style
          *
          * @hide
@@ -5002,14 +5008,6 @@ public final class Settings {
          * @hide
          */
         public static final String SCREENSHOT_DEFAULT_MODE = "screenshot_default_mode";
-
-        /**
-         * media artwork wallpaper blur level on lockscreen
-         * @hide
-         */
-        public static final String LOCKSCREEN_MEDIA_BLUR = "lockscreen_media_blur";
-
-        private static final Validator LOCKSCREEN_MEDIA_BLUR_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
         /**
          * whether to enable or disable vibration on succesful fingerprint auth
@@ -6264,6 +6262,14 @@ public final class Settings {
         /** @hide */
         private static final Validator ACCENT_COLOR_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
+        /** Width of the navigation handle.
+         *  @hide
+         */
+        public static final String NAVIGATION_HANDLE_WIDTH = "navigation_handle_width";
+
+        /** @hide */
+        private static final Validator NAVIGATION_HANDLE_WIDTH_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -6335,7 +6341,6 @@ public final class Settings {
             ENABLE_CONDITIONS,
             ENABLE_SUGGESTIONS,
             SCREEN_OFF_ANIMATION,
-            LOCKSCREEN_MEDIA_BLUR,
             FINGERPRINT_SUCCESS_VIB,
             WIRELESS_CHARGING_ANIMATION,
             HEADS_UP_NOTIFICATION_SNOOZE,
@@ -6414,6 +6419,7 @@ public final class Settings {
             SLIM_RECENTS_CORNER_RADIUS,
             SLIM_RECENTS_BLACKLIST_VALUES,
             SLIM_RECENT_ENTER_EXIT_ANIMATION,
+            NAVIGATION_HANDLE_WIDTH,
         };
 
         /**
@@ -6550,7 +6556,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(ENABLE_CONDITIONS);
             PRIVATE_SETTINGS.add(ENABLE_SUGGESTIONS);
             PRIVATE_SETTINGS.add(SCREEN_OFF_ANIMATION);
-            PRIVATE_SETTINGS.add(LOCKSCREEN_MEDIA_BLUR);
             PRIVATE_SETTINGS.add(SCREENSHOT_DEFAULT_MODE);
             PRIVATE_SETTINGS.add(FINGERPRINT_SUCCESS_VIB);
             PRIVATE_SETTINGS.add(WIRELESS_CHARGING_ANIMATION);
@@ -6624,6 +6629,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SLIM_RECENTS_CORNER_RADIUS);
             PRIVATE_SETTINGS.add(SLIM_RECENTS_BLACKLIST_VALUES);
             PRIVATE_SETTINGS.add(SLIM_RECENT_ENTER_EXIT_ANIMATION);
+            PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_WIDTH);
         }
 
         /**
@@ -6725,7 +6731,6 @@ public final class Settings {
             VALIDATORS.put(ENABLE_CONDITIONS, ENABLE_CONDITIONS_VALIDATOR);
             VALIDATORS.put(ENABLE_SUGGESTIONS, ENABLE_SUGGESTIONS_VALIDATOR);
             VALIDATORS.put(SCREEN_OFF_ANIMATION, SCREEN_OFF_ANIMATION_VALIDATOR);
-            VALIDATORS.put(LOCKSCREEN_MEDIA_BLUR, LOCKSCREEN_MEDIA_BLUR_VALIDATOR);
             VALIDATORS.put(FINGERPRINT_SUCCESS_VIB, FINGERPRINT_SUCCESS_VIB_VALIDATOR);
             VALIDATORS.put(WIRELESS_CHARGING_ANIMATION, WIRELESS_CHARGING_ANIMATION_VALIDATOR);
             VALIDATORS.put(HEADS_UP_NOTIFICATION_SNOOZE,HEADS_UP_NOTIFICATION_SNOOZE_VALIDATOR);
@@ -6811,6 +6816,7 @@ public final class Settings {
             VALIDATORS.put(SLIM_RECENTS_CORNER_RADIUS, SLIM_RECENTS_CORNER_RADIUS_VALIDATOR);
             VALIDATORS.put(SLIM_RECENTS_BLACKLIST_VALUES, SLIM_RECENTS_BLACKLIST_VALUES_VALIDATOR);
             VALIDATORS.put(SLIM_RECENT_ENTER_EXIT_ANIMATION, SLIM_RECENT_ENTER_EXIT_ANIMATION_VALIDATOR);
+            VALIDATORS.put(NAVIGATION_HANDLE_WIDTH, NAVIGATION_HANDLE_WIDTH_VALIDATOR);
         }
 
         /**

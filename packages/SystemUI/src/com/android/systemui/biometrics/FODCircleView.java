@@ -17,6 +17,12 @@
 package com.android.systemui.biometrics;
 
 import android.content.ContentResolver;
+import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_REQUIRED_AFTER_DPM_LOCK_NOW;
+import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_REQUIRED_AFTER_LOCKOUT;
+import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_REQUIRED_AFTER_TIMEOUT;
+import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_REQUIRED_AFTER_USER_LOCKDOWN;
+
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -42,6 +48,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.android.keyguard.KeyguardSecurityModel.SecurityMode;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.systemui.R;
@@ -75,6 +82,7 @@ public class FODCircleView extends ImageView {
     private boolean mIsShowing;
     private boolean mIsCircleShowing;
     private boolean mIsAuthenticated;
+    private boolean mCanUnlockWithFp;
 
     private Handler mHandler;
 
@@ -169,10 +177,17 @@ public class FODCircleView extends ImageView {
         public void onKeyguardBouncerChanged(boolean isBouncer) {
             mIsBouncer = isBouncer;
 
-            if (isBouncer) {
+            if (mUpdateMonitor.isFingerprintDetectionRunning()) {
+                final SecurityMode sec = mUpdateMonitor.getSecurityMode();
+                final boolean maybeShow = sec == SecurityMode.Pattern ||
+                        sec == SecurityMode.PIN;
+                if (maybeShow || !mIsBouncer) {
+                    show();
+                } else {
+                    hide();
+                }
+            } else {
                 hide();
-            } else if (mUpdateMonitor.isFingerprintDetectionRunning()) {
-                show();
             }
         }
 
@@ -186,7 +201,44 @@ public class FODCircleView extends ImageView {
         public void onScreenTurnedOff() {
             hideCircle();
         }
+
+        @Override
+        public void onBiometricHelp(int msgId, String helpString,
+                BiometricSourceType biometricSourceType) {
+            if (msgId == -1){ // Auth error
+                hideCircle();
+                mHandler.post(() -> mFODAnimation.hideFODanimation());
+            }
+        }
+
+        @Override
+        public void onStrongAuthStateChanged(int userId) {
+            mCanUnlockWithFp = canUnlockWithFp();
+            if (mIsShowing && !mCanUnlockWithFp){
+                hide();
+            }
+        }
     };
+
+    private boolean canUnlockWithFp() {
+        int currentUser = ActivityManager.getCurrentUser();
+        boolean biometrics = mUpdateMonitor.isUnlockingWithBiometricsPossible(currentUser);
+        KeyguardUpdateMonitor.StrongAuthTracker strongAuthTracker =
+                mUpdateMonitor.getStrongAuthTracker();
+        int strongAuth = strongAuthTracker.getStrongAuthForUser(currentUser);
+        if (biometrics && !strongAuthTracker.hasUserAuthenticatedSinceBoot()) {
+            return false;
+        } else if (biometrics && (strongAuth & STRONG_AUTH_REQUIRED_AFTER_TIMEOUT) != 0) {
+            return false;
+        } else if (biometrics && (strongAuth & STRONG_AUTH_REQUIRED_AFTER_DPM_LOCK_NOW) != 0) {
+            return false;
+        } else if (biometrics && (strongAuth & STRONG_AUTH_REQUIRED_AFTER_LOCKOUT) != 0) {
+            return false;
+        } else if (biometrics && (strongAuth & STRONG_AUTH_REQUIRED_AFTER_USER_LOCKDOWN) != 0) {
+            return false;
+        }
+        return true;
+    }
 
     public FODCircleView(Context context) {
         super(context);
@@ -242,6 +294,8 @@ public class FODCircleView extends ImageView {
         mPowerManager = context.getSystemService(PowerManager.class);
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 FODCircleView.class.getSimpleName());
+
+        mCanUnlockWithFp = canUnlockWithFp();
 
         mFODAnimation = new FODAnimation(context, mPositionX, mPositionY);
     }
@@ -385,6 +439,11 @@ public class FODCircleView extends ImageView {
     public void show() {
         if (mIsBouncer) {
             // Ignore show calls when Keyguard pin screen is being shown
+            return;
+        }
+
+        if (!mCanUnlockWithFp){
+            // Ignore when unlocking with fp is not possible
             return;
         }
 

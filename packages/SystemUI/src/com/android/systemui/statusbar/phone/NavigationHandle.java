@@ -16,6 +16,8 @@
 
 package com.android.systemui.statusbar.phone;
 
+import static android.provider.Settings.System.NAVIGATION_HANDLE_WIDTH;
+
 import android.animation.ArgbEvaluator;
 import android.annotation.ColorInt;
 import android.content.Context;
@@ -23,6 +25,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -38,6 +41,7 @@ public class NavigationHandle extends View implements ButtonInterface {
     private @ColorInt final int mDarkColor;
     private final int mRadius;
     private final int mBottom;
+    private final int mBaseWidth;
 
     public NavigationHandle(Context context) {
         this(context, null);
@@ -48,6 +52,7 @@ public class NavigationHandle extends View implements ButtonInterface {
         final Resources res = context.getResources();
         mRadius = res.getDimensionPixelSize(R.dimen.navigation_handle_radius);
         mBottom = res.getDimensionPixelSize(R.dimen.navigation_handle_bottom);
+        mBaseWidth = res.getDimensionPixelSize(R.dimen.navigation_home_handle_width);
 
         final int dualToneDarkTheme = Utils.getThemeAttr(context, R.attr.darkIconTheme);
         final int dualToneLightTheme = Utils.getThemeAttr(context, R.attr.lightIconTheme);
@@ -69,6 +74,12 @@ public class NavigationHandle extends View implements ButtonInterface {
         int width = getWidth();
         int y = (navHeight - mBottom - height);
         canvas.drawRoundRect(0, y, width, y + height, mRadius, mRadius, mPaint);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(getCustomWidth() + getPaddingLeft() + getPaddingRight(),
+                getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
     }
 
     @Override
@@ -95,5 +106,21 @@ public class NavigationHandle extends View implements ButtonInterface {
 
     @Override
     public void setDelayTouchFeedback(boolean shouldDelay) {
+    }
+
+    private int getCustomWidth() {
+        /* 0: small (stock AOSP)
+           1: medium
+           2: long
+        */
+        int userSelection = Settings.System.getInt(getContext().getContentResolver(),
+                NAVIGATION_HANDLE_WIDTH, 0);
+        if (userSelection == 0) {
+            return mBaseWidth;
+        } else if (userSelection == 1) {
+            return (int) (1.33 * mBaseWidth);
+        } else {
+            return 2 * mBaseWidth;
+        }
     }
 }

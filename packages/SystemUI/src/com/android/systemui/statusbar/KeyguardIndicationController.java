@@ -67,6 +67,7 @@ import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.phone.UnlockMethodCache;
 import com.android.systemui.statusbar.policy.AccessibilityController;
 import com.android.systemui.statusbar.policy.UserInfoController;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.wakelock.SettableWakeLock;
 import com.android.systemui.util.wakelock.WakeLock;
 
@@ -83,7 +84,7 @@ import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
  * Controls the indications and error messages shown on the Keyguard
  */
 public class KeyguardIndicationController implements StateListener,
-        UnlockMethodCache.OnUnlockMethodChangedListener {
+        UnlockMethodCache.OnUnlockMethodChangedListener, TunerService.Tunable {
 
     private static final String TAG = "KeyguardIndication";
     private static final boolean DEBUG_CHARGING_SPEED = false;
@@ -94,6 +95,10 @@ public class KeyguardIndicationController implements StateListener,
     private static final long TRANSIENT_BIOMETRIC_ERROR_TIMEOUT = 1300;
     private static final float BOUNCE_ANIMATION_FINAL_Y = 0f;
 
+    private static final String LOCKSCREEN_CHARGING_ANIMATION_STYLE =
+            "system:" + Settings.System.LOCKSCREEN_CHARGING_ANIMATION_STYLE;
+    private static final String LOCKSCREEN_BATTERY_INFO =
+            "system:" + Settings.System.LOCKSCREEN_BATTERY_INFO;
     private final Context mContext;
     private final ShadeController mShadeController;
     private final AccessibilityController mAccessibilityController;
@@ -136,7 +141,11 @@ public class KeyguardIndicationController implements StateListener,
     private float mTemperature;
     private String mMessageToShowOnScreenOn;
 
+    private boolean mShowBatteryInfo;
+
     private KeyguardUpdateMonitorCallback mUpdateMonitorCallback;
+
+    private boolean mBiometricHelpShowOnlyWhenFailed = false;
 
     private final DevicePolicyManager mDevicePolicyManager;
     private boolean mDozing;
@@ -207,11 +216,35 @@ public class KeyguardIndicationController implements StateListener,
         mKeyguardUpdateMonitor.registerCallback(mTickReceiver);
         mStatusBarStateController.addCallback(this);
         mUnlockMethodCache.addListener(this);
+
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, LOCKSCREEN_CHARGING_ANIMATION_STYLE);
+        tunerService.addTunable(this, LOCKSCREEN_BATTERY_INFO);
+
+        mBiometricHelpShowOnlyWhenFailed = res.getBoolean(R.bool.config_biometricHelpShowOnlyWhenFailed);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case LOCKSCREEN_CHARGING_ANIMATION_STYLE:
+                mChargingIndication =
+                        TunerService.parseInteger(newValue, 1);
+                if (mChargingIndicationView != null) updateChargingIndicationStyle();
+                break;
+            case LOCKSCREEN_BATTERY_INFO:
+                mShowBatteryInfo =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                break;
+            default:
+                break;
+        }
     }
 
     public void setIndicationArea(ViewGroup indicationArea) {
         mChargingIndicationView = (LottieAnimationView) indicationArea.findViewById(
               R.id.charging_indication);
+        updateChargingIndicationStyle();
         mIndicationArea = indicationArea;
         mTextView = indicationArea.findViewById(R.id.keyguard_indication_text);
         mInitialTextColorState = mTextView != null ?
@@ -503,9 +536,8 @@ public class KeyguardIndicationController implements StateListener,
         }
     }
 
-    public void updateChargingIndication(int type) {
+    public void updateChargingIndicationStyle() {
         if (mChargingIndicationView == null) return;
-        mChargingIndication = type;
         switch (mChargingIndication) {
             default:
             case 1: // Flash
@@ -667,9 +699,7 @@ public class KeyguardIndicationController implements StateListener,
         }
 
         String batteryInfo = "";
-        boolean showbatteryInfo = Settings.System.getIntForUser(mContext.getContentResolver(),
-            Settings.System.LOCKSCREEN_BATTERY_INFO, 1, UserHandle.USER_CURRENT) == 1;
-         if (showbatteryInfo) {
+         if (mShowBatteryInfo) {
             if (mChargingWattage > 0) {
                 batteryInfo = (batteryInfo == "" ? "" : batteryInfo + " · ") +
                         String.format("%.1f" , (mChargingWattage / 1000 / 1000)) + "W";
@@ -844,6 +874,9 @@ public class KeyguardIndicationController implements StateListener,
         @Override
         public void onBiometricHelp(int msgId, String helpString,
                 BiometricSourceType biometricSourceType) {
+            if (mBiometricHelpShowOnlyWhenFailed && msgId != -1){
+                return;
+            }
             if (!mKeyguardUpdateMonitor.isUnlockingWithBiometricAllowed()) {
                 return;
             }

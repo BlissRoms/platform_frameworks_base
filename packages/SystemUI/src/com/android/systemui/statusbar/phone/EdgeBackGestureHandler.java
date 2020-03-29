@@ -336,7 +336,7 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
                 WindowManagerGlobal.getWindowManagerService()
                         .unregisterSystemGestureExclusionListener(
                                 mGestureExclusionListener, mDisplayId);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 Log.e(TAG, "Failed to unregister window manager callbacks", e);
             }
 
@@ -350,7 +350,7 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
                 WindowManagerGlobal.getWindowManagerService()
                         .registerSystemGestureExclusionListener(
                                 mGestureExclusionListener, mDisplayId);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 Log.e(TAG, "Failed to register window manager callbacks", e);
             }
 
@@ -605,7 +605,7 @@ public class EdgeBackGestureHandler implements DisplayListener, TunerService.Tun
         final KeyEvent ev = new KeyEvent(when, when, action, code, 0 /* repeat */,
                 0 /* metaState */, KeyCharacterMap.VIRTUAL_KEYBOARD, 0 /* scancode */,
                 flags | KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
-                InputDevice.SOURCE_KEYBOARD);
+                InputDevice.SOURCE_NAVIGATION_BAR);
 
         // Bubble controller will give us a valid display id if it should get the back event
         BubbleController bubbleController = Dependency.get(BubbleController.class);
