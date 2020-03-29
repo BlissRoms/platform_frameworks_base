@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+/** @hide */
 public class ColorUtils {
     private static final String TAG = "ColorUtils";
     private static final float QS_MIN_LIGHTNESS = 0.0f;

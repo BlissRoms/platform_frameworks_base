@@ -20,6 +20,7 @@ import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
 
+/** @hide */
 public class AccentUtils {
     private static final String TAG = "AccentUtils";
 

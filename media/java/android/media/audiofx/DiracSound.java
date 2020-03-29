@@ -3,6 +3,7 @@ package android.media.audiofx;
 import android.util.Log;
 import java.util.UUID;
 
+/** @hide */
 public class DiracSound extends AudioEffect {
 
     public static final int DIRACSOUND_HEADSET_EM001 = 15;
