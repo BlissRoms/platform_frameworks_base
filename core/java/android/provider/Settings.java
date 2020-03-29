@@ -6301,6 +6301,12 @@ public final class Settings {
         public static final String SCREENRECORD_VIDEO_BITRATE = "screenrecord_video_bitrate";
 
         /**
+         * Whether to show heads up on new music tracks
+         * @hide
+         */
+        public static final String SHOW_MEDIA_HEADS_UP = "show_media_heads_up";
+
+        /**
          * Adaptive playback
          * Automatically pause media when the volume is muted and
          * will resume automatically when volume is restored.

@@ -47,11 +47,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.app.Activity;
+import android.app.ActivityManagerNative;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
+import android.app.IActivityManager;
 import android.app.IWallpaperManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -74,6 +77,7 @@ import android.content.om.IOverlayManager;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
@@ -196,6 +200,9 @@ import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QuickQSPanel;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.ScreenPinningRequest;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.PackageManagerWrapper;
+import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.systemui.stackdivider.Divider;
 import com.android.systemui.stackdivider.WindowManagerProxy;
@@ -276,6 +283,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -757,6 +765,19 @@ public class StatusBar extends SystemUI implements DemoMode,
     private ActivityIntentHelper mActivityIntentHelper;
     private ShadeController mShadeController;
 
+    private int mRunningTaskId;
+    private IntentFilter mDefaultHomeIntentFilter;
+    private static final String[] DEFAULT_HOME_CHANGE_ACTIONS = new String[] {
+            PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED,
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_PACKAGE_ADDED,
+            Intent.ACTION_PACKAGE_CHANGED,
+            Intent.ACTION_PACKAGE_REMOVED
+    };
+    @Nullable private ComponentName mDefaultHome;
+    private boolean mIsLauncherShowing;
+    private ComponentName mTaskComponentName = null;
+
     @Override
     public void onActiveStateChanged(int code, int uid, String packageName, boolean active) {
         Dependency.get(MAIN_HANDLER).post(() -> {
@@ -949,6 +970,17 @@ public class StatusBar extends SystemUI implements DemoMode,
         int disabledFlags2 = result.mDisabledFlags2;
         Dependency.get(InitController.class).addPostInitTask(
                 () -> setUpDisableFlags(disabledFlags1, disabledFlags2));
+
+        mDefaultHomeIntentFilter = new IntentFilter();
+        for (String action : DEFAULT_HOME_CHANGE_ACTIONS) {
+            mDefaultHomeIntentFilter.addAction(action);
+        }
+        ActivityManager.RunningTaskInfo runningTaskInfo =
+                ActivityManagerWrapper.getInstance().getRunningTask();
+        mRunningTaskId = runningTaskInfo == null ? 0 : runningTaskInfo.taskId;
+        mDefaultHome = getCurrentDefaultHome();
+        mContext.registerReceiver(mDefaultHomeBroadcastReceiver, mDefaultHomeIntentFilter);
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackChangeListener);
     }
 
     private void initCoreOverlays(){
@@ -1665,6 +1697,59 @@ public class StatusBar extends SystemUI implements DemoMode,
         return true;
     }
 
+    private final BroadcastReceiver mDefaultHomeBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mDefaultHome = getCurrentDefaultHome();
+        }
+    };
+
+    private final TaskStackChangeListener mTaskStackChangeListener =
+            new TaskStackChangeListener() {
+                @Override
+                public void onTaskMovedToFront(ActivityManager.RunningTaskInfo taskInfo) {
+                    handleTaskStackTopChanged(taskInfo.taskId, taskInfo.topActivity);
+                }
+
+                @Override
+                public void onTaskCreated(int taskId, ComponentName componentName) {
+                    handleTaskStackTopChanged(taskId, componentName);
+                }
+            };
+
+    private void handleTaskStackTopChanged(int taskId, @Nullable ComponentName taskComponentName) {
+        if (mRunningTaskId == taskId || taskComponentName == null) {
+            return;
+        }
+        mRunningTaskId = taskId;
+        mIsLauncherShowing = taskComponentName.equals(mDefaultHome);
+        mTaskComponentName = taskComponentName;
+        if (mMediaManager != null) {
+            mMediaManager.setRunningPackage(mTaskComponentName.getPackageName());
+        }
+    }
+
+    @Nullable
+    private ComponentName getCurrentDefaultHome() {
+        List<ResolveInfo> homeActivities = new ArrayList<>();
+        ComponentName defaultHome = PackageManagerWrapper.getInstance().getHomeActivities(homeActivities);
+        if (defaultHome != null) {
+            return defaultHome;
+        }
+
+        int topPriority = Integer.MIN_VALUE;
+        ComponentName topComponent = null;
+        for (ResolveInfo resolveInfo : homeActivities) {
+            if (resolveInfo.priority > topPriority) {
+                topComponent = resolveInfo.activityInfo.getComponentName();
+                topPriority = resolveInfo.priority;
+            } else if (resolveInfo.priority == topPriority) {
+                topComponent = null;
+            }
+        }
+        return topComponent;
+    }
+
     /**
      * Disable QS if device not provisioned.
      * If the user switcher is simple then disable QS during setup because
@@ -2213,6 +2298,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STOCK_STATUSBAR_IN_HIDE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_MEDIA_HEADS_UP),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2251,6 +2339,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.LESS_BORING_HEADS_UP))) {
                 setUseLessBoringHeadsUp();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.SHOW_MEDIA_HEADS_UP))) {
+                setMediaHeadsup();
             }
             update();
         }
@@ -2268,6 +2358,13 @@ public class StatusBar extends SystemUI implements DemoMode,
             setHeadsUpStoplist();
             setHeadsUpBlacklist();
             handleCutout(null);
+            setMediaHeadsup();
+        }
+    }
+
+    private void setMediaHeadsup() {
+        if (mMediaManager != null) {
+            mMediaManager.setMediaHeadsup();
         }
     }
 
