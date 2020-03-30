@@ -887,7 +887,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 mHeaderImageEnabled =
                         TunerService.parseIntegerSwitch(newValue, true);
                 updateResources();
-                updateStatusbarProperties();
                 break;
             case QSFooterImpl.QS_SHOW_DRAG_HANDLE:
                 mHideDragHandle =
