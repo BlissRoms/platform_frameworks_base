@@ -6271,6 +6271,12 @@ public final class Settings {
         private static final Validator NAVIGATION_HANDLE_WIDTH_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
         /**
+         * Show data usage in QS header
+         * @hide
+         */
+        public static final String QS_DATAUSAGE = "qs_datausage";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -16275,6 +16281,12 @@ public final class Settings {
          * @hide
          */
         public static final String ALLOW_SIGNATURE_FAKE = "allow_signature_fake";
+
+        /**
+         * Whether to show quick settings on secure LockScreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_ENABLE_QS = "lockscreen_enable_qs";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
