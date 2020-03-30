@@ -17,6 +17,9 @@ import android.graphics.Color;
 import android.os.SystemProperties;
 import android.util.Log;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class AccentUtils {
     private static final String TAG = "AccentUtils";
 
@@ -53,6 +56,11 @@ public class AccentUtils {
     }
 
     private static int getAccentColor(int defaultColor, String property) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        if (cal.get(Calendar.MONTH) == 3 && cal.get(Calendar.DAY_OF_MONTH) == 1) {
+            return ColorUtils.genRandomAccentColor(property == ACCENT_COLOR_PROP);
+        }
         try {
             String colorValue = SystemProperties.get(property, "-1");
             return "-1".equals(colorValue)
