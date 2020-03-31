@@ -76,6 +76,7 @@ public class QSContainerImpl extends FrameLayout implements
     private Drawable mQsBackGround;
 
     private boolean mHeaderImageEnabled;
+    private int mHeaderImageHeight;
     private ImageView mBackgroundImage;
     private StatusBarHeaderMachine mStatusBarHeaderMachine;
     private Drawable mCurrentBackground;
@@ -190,6 +191,10 @@ public class QSContainerImpl extends FrameLayout implements
 
     private void updateSettings() {
         ContentResolver resolver = getContext().getContentResolver();
+        mHeaderImageHeight = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CUSTOM_HEADER_HEIGHT, 25,
+                UserHandle.USER_CURRENT);
+        updateResources();
         int userQsWallColorSetting = Settings.System.getIntForUser(resolver,
                     Settings.System.QS_PANEL_BG_USE_WALL, 0, UserHandle.USER_CURRENT);
         mSetQsFromWall = userQsWallColorSetting == 1;
@@ -297,7 +302,7 @@ public class QSContainerImpl extends FrameLayout implements
     private void updateResources() {
         int topMargin = mContext.getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.quick_qs_offset_height) + (mHeaderImageEnabled ?
-                mContext.getResources().getDimensionPixelSize(R.dimen.qs_header_image_offset) : 0);
+                mHeaderImageHeight : 0);
 
         int statusBarSideMargin = mHeaderImageEnabled ? mContext.getResources().getDimensionPixelSize(
                 R.dimen.qs_header_image_side_margin) : 0;
