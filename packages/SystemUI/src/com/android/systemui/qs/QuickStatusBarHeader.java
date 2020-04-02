@@ -276,8 +276,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mSystemInfoIcon = findViewById(R.id.system_info_icon);
         mSystemInfoText = findViewById(R.id.system_info_text);
 
-        updateResources();
-
         Rect tintArea = new Rect(0, 0, 0, 0);
         int colorForeground = Utils.getColorAttrDefaultColor(getContext(),
                 android.R.attr.colorForeground);
@@ -308,6 +306,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mBatteryRemainingIcon.setOnClickListener(this);
         mRingerModeTextView.setSelected(true);
         mNextAlarmTextView.setSelected(true);
+
+        updateResources();
 
         // Change the ignored slots when DeviceConfig flag changes
         DeviceConfig.addOnPropertyChangedListener(DeviceConfig.NAMESPACE_PRIVACY,
@@ -460,12 +460,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         super.onConfigurationChanged(newConfig);
         mLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
         updateResources();
-
-        // Update color schemes in landscape to use wallpaperTextColor
-        boolean shouldUseWallpaperTextColor =
-                newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
-        mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
-        updateStatusbarProperties();
     }
 
     @Override
@@ -532,6 +526,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         updateStatusIconAlphaAnimator();
         updateHeaderTextContainerAlphaAnimator();
         updatePrivacyChipAlphaAnimator();
+
+        boolean shouldUseWallpaperTextColor = mLandscape && !mHeaderImageEnabled;
+        mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
     }
 
     private void updateSysInfoResources(){
@@ -885,9 +882,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 break;
             case OMNI_STATUS_BAR_CUSTOM_HEADER:
                 mHeaderImageEnabled =
-                        TunerService.parseIntegerSwitch(newValue, true);
+                        TunerService.parseIntegerSwitch(newValue, false);
                 updateResources();
-                updateStatusbarProperties();
                 break;
             case QSFooterImpl.QS_SHOW_DRAG_HANDLE:
                 mHideDragHandle =
@@ -903,11 +899,5 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             default:
                 break;
         }
-    }
-
-    // Update color schemes in landscape to use wallpaperTextColor
-    private void updateStatusbarProperties() {
-        boolean shouldUseWallpaperTextColor = mLandscape && !mHeaderImageEnabled;
-        mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
     }
 }
