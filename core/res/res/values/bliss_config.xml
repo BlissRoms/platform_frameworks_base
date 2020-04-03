@@ -95,11 +95,14 @@
         <item>com.facebook.katana.LoginActivity</item> 
     </string-array>
 
-    <!-- Screen off delay -->
-    <integer name="config_screen_off_delay">1000</integer>
-
     <!-- Whether device supports variable refresh rate -->
     <bool name="config_hasVariableRefreshRate">false</bool>
+
+    <!-- Default refresh rate value for the device
+         0: Auto
+         1: 60Hz
+         2: 90Hz -->
+    <integer name="config_defaultRefreshRate">0</integer>
 
     <!-- Whether to use scaled brightness (set -1 to disable) -->
     <integer name="config_useScaleBrightness">-1</integer>

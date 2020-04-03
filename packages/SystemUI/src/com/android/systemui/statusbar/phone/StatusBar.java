@@ -1668,7 +1668,7 @@ public class StatusBar extends SystemUI implements DemoMode,
      * If the user switcher is simple then disable QS during setup because
      * the user intends to use the lock screen user switcher, QS in not needed.
      */
-    private void updateQsExpansionEnabled() {
+    public void updateQsExpansionEnabled() {
         final boolean expandEnabled = mDeviceProvisionedController.isDeviceProvisioned()
                 && (mUserSetup || mUserSwitcherController == null
                         || !mUserSwitcherController.isSimpleUserSwitcher())
@@ -5160,12 +5160,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         @Override
-        public void onSlpiTap(float screenX, float screenY) {
+        public void onSlpiTap(float screenX, float screenY, int pulseReason) {
             if (isDoubleTapOnMusicTicker(screenX, screenY)) {
                 handleSystemKey(KeyEvent.KEYCODE_MEDIA_NEXT);
             } else {
                 for (Callback callback : mCallbacks) {
-                    callback.wakeUpFromDoubleTap();
+                    callback.wakeUpFromDoubleTap(pulseReason);
                 }
             }
         }

@@ -151,11 +151,10 @@
 
     <java-symbol type="array" name="config_blockPackagesSensorDrain" />
 
-    <!-- Screen off delay -->
-    <java-symbol type="integer" name="config_screen_off_delay" />
-
     <!-- Whether device supports variable refresh rate -->
     <java-symbol type="bool" name="config_hasVariableRefreshRate" />
+
+    <java-symbol type="integer" name="config_defaultRefreshRate" />
 
     <!-- Whether to use scaled brightness (set -1 to disable) -->
     <java-symbol type="integer" name="config_useScaleBrightness" />

@@ -116,21 +116,18 @@ public class CellularTile extends QSTileImpl<SignalState> {
         if (getState().state == Tile.STATE_UNAVAILABLE) {
             return;
         }
-        if (mDataController.isMobileDataEnabled()) {
-            maybeShowDisableDialog();
+        if (mKeyguard.isSecure() && mKeyguard.isShowing()) {
+            Dependency.get(ActivityStarter.class).postQSRunnableDismissingKeyguard(() -> {
+                mHost.openPanels();
+                mDataController.setMobileDataEnabled(!mDataController.isMobileDataEnabled());
+            });
+            return;
         } else {
-            if (mKeyguard.isSecure() && mKeyguard.isShowing()) {
-                Dependency.get(ActivityStarter.class).postQSRunnableDismissingKeyguard(() -> {
-                    mHost.openPanels();
-                    mDataController.setMobileDataEnabled(true);
-                });
-                return;
-            }
-            mDataController.setMobileDataEnabled(true);
+            mDataController.setMobileDataEnabled(!mDataController.isMobileDataEnabled());
         }
     }
 
-    private void maybeShowDisableDialog() {
+    /*private void maybeShowDisableDialog() {
         if (Prefs.getBoolean(mContext, QS_HAS_TURNED_OFF_MOBILE_DATA, false)) {
             // Directly turn off mobile data if the user has seen the dialog before.
             mDataController.setMobileDataEnabled(false);
@@ -156,7 +153,7 @@ public class CellularTile extends QSTileImpl<SignalState> {
         SystemUIDialog.registerDismissListener(dialog);
         SystemUIDialog.setWindowOnTop(dialog);
         dialog.show();
-    }
+    }*/
 
     @Override
     protected void handleSecondaryClick() {

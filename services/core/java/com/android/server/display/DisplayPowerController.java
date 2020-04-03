@@ -173,9 +173,6 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
     // The proximity sensor, or null if not available or needed.
     private Sensor mProximitySensor;
 
-    // The screen off delay
-    private final int mScreenOffDelayConfig;
-
     // The doze screen brightness.
     private final int mScreenBrightnessDozeConfig;
 
@@ -423,9 +420,6 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         final Resources resources = context.getResources();
         final int screenBrightnessSettingMinimum = clampAbsoluteBrightness(resources.getInteger(
                 com.android.internal.R.integer.config_screenBrightnessSettingMinimum));
-
-        mScreenOffDelayConfig = resources.getInteger(
-                com.android.internal.R.integer.config_screen_off_delay);
 
         mScreenBrightnessDozeConfig = clampAbsoluteBrightness(resources.getInteger(
                 com.android.internal.R.integer.config_screenBrightnessDoze));
@@ -1291,7 +1285,6 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
 
     private boolean setScreenState(int state, boolean reportOnly) {
         final boolean isOff = (state == Display.STATE_OFF);
-        cancelDelayedScreenOff();
         if (mPowerState.getScreenState() != state) {
 
             // If we are trying to turn screen off, give policy a chance to do something before we
@@ -1352,26 +1345,6 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
 
         // Return true if the screen isn't blocked.
         return mPendingScreenOnUnblocker == null;
-    }
-
-    private final Runnable mScreenOffTask = new Runnable() {
-        @Override
-        public void run() {
-            final boolean updateNeeded = mPowerState.getScreenState() != Display.STATE_OFF;
-            setScreenState(Display.STATE_OFF);
-            if (updateNeeded) {
-                sendUpdatePowerState();
-            }
-        }
-    };
-
-    private void setScreenOffDelayed() {
-        cancelDelayedScreenOff();
-        mHandler.postDelayed(mScreenOffTask, mScreenOffDelayConfig);
-    }
-
-    private void cancelDelayedScreenOff() {
-        mHandler.removeCallbacks(mScreenOffTask);
     }
 
     private void setReportedScreenState(int state) {
@@ -1550,7 +1523,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
             if (mPowerState.getColorFadeLevel() == 0.0f) {
                 // Turn the screen off.
                 // A black surface is already hiding the contents of the screen.
-                setScreenOffDelayed();
+                setScreenState(Display.STATE_OFF);
                 mPendingScreenOff = false;
                 mPowerState.dismissColorFadeResources();
             } else if (performScreenOffTransition
