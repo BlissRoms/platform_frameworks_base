@@ -213,18 +213,18 @@ public class FODCircleView extends ImageView {
 
         @Override
         public void onStrongAuthStateChanged(int userId) {
-            mCanUnlockWithFp = canUnlockWithFp();
+            mCanUnlockWithFp = canUnlockWithFp(mUpdateMonitor);
             if (mIsShowing && !mCanUnlockWithFp){
                 hide();
             }
         }
     };
 
-    private boolean canUnlockWithFp() {
-        int currentUser = ActivityManager.getCurrentUser();
-        boolean biometrics = mUpdateMonitor.isUnlockingWithBiometricsPossible(currentUser);
+    public static boolean canUnlockWithFp(KeyguardUpdateMonitor updateMonitor) {
+        int currentUser = KeyguardUpdateMonitor.getCurrentUser();
+        boolean biometrics = updateMonitor.isUnlockingWithBiometricsPossible(currentUser);
         KeyguardUpdateMonitor.StrongAuthTracker strongAuthTracker =
-                mUpdateMonitor.getStrongAuthTracker();
+                updateMonitor.getStrongAuthTracker();
         int strongAuth = strongAuthTracker.getStrongAuthForUser(currentUser);
         if (biometrics && !strongAuthTracker.hasUserAuthenticatedSinceBoot()) {
             return false;
@@ -294,8 +294,7 @@ public class FODCircleView extends ImageView {
         mPowerManager = context.getSystemService(PowerManager.class);
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 FODCircleView.class.getSimpleName());
-
-        mCanUnlockWithFp = canUnlockWithFp();
+        mCanUnlockWithFp = canUnlockWithFp(mUpdateMonitor);
 
         mFODAnimation = new FODAnimation(context, mPositionX, mPositionY);
     }
