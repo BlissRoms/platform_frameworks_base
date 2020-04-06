@@ -18,7 +18,11 @@
        android:shape="rectangle">
 
     <corners
+<<<<<<< HEAD
             android:radius="@dimen/config_dialogCornerRadius" />
+=======
+            android:radius="?attr/dialogCornerRadius" />
+>>>>>>> 6d251cd6856... [SQUASHED] Gradient Shit [1/2]
     <solid
             android:color="?attr/colorPopupBackground" />
 
