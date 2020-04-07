@@ -29,7 +29,8 @@ public class AccentUtils {
                 || resName.contains("accent_device_default")
                 || resName.contains("material_pixel_blue_dark")
                 || resName.contains("material_pixel_blue_bright")
-                || resName.contains("gradient_start");
+                || resName.contains("gradient_start")
+                || resName.contains("colorAccent");
     }
 
     static boolean isResourceGradient(String resName) {
