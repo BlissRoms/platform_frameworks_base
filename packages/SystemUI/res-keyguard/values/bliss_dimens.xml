@@ -156,4 +156,6 @@
     <dimen name="lock_date_font_size_49">49dp</dimen>
     <dimen name="lock_date_font_size_50">50dp</dimen>
 
+    <dimen name="clock_oronos_outline_size">4dp</dimen>
+
 </resources>
