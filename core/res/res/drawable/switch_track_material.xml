@@ -23,6 +23,10 @@
                   android:end="4dp">
                 <shape android:shape="rectangle" >
                     <size android:height="14dp" android:width="5dp" />
+                    <gradient 
+                    android:startColor="@color/gradient_start"
+                    android:endColor="@color/gradient_end"
+                    android:angle="45"/>
                     <corners android:radius="7dp" />
 	                <gravity android:gravity="center_vertical" />
                     <solid android:color="@android:color/transparent" />
