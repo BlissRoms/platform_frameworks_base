@@ -28,7 +28,11 @@
                     <solid android:color="@android:color/transparent" />
                     <stroke
                         android:width="2dp"
-                        android:color="@color/switch_track_material"/>
+                        <gradient 
+                        android:startColor="@color/gradient_start"
+                        android:endColor="@color/gradient_end"
+                        android:angle="45"/>
+                        />
                 </shape>
             </item>
         </layer-list>
