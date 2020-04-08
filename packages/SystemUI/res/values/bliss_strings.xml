@@ -222,4 +222,7 @@
     <string name="accessibility_quick_settings_fpsinfo_off">FPS Info off</string>
     <string name="accessibility_quick_settings_fpsinfo_on">FPS Info on</string>
 
+    <!-- Alerting notification header label -->
+    <string name="notification_section_header_alerting">Alerting notifications</string>
+
 </resources>
