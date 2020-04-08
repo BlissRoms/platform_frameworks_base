@@ -106,6 +106,11 @@ public class BlissUtils {
             "com.android.theme.xtendedclear.systemui",
     };
 
+    public static final String[] MATERIAL_OCEAN = {
+            "com.android.theme.materialocean.system",
+            "com.android.theme.materialocean.systemui",
+    };
+
      // Switch themes
     private static final String[] SWITCH_THEMES = {
         "com.android.system.switch.stock", // 0
