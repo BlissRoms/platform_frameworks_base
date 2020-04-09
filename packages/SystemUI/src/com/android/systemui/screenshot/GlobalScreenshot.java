@@ -69,6 +69,7 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
@@ -423,6 +424,45 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
         }
     }
 
+    Rect getRotationAdjustedRect(Rect rect) {
+        Display defaultDisplay = mWindowManager.getDefaultDisplay();
+        Rect adjustedRect = new Rect(rect);
+
+        mDisplay.getRealMetrics(mDisplayMetrics);
+        int rotation = defaultDisplay.getRotation();
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                // properly rotated
+                break;
+            case Surface.ROTATION_90:
+                adjustedRect.top = mDisplayMetrics.heightPixels - rect.bottom;
+                adjustedRect.bottom = mDisplayMetrics.heightPixels - rect.top;
+                break;
+            case Surface.ROTATION_180:
+                adjustedRect.left = mDisplayMetrics.widthPixels - rect.right;
+                adjustedRect.top = mDisplayMetrics.heightPixels - rect.bottom;
+                adjustedRect.right = mDisplayMetrics.widthPixels - rect.left;
+                adjustedRect.bottom = mDisplayMetrics.heightPixels - rect.top;
+                break;
+            case Surface.ROTATION_270:
+                adjustedRect.left = mDisplayMetrics.widthPixels - rect.right;
+                adjustedRect.right = mDisplayMetrics.widthPixels - rect.left;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown rotation: " + rotation);
+        }
+
+        return adjustedRect;
+    }
+
+    void setLockedScreenOrientation(boolean locked) {
+        if (locked) {
+            mWindowLayoutParams.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED;
+        } else {
+            mWindowLayoutParams.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+        }
+    }
+
     /**
      * Displays a screenshot selector
      */
@@ -437,6 +477,7 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
         mOnCompleteRunnable = onComplete;
 
         setBlockedGesturalNavigation(true);
+        setLockedScreenOrientation(true);
         mWindowManager.addView(mScreenshotLayout, mWindowLayoutParams);
         mScreenshotSelectorView.setSelectionListener((rect, firstSelection) -> {
             if (firstSelection) {
@@ -450,7 +491,8 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
             });
         });
         mCaptureButton.setOnClickListener(v -> {
-            final Rect rect = mScreenshotSelectorView.getSelectionRect();
+            Rect rect = mScreenshotSelectorView.getSelectionRect();
+            final Rect adjustedRect = getRotationAdjustedRect(rect);
             LayoutTransition layoutTransition = mScreenshotButtonsLayout.getLayoutTransition();
             layoutTransition.addTransitionListener(new TransitionListener() {
                 @Override
@@ -474,6 +516,7 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
     }
 
     void hideScreenshotSelector() {
+        setLockedScreenOrientation(false);
         mWindowManager.removeView(mScreenshotLayout);
         mScreenshotSelectorView.stopSelection();
         mScreenshotSelectorView.setVisibility(View.GONE);
@@ -486,12 +529,8 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
      */
     void stopScreenshot() {
         // If the selector layer still presents on screen, we remove it and resets its state.
-        if (mScreenshotSelectorView.getSelectionRect() != null) {
-            try {
-                mWindowManager.removeView(mScreenshotLayout);
-                mScreenshotSelectorView.stopSelection();
-            } catch (IllegalArgumentException ignored) {
-            }
+        if (mScreenshotLayout.getParent() != null) {
+            hideScreenshotSelector();
         }
     }
 
