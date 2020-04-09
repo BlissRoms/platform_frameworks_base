@@ -5373,6 +5373,12 @@ public final class Settings {
          */
         public static final String CUSTOM_AMBIENT_TILT_GESTURE = "custom_ambient_tilt_gesture";
 
+	/**
+         * Custom Raise to wake gesture
+         * @hide
+         */
+        public static final String CUSTOM_RAISE_TO_WAKE_GESTURE = "custom_raise_to_wake_gesture";
+
         /**
          * Custom Ambient handwave gesture
          * @hide
