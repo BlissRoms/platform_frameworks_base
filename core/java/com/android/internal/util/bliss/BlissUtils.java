@@ -42,6 +42,7 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
@@ -59,6 +60,7 @@ import com.android.internal.statusbar.IStatusBarService;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.content.Context.VIBRATOR_SERVICE;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Locale;
@@ -567,12 +569,25 @@ public class BlissUtils {
         }
     }
 
+    public static boolean shouldShowGestureNav(Context context) {
+        boolean setNavbarHeight = Settings.System.getIntForUser(context.getContentResolver(),
+            Settings.System.GESTURE_NAVBAR_SHOW, 1, UserHandle.USER_CURRENT) != 0;
+        boolean twoThreeButtonEnabled = BlissUtils.isThemeEnabled("com.android.internal.systemui.navbar.twobutton") ||
+                BlissUtils.isThemeEnabled("com.android.internal.systemui.navbar.threebutton");
+        return setNavbarHeight || twoThreeButtonEnabled;
+    }
+
     // Method to detect whether an overlay is enabled or not
     public static boolean isThemeEnabled(String packageName) {
-        mOverlayService = new OverlayManager();
+        if (mOverlayService == null) {
+            mOverlayService = new OverlayManager();
+        }
         try {
-            List<OverlayInfo> infos = mOverlayService.getOverlayInfosForTarget("android",
-                    UserHandle.myUserId());
+            ArrayList<OverlayInfo> infos = new ArrayList<OverlayInfo>();
+            infos.addAll(mOverlayService.getOverlayInfosForTarget("android",
+                    UserHandle.myUserId()));
+            infos.addAll(mOverlayService.getOverlayInfosForTarget("com.android.systemui",
+                    UserHandle.myUserId()));
             for (int i = 0, size = infos.size(); i < size; i++) {
                 if (infos.get(i).packageName.equals(packageName)) {
                     return infos.get(i).isEnabled();
