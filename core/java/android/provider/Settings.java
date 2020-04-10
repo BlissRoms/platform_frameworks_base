@@ -6372,6 +6372,15 @@ public final class Settings {
         private static final Validator TEXT_CLOCK_PADDING_VALIDATOR = ANY_INTEGER_VALIDATOR;
 
         /**
+         * Gestures nav: whether show it or hide completely
+         * @hide
+         */
+        public static final String GESTURE_NAVBAR_SHOW = "gesture_navbar_show";
+
+        /** @hide */
+        private static final Validator GESTURE_NAVBAR_SHOW_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Header height
          * @hide
          */
@@ -6533,6 +6542,7 @@ public final class Settings {
             STATUS_BAR_CUSTOM_HEADER_HEIGHT,
             TEXT_CLOCK_ALIGNMENT,
             TEXT_CLOCK_PADDING,
+            GESTURE_NAVBAR_SHOW,
         };
 
         /**
@@ -6746,6 +6756,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(STATUS_BAR_CUSTOM_HEADER_HEIGHT);
             PRIVATE_SETTINGS.add(TEXT_CLOCK_ALIGNMENT);
             PRIVATE_SETTINGS.add(TEXT_CLOCK_PADDING);
+            PRIVATE_SETTINGS.add(GESTURE_NAVBAR_SHOW);
         }
 
         /**
@@ -6937,6 +6948,7 @@ public final class Settings {
             VALIDATORS.put(STATUS_BAR_CUSTOM_HEADER_HEIGHT, STATUS_BAR_CUSTOM_HEADER_HEIGHT_VALIDATOR);
             VALIDATORS.put(TEXT_CLOCK_ALIGNMENT, TEXT_CLOCK_ALIGNMENT_VALIDATOR);
             VALIDATORS.put(TEXT_CLOCK_PADDING, TEXT_CLOCK_PADDING_VALIDATOR);
+            VALIDATORS.put(GESTURE_NAVBAR_SHOW,GESTURE_NAVBAR_SHOW_VALIDATOR);
         }
 
         /**

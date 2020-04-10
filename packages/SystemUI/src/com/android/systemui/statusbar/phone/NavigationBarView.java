@@ -68,6 +68,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.util.bliss.BlissUtils;
 import com.android.systemui.Dependency;
 import com.android.systemui.DockedStackExistsListener;
 import com.android.systemui.Interpolators;
@@ -145,6 +146,7 @@ public class NavigationBarView extends FrameLayout implements
     private boolean mInCarMode = false;
     private boolean mDockedStackExists;
     private boolean mImeVisible;
+    private boolean mShowGestureNavbar;
 
     private final SparseArray<ButtonDispatcher> mButtonDispatchers = new SparseArray<>();
     private final ContextualButtonGroup mContextualButtonGroup;
@@ -288,6 +290,7 @@ public class NavigationBarView extends FrameLayout implements
         mLongClickableAccessibilityButton = false;
         mNavBarMode = Dependency.get(NavigationModeController.class).addListener(this);
         boolean isGesturalMode = isGesturalMode(mNavBarMode);
+        mShowGestureNavbar = BlissUtils.shouldShowGestureNav(context);
 
         // Set up the context group of buttons
         mContextualButtonGroup = new ContextualButtonGroup(R.id.menu_container);
@@ -726,7 +729,8 @@ public class NavigationBarView extends FrameLayout implements
         getBackButton().setVisibility(disableBack      ? View.INVISIBLE : View.VISIBLE);
         getHomeButton().setVisibility(disableHome      ? View.INVISIBLE : View.VISIBLE);
         getRecentsButton().setVisibility(disableRecent ? View.INVISIBLE : View.VISIBLE);
-        getHomeHandle().setVisibility(disableHomeHandle ? View.INVISIBLE : View.VISIBLE);
+        getHomeHandle().setVisibility(disableHomeHandle ? View.INVISIBLE
+                : (mShowGestureNavbar ? View.VISIBLE : View.INVISIBLE));
     }
 
     @VisibleForTesting
@@ -1096,12 +1100,13 @@ public class NavigationBarView extends FrameLayout implements
                             com.android.internal.R.dimen.navigation_bar_height_landscape)
                     : getResources().getDimensionPixelSize(
                             com.android.internal.R.dimen.navigation_bar_height);
+            int finalHeight = mShowGestureNavbar ? height : 0;
             int frameHeight = newVertical
                     ? getResources().getDimensionPixelSize(
                             com.android.internal.R.dimen.navigation_bar_frame_height_landscape)
                     : getResources().getDimensionPixelSize(
                             com.android.internal.R.dimen.navigation_bar_frame_height);
-            mBarTransitions.setBackgroundFrame(new Rect(0, frameHeight - height, w, h));
+            mBarTransitions.setBackgroundFrame(new Rect(0, frameHeight - finalHeight, w, h));
         }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
