@@ -6354,6 +6354,15 @@ public final class Settings {
         private static final Validator NOTIFICATION_HEADERS_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Gestures nav: whether show it or hide completely
+         * @hide
+         */
+        public static final String GESTURE_NAVBAR_SHOW = "gesture_navbar_show";
+
+        /** @hide */
+        private static final Validator GESTURE_NAVBAR_SHOW_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Header height
          * @hide
          */
@@ -6513,6 +6522,7 @@ public final class Settings {
             PULSE_AMBIENT_LIGHT_LAYOUT,
             NOTIFICATION_HEADERS,
             STATUS_BAR_CUSTOM_HEADER_HEIGHT,
+            GESTURE_NAVBAR_SHOW,
         };
 
         /**
@@ -6724,6 +6734,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(AMBIENT_LIGHT_REPEAT_COUNT);
             PRIVATE_SETTINGS.add(PULSE_AMBIENT_LIGHT_LAYOUT);
             PRIVATE_SETTINGS.add(STATUS_BAR_CUSTOM_HEADER_HEIGHT);
+            PRIVATE_SETTINGS.add(GESTURE_NAVBAR_SHOW);
         }
 
         /**
@@ -6913,6 +6924,7 @@ public final class Settings {
             VALIDATORS.put(PULSE_AMBIENT_LIGHT_LAYOUT, PULSE_AMBIENT_LIGHT_LAYOUT_VALIDATOR);
             VALIDATORS.put(NOTIFICATION_HEADERS, NOTIFICATION_HEADERS_VALIDATOR);
             VALIDATORS.put(STATUS_BAR_CUSTOM_HEADER_HEIGHT, STATUS_BAR_CUSTOM_HEADER_HEIGHT_VALIDATOR);
+            VALIDATORS.put(GESTURE_NAVBAR_SHOW,GESTURE_NAVBAR_SHOW_VALIDATOR);
         }
 
         /**
