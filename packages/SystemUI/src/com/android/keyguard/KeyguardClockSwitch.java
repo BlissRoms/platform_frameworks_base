@@ -195,6 +195,12 @@ public class KeyguardClockSwitch extends RelativeLayout {
         return hasCustomClock() && mClockPlugin.shouldShowInBigContainer();
     }
 
+    public void setSize(int unit, float size) {
+        if (mClockPlugin != null && mClockPlugin.getName().equals("type")) {
+            mClockPlugin.setTextSize(unit, size);
+        }
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
