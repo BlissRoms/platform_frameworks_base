@@ -101,6 +101,12 @@ public interface ClockPlugin extends Plugin {
     void setTextColor(int color);
 
     /**
+     * Set clock text color.
+     * @param color A color value.
+     */
+    default void setSize(int unit, float size);
+
+    /**
      * Set font for type clock.
      */
     default void setTypeface(Typeface tf) {};

@@ -158,6 +158,11 @@ public class TypeClockController implements ClockPlugin {
     }
 
     @Override
+    public void setSize(int unit, float size) {
+        mTypeClock.setSize(unit, size);
+    }
+
+    @Override
     public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {
         if (colorPalette == null || colorPalette.length == 0) {
             return;
