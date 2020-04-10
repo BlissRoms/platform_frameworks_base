@@ -348,6 +348,9 @@ public class KeyguardClockSwitch extends RelativeLayout {
 
     public void setTextSize(int unit, float size) {
         mClockView.setTextSize(unit, size);
+        if (mClockPlugin != null && mClockPlugin.getName().equals("type")) {
+            mClockPlugin.setTextSize(unit, size);
+        }
     }
 
     public void setFormat12Hour(CharSequence format) {
