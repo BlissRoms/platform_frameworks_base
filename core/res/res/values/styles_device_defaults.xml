@@ -38,7 +38,6 @@ easier.
     <style name="Widget.DeviceDefault.Button.Inset" parent="Widget.Material.Button.Inset"/>
     <style name="Widget.DeviceDefault.Button.Toggle" parent="Widget.Material.Button.Toggle"/>
     <style name="Widget.DeviceDefault.Button.Colored" parent="Widget.Material.Button.Colored">
-        <item name="background">@drawable/x_btn_colored_material</item>
         <item name="outlineAmbientShadowColor">@color/btn_colored_background_material</item>
         <item name="outlineSpotShadowColor">@color/btn_colored_background_material</item>
         <item name="textAppearance">?attr/textAppearanceButton</item>
