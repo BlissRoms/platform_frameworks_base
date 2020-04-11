@@ -1112,6 +1112,10 @@ public class NavigationBarView extends FrameLayout implements
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    public boolean showGestureNavbar() {
+        return mShowGestureNavbar;
+    }
+
     private void notifyVerticalChangedListener(boolean newVertical) {
         if (mOnVerticalChangedListener != null) {
             mOnVerticalChangedListener.onVerticalChanged(newVertical);
