@@ -56,10 +56,7 @@ easier.
     <style name="Widget.DeviceDefault.ListView" parent="Widget.Material.ListView"/>
     <style name="Widget.DeviceDefault.PopupWindow" parent="Widget.Material.PopupWindow"/>
     <style name="Widget.DeviceDefault.ProgressBar" parent="Widget.Material.ProgressBar"/>
-    <style name="Widget.DeviceDefault.ProgressBar.Horizontal" parent="Widget.Material.ProgressBar.Horizontal">
-        <item name="progressDrawable">@drawable/x_progress_horizontal_material</item>
-        <item name="indeterminateDrawable">@drawable/x_progress_horizontal_material</item>
-    </style>
+    <style name="Widget.DeviceDefault.ProgressBar.Horizontal" parent="Widget.Material.ProgressBar.Horizontal"/>
     <style name="Widget.DeviceDefault.ProgressBar.Small" parent="Widget.Material.ProgressBar.Small"/>
     <style name="Widget.DeviceDefault.ProgressBar.Small.Title" parent="Widget.Material.ProgressBar.Small.Title"/>
     <style name="Widget.DeviceDefault.ProgressBar.Large" parent="Widget.Material.ProgressBar.Large"/>
@@ -198,10 +195,7 @@ easier.
     <style name="Widget.DeviceDefault.Light.MediaRouteButton" parent="Widget.Material.Light.MediaRouteButton" />
     <style name="Widget.DeviceDefault.Light.PopupWindow" parent="Widget.Material.Light.PopupWindow"/>
     <style name="Widget.DeviceDefault.Light.ProgressBar" parent="Widget.Material.Light.ProgressBar"/>
-    <style name="Widget.DeviceDefault.Light.ProgressBar.Horizontal" parent="Widget.Material.Light.ProgressBar.Horizontal">
-        <item name="progressDrawable">@drawable/x_progress_horizontal_material</item>
-        <item name="indeterminateDrawable">@drawable/x_progress_horizontal_material</item>
-    </style>
+    <style name="Widget.DeviceDefault.Light.ProgressBar.Horizontal" parent="Widget.Material.Light.ProgressBar.Horizontal"/>
     <style name="Widget.DeviceDefault.Light.ProgressBar.Small" parent="Widget.Material.Light.ProgressBar.Small"/>
     <style name="Widget.DeviceDefault.Light.ProgressBar.Small.Title" parent="Widget.Material.Light.ProgressBar.Small.Title"/>
     <style name="Widget.DeviceDefault.Light.ProgressBar.Large" parent="Widget.Material.Light.ProgressBar.Large"/>
