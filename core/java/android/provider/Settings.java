@@ -11259,12 +11259,6 @@ public final class Settings {
         private static final Validator TAP_GESTURE_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
-         * Whether to unlock with fingerprint on notification double tap
-         * @hide
-         */
-        public static final String UNLOCK_WITHOUT_BOUNCER = "unlock_without_bouncer";
-
-        /**
          * This are the settings to be backed up.
          *
          * NOTE: Settings are backed up and restored in the order they appear
