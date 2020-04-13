@@ -388,7 +388,7 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
     private void updateSettings() {
         final Resources res = mContext.getResources();
         mHeaderImageEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_CUSTOM_HEADER, 0,
+                Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER, 0,
                 UserHandle.USER_CURRENT) == 1;
         updateHeaderImage();
     }
