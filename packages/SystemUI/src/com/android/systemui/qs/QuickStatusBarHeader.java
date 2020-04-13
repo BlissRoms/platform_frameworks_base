@@ -176,6 +176,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private boolean mLandscape;
     private boolean mHeaderImageEnabled;
     private int mHeaderImageHeight;
+    private String mCustomHeaderImage;
+    private String mCustomHeaderFile;
 
     private View mQuickQsBrightness;
     private BrightnessController mBrightnessController;
@@ -560,8 +562,18 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height);
         mHeaderTextContainerView.setLayoutParams(mHeaderTextContainerView.getLayoutParams());*/
 
+        mCustomHeaderImage = Settings.System.getStringForUser(getContext().getContentResolver(),
+                Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER_IMAGE,
+                UserHandle.USER_CURRENT);
+        mCustomHeaderFile = Settings.System.getStringForUser(getContext().getContentResolver(),
+                Settings.System.OMNI_STATUS_BAR_FILE_HEADER_IMAGE,
+                UserHandle.USER_CURRENT);
+
+        boolean headerImageSelected = mHeaderImageEnabled &&
+                (mCustomHeaderImage != null || mCustomHeaderFile != null);
+
         int topMargin = resources.getDimensionPixelSize(
-                com.android.internal.R.dimen.quick_qs_offset_height) + (mHeaderImageEnabled ?
+                com.android.internal.R.dimen.quick_qs_offset_height) + (headerImageSelected ?
                 mHeaderImageHeight : 0);
 
         mSystemIconsView.getLayoutParams().height = topMargin;
@@ -601,7 +613,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                     com.android.internal.R.dimen.quick_qs_total_height);
 
 
-            if (mHeaderImageEnabled) {
+            if (headerImageSelected) {
                 qsHeight += mHeaderImageHeight;
             }
 
