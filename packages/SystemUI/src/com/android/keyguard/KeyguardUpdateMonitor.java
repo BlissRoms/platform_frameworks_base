@@ -268,7 +268,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
     private int mActiveMobileDataSubscription = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
 
     private final boolean mFingerprintWakeAndUnlock;
-    private final boolean mFaceAuthOnlyOnSecurityView;
+    private final boolean mFaceAuthOnSecurityView;
 
     /**
      * Short delay before restarting biometric authentication after a successful try
@@ -1561,8 +1561,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
         mStrongAuthTracker = new StrongAuthTracker(context, this::notifyStrongAuthStateChanged);
         mFingerprintWakeAndUnlock = mContext.getResources().getBoolean(
                 R.bool.config_fingerprintWakeAndUnlock);
-        mFaceAuthOnlyOnSecurityView = mContext.getResources().getBoolean(
-                R.bool.config_faceAuthOnlyOnSecurityView);
+        mFaceAuthOnSecurityView = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_faceAuthOnSecurityView);
 
         // Since device can't be un-provisioned, we only need to register a content observer
         // to update mDeviceProvisioned when we are...
@@ -1797,7 +1797,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
                 && !isLockOutOrLockDown;
 
         boolean unlockPossible = true;
-        if ((!mBouncer || !awakeKeyguard) && mFaceAuthOnlyOnSecurityView){
+        if ((!mBouncer || !awakeKeyguard) && isFaceAuthOnlyOnSecurityView()){
             unlockPossible = false;
         }
 
@@ -1916,6 +1916,11 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener {
         if (mFaceRunningState == BIOMETRIC_STATE_CANCELLING_RESTARTING) {
             setFaceRunningState(BIOMETRIC_STATE_CANCELLING);
         }
+    }
+
+    private boolean isFaceAuthOnlyOnSecurityView() {
+        return Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.FACE_UNLOCK_ALWAYS_REQUIRE_SWIPE, mFaceAuthOnSecurityView ? 1 : 0) != 0;
     }
 
     private boolean isDeviceProvisionedInSettingsDb() {
