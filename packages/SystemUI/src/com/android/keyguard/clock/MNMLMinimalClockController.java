@@ -130,11 +130,13 @@ public class MNMLMinimalClockController implements ClockPlugin {
         ColorExtractor.GradientColors colors = mColorExtractor.getColors(
                 WallpaperManager.FLAG_LOCK);
         int[] colorPalette = colors.getColorPalette();
+        int accentColor = mResources.getColor(R.color.typeClockAccentColor, null);
         if (colorPalette != null) {
-            final int accentColor = colorPalette[Math.max(0, colorPalette.length - 4)];
-            GradientDrawable dateBg = (GradientDrawable) mDate.getBackground();
-            dateBg.setColor(accentColor);
+            accentColor = colorPalette[Math.max(0, colorPalette.length - 5)];
         }
+        GradientDrawable dateBg = (GradientDrawable) previewDate.getBackground();
+        dateBg.setColor(accentColor);
+        dateBg.setStroke(0,Color.TRANSPARENT);
         onTimeTick();
 
         return mRenderer.createPreview(previewView, width, height);
@@ -170,7 +172,7 @@ public class MNMLMinimalClockController implements ClockPlugin {
         if (colorPalette == null || colorPalette.length == 0) {
             return;
         }
-        final int accentColor = colorPalette[Math.max(0, colorPalette.length - 4)];
+        final int accentColor = colorPalette[Math.max(0, colorPalette.length - 5)];
         GradientDrawable dateBg = (GradientDrawable) mDate.getBackground();
         dateBg.setColor(accentColor);
         dateBg.setStroke(0,Color.TRANSPARENT);
