@@ -6441,6 +6441,12 @@ public final class Settings {
         private static final Validator SCREEN_STATE_THREEG_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Whether to show IME space when navbar pill is hidden
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_IME_SPACE = "navigation_bar_ime_space";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
