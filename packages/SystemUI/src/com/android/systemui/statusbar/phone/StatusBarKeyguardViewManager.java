@@ -94,8 +94,11 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
 
     private static final String LOCKSCREEN_LOCK_ICON =
             "system:" + Settings.System.LOCKSCREEN_LOCK_ICON;
+    private static final String UNLOCK_WITHOUT_BOUNCER =
+            Settings.Secure.UNLOCK_WITHOUT_BOUNCER;
 
     private boolean mLockIcon;
+    private boolean mUnlockWithoutBouncer;
 
     protected final Context mContext;
     private final StatusBarWindowController mStatusBarWindowController;
@@ -214,6 +217,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             mIsDocked = mDockManager.isDocked();
         }
         Dependency.get(TunerService.class).addTunable(this, LOCKSCREEN_LOCK_ICON);
+        Dependency.get(TunerService.class).addTunable(this, UNLOCK_WITHOUT_BOUNCER);
     }
 
     public void registerStatusBar(StatusBar statusBar,
@@ -233,6 +237,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
         mBouncer = SystemUIFactory.getInstance().createKeyguardBouncer(mContext,
                 mViewMediatorCallback, mLockPatternUtils, container, dismissCallbackRegistry,
                 mExpansionCallback, falsingManager, bypassController);
+        mBouncer.setUnlockWithoutBouncer(mUnlockWithoutBouncer);
         mNotificationPanelView = notificationPanelView;
         notificationPanelView.addExpansionListener(this);
         mBypassController = bypassController;
@@ -245,6 +250,11 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             case LOCKSCREEN_LOCK_ICON:
                 mLockIcon =
                     TunerService.parseIntegerSwitch(newValue, true);
+                break;
+            case UNLOCK_WITHOUT_BOUNCER:
+                mUnlockWithoutBouncer =
+                    TunerService.parseIntegerSwitch(newValue, false);
+                if (mBouncer != null) mBouncer.setUnlockWithoutBouncer(mUnlockWithoutBouncer);
                 break;
             default:
                 break;
