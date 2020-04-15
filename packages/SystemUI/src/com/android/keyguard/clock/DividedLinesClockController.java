@@ -35,9 +35,6 @@ import com.android.systemui.plugins.ClockPlugin;
 
 import java.util.TimeZone;
 
-import static com.android.systemui.statusbar.phone
-        .KeyguardClockPositionAlgorithm.CLOCK_USE_DEFAULT_Y;
-
 /**
  * Plugin for the default clock face used only to provide a preview.
  */
@@ -66,7 +63,7 @@ public class DividedLinesClockController implements ClockPlugin {
     /**
      * Root view of clock.
      */
-    private ClockLayout mView;
+    private ClockLayout mBigClockView;
 
     /**
      * Text clock in preview view hierarchy.
@@ -85,6 +82,11 @@ public class DividedLinesClockController implements ClockPlugin {
     private View mBottomLine;
 
     /**
+     * Helper to extract colors from wallpaper palette for clock face.
+     */
+    private final ClockPalette mPalette = new ClockPalette();
+
+    /**
      * Create a DefaultClockController instance.
      *
      * @param res Resources contains title and thumbnail.
@@ -99,16 +101,16 @@ public class DividedLinesClockController implements ClockPlugin {
     }
 
     private void createViews() {
-        mView = (ClockLayout) mLayoutInflater
+        mBigClockView = (ClockLayout) mLayoutInflater
                 .inflate(R.layout.divided_lines_clock, null);
-        mClock = mView.findViewById(R.id.clock);
+        mClock = mBigClockView.findViewById(R.id.clock);
         mClock.setFormat12Hour("h:mm");
         onTimeTick();
     }
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mClock = null;
         mDate = null;
         mTopLine = null;
@@ -154,20 +156,23 @@ public class DividedLinesClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        if (mView == null) {
+        if (mBigClockView == null) {
             createViews();
         }
-        return mView;
+        return mBigClockView;
     }
 
     @Override
     public View getBigClockView() {
-        return null;
+        if (mBigClockView  == null) {
+            createViews();
+        }
+        return mBigClockView;
     }
 
     @Override
     public int getPreferredY(int totalHeight) {
-        return CLOCK_USE_DEFAULT_Y;
+        return totalHeight / 2;
     }
 
     @Override
@@ -175,11 +180,19 @@ public class DividedLinesClockController implements ClockPlugin {
 
     @Override
     public void setTextColor(int color) {
-        mClock.setTextColor(color);
+        updateColor();
     }
 
     @Override
-    public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {}
+    public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {
+        mPalette.setColorPalette(supportsDarkText, colorPalette);
+        updateColor();
+    }
+
+    private void updateColor() {
+        final int primary = mPalette.getPrimaryColor();
+        final int secondary = mPalette.getSecondaryColor();
+    }
 
     @Override
     public void onTimeTick() {
@@ -187,7 +200,7 @@ public class DividedLinesClockController implements ClockPlugin {
 
     @Override
     public void setDarkAmount(float darkAmount) {
-        mView.setDarkAmount(darkAmount);
+        mPalette.setDarkAmount(darkAmount);
     }
 
     @Override
