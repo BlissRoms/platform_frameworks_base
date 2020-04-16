@@ -70,6 +70,11 @@ public class SfunyClockController implements ClockPlugin {
     private TextClock mMinuteClock;
 
     /**
+     * Helper to extract colors from wallpaper palette for clock face.
+     */
+    private final ClockPalette mPalette = new ClockPalette();
+
+    /**
      * Create a DefaultClockController instance.
      *
      * @param res Resources contains title and thumbnail.
@@ -134,12 +139,18 @@ public class SfunyClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        return null;
+        if (mBigClockView == null) {
+            createViews();
+        }
+        return mBigClockView;
     }
 
     @Override
     public View getBigClockView() {
-        return null;
+        if (mBigClockView  == null) {
+            createViews();
+        }
+        return mBigClockView;
     }
 
     @Override
@@ -157,7 +168,11 @@ public class SfunyClockController implements ClockPlugin {
     }
 
     @Override
-    public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {}
+    public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {
+        if (colorPalette == null || colorPalette.length == 0) {
+            return;
+        }
+    }
 
     @Override
     public void onTimeTick() {
@@ -165,7 +180,9 @@ public class SfunyClockController implements ClockPlugin {
 
     @Override
     public void setDarkAmount(float darkAmount) {
-        mBigClockView.setDarkAmount(darkAmount);
+        if (mDarkController != null) {
+            mBigClockView.setDarkAmount(darkAmount);
+        }
     }
 
     @Override
