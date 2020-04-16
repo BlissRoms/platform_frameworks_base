@@ -119,21 +119,15 @@ public class MNMLMinimalClockController implements ClockPlugin {
     @Override
     public Bitmap getPreview(int width, int height) {
 
-        View previewView = mLayoutInflater.inflate(R.layout.digital_mnml_minimal, null);
-        TextClock previewTime = previewView.findViewById(R.id.clock);
-        TextClock previewDate = previewView.findViewById(R.id.date);
+        // Use the big clock view for the preview
+        View view = getBigClockView();
 
         // Initialize state of plugin before generating preview.
         ColorExtractor.GradientColors colors = mColorExtractor.getColors(
                 WallpaperManager.FLAG_LOCK);
-        int[] colorPalette = colors.getColorPalette();
-        int accentColor = mResources.getColor(R.color.typeClockAccentColor, null);
-        if (colorPalette != null) {
-            accentColor = colorPalette[Math.max(0, colorPalette.length - 5)];
-        }
-        GradientDrawable dateBg = (GradientDrawable) previewDate.getBackground();
-        dateBg.setColor(accentColor);
-        dateBg.setStroke(0,Color.TRANSPARENT);
+        ColorExtractor.GradientColors colors = mColorExtractor.getColors(
+                WallpaperManager.FLAG_LOCK);
+        setColorPalette(colors.supportsDarkText(), colors.getColorPalette());
         onTimeTick();
 
         return mRenderer.createPreview(previewView, width, height);
