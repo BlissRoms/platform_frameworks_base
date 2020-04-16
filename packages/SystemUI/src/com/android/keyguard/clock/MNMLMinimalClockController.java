@@ -119,7 +119,7 @@ public class MNMLMinimalClockController implements ClockPlugin {
     @Override
     public Bitmap getPreview(int width, int height) {
 
-        View previewView = mLayoutInflater.inflate(R.layout.digital_mnml_minimal, null);
+        View previewView = mLayoutInflater.inflate(R.layout.digital_mnml_minimal_preview, null);
         TextClock previewTime = previewView.findViewById(R.id.clock);
         TextClock previewDate = previewView.findViewById(R.id.date);
 

@@ -134,7 +134,7 @@ public class DividedLinesClockController implements ClockPlugin {
 
     @Override
     public Bitmap getPreview(int width, int height) {
-        View previewView = mLayoutInflater.inflate(R.layout.divided_lines_clock, null);
+        View previewView = mLayoutInflater.inflate(R.layout.divided_lines_preview, null);
         TextClock previewTime = previewView.findViewById(R.id.clock);
         TextClock previewDate = previewView.findViewById(R.id.date);
         View previewTLine = previewView.findViewById(R.id.topLine);
