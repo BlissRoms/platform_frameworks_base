@@ -61,7 +61,7 @@ public class NervesClockController implements ClockPlugin {
     /**
      * Root view of clock.
      */
-    private ClockLayout mView;
+    private ClockLayout mBigClockView;
 
     /**
      * Text clock in preview view hierarchy.
@@ -83,11 +83,8 @@ public class NervesClockController implements ClockPlugin {
     }
 
     private void createViews() {
-        mView = mLayoutInflater.inflate(R.layout.default_clock_preview, null);
-        mNervesClock = mView.findViewById(R.id.time);
-        mNervesClock.setBackground(getResources().getDrawable(R.drawable.clock_shishu_nerves_bg));
-        mNervesClock.getLayoutParams().width = getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_width);
-        mNervesClock.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_height);
+        mBigClockView = (ClockLayout) mLayoutInflater.inflate(R.layout.nerves_clock, null);
+        mNervesClock = mBigClockView.findViewById(R.id.nerves);
         mNervesClock.setLineSpacing(0,1f);
         mNervesClock.setFormat12Hour(Html.fromHtml("<strong>hh</strong><br>mm"));
         mNervesClock.setFormat24Hour(Html.fromHtml("<strong>kk</strong><br>mm"));
@@ -95,7 +92,7 @@ public class NervesClockController implements ClockPlugin {
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mNervesClock = null;
     }
 
@@ -136,15 +133,18 @@ public class NervesClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        if (mView == null) {
+        if (mBigClockView == null) {
             createViews();
         }
-        return mView;
+        return mBigClockView;
     }
 
     @Override
     public View getBigClockView() {
-        return null;
+        if (mBigClockView  == null) {
+            createViews();
+        }
+        return mBigClockView;
     }
 
     @Override
@@ -169,7 +169,7 @@ public class NervesClockController implements ClockPlugin {
 
     @Override
     public void setDarkAmount(float darkAmount) {
-        mView.setDarkAmount(darkAmount);
+        mBigClockView.setDarkAmount(darkAmount);
     }
 
     @Override
