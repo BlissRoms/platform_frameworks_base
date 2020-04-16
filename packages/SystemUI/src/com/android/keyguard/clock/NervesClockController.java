@@ -74,6 +74,11 @@ public class NervesClockController implements ClockPlugin {
     private CrossFadeDarkController mDarkController;
 
     /**
+     * Helper to extract colors from wallpaper palette for clock face.
+     */
+    private final ClockPalette mPalette = new ClockPalette();
+
+    /**
      * Create a DefaultClockController instance.
      *
      * @param res Resources contains title and thumbnail.
@@ -162,11 +167,19 @@ public class NervesClockController implements ClockPlugin {
 
     @Override
     public void setTextColor(int color) {
-        mNervesClock.setTextColor(color);
+        updateColor();
     }
 
     @Override
-    public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {}
+    public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {
+        mPalette.setColorPalette(supportsDarkText, colorPalette);
+        updateColor();
+    }
+
+    private void updateColor() {
+        final int primary = mPalette.getPrimaryColor();
+        final int secondary = mPalette.getSecondaryColor();
+    }
 
     @Override
     public void onTimeTick() {
