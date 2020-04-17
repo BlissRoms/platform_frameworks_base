@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextClock;
@@ -183,6 +184,11 @@ public class DividedLinesClockController implements ClockPlugin {
     @Override
     public void setTextSize(int unit, float size) {
         mClock.setTextSize(unit, size);
+    }
+
+    @Override
+    public void setTypeface(Typeface tf) {
+        mClock.setTypeface(tf);
     }
 
     @Override
