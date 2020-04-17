@@ -181,6 +181,11 @@ public class DividedLinesClockController implements ClockPlugin {
     }
 
     @Override
+    public void setTextSize(int unit, float size) {
+        mClock.setTextSize(unit, size);
+    }
+
+    @Override
     public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {
         mPalette.setColorPalette(supportsDarkText, colorPalette);
         updateColor();
