@@ -165,6 +165,12 @@ public class SfunyClockController implements ClockPlugin {
     }
 
     @Override
+    public void setTextSize(int unit, float size) {
+        mHourClock.setTextSize(unit, size);
+        mMinuteClock.setTextSize(unit, size);
+    }
+
+    @Override
     public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {}
 
     @Override
