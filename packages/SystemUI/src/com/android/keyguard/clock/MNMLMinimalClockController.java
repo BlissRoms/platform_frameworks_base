@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.Paint.Style;
+import android.graphics.Typeface;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -159,6 +160,11 @@ public class MNMLMinimalClockController implements ClockPlugin {
     @Override
     public void setTextSize(int unit, float size) {
         mClock.setTextSize(unit, size);
+    }
+
+    @Override
+    public void setTypeface(Typeface tf) {
+        mClock.setTypeface(tf);
     }
 
     @Override

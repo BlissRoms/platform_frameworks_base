@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
+import android.graphics.Typeface;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,6 +169,12 @@ public class SfunyClockController implements ClockPlugin {
     public void setTextSize(int unit, float size) {
         mHourClock.setTextSize(unit, size);
         mMinuteClock.setTextSize(unit, size);
+    }
+
+    @Override
+    public void setTypeface(Typeface tf) {
+        mHourClock.setTypeface(tf);
+        mMinuteClock.setTypeface(tf);
     }
 
     @Override
