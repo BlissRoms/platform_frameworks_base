@@ -167,6 +167,11 @@ public class MNMLMinimalClockController implements ClockPlugin {
     }
 
     @Override
+    public void setTypeface(Typeface tf) {
+        mClock.setTypeface(tf);
+    }
+
+    @Override
     public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {
         if (colorPalette == null || colorPalette.length == 0) {
             return;

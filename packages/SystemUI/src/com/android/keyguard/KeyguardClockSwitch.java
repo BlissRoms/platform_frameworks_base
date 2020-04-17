@@ -335,7 +335,9 @@ public class KeyguardClockSwitch extends RelativeLayout {
     public void setTextFont(Typeface tf) {
         mClockView.getPaint().setTypeface(tf);
         mClockViewBold.getPaint().setTypeface(tf);
-        if (mClockPlugin != null && mClockPlugin.getName().equals("type")) {
+        if (mClockPlugin != null && mClockPlugin.getName().equals("type") &&
+            mClockPlugin.getName().equals("dividedlines") && mClockPlugin.getName().equals("sfuny")
+            mClockPlugin.getName().equals("mnml_box") mClockPlugin.getName().equals("mnml_mnml")) {
             mClockPlugin.setTypeface(tf);
         }
     }

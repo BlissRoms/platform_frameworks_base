@@ -186,6 +186,11 @@ public class MNMLBoxClockController implements ClockPlugin {
     }
 
     @Override
+    public void setTypeface(Typeface tf) {
+        mClock.setTypeface(tf);
+    }
+
+    @Override
     public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {}
 
     @Override
