@@ -40,7 +40,6 @@
                 android:textColor="?attr/wallpaperTextColor"
                 android:theme="@style/TextAppearance.Keyguard"
                 android:fontFamily="@*android:string/config_bodyFontFamily"
-                android:textSize="14sp"
                 android:layout_weight="1"
                 android:letterSpacing="0.25"
                 android:textAllCaps="true"
@@ -59,8 +58,7 @@
                 style="@style/widget_big"
                 android:fontFamily="@*android:string/config_headlineFontFamilyMedium"
                 android:letterSpacing="0.3"
-                android:textColor="?attr/wallpaperTextColor"
-                android:textSize="42sp" />
+                android:textColor="?attr/wallpaperTextColor" />
 
             <View
                 android:id="@+id/bottomLine"

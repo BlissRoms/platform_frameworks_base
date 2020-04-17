@@ -157,6 +157,11 @@ public class MNMLMinimalClockController implements ClockPlugin {
     }
 
     @Override
+    public void setTextSize(int unit, float size) {
+        mClock.setTextSize(unit, size);
+    }
+
+    @Override
     public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {
         if (colorPalette == null || colorPalette.length == 0) {
             return;
