@@ -74,6 +74,7 @@ android_library {
         "jsr330",
         "vendor.lineage.biometrics.fingerprint.inscreen-V1.0-java",
         "airbnb-lottie",
+        "vendor.lineage.powershare-V1.0-java",
         "faceunlock_framework",
         "tensorflowlite_java"
     ],
