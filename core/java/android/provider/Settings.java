@@ -5342,11 +5342,6 @@ public final class Settings {
                 ANY_STRING_VALIDATOR;
 
         /**
-         * @hide
-         */
-        public static final String REFRESH_RATE_SETTING = "refresh_rate_setting";
-
-        /**
          * Whether to show charging animation on lock screen
          * @hide
          */
@@ -16485,6 +16480,13 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_POWERMENU_SECURE = "lockscreen_powermenu_secure";
+
+        /**
+         * Set variable refresh rate setting on boot if available
+         * 0 - auto/default, 1 - 60Hz, 2 - 90Hz, 3 - 120Hz
+         * @hide
+         */
+        public static final String REFRESH_RATE_SETTING = "refresh_rate_setting";
 
         /**
          * Audio focus mode for ringtones when headset is connected
