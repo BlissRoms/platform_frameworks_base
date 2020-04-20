@@ -155,7 +155,7 @@
     <!-- Whether device supports variable refresh rate -->
     <java-symbol type="bool" name="config_hasVariableRefreshRate" />
 
-    <java-symbol type="integer" name="config_defaultRefreshRate" />
+    <java-symbol type="integer" name="config_defaultVariableRefreshRateSetting" />
 
     <!-- Whether to use scaled brightness (set -1 to disable) -->
     <java-symbol type="integer" name="config_useScaleBrightness" />
