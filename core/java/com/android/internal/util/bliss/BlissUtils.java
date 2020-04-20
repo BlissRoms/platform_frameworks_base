@@ -659,6 +659,14 @@ public class BlissUtils {
         }
     }
 
+    // Check if gesture navbar is enabled
+    public static boolean isGestureNavbar() {
+        return BlissUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural")
+                || BlissUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural_extra_wide_back")
+                || BlissUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural_narrow_back")
+                || BlissUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural_wide_back");
+    }
+
     public static boolean shouldShowGestureNav(Context context) {
         boolean setNavbarHeight = Settings.System.getIntForUser(context.getContentResolver(),
             Settings.System.GESTURE_NAVBAR_SHOW, 1, UserHandle.USER_CURRENT) != 0;
