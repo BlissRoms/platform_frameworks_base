@@ -100,10 +100,6 @@
 
     </com.android.systemui.statusbar.LineageStatusBarItemHolder>
 
-    <include layout="@layout/ongoing_privacy_chip" />
-
-    </LinearLayout>
-
     <com.android.systemui.BatteryMeterView
         android:id="@+id/batteryIcon"
         android:layout_height="match_parent"
@@ -145,4 +141,5 @@
         android:paddingStart="2dp"
         android:paddingEnd="2dp" />
 
+    </LinearLayout>
 </LinearLayout>
