@@ -53,7 +53,6 @@ import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LiveDisplayTile;
 import com.android.systemui.qs.tiles.LocaleTile;
 import com.android.systemui.qs.tiles.LocationTile;
-import com.android.systemui.qs.tiles.LteTile;
 import com.android.systemui.qs.tiles.MusicTile;
 import com.android.systemui.qs.tiles.MonoToggleTile;
 import com.android.systemui.qs.tiles.NfcTile;
@@ -119,7 +118,6 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<UsbTetherTile> mUsbTetherTileProvider;
     private final Provider<VolumeTile> mVolumeTileProvider;
     private final Provider<CPUInfoTile> mCPUInfoTileProvider;
-    private final Provider<LteTile> mLteTileProvider;
     private final Provider<ScreenshotTile> mScreenshotTileProvider;
     private final Provider<SoundSearchTile> mSoundSearchTileProvider;
     private final Provider<AODTile> mAODTileProvider;
@@ -172,7 +170,6 @@ public class QSFactoryImpl implements QSFactory {
             Provider<UsbTetherTile> usbTetherTileProvider,
             Provider<VolumeTile> volumeTileProvider,
             Provider<CPUInfoTile> cpuInfoTileProvider,
-            Provider<LteTile> lteTileProvider,
             Provider<ScreenshotTile> screenshotTileProvider,
             Provider<SoundSearchTile> soundSearchTileProvider,
             Provider<AODTile> aodTileProvider,
@@ -221,7 +218,6 @@ public class QSFactoryImpl implements QSFactory {
         mUsbTetherTileProvider = usbTetherTileProvider;
         mVolumeTileProvider = volumeTileProvider;
         mCPUInfoTileProvider = cpuInfoTileProvider;
-        mLteTileProvider = lteTileProvider;
         mScreenshotTileProvider = screenshotTileProvider;
         mSoundSearchTileProvider = soundSearchTileProvider;
         mAODTileProvider = aodTileProvider;
@@ -317,8 +313,6 @@ public class QSFactoryImpl implements QSFactory {
                 return mVolumeTileProvider.get();
             case "cpuinfo":
                 return mCPUInfoTileProvider.get();
-            case "lte":
-                return mLteTileProvider.get();
             case "screenshot":
                 return mScreenshotTileProvider.get();
             case "soundsearch":
