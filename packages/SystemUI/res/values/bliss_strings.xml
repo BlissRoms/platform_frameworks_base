@@ -31,6 +31,9 @@
     <string name="accessibility_quick_settings_cpuinfo_off">CPU Info off</string>
     <string name="accessibility_quick_settings_cpuinfo_on">CPU Info on</string>
 
+    <!-- ADB QS Tile -->
+    <string name="quick_settings_adb_label">ADB</string>
+
     <!-- Screenshot Delete Toast -->
     <string name="delete_screenshot_toast">Screenshot deleted</string>
 
