@@ -53,6 +53,9 @@
     <string name="quick_settings_network_adb_label">ADB over network</string>
     <string name="quick_settings_network_adb_no_network">no network</string>
 
+    <!-- ADB QS Tile -->
+    <string name="quick_settings_adb_label">ADB</string>
+
     <!-- Ambient display QS tile -->
     <string name="quick_settings_ambient_display_label">Ambient display</string>
     <string name="accessibility_quick_settings_ambient_display_off">Ambient display off.</string>
