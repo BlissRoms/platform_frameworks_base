@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2014-2020 BlissRoms Project
@@ -31,4 +32,7 @@
 
   <!-- Whether device has warp charging support -->
   <java-symbol type="bool" name="config_hasWarpCharger" />
+
+  <!-- Whether device has VOOC charging support -->
+  <java-symbol type="bool" name="config_hasVoocCharger" />
 </resources>
