@@ -73,4 +73,7 @@
 
   <!-- Paths to OP warp charging status file -->
   <java-symbol type="string" name="config_opWarpChargerStatusPaths" />
+
+  <!-- Whether device has VOOC charging support -->
+  <java-symbol type="bool" name="config_hasVoocCharger" />
 </resources>
