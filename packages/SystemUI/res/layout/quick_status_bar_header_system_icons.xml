@@ -55,14 +55,6 @@
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.StatusBar.Clock"
         systemui:showDark="false" />
-    </LinearLayout>
-
-    <android.widget.Space
-        android:id="@+id/space"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:visibility="gone" />
 
     <com.android.systemui.statusbar.info.DataUsageView
         android:id="@+id/data_sim_usage"
@@ -75,6 +67,15 @@
         android:textAppearance="@style/TextAppearance.StatusBar.Clock"
         android:text="" />
 
+    </LinearLayout>
+
+    <android.widget.Space
+        android:id="@+id/space"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -83,6 +84,19 @@
         android:gravity="center_vertical|end" >
 
     <include layout="@layout/ongoing_privacy_chip" />
+
+    <com.android.systemui.BatteryMeterView
+        android:id="@+id/batteryIcon"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:gravity="center_vertical|end"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+        android:paddingStart="2dp"
+        systemui:showDark="false"
+        android:visibility="gone" />
+
+    </LinearLayout>
 
     <com.android.systemui.statusbar.LineageStatusBarItemHolder
         android:id="@+id/network_traffic_holder"
@@ -99,17 +113,6 @@
             android:gravity="center_vertical|end" />
 
     </com.android.systemui.statusbar.LineageStatusBarItemHolder>
-
-    <com.android.systemui.BatteryMeterView
-        android:id="@+id/batteryIcon"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:gravity="center_vertical|end"
-        android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.StatusBar.Clock"
-        android:paddingStart="2dp"
-        systemui:showDark="false"
-        android:visibility="gone" />
 
     <com.android.systemui.bliss.logo.LogoImageViewQuickRight
         android:id="@+id/statusbar_logo_right"
@@ -141,5 +144,4 @@
         android:paddingStart="2dp"
         android:paddingEnd="2dp" />
 
-    </LinearLayout>
 </LinearLayout>
