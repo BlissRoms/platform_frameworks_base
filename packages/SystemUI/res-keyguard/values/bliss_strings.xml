@@ -90,4 +90,8 @@
         <item>Fifty Nine</item>
     </string-array>
 
+    <!-- When the lock screen is showing and the phone plugged in, and the battery
+         is not fully charged, and it's plugged into a VOOC charger, say that it's VOOC charging.  -->
+    <string name="keyguard_plugged_in_vooc_charging"><xliff:g id="percentage">%s</xliff:g> • VOOC Charging</string>
+
 </resources>
