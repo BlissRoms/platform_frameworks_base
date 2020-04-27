@@ -182,8 +182,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         }
     };
     private OperatorNameViewController mOperatorNameViewController;
+
     private StatusBarSystemEventAnimator mSystemEventAnimator;
-	
+
 	private BatteryMeterView.BatteryMeterViewCallbacks mBatteryMeterViewCallback =
             new BatteryMeterView.BatteryMeterViewCallbacks() {
         @Override
@@ -382,6 +383,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         mStatusBarIconController.removeIconGroup(mDarkIconManager);
         if (mNetworkController.hasEmergencyCryptKeeperText()) {
             mNetworkController.removeCallback(mSignalCallback);
+        }
+        if (mBatteryMeterView != null) {
+            mBatteryMeterView.removeCallback(mBatteryMeterViewCallback);
         }
         mCarrierConfigTracker.removeCallback(mCarrierConfigCallback);
         mCarrierConfigTracker.removeDataSubscriptionChangedListener(mDefaultDataListener);
