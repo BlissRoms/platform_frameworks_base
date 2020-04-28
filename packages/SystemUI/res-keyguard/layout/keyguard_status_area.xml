@@ -21,10 +21,8 @@
 <com.android.keyguard.KeyguardSliceView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
     android:clipToPadding="false"
     android:orientation="vertical"
     android:layout_centerHorizontal="true">
@@ -41,9 +39,7 @@
     <RelativeLayout
         android:id="@+id/row_maincenter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center">
+        android:layout_height="wrap_content">
             <view class="com.android.keyguard.KeyguardSliceView$Row"
                       android:id="@+id/row"
                       android:layout_width="wrap_content"
