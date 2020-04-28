@@ -439,6 +439,20 @@ public class KeyguardStatusView extends GridLayout implements
 
             // Dont hide slice view in doze
             mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+            final ContentResolver resolver = mContext.getContentResolver();
+            String currentClock = Settings.Secure.getString(
+                resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+            boolean mCustomClockSelection = currentClock == null ? false : currentClock.contains("Type");
+
+            // If text style clock, align the textView to start else keep it center.
+            if (mCustomClockSelection) {
+                mKeyguardSlice.setPaddingRelative((int) mContext.getResources()
+                    .getDimension(R.dimen.custom_clock_left_padding) + 8, 0, 0, 0);
+                mKeyguardSlice.setGravity(Gravity.START);
+            } else {
+                mKeyguardSlice.setPaddingRelative(0, 0, 0, 0);
+                mKeyguardSlice.setGravity(Gravity.CENTER);
+            }
         }
 
         switch (mDateSelection) {
