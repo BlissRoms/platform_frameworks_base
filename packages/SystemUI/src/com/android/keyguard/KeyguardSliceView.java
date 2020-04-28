@@ -252,6 +252,14 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         mRow.setGravity(gravity);
     }
 
+    public void setRowContainerGravity(int gravity) {
+        mRowContainer.setGravity(gravity);
+    }
+
+    public void setRowContainerPadding(int left, int top, int right, int bottom) {
+        mRowContainer.setPadding(left, top, right, bottom);
+    }
+
     public void setRowPadding(int left, int top, int right, int bottom) {
         mRow.setPadding(left, top, right, bottom);
     }
