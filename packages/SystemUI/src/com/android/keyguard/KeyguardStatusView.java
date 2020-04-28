@@ -48,6 +48,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.systemui.Dependency;
 import com.android.systemui.omni.CurrentWeatherView;
+import com.android.systemui.plugins.ClockPlugin;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.tuner.TunerService;
@@ -137,6 +138,7 @@ public class KeyguardStatusView extends GridLayout implements
     private boolean mShowWeather;
     private boolean mOmniStyle;
     private boolean mLockDateHide;
+    private ClockPlugin mClockPlugin;
 
     /**
      * Bottom margin that defines the margin between bottom of smart space and top of notification
@@ -433,12 +435,13 @@ public class KeyguardStatusView extends GridLayout implements
         if (mWeatherView != null) {
             mWeatherView.onDensityOrFontScaleChanged();
         }
-        if (mKeyguardSlice != null) {
+        if (mKeyguardSlice != null && mClockPlugin.shouldShowStatusArea()) {
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
             mKeyguardSlice.setDateSize(mLockDateFontSize);
 
             // Dont hide slice view in doze
             mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+
             final ContentResolver resolver = mContext.getContentResolver();
             String currentClock = Settings.Secure.getString(
                 resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
