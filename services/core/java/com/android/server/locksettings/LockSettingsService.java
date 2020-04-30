@@ -120,6 +120,7 @@ import com.android.server.locksettings.LockSettingsStorage.PersistentData;
 import com.android.server.locksettings.SyntheticPasswordManager.AuthenticationResult;
 import com.android.server.locksettings.SyntheticPasswordManager.AuthenticationToken;
 import com.android.server.locksettings.recoverablekeystore.RecoverableKeyStoreManager;
+import com.android.server.wm.AppLockService;
 import com.android.server.wm.WindowManagerInternal;
 
 import lineageos.providers.LineageSettings;
@@ -2115,6 +2116,7 @@ public class LockSettingsService extends ILockSettings.Stub {
                     mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
             dpm.reportPasswordChanged(userId);
             LocalServices.getService(WindowManagerInternal.class).reportPasswordChanged(userId);
+            LocalServices.getService(AppLockService.class).reportPasswordChanged(userId);
         });
     }
 
