@@ -925,6 +925,15 @@ public final class SystemServiceRegistry {
                     }
                 });
 
+        registerService(Context.APPLOCK_SERVICE, AppLockManager.class,
+                new CachedServiceFetcher<AppLockManager>() {
+            @Override
+            public AppLockManager createService(ContextImpl ctx) throws ServiceNotFoundException {
+                IBinder b = ServiceManager.getServiceOrThrow(Context.APPLOCK_SERVICE);
+                IAppLockService service = IAppLockService.Stub.asInterface(b);
+                return new AppLockManager(service);
+            }});
+
         registerService(Context.TV_INPUT_SERVICE, TvInputManager.class,
                 new CachedServiceFetcher<TvInputManager>() {
             @Override
