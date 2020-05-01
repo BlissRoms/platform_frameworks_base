@@ -434,8 +434,7 @@ public class BatteryMeterView extends LinearLayout implements
         } else {
                 mBatteryPercentView.setText(text);
                 String pct = NumberFormat.getPercentInstance().format(mLevel / 100f);
-                if (mCharging && (mBatteryStyle == BATTERY_STYLE_HIDDEN)
-                        && mTextChargingSymbol > 0) {
+                if (mCharging && mTextChargingSymbol > 0) {
                     switch (mTextChargingSymbol) {
                         case 1:
                         default:
