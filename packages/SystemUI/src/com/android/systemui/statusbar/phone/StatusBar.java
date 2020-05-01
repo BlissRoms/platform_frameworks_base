@@ -2195,6 +2195,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_MEDIA_BLUR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_STOPLIST_VALUES), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES), false, this);
         }
 
         @Override
@@ -2232,7 +2236,11 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_MEDIA_BLUR))) {
                 setLockScreenMediaBlurLevel();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LESS_BORING_HEADS_UP))) {
+                setUseLessBoringHeadsUp();
             }
+            update();
         }
 
         public void update() {
@@ -2246,6 +2254,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             updateQSPanel();
             setHideArrowForBackGesture();
             setLockScreenMediaBlurLevel();
+            setHeadsUpStoplist();
+            setHeadsUpBlacklist();
         }
     }
 
