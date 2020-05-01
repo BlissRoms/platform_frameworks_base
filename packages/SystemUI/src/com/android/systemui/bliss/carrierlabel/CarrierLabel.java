@@ -92,6 +92,19 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
     private static final int FONT_GOOGLESANS = 35;
     private static final int FONT_ONEPLUSSLATE = 36;
     private static final int FONT_SAMSUNGONE = 37;
+    private static final int FONT_COMFORTAA = 38;
+    private static final int FONT_EXOTWO = 39;
+    private static final int FONT_STOROPIA = 40;
+    private static final int FONT_UBUNTU = 41;
+    private static final int FONT_NOKIAPURE = 42;
+    private static final int FONT_FIFA2018 = 43;
+    private static final int FONT_ROADRAGE = 44;
+    private static final int FONT_20SEVEN = 45;
+    private static final int FONT_COCON = 46;
+    private static final int FONT_QUANDO = 47;
+    private static final int FONT_GRANDHOTEL = 48;
+    private static final int FONT_REDRESSED = 49;
+    private static final int FONT_SANFRANSISCO = 50;
 
     private static final String STATUS_BAR_SHOW_CARRIER =
             "system:" + Settings.System.STATUS_BAR_SHOW_CARRIER;
@@ -271,6 +284,45 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
                 break;
             case FONT_SAMSUNGONE:
                 setTypeface(Typeface.create("samsungone", Typeface.NORMAL));
+                break;
+            case FONT_COMFORTAA:
+                setTypeface(Typeface.create("comfortaa", Typeface.NORMAL));
+                break;
+            case FONT_EXOTWO:
+                setTypeface(Typeface.create("exotwo", Typeface.NORMAL));
+                break;
+            case FONT_STOROPIA:
+                setTypeface(Typeface.create("storopia", Typeface.NORMAL));
+                break;
+            case FONT_UBUNTU:
+                setTypeface(Typeface.create("ubuntu", Typeface.NORMAL));
+                break;
+            case FONT_NOKIAPURE:
+                setTypeface(Typeface.create("nokiapure", Typeface.NORMAL));
+                break;
+            case FONT_FIFA2018:
+                setTypeface(Typeface.create("fifa2018", Typeface.NORMAL));
+                break;
+            case FONT_ROADRAGE:
+                setTypeface(Typeface.create("roadrage", Typeface.NORMAL));
+                break;
+            case FONT_20SEVEN:
+                setTypeface(Typeface.create("20seven", Typeface.NORMAL));
+                break;
+            case FONT_COCON:
+                setTypeface(Typeface.create("cocon", Typeface.NORMAL));
+                break;
+            case FONT_QUANDO:
+                setTypeface(Typeface.create("quando", Typeface.NORMAL));
+                break;
+            case FONT_GRANDHOTEL:
+                setTypeface(Typeface.create("grandhotel", Typeface.NORMAL));
+                break;
+            case FONT_REDRESSED:
+                setTypeface(Typeface.create("redressed", Typeface.NORMAL));
+                break;
+            case FONT_SANFRANSISCO:
+                setTypeface(Typeface.create("sanfransisco", Typeface.NORMAL));
                 break;
         }
     }
