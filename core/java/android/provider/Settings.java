@@ -6433,6 +6433,14 @@ public final class Settings {
         private static final Validator SCREEN_STATE_MOBILE_DATA_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * @hide
+         */
+        public static final String SCREEN_STATE_THREEG = "screen_state_threeg";
+
+        /** @hide */
+        private static final Validator SCREEN_STATE_THREEG_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -6592,6 +6600,7 @@ public final class Settings {
             SCREEN_STATE_GPS,
             SCREEN_STATE_MOBILE_DATA,
             SCREEN_STATE_TWOG,
+            SCREEN_STATE_THREEG,
         };
 
         /**
@@ -6800,6 +6809,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SCREEN_STATE_GPS);
             PRIVATE_SETTINGS.add(SCREEN_STATE_MOBILE_DATA);
             PRIVATE_SETTINGS.add(SCREEN_STATE_TWOG);
+            PRIVATE_SETTINGS.add(SCREEN_STATE_THREEG);
         }
 
         /**
@@ -6996,6 +7006,7 @@ public final class Settings {
             VALIDATORS.put(SCREEN_STATE_GPS, SCREEN_STATE_GPS_VALIDATOR);
             VALIDATORS.put(SCREEN_STATE_MOBILE_DATA, SCREEN_STATE_MOBILE_DATA_VALIDATOR);
             VALIDATORS.put(SCREEN_STATE_TWOG, SCREEN_STATE_TWOG_VALIDATOR);
+            VALIDATORS.put(SCREEN_STATE_THREEG, SCREEN_STATE_THREEG_VALIDATOR);
         }
 
         /**
