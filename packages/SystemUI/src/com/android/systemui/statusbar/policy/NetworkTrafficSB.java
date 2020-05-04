@@ -392,7 +392,7 @@ public class NetworkTrafficSB extends TextView implements StatusIconDisplayable 
                 Settings.System.NETWORK_TRAFFIC_VIEW_LOCATION, 0,
                 UserHandle.USER_CURRENT) == 1;
         mNetTrafSize = Settings.System.getIntForUser(resolver,
-                Settings.System.NETWORK_TRAFFIC_FONT_SIZE, 42,
+                Settings.System.NETWORK_TRAFFIC_FONT_SIZE, 24,
                 UserHandle.USER_CURRENT);
     }
 
