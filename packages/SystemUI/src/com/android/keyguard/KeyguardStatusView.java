@@ -446,6 +446,8 @@ public class KeyguardStatusView extends GridLayout implements
 
             // If text style clock, align the date widget to start else keep it center.
             if (mCustomClockSelection) {
+                mKeyguardSlice.setRowContainerPadding((int) mContext.getResources()
+                    .getDimension(R.dimen.custom_clock_left_padding) + 8, 0, 0, 0);
                 mKeyguardSlice.setRowContainerGravity(Gravity.START);
             } else {
                 mKeyguardSlice.setRowContainerGravity(Gravity.CENTER);

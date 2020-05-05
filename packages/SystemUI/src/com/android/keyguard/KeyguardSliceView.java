@@ -260,6 +260,10 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         mRowContainer.setGravity(gravity);
     }
 
+    public void setRowContainerPadding(int left, int top, int right, int bottom) {
+        mRowContainer.setPaddingRelative(left, top, right, bottom);
+    }
+
     /**
      * Returns whether the current visible slice has a title/header.
      */
