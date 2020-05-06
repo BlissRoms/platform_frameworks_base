@@ -262,6 +262,10 @@ public class KeyguardStatusView extends GridLayout implements
         return mClockView.hasCustomClockInBigContainer();
     }
 
+    public boolean hasCustomClockStatusArea() {
+        return mClockView.hasCustomClockStatusArea();
+    }
+
     /**
      * Set whether or not the lock screen is showing notifications.
      */
@@ -437,8 +441,13 @@ public class KeyguardStatusView extends GridLayout implements
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
             mKeyguardSlice.setDateSize(mLockDateFontSize);
 
-            // Dont hide slice view in doze
-            mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+            if (mClockView.hasCustomClockStatusArea()) {
+                // Dont hide slice view in doze
+                mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+            } else {
+                mKeyguardSlice.setRowContainerVisibility();
+            }
+
             final ContentResolver resolver = mContext.getContentResolver();
             String currentClock = Settings.Secure.getString(
                 resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
