@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.provider.Settings;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionListenerAdapter;
@@ -32,12 +33,14 @@ import com.android.internal.colorextraction.ColorExtractor;
 import com.android.internal.colorextraction.ColorExtractor.OnColorsChangedListener;
 import com.android.keyguard.clock.ClockManager;
 import com.android.keyguard.KeyguardSliceView;
+import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
 import com.android.systemui.plugins.ClockPlugin;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.StatusBarState;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.wakelock.KeepAwakeAnimationListener;
 
 import java.io.FileDescriptor;
@@ -51,9 +54,12 @@ import javax.inject.Named;
 /**
  * Switch to show plugin clock when plugin is connected, otherwise it will show default clock.
  */
-public class KeyguardClockSwitch extends RelativeLayout {
+public class KeyguardClockSwitch extends RelativeLayout implements TunerService.Tunable {
 
     private static final String TAG = "KeyguardClockSwitch";
+
+    private static final String LOCKSCREEN_DATE_HIDE =
+            "system:" + Settings.System.LOCKSCREEN_DATE_HIDE;
 
     /**
      * Animation fraction when text is transitioned to/from bold.
@@ -133,6 +139,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
     private int[] mColorPalette;
     private boolean mShowCurrentUserTime;
 
+    private boolean mLockDateHide;
+
     /**
      * Track the state of the status bar to know when to hide the big_clock_container.
      */
@@ -211,6 +219,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mStatusBarStateController.addCallback(mStateListener);
         mSysuiColorExtractor.addOnColorsChangedListener(mColorsListener);
         updateColors();
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, LOCKSCREEN_DATE_HIDE);
     }
 
     @Override
@@ -220,6 +230,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mStatusBarStateController.removeCallback(mStateListener);
         mSysuiColorExtractor.removeOnColorsChangedListener(mColorsListener);
         setClockPlugin(null);
+        Dependency.get(TunerService.class).removeTunable(this);
     }
 
     private void setClockPlugin(ClockPlugin plugin) {
@@ -279,8 +290,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
             }
         }
         // Hide default clock.
-        if (!plugin.shouldShowStatusArea()) {
-            mKeyguardStatusArea.setVisibility(View.GONE);
+        if (plugin.shouldShowStatusArea()) {
+            mKeyguardStatusArea.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
         }
         // Initialize plugin parameters.
         mClockPlugin = plugin;
@@ -520,6 +531,16 @@ public class KeyguardClockSwitch extends RelativeLayout {
         pw.println("  mShowingHeader: " + mShowingHeader);
         pw.println("  mSupportsDarkText: " + mSupportsDarkText);
         pw.println("  mColorPalette: " + Arrays.toString(mColorPalette));
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case LOCKSCREEN_DATE_HIDE:
+                    mLockDateHide = TunerService.parseIntegerSwitch(newValue, false);
+                    setClockPlugin(mClockPlugin);
+                break;
+        }
     }
 
     /**
