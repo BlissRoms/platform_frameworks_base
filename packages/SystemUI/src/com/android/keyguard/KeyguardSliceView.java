@@ -257,6 +257,13 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
     }
 
     /**
+     * Only hide the row container and not the whole slice view
+     */
+    public void setRowVisibility() {
+        mRowContainer.setVisibility(GONE);
+    }
+
+    /**
      * Returns whether the current visible slice has a title/header.
      */
     public boolean hasHeader() {
