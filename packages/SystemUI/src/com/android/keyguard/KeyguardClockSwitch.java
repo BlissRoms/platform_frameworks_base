@@ -249,7 +249,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
                 mClockView.setVisibility(View.VISIBLE);
                 mClockViewBold.setVisibility(View.INVISIBLE);
             }
-            mKeyguardStatusArea.setVisibility(View.VISIBLE);
+            mKeyguardStatusArea.setRowVisible();
             return;
         }
         // Attach small and big clock views to hierarchy.
@@ -279,8 +279,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
             }
         }
         // Hide default clock.
-        if (!plugin.shouldShowStatusArea()) {
-            mKeyguardStatusArea.setVisibility(View.GONE);
+        if (isDateClock(plugin)) {
+            mKeyguardStatusArea.setRowHide();
         }
         // Initialize plugin parameters.
         mClockPlugin = plugin;
@@ -477,6 +477,11 @@ public class KeyguardClockSwitch extends RelativeLayout {
                 mBigClockContainer.setVisibility(VISIBLE);
             }
         }
+    }
+
+    private boolean isDateClock(ClockPlugin plugin) {
+        final boolean mIsDateClock = plugin != null && plugin.getName().equals("oronos");
+        return mIsDateClock;
     }
 
     private void adjustStatusAreaPadding(ClockPlugin plugin) {
