@@ -372,13 +372,13 @@ public class KeyguardStatusView extends GridLayout implements
                 mDefaultClockView.setLineSpacing(0, 0.8f);
 
             if (mClockSelection == 13) {
-                mDefaultClockView.setBackground(getResources().getDrawable(R.drawable.clock_shishu_nerves_bg));
-                mDefaultClockView.getLayoutParams().width = getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_width);
-                mDefaultClockView.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_height);
+                mSmallClockView.setBackground(getResources().getDrawable(R.drawable.clock_shishu_nerves_bg));
+                mSmallClockView.getLayoutParams().width = getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_width);
+                mSmallClockView.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_height);
                 mDefaultClockView.setLineSpacing(0,1f);
                 mDefaultClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(R.dimen.widget_clock_shishu_nerves_font_size));
-                mDefaultClockView.setPadding(0,20,0,20);
+                mSmallClockView.setPadding(0,20,0,20);
             }
 
             switch (mClockSelection) {
@@ -437,7 +437,7 @@ public class KeyguardStatusView extends GridLayout implements
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
             mKeyguardSlice.setDateSize(mLockDateFontSize);
 
-            if (mClockSelection >= 2 && mClockSelection <= 13)
+            if (mClockSelection >= 2 && mClockSelection <= 13) {
                // Dont hide slice view in doze
                mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
             }
