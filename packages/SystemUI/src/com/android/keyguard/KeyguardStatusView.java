@@ -437,8 +437,10 @@ public class KeyguardStatusView extends GridLayout implements
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
             mKeyguardSlice.setDateSize(mLockDateFontSize);
 
-            // Dont hide slice view in doze
-            mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+            if (mClockSelection >= 2 && mClockSelection <= 13)
+               // Dont hide slice view in doze
+               mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+            }
         }
 
         switch (mDateSelection) {
