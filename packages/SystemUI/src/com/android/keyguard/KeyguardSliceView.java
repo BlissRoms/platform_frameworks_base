@@ -89,6 +89,9 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
 
     private static final String TAG = "KeyguardSliceView";
 
+    private static final String LOCKSCREEN_DATE_HIDE =
+            "system:" + Settings.System.LOCKSCREEN_DATE_HIDE;
+
     private static final int FONT_NORMAL = 0;
     private static final int FONT_ITALIC = 1;
     private static final int FONT_BOLD = 2;
@@ -173,6 +176,7 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
 
     private int mLockDateFontStyle = 14;
     private int mLockDateSize = 10;
+    private boolean mLockDateHide;
 
     @Inject
     public KeyguardSliceView(@Named(VIEW_CONTEXT) Context context, AttributeSet attrs,
@@ -229,6 +233,8 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
         // Make sure we always have the most current slice
         mLiveData.observeForever(this);
         mConfigurationController.addCallback(this);
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, LOCKSCREEN_DATE_HIDE);
     }
 
     @Override
@@ -240,6 +246,7 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
             mLiveData.removeObserver(this);
         }
         mConfigurationController.removeCallback(this);
+        Dependency.get(TunerService.class).removeTunable(this);
     }
 
     @Override
@@ -254,6 +261,17 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
 
     public void setRowPadding(int left, int top, int right, int bottom) {
         mRowContainer.setPadding(left, top, right, bottom);
+    }
+
+    public void setRowVisible() {
+        mRowContainer.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+    }
+
+    /**
+     * Only hide the row container and not the whole slice view
+     */
+    public void setRowHide() {
+        mRowContainer.setVisibility(GONE);
     }
 
     /**
@@ -447,6 +465,12 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
 
     @Override
     public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case LOCKSCREEN_DATE_HIDE:
+                    mLockDateHide = TunerService.parseIntegerSwitch(newValue, false);
+                    setRowVisible();
+                break;
+        }
         setupUri(newValue);
     }
 
