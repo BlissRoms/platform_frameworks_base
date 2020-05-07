@@ -384,6 +384,7 @@ public class KeyguardStatusView extends GridLayout implements
             switch (mClockSelection) {
                 case 1: // hidden
                     mSmallClockView.setVisibility(mDarkAmount != 1 ? View.GONE : View.VISIBLE);
+                    mDefaultClockView.setVisibility(mDarkAmount != 1 ? View.GONE : View.VISIBLE);
                     break;
                 case 2: // default
                     mSmallClockView.setVisibility(View.VISIBLE);
@@ -419,7 +420,7 @@ public class KeyguardStatusView extends GridLayout implements
                     mSmallClockView.setVisibility(View.VISIBLE);
                     break;
                 case 13: // nerves clock
-                    mSmallClockView.setVisibility(View.VISIBLE);
+                    mDefaultClockView.setVisibility(View.VISIBLE);
                     break;
                 }
             refreshFormat();
