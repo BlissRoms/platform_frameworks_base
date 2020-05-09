@@ -146,6 +146,7 @@ public class KeyguardStatusView extends GridLayout implements
     private int mIconTopMarginWithHeader;
     private boolean mShowingHeader;
 
+    private boolean mHideClock;
     private int mClockSelection;
     private int mLockClockFontStyle;
     private int mLockDateFontStyle;
@@ -165,6 +166,8 @@ public class KeyguardStatusView extends GridLayout implements
             "system:" + Settings.System.LOCK_DATE_FONT_STYLE;
     private static final String LOCKSCREEN_CLOCK_SELECTION =
             "system:" + Settings.System.LOCKSCREEN_CLOCK_SELECTION;
+    private static final String LOCKSCREEN_HIDE_CLOCK =
+            "system:" + Settings.System.LOCKSCREEN_HIDE_CLOCK;
     private static final String LOCKSCREEN_DATE_HIDE =
             "system:" + Settings.System.LOCKSCREEN_DATE_HIDE;
     private static final String LOCKSCREEN_DATE_SELECTION =
@@ -242,6 +245,7 @@ public class KeyguardStatusView extends GridLayout implements
         tunerService.addTunable(this, LOCK_CLOCK_FONT_STYLE);
         tunerService.addTunable(this, LOCK_DATE_FONT_STYLE);
         tunerService.addTunable(this, LOCKSCREEN_CLOCK_SELECTION);
+        tunerService.addTunable(this, LOCKSCREEN_HIDE_CLOCK);
         tunerService.addTunable(this, LOCKSCREEN_DATE_HIDE);
         tunerService.addTunable(this, LOCKSCREEN_DATE_SELECTION);
         tunerService.addTunable(this, LOCK_CLOCK_FONT_SIZE);
@@ -361,54 +365,19 @@ public class KeyguardStatusView extends GridLayout implements
     @Override
     public void onDensityOrFontScaleChanged() {
         if (mClockView != null) {
-	    if (mClockSelection == 4) {
+            mSmallClockView.setVisibility(mDarkAmount != 1
+                    ? (mHideClock ? View.GONE : View.VISIBLE) : View.VISIBLE);
+
+	    if (mClockSelection == 2) {
                 mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     getResources().getDimensionPixelSize(R.dimen.widget_clock_small_font_size));
             } else {
                 setFontSize(mClockView, mLockClockFontSize);
             }
 
-            if (mClockSelection >= 8 && mClockSelection <= 12)
+            if (mClockSelection >= 6 && mClockSelection <= 11)
                 mDefaultClockView.setLineSpacing(0, 0.8f);
 
-            switch (mClockSelection) {
-                case 1: // hidden
-                    mSmallClockView.setVisibility(mDarkAmount != 1 ? View.GONE : View.VISIBLE);
-                    break;
-                case 2: // default
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 3: // default (bold)
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 4: // default (small font)
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 5: // default (accent)
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 6: // default (accent hr)
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 7: // default (accent min)
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 8: // sammy
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 9: // sammy (bold)
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 10: // sammy (accent)
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 11: // sammy accent hour
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                case 12: // sammy accent darker hour
-                    mSmallClockView.setVisibility(View.VISIBLE);
-                    break;
-                }
             refreshFormat();
             setFontStyle(mClockView, mLockClockFontStyle);
         }
@@ -533,42 +502,42 @@ public class KeyguardStatusView extends GridLayout implements
     private void refreshTime() {
         mClockView.refresh();
 
-        if (mClockSelection == 2) {
+        if (mClockSelection == 0) { // default
             mClockView.setFormat12Hour(Patterns.clockView12);
             mClockView.setFormat24Hour(Patterns.clockView24);
-        } else if (mClockSelection == 3) {
+        } else if (mClockSelection == 1) { // default (bold)
             mClockView.setFormat12Hour(Html.fromHtml("<strong>hh</strong>:mm"));
             mClockView.setFormat24Hour(Html.fromHtml("<strong>kk</strong>:mm"));
-        } else if (mClockSelection == 4) {
-	        mClockView.setFormat12Hour(Html.fromHtml("<strong>hh:mm</strong>"));
+        } else if (mClockSelection == 2) {  // default (small font)
+            mClockView.setFormat12Hour(Html.fromHtml("<strong>hh:mm</strong>"));
             mClockView.setFormat24Hour(Html.fromHtml("<strong>kk:mm</strong>"));
-        } else if (mClockSelection == 5) {
+        } else if (mClockSelection == 3) { // default (accent)
             mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">hh:mm</font>"));
             mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">kk:m</font>"));
-        } else if (mClockSelection == 6) {
+        } else if (mClockSelection == 4) { // default (accent hr)
             mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">hh</font>:mm"));
             mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">kk</font>:mm"));
-        } else if (mClockSelection == 7) {
+        } else if (mClockSelection == 5) { // default (accent min)
             mClockView.setFormat12Hour(Html.fromHtml("h<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">:mm</font>"));
             mClockView.setFormat24Hour(Html.fromHtml("kk<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">:mm</font>"));
-        } else if (mClockSelection == 8) {
+        } else if (mClockSelection == 6) { // sammy
             mClockView.setFormat12Hour("hh\nmm");
             mClockView.setFormat24Hour("kk\nmm");
-        } else if (mClockSelection == 10) {
-            mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">hh<br>mm</font>"));
-            mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">kk<br>mm</font>"));
-        } else if (mClockSelection == 11) {
-            mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">hh</font><br>mm"));
-            mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">kk</font><br>mm"));
-        } else if (mClockSelection == 12) {
-            mClockView.setFormat12Hour(Html.fromHtml("hh<br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
-            mClockView.setFormat24Hour(Html.fromHtml("kk<br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
-        } else if (mClockSelection == 13) {
-            mClockView.setFormat12Hour(Html.fromHtml("<font color='#454545'>hh</font><br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
-            mClockView.setFormat24Hour(Html.fromHtml("<font color='#454545'>kk</font><br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
-        } else {
+        } else if (mClockSelection == 7) { // sammy (bold)
             mClockView.setFormat12Hour(Html.fromHtml("<strong>hh</strong><br>mm"));
             mClockView.setFormat24Hour(Html.fromHtml("<strong>kk</strong><br>mm"));
+        } else if (mClockSelection == 8) { // sammy (accent)
+            mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">hh<br>mm</font>"));
+            mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">kk<br>mm</font>"));
+        } else if (mClockSelection == 9) { // sammy (accent hour)
+            mClockView.setFormat12Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">hh</font><br>mm"));
+            mClockView.setFormat24Hour(Html.fromHtml("<font color=" + getResources().getColor(R.color.accent_device_default_light) + ">kk</font><br>mm"));
+        } else if (mClockSelection == 10) { // sammy (accent min)
+            mClockView.setFormat12Hour(Html.fromHtml("hh<br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
+            mClockView.setFormat24Hour(Html.fromHtml("kk<br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
+        } else if (mClockSelection == 11) { // sammy (accent darker hour)
+            mClockView.setFormat12Hour(Html.fromHtml("<font color='#454545'>hh</font><br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
+            mClockView.setFormat24Hour(Html.fromHtml("<font color='#454545'>kk</font><br><font color=" + getResources().getColor(R.color.accent_device_default_light) + ">mm</font>"));
         }
     }
 
@@ -675,6 +644,10 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case LOCKSCREEN_CLOCK_SELECTION:
                     mClockSelection = TunerService.parseInteger(newValue, 2);
+                onDensityOrFontScaleChanged();
+                break;
+            case LOCKSCREEN_HIDE_CLOCK:
+                    mHideClock = TunerService.parseIntegerSwitch(newValue, false);
                 onDensityOrFontScaleChanged();
                 break;
             case LOCKSCREEN_DATE_HIDE:
