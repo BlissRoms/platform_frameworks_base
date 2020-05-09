@@ -5443,6 +5443,13 @@ public final class Settings {
         public static final String LOCKSCREEN_CLOCK_SELECTION = "lockscreen_clock_selection";
 
         /**
+         * Select whether to hide or show clock
+         * @hide
+         */
+
+        public static final String LOCKSCREEN_SHOW_CLOCK = "lockscreen_show_clock";
+
+        /**
          * Select which lockscreen date style to display
          * @hide
          */
