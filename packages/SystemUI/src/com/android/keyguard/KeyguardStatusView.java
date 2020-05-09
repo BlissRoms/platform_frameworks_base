@@ -115,6 +115,36 @@ public class KeyguardStatusView extends GridLayout implements
     private static final int FONT_GRANDHOTEL = 48;
     private static final int FONT_REDRESSED = 49;
     private static final int FONT_SANFRANSISCO = 50;
+    private static final int FONT_BIGNOODLE-ITALIC = 51;
+    private static final int FONT_BIGNOODLE-REGULAR = 52;
+    private static final int FONT_HANKEN = 53;
+    private static final int FONT_MITTELSCHRIFT = 54;
+    private static final int FONT_REEMKUFI = 55;
+    private static final int FONT_COMIC-NEUE-BOLD = 56;
+    private static final int FONT_COMIC-NEUE = 57;
+    private static final int FONT_EXO2-REGULAR = 58;
+    private static final int FONT_EXO2-SEMIBOLD = 59;
+    private static final int FONT_FINLANDICA = 60;
+    private static final int FONT_GOODLIGHT = 61;
+    private static final int FONT_GRAVITY-REGULAR = 62;
+    private static final int FONT_INTER-REGULAR = 63;
+    private static final int FONT_INTER-MEDIUM-ITALIC = 64;
+    private static final int FONT_LEAGUE-MONO-N-REGULAR = 65;
+    private static final int FONT_LEAGUE-MONO-N-MEDIUM = 66;
+    private static final int FONT_LEAGUE-MONO-N-BOLD = 67;
+    private static final int FONT_LEAGUE-MONO-N-SEMIBOLD = 68;
+    private static final int FONT_LEONSANS-REGULAR = 69;
+    private static final int FONT_MESCLA-REGULAR = 70;
+    private static final int FONT_ODIBEE-SANS = 71;
+    private static final int FONT_PANAMERICANA = 72;
+    private static final int FONT_PT-SANS = 73;
+    private static final int FONT_PT-MONO = 74;
+    private static final int FONT_ROUNDED-GOTHIC-NARROW = 75;
+    private static final int FONT_ROUNDED-GOTHIC-NARROW-HALF-ITALIC = 76;
+    private static final int FONT_SOFIA-SANS-REGULAR = 77;
+    private static final int FONT_SOFIA-SANS-MEDIUM = 78;
+    private static final int FONT_SOFIA-SEMICONDENSED-REGULAR = 79;
+    private static final int FONT_SOFIA-SEMICONDENSED-MEDIUM = 80;
 
     private final LockPatternUtils mLockPatternUtils;
     private final IActivityManager mIActivityManager;
@@ -844,6 +874,96 @@ public class KeyguardStatusView extends GridLayout implements
             case FONT_SANFRANSISCO:
                 view.setTextFont(Typeface.create("sanfransisco", Typeface.NORMAL));
                 break;
+            case FONT_BIGNOODLE-ITALIC:
+                view.setTextFont(Typeface.create("bignoodle-italic", Typeface.NORMAL));
+                break;
+            case FONT_BIGNOODLE-REGULAR:
+                view.setTextFont(Typeface.create("bignoodle-regular", Typeface.NORMAL));
+                break;
+            case FONT_HANKEN:
+                view.setTextFont(Typeface.create("hanken", Typeface.NORMAL));
+                break;
+            case FONT_MITTELSCHRIFT:
+                view.setTextFont(Typeface.create("mittelschrift", Typeface.NORMAL));
+                break;
+            case FONT_REEMKUFI:
+                view.setTextFont(Typeface.create("reemkufi", Typeface.NORMAL));
+                break;
+            case FONT_COMIC-NEUE-BOLD:
+                view.setTextFont(Typeface.create("comic-neue-bold", Typeface.NORMAL));
+                break;
+            case FONT_COMIC-NEUE:
+                view.setTextFont(Typeface.create("comic-neue", Typeface.NORMAL));
+                break;
+            case FONT_EXO2-REGULAR:
+                view.setTextFont(Typeface.create("exo2-regular", Typeface.NORMAL));
+                break;
+            case FONT_EXO2-SEMIBOLD:
+                view.setTextFont(Typeface.create("exo2-semibold", Typeface.NORMAL));
+                break;
+            case FONT_FINLANDICA:
+                view.setTextFont(Typeface.create("finlandica", Typeface.NORMAL));
+                break;
+            case FONT_GOODLIGHT:
+                view.setTextFont(Typeface.create("goodlight", Typeface.NORMAL));
+                break;
+            case FONT_GRAVITY-REGULAR:
+                view.setTextFont(Typeface.create("gravity-regular", Typeface.NORMAL));
+                break;
+            case FONT_INTER-REGULAR:
+                view.setTextFont(Typeface.create("inter-regular", Typeface.NORMAL));
+                break;
+            case FONT_INTER-MEDIUM-ITALIC:
+                view.setTextFont(Typeface.create("inter-medium-italic", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-REGULAR:
+                view.setTextFont(Typeface.create("league-mono-n-regular", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-MEDIUM:
+                view.setTextFont(Typeface.create("league-mono-n-medium", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-BOLD:
+                view.setTextFont(Typeface.create("league-mono-n-bold", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-SEMIBOLD:
+                view.setTextFont(Typeface.create("league-mono-n-semibold", Typeface.NORMAL));
+                break;
+            case FONT_LEONSANS-REGULAR:
+                view.setTextFont(Typeface.create("leonsans-regular", Typeface.NORMAL));
+                break;
+            case FONT_MESCLA-REGULAR:
+                view.setTextFont(Typeface.create("mescla-regular", Typeface.NORMAL));
+                break;
+            case FONT_ODIBEE-SANS:
+                view.setTextFont(Typeface.create("odibee-sans", Typeface.NORMAL));
+                break;
+            case FONT_PANAMERICANA:
+                view.setTextFont(Typeface.create("panamericana", Typeface.NORMAL));
+                break;
+            case FONT_PT-SANS:
+                view.setTextFont(Typeface.create("pt-sans", Typeface.NORMAL));
+                break;
+            case FONT_PT-MONO:
+                view.setTextFont(Typeface.create("pt-mono", Typeface.NORMAL));
+                break;
+            case FONT_ROUNDED-GOTHIC-NARROW:
+                view.setTextFont(Typeface.create("rounded-gothic-narrow", Typeface.NORMAL));
+                break;
+            case FONT_ROUNDED-GOTHIC-NARROW-HALF-ITALIC:
+                view.setTextFont(Typeface.create("rounded-gothic-narrow-half-italic", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SANS-REGULAR:
+                view.setTextFont(Typeface.create("sofia-sans-regular", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SANS-MEDIUM:
+                view.setTextFont(Typeface.create("sofia-sans-medium", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SEMICONDENSED-REGULAR:
+                view.setTextFont(Typeface.create("sofia-semicondensed-regular", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SEMICONDENSED-MEDIUM:
+                view.setTextFont(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
+                break;
             default:
                 break;
         }
@@ -1435,6 +1555,96 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case FONT_SANFRANSISCO:
                 mOwnerInfo.setTypeface(Typeface.create("sanfransisco", Typeface.NORMAL));
+                break;
+            case FONT_BIGNOODLE-ITALIC:
+                mOwnerInfo.setTypeface(Typeface.create("bignoodle-italic", Typeface.NORMAL));
+                break;
+            case FONT_BIGNOODLE-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("bignoodle-regular", Typeface.NORMAL));
+                break;
+            case FONT_HANKEN:
+                mOwnerInfo.setTypeface(Typeface.create("hanken", Typeface.NORMAL));
+                break;
+            case FONT_MITTELSCHRIFT:
+                mOwnerInfo.setTypeface(Typeface.create("mittelschrift", Typeface.NORMAL));
+                break;
+            case FONT_REEMKUFI:
+                mOwnerInfo.setTypeface(Typeface.create("reemkufi", Typeface.NORMAL));
+                break;
+            case FONT_COMIC-NEUE-BOLD:
+                mOwnerInfo.setTypeface(Typeface.create("comic-neue-bold", Typeface.NORMAL));
+                break;
+            case FONT_COMIC-NEUE:
+                mOwnerInfo.setTypeface(Typeface.create("comic-neue", Typeface.NORMAL));
+                break;
+            case FONT_EXO2-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("exo2-regular", Typeface.NORMAL));
+                break;
+            case FONT_EXO2-SEMIBOLD:
+                mOwnerInfo.setTypeface(Typeface.create("exo2-semibold", Typeface.NORMAL));
+                break;
+            case FONT_FINLANDICA:
+                mOwnerInfo.setTypeface(Typeface.create("finlandica", Typeface.NORMAL));
+                break;
+            case FONT_GOODLIGHT:
+                mOwnerInfo.setTypeface(Typeface.create("goodlight", Typeface.NORMAL));
+                break;
+            case FONT_GRAVITY-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("gravity-regular", Typeface.NORMAL));
+                break;
+            case FONT_INTER-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("inter-regular", Typeface.NORMAL));
+                break;
+            case FONT_INTER-MEDIUM-ITALIC:
+                mOwnerInfo.setTypeface(Typeface.create("inter-medium-italic", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("league-mono-n-regular", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-MEDIUM:
+                mOwnerInfo.setTypeface(Typeface.create("league-mono-n-medium", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-BOLD:
+                mOwnerInfo.setTypeface(Typeface.create("league-mono-n-bold", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-SEMIBOLD:
+                mOwnerInfo.setTypeface(Typeface.create("league-mono-n-semibold", Typeface.NORMAL));
+                break;
+            case FONT_LEONSANS-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("leonsans-regular", Typeface.NORMAL));
+                break;
+            case FONT_MESCLA-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("mescla-regular", Typeface.NORMAL));
+                break;
+            case FONT_ODIBEE-SANS:
+                mOwnerInfo.setTypeface(Typeface.create("odibee-sans", Typeface.NORMAL));
+                break;
+            case FONT_PANAMERICANA:
+                mOwnerInfo.setTypeface(Typeface.create("panamericana", Typeface.NORMAL));
+                break;
+            case FONT_PT-SANS:
+                mOwnerInfo.setTypeface(Typeface.create("pt-sans", Typeface.NORMAL));
+                break;
+            case FONT_PT-MONO:
+                mOwnerInfo.setTypeface(Typeface.create("pt-mono", Typeface.NORMAL));
+                break;
+            case FONT_ROUNDED-GOTHIC-NARROW:
+                mOwnerInfo.setTypeface(Typeface.create("rounded-gothic-narrow", Typeface.NORMAL));
+                break;
+            case FONT_ROUNDED-GOTHIC-NARROW-HALF-ITALIC:
+                mOwnerInfo.setTypeface(Typeface.create("rounded-gothic-narrow-half-italic", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SANS-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("sofia-sans-regular", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SANS-MEDIUM:
+                mOwnerInfo.setTypeface(Typeface.create("sofia-sans-medium", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SEMICONDENSED-REGULAR:
+                mOwnerInfo.setTypeface(Typeface.create("sofia-semicondensed-regular", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SEMICONDENSED-MEDIUM:
+                mOwnerInfo.setTypeface(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
                 break;
             default:
                 break;

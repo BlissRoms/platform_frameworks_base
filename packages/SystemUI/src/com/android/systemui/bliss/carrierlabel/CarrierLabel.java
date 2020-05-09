@@ -105,6 +105,36 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
     private static final int FONT_GRANDHOTEL = 48;
     private static final int FONT_REDRESSED = 49;
     private static final int FONT_SANFRANSISCO = 50;
+    private static final int FONT_BIGNOODLE-ITALIC = 51;
+    private static final int FONT_BIGNOODLE-REGULAR = 52;
+    private static final int FONT_HANKEN = 53;
+    private static final int FONT_MITTELSCHRIFT = 54;
+    private static final int FONT_REEMKUFI = 55;
+    private static final int FONT_COMIC-NEUE-BOLD = 56;
+    private static final int FONT_COMIC-NEUE = 57;
+    private static final int FONT_EXO2-REGULAR = 58;
+    private static final int FONT_EXO2-SEMIBOLD = 59;
+    private static final int FONT_FINLANDICA = 60;
+    private static final int FONT_GOODLIGHT = 61;
+    private static final int FONT_GRAVITY-REGULAR = 62;
+    private static final int FONT_INTER-REGULAR = 63;
+    private static final int FONT_INTER-MEDIUM-ITALIC = 64;
+    private static final int FONT_LEAGUE-MONO-N-REGULAR = 65;
+    private static final int FONT_LEAGUE-MONO-N-MEDIUM = 66;
+    private static final int FONT_LEAGUE-MONO-N-BOLD = 67;
+    private static final int FONT_LEAGUE-MONO-N-SEMIBOLD = 68;
+    private static final int FONT_LEONSANS-REGULAR = 69;
+    private static final int FONT_MESCLA-REGULAR = 70;
+    private static final int FONT_ODIBEE-SANS = 71;
+    private static final int FONT_PANAMERICANA = 72;
+    private static final int FONT_PT-SANS = 73;
+    private static final int FONT_PT-MONO = 74;
+    private static final int FONT_ROUNDED-GOTHIC-NARROW = 75;
+    private static final int FONT_ROUNDED-GOTHIC-NARROW-HALF-ITALIC = 76;
+    private static final int FONT_SOFIA-SANS-REGULAR = 77;
+    private static final int FONT_SOFIA-SANS-MEDIUM = 78;
+    private static final int FONT_SOFIA-SEMICONDENSED-REGULAR = 79;
+    private static final int FONT_SOFIA-SEMICONDENSED-MEDIUM = 80;
 
     private static final String STATUS_BAR_SHOW_CARRIER =
             "system:" + Settings.System.STATUS_BAR_SHOW_CARRIER;
@@ -323,6 +353,96 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
                 break;
             case FONT_SANFRANSISCO:
                 setTypeface(Typeface.create("sanfransisco", Typeface.NORMAL));
+                break;
+            case FONT_BIGNOODLE-ITALIC:
+                setTypeface(Typeface.create("bignoodle-italic", Typeface.NORMAL));
+                break;
+            case FONT_BIGNOODLE-REGULAR:
+                setTypeface(Typeface.create("bignoodle-regular", Typeface.NORMAL));
+                break;
+            case FONT_HANKEN:
+                setTypeface(Typeface.create("hanken", Typeface.NORMAL));
+                break;
+            case FONT_MITTELSCHRIFT:
+                setTypeface(Typeface.create("mittelschrift", Typeface.NORMAL));
+                break;
+            case FONT_REEMKUFI:
+                setTypeface(Typeface.create("reemkufi", Typeface.NORMAL));
+                break;
+            case FONT_COMIC-NEUE-BOLD:
+                setTypeface(Typeface.create("comic-neue-bold", Typeface.NORMAL));
+                break;
+            case FONT_COMIC-NEUE:
+                setTypeface(Typeface.create("comic-neue", Typeface.NORMAL));
+                break;
+            case FONT_EXO2-REGULAR:
+                setTypeface(Typeface.create("exo2-regular", Typeface.NORMAL));
+                break;
+            case FONT_EXO2-SEMIBOLD:
+                setTypeface(Typeface.create("exo2-semibold", Typeface.NORMAL));
+                break;
+            case FONT_FINLANDICA:
+                setTypeface(Typeface.create("finlandica", Typeface.NORMAL));
+                break;
+            case FONT_GOODLIGHT:
+                setTypeface(Typeface.create("goodlight", Typeface.NORMAL));
+                break;
+            case FONT_GRAVITY-REGULAR:
+                setTypeface(Typeface.create("gravity-regular", Typeface.NORMAL));
+                break;
+            case FONT_INTER-REGULAR:
+                setTypeface(Typeface.create("inter-regular", Typeface.NORMAL));
+                break;
+            case FONT_INTER-MEDIUM-ITALIC:
+                setTypeface(Typeface.create("inter-medium-italic", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-REGULAR:
+                setTypeface(Typeface.create("league-mono-n-regular", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-MEDIUM:
+                setTypeface(Typeface.create("league-mono-n-medium", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-BOLD:
+                setTypeface(Typeface.create("league-mono-n-bold", Typeface.NORMAL));
+                break;
+            case FONT_LEAGUE-MONO-N-SEMIBOLD:
+                setTypeface(Typeface.create("league-mono-n-semibold", Typeface.NORMAL));
+                break;
+            case FONT_LEONSANS-REGULAR:
+                setTypeface(Typeface.create("leonsans-regular", Typeface.NORMAL));
+                break;
+            case FONT_MESCLA-REGULAR:
+                setTypeface(Typeface.create("mescla-regular", Typeface.NORMAL));
+                break;
+            case FONT_ODIBEE-SANS:
+                setTypeface(Typeface.create("odibee-sans", Typeface.NORMAL));
+                break;
+            case FONT_PANAMERICANA:
+                setTypeface(Typeface.create("panamericana", Typeface.NORMAL));
+                break;
+            case FONT_PT-SANS:
+                setTypeface(Typeface.create("pt-sans", Typeface.NORMAL));
+                break;
+            case FONT_PT-MONO:
+                setTypeface(Typeface.create("pt-mono", Typeface.NORMAL));
+                break;
+            case FONT_ROUNDED-GOTHIC-NARROW:
+                setTypeface(Typeface.create("rounded-gothic-narrow", Typeface.NORMAL));
+                break;
+            case FONT_ROUNDED-GOTHIC-NARROW-HALF-ITALIC:
+                setTypeface(Typeface.create("rounded-gothic-narrow-half-italic", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SANS-REGULAR:
+                setTypeface(Typeface.create("sofia-sans-regular", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SANS-MEDIUM:
+                setTypeface(Typeface.create("sofia-sans-medium", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SEMICONDENSED-REGULAR:
+                setTypeface(Typeface.create("sofia-semicondensed-regular", Typeface.NORMAL));
+                break;
+            case FONT_SOFIA-SEMICONDENSED-MEDIUM:
+                setTypeface(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
                 break;
         }
     }
