@@ -424,7 +424,7 @@ public class KeyguardStatusView extends GridLayout implements
             mKeyguardSlice.setDateSize(mLockDateFontSize);
 
             // Dont hide slice view in doze
-            mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+            mKeyguardSlice.setVisibility(mDarkAmount != 1 ? ((mLockDateHide || isDateClock()) ? View.GONE : View.VISIBLE) : View.VISIBLE);
         }
 
         switch (mDateSelection) {
@@ -1761,6 +1761,15 @@ public class KeyguardStatusView extends GridLayout implements
         } catch (RemoteException re) {
             Log.e(TAG, "Failed to logout user", re);
         }
+    }
+
+    private boolean isDateClock() {
+        final ContentResolver resolver = mContext.getContentResolver();
+        String currentClock = Settings.Secure.getString(
+            resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+        final boolean mIsDateClock = currentClock == null ? false : (currentClock.contains("dividedlines") || currentClock.contains("mnml_box") ||
+                                     currentClock.contains("mnml_mnml") || currentClock.contains("oronos"));
+        return mIsDateClock;
     }
 
     private void updateSettings() {
