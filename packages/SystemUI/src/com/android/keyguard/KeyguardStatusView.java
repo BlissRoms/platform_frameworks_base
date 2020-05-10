@@ -423,8 +423,17 @@ public class KeyguardStatusView extends GridLayout implements
             mKeyguardSlice.setFontStyle(mLockDateFontStyle);
             mKeyguardSlice.setDateSize(mLockDateFontSize);
 
+            private boolean isDateClock() {
+               final ContentResolver resolver = mContext.getContentResolver();
+               String currentClock = Settings.Secure.getString(
+                   resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+               if (currentClock.contains("dividedlines") || currentClock.contains("mnml_box") ||
+                   currentClock.contains("mnml_mnml") || currentClock.contains("oronos"))
+               return true;
+            }
+
             // Dont hide slice view in doze
-            mKeyguardSlice.setVisibility(mDarkAmount != 1 ? (mLockDateHide ? View.GONE : View.VISIBLE) : View.VISIBLE);
+            mKeyguardSlice.setVisibility(mDarkAmount != 1 ? ((mLockDateHide || isDateClock()) ? View.GONE : View.VISIBLE) : View.VISIBLE);
         }
 
         switch (mDateSelection) {
