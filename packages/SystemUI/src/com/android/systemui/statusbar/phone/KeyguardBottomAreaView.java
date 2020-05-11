@@ -74,7 +74,6 @@ import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.assist.AssistManager;
-import com.android.systemui.biometrics.FODCircleView;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.IntentButtonProvider;
 import com.android.systemui.plugins.IntentButtonProvider.IntentButton;
@@ -444,8 +443,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private boolean hasInDisplayFingerprint() {
         PackageManager packageManager = mContext.getPackageManager();
         boolean hasInDisplayFingerprint = packageManager.hasSystemFeature(LineageContextConstants.Features.FOD);
-        return hasInDisplayFingerprint && mIsFingerprintRunning &&
-            FODCircleView.canUnlockWithFp(KeyguardUpdateMonitor.getInstance(mContext));
+        return hasInDisplayFingerprint && mIsFingerprintRunning;
     }
 
     public boolean isLeftVoiceAssist() {
