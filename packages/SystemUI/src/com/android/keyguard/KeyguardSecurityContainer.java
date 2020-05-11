@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.metrics.LogMaker;
@@ -45,11 +46,14 @@ import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.keyguard.KeyguardSecurityModel.SecurityMode;
 import com.android.settingslib.utils.ThreadUtils;
+import com.android.systemui.biometrics.FODCircleView;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.statusbar.phone.UnlockMethodCache;
 import com.android.systemui.util.InjectionInflationController;
+
+import lineageos.app.LineageContextConstants;
 
 public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSecurityView {
     private static final boolean DEBUG = KeyguardConstants.DEBUG;
@@ -327,15 +331,34 @@ public class KeyguardSecurityContainer extends FrameLayout implements KeyguardSe
         mSecurityViewFlipper.setLockPatternUtils(mLockPatternUtils);
     }
 
+    private boolean shouldPadForFod() {
+        SecurityMode securityMode = getSecurityMode();
+        if (securityMode == SecurityMode.SimPin
+                || securityMode == SecurityMode.SimPuk
+                || securityMode == SecurityMode.None) {
+             return false;
+        }
+
+        PackageManager packageManager = mContext.getPackageManager();
+        boolean hasInDisplayFingerprint = packageManager.hasSystemFeature(LineageContextConstants.Features.FOD);
+        KeyguardUpdateMonitor mon = KeyguardUpdateMonitor.getInstance(mContext);
+        return hasInDisplayFingerprint && mon.isFingerprintDetectionRunning() &&
+            FODCircleView.canUnlockWithFp(mon);
+    }
+
     @Override
     protected boolean fitSystemWindows(Rect insets) {
-        int minBottomMargin = getResources().getDimensionPixelSize(
+	if (shouldPadForFod()) {
+	    int minBottomMargin = getResources().getDimensionPixelSize(
                 R.dimen.kg_security_container_min_bottom_margin);
-        // Consume bottom insets because we're setting the padding locally (for IME and navbar.)
-        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
+            // Consume bottom insets because we're setting the padding locally (for IME and navbar.)
+            setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
                 minBottomMargin > insets.bottom ? minBottomMargin : insets.bottom);
-        insets.bottom = 0;
-        return false;
+            insets.bottom = 0;
+	} else {
+	    setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
+	}
+	return false;
     }
 
     private void showDialog(String title, String message) {
