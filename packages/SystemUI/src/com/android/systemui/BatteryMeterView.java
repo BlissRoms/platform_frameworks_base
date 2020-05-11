@@ -551,10 +551,13 @@ public class BatteryMeterView extends LinearLayout implements
     }
 
     public void updateBatteryStyle() {
+        Resources res = getContext().getResources();
         if (mBatteryStyle == BATTERY_STYLE_HIDDEN) return;
 
         if (mBatteryStyle == BATTERY_STYLE_PORTRAIT) {
             mBatteryIconView.setImageDrawable(mDrawable);
+            mBatteryIconView.setPaddingRelative(res.getDimensionPixelSize
+                          (R.dimen.battery_level_padding_start), 0, 0, 0);
         } else {
             mXDrawable.setMeterStyle(mBatteryStyle);
             mBatteryIconView.setImageDrawable(mXDrawable);
