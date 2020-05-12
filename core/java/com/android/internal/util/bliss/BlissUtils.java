@@ -412,9 +412,9 @@ public class BlissUtils {
 
     // Check if device has a notch
     public static boolean hasNotch(Context context) {
-        String displayCutout = context.getResources().getString(R.string.config_mainBuiltInDisplayCutout);
+        boolean hasNotch = context.getResources().getBoolean(org.lineageos.platform.internal.R.bool.config_haveNotch);
         boolean maskDisplayCutout = context.getResources().getBoolean(R.bool.config_maskMainBuiltInDisplayCutout);
-        boolean displayCutoutExists = (!TextUtils.isEmpty(displayCutout) && !maskDisplayCutout);
+        boolean displayCutoutExists = (hasNotch && !maskDisplayCutout);
         return displayCutoutExists;
     }
 
