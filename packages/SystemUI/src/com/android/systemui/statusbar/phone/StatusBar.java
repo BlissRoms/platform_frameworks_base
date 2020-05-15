@@ -341,6 +341,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.DISPLAY_CUTOUT_MODE;
     private static final String STOCK_STATUSBAR_IN_HIDE =
             "system:" + Settings.System.STOCK_STATUSBAR_IN_HIDE;
+    private static final String STATUS_BAR_CUSTOM_HEADER =
+            "system:" + Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -844,7 +846,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         tunerService.addTunable(this, STATUS_BAR_TICKER_TICK_DURATION);
         tunerService.addTunable(this, DISPLAY_CUTOUT_MODE);
         tunerService.addTunable(this, STOCK_STATUSBAR_IN_HIDE);
-
+        tunerService.addTunable(this, STATUS_BAR_CUSTOM_HEADER);
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
@@ -5837,6 +5839,9 @@ public class StatusBar extends SystemUI implements DemoMode,
                     mStockStatusBar = stockStatusBar;
                     handleCutout();
                 }
+                break;
+            case STATUS_BAR_CUSTOM_HEADER:
+                updateTheme();
                 break;
             default:
                 break;
