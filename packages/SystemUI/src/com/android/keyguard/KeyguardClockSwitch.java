@@ -35,6 +35,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.internal.colorextraction.ColorExtractor;
 import com.android.internal.colorextraction.ColorExtractor.OnColorsChangedListener;
 import com.android.keyguard.clock.ClockManager;
+import com.android.keyguard.clock.CustomTextClock;
 import com.android.keyguard.KeyguardSliceView;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
@@ -96,6 +97,11 @@ public class KeyguardClockSwitch extends RelativeLayout {
      * Default clock.
      */
     private TextClock mClockView;
+
+    /**
+     * Custom Text clock.
+     */
+    private CustomTextClock mTextClock;
 
     /**
      * Default clock, bold version.
@@ -206,6 +212,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mClockViewBold = findViewById(R.id.default_clock_view_bold);
         mSmallClockFrame = findViewById(R.id.clock_view);
         mKeyguardStatusArea = findViewById(R.id.keyguard_status_area);
+        mTextClock = findViewById(R.id.custom_text_clock_view);
     }
 
     @Override
@@ -339,6 +346,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
     public void setTextFont(Typeface tf) {
         mClockView.getPaint().setTypeface(tf);
         mClockViewBold.getPaint().setTypeface(tf);
+        mTextClock.getPaint().setTypeface(tf);
         if (mClockPlugin != null) {
             mClockPlugin.setTypeface(tf);
         }
@@ -352,6 +360,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
 
     public void setTextSize(int unit, float size) {
         mClockView.setTextSize(unit, size);
+        mTextClock.setTextSize(unit, size);
         if (mClockPlugin != null) {
             mClockPlugin.setTextSize(unit, size);
         }
