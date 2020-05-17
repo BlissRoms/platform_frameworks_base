@@ -413,7 +413,7 @@ public class KeyguardStatusView extends GridLayout implements
                 setFontSize(mClockView, mLockClockFontSize);
             }
 
-            if (mClockSelection != 12 && mClockSelection != 13) {
+            if (mClockSelection != 12 && mClockSelection != 13 && hasCustomClockInBigContainer()) {
                 mTextClock.setVisibility(View.GONE);
                 mSmallClockView.setVisibility(View.VISIBLE);
                 params.addRule(RelativeLayout.BELOW, R.id.clock_view);
