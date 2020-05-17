@@ -251,6 +251,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
             mClockPlugin.onDestroyView();
             mClockPlugin = null;
         }
+        isDefaultClock(plugin);
         adjustStatusAreaPadding(plugin);
         if (plugin == null) {
             if (mShowingHeader) {
@@ -290,8 +291,10 @@ public class KeyguardClockSwitch extends RelativeLayout {
             }
         }
         // Hide default clock.
-        if (!plugin.shouldShowStatusArea()) {
-            mKeyguardStatusArea.setVisibility(View.GONE);
+        if (plugin.getName().equals("default")) {
+            mTextClock.setVisibility(View.VISIBLE);
+        } else {
+            mTextClock.setVisibility(View.GONE);
         }
         // Initialize plugin parameters.
         mClockPlugin = plugin;
@@ -489,6 +492,12 @@ public class KeyguardClockSwitch extends RelativeLayout {
             } else if (mBigClockContainer.getVisibility() == INVISIBLE) {
                 mBigClockContainer.setVisibility(VISIBLE);
             }
+        }
+    }
+
+    private void isDefaultClock(ClockPlugin plugin) {
+        if (plugin != null && !plugin.getName().equals("default")) {
+            mTextClock.setVisibility(View.GONE);
         }
     }
 
