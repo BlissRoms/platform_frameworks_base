@@ -125,4 +125,5 @@ interface IStatusBarService
     void toggleCameraFlash();
     void toggleCameraFlashState(boolean enable);
     void setPartialScreenshot(boolean active);
+    void screenPinningStateChanged(boolean enabled);
 }
