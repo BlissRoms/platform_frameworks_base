@@ -290,8 +290,10 @@ public class KeyguardClockSwitch extends RelativeLayout {
             }
         }
         // Hide default clock.
-        if (!plugin.shouldShowStatusArea()) {
-            mKeyguardStatusArea.setVisibility(View.GONE);
+        if (plugin.getName().equals("default")) {
+            mTextClock.setVisibility(View.VISIBLE);
+        } else {
+            mTextClock.setVisibility(View.GONE);
         }
         // Initialize plugin parameters.
         mClockPlugin = plugin;

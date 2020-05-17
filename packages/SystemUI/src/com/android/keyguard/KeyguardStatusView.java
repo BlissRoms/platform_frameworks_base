@@ -413,14 +413,15 @@ public class KeyguardStatusView extends GridLayout implements
                 setFontSize(mClockView, mLockClockFontSize);
             }
 
-            if (mClockSelection != 12 && mClockSelection != 13) {
+            if ((mClockSelection == 12 || mClockSelection == 13) && isDefaultClock()) {
+                mTextClock.setVisibility(mDarkAmount != 1
+                    ? (mHideClock ? View.GONE : View.VISIBLE) : View.VISIBLE);
+                mSmallClockView.setVisibility(View.GONE);
+                params.addRule(RelativeLayout.BELOW, R.id.custom_text_clock_view);
+            } else {
                 mTextClock.setVisibility(View.GONE);
                 mSmallClockView.setVisibility(View.VISIBLE);
                 params.addRule(RelativeLayout.BELOW, R.id.clock_view);
-            } else {
-                mTextClock.setVisibility(View.VISIBLE);
-                mSmallClockView.setVisibility(View.GONE);
-                params.addRule(RelativeLayout.BELOW, R.id.custom_text_clock_view);
             }
 
             if (mClockSelection >= 6 && mClockSelection <= 11)
@@ -1783,6 +1784,14 @@ public class KeyguardStatusView extends GridLayout implements
         }
     }
 
+    private boolean isDefaultClock() {
+        final ContentResolver resolver = mContext.getContentResolver();
+        String currentClock = Settings.Secure.getString(
+            resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+        final boolean mIsDefaultClock = currentClock == null ? false : (currentClock.contains("default");
+        return mIsDefaultClock;
+    }
+
     private boolean isDateClock() {
         final ContentResolver resolver = mContext.getContentResolver();
         String currentClock = Settings.Secure.getString(
@@ -1821,7 +1830,7 @@ public class KeyguardStatusView extends GridLayout implements
         mTextClockAlignment = Settings.System.getIntForUser(resolver,
                 Settings.System.TEXT_CLOCK_ALIGNMENT, 0, UserHandle.USER_CURRENT);
 
-        if (mClockSelection == 12 || mClockSelection == 13) {
+        if ((mClockSelection == 12 || mClockSelection == 13) && mTextClock != null) {
             switch (mTextClockAlignment) {
                 case 0:
                 default:
