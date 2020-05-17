@@ -243,6 +243,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
             View bigClockView = mClockPlugin.getBigClockView();
             if (bigClockView != null && bigClockView.getParent() == mSmallClockFrame) {
                 mSmallClockFrame.removeView(bigClockView);
+                mTextClock.setVisibility(View.GONE);
             }
             if (mBigClockContainer != null) {
                 mBigClockContainer.removeAllViews();
@@ -260,7 +261,6 @@ public class KeyguardClockSwitch extends RelativeLayout {
                 mClockView.setVisibility(View.VISIBLE);
                 mClockViewBold.setVisibility(View.INVISIBLE);
             }
-            mKeyguardStatusArea.setVisibility(View.VISIBLE);
             return;
         }
         // Attach small and big clock views to hierarchy.
@@ -287,11 +287,11 @@ public class KeyguardClockSwitch extends RelativeLayout {
                 mSmallClockFrame.addView(bigClockView, -1,
                         new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
+                mTextClock.setVisibility(View.GONE);
             }
         }
-        // Hide default clock.
-        if (!plugin.shouldShowStatusArea()) {
-            mKeyguardStatusArea.setVisibility(View.GONE);
+        if (plugin.getName().equals("default")) {
+            mTextClock.setVisibility(View.VISIBLE);
         }
         // Initialize plugin parameters.
         mClockPlugin = plugin;
