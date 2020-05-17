@@ -256,9 +256,11 @@ public class KeyguardClockSwitch extends RelativeLayout {
             if (mShowingHeader) {
                 mClockView.setVisibility(View.GONE);
                 mClockViewBold.setVisibility(View.VISIBLE);
+                mTextClock.setVisibility(View.VISIBLE);
             } else {
                 mClockView.setVisibility(View.VISIBLE);
                 mClockViewBold.setVisibility(View.INVISIBLE);
+                mTextClock.setVisibility(View.VISIBLE);
             }
             mKeyguardStatusArea.setVisibility(View.VISIBLE);
             return;
@@ -274,6 +276,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
                             ViewGroup.LayoutParams.WRAP_CONTENT));
                 mClockView.setVisibility(View.GONE);
                 mClockViewBold.setVisibility(View.GONE);
+                mTextClock.setVisibility(View.GONE);
             }
             if (bigClockView != null && mBigClockContainer != null) {
                 mBigClockContainer.addView(bigClockView);
@@ -282,6 +285,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
         } else {
             mClockView.setVisibility(View.GONE);
             mClockViewBold.setVisibility(View.GONE);
+            mTextClock.setVisibility(View.GONE);
 
             if (bigClockView != null ) {
                 mSmallClockFrame.addView(bigClockView, -1,

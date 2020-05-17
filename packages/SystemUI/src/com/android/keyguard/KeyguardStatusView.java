@@ -1821,7 +1821,7 @@ public class KeyguardStatusView extends GridLayout implements
         mTextClockAlignment = Settings.System.getIntForUser(resolver,
                 Settings.System.TEXT_CLOCK_ALIGNMENT, 0, UserHandle.USER_CURRENT);
 
-        if (mClockSelection == 12 || mClockSelection == 13) {
+        if ((mClockSelection == 12 || mClockSelection == 13) && mTextClock != null) {
             switch (mTextClockAlignment) {
                 case 0:
                 default:
