@@ -36,7 +36,11 @@ public class ColorUtils {
     }
 
     public static int genRandomQsColor() {
-        return genRandomQsColor((long) SystemProperties.getInt("ro.boottime.init", 0));
+        return genRandomQsColor((long) getBootTime());
+    }
+
+    public static int getBootTime() {
+        return SystemProperties.getInt("ro.boottime.init", 0);
     }
 
     private static int genRandomAccentColor(boolean isThemeDark, Random r) {
