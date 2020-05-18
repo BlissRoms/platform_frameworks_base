@@ -190,7 +190,7 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
 
     private void setActiveColor(Context context) {
         if (setQsUseNewTint == 3 && useFWbg) {
-            mColorActive = ColorUtils.genRandomAccentColor(isThemeDark(context), (long) mIcon.toString().hashCode());
+            mColorActive = ColorUtils.genRandomAccentColor(isThemeDark(context), (long) (ColorUtils.getBootTime() + mIcon.toString().hashCode()));
         } else if (setQsUseNewTint == 1 && useFWbg) {
             mColorActive = ColorUtils.genRandomAccentColor(isThemeDark(context));
             mColorActiveAlpha = adjustAlpha(mColorActive, 0.2f);
