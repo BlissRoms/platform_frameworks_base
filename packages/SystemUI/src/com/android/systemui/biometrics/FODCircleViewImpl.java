@@ -71,4 +71,9 @@ public class FODCircleViewImpl extends SystemUI implements CommandQueue.Callback
             mFodCircleView.hide();
         }
     }
+
+    public int getHeight(boolean includeDecor) {
+         return mFodCircleView.getHeight(includeDecor);
+    }
+
 }

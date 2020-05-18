@@ -5664,4 +5664,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             mQuickStatusBarHeader.updateDataUsageImage();
         }
     }
+
+    public int getFodHeight(boolean includeDecor) {
+        return mFODCircleViewImpl.getHeight(includeDecor);
+    }
 }
