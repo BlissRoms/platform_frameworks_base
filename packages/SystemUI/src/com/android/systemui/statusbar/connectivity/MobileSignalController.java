@@ -483,6 +483,44 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
         return mImsManager != null && mImsManager.isEnhanced4gLteModeSettingEnabledByUser();
     }
 
+    private int getVolteResId() {
+        int resId = 0;
+
+        if (mCurrentState.imsRegistered && mVolteIcon) {
+            switch(mVoLTEstyle) {
+                // VoLTE
+                case 1:
+                    resId = R.drawable.ic_volte1;
+                    break;
+                // OOS VoLTE
+                case 2:
+                    resId = R.drawable.ic_volte2;
+                    break;
+                // HD Icon
+                case 3:
+                    resId = R.drawable.ic_hd_volte;
+                    break;
+                // ASUS VoLTE
+                case 4:
+                    resId = R.drawable.ic_volte3;
+                    break;
+                // MIUI 11 VoLTE icon
+                case 6:
+                    resId = R.drawable.ic_volte_miui;
+                    break;
+                // EMUI icon
+                case 7:
+                    resId = R.drawable.ic_volte_emui;
+                    break;
+                case 0:
+                default:
+                    resId = R.drawable.ic_volte;
+                    break;
+            }
+        }
+        return resId;
+    }
+
     private void setListeners() {
         if (mImsManager == null) {
             Log.e(mTag, "setListeners mImsManager is null");
@@ -655,7 +693,13 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
             statusIcon = new IconState(
                     showDataIconStatusBar && !mCurrentState.airplaneMode,
                     getCurrentIconId(), contentDescription);
-
+            MobileIconGroup vowifiIconGroup = getVowifiIconGroup();
+            if (vowifiIconGroup != null ) {
+                typeIcon = vowifiIconGroup.dataType;
+                statusIcon = new IconState(true,
+                        mCurrentState.enabled && !mCurrentState.airplaneMode? statusIcon.icon : -1,
+                        statusIcon.contentDescription);
+            }
             showTriangle = showDataIconStatusBar && !mCurrentState.airplaneMode;
         } else {
             statusIcon = new IconState(
@@ -1030,6 +1074,30 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     @VisibleForTesting
     void setImsType(int imsType) {
         mImsType = imsType;
+    }
+
+    private boolean isCallIdle() {
+        return mCallState == TelephonyManager.CALL_STATE_IDLE;
+    }
+
+    private int getDataNetworkType() {
+        return mServiceState != null ?
+                mServiceState.getDataNetworkType() : TelephonyManager.NETWORK_TYPE_UNKNOWN;
+    }
+
+    private boolean isVowifiAvailable() {
+        return mCurrentState.voiceCapable &&  mCurrentState.imsRegistered
+                && getDataNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN;
+    }
+
+    private MobileIconGroup getVowifiIconGroup() {
+        if ( isVowifiAvailable() && !isCallIdle() ) {
+            return TelephonyIcons.VOWIFI_CALLING;
+        }else if (isVowifiAvailable()) {
+            return TelephonyIcons.VOWIFI;
+        }else {
+            return null;
+        }
     }
 
     @Override
