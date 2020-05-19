@@ -272,4 +272,7 @@
     <string name="lockscreen_hidden">None</string>
     <!-- Shows when people have clicked on the custom lockscreen shortcut [CHAR LIMIT=60] -->
     <string name="custom_hint">Swipe from icon to launch</string>
+    <string name="tuner_keyguard_show_assistant_handle_title">Show assistant handles</string>
+    <string name="tuner_keyguard_show_assistant_handle_summary">Show assistant handles on screen edges</string>
+
 </resources>
