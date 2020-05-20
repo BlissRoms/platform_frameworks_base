@@ -1021,8 +1021,7 @@ public class KeyguardViewMediator extends SystemUI implements Dumpable,
                 }
             } else if (mShowing) {
                 mPendingReset = true;
-            } else if ((
-                    (offReason == WindowManagerPolicyConstants.OFF_BECAUSE_OF_TIMEOUT
+            } else if (((offReason == WindowManagerPolicyConstants.OFF_BECAUSE_OF_TIMEOUT
                             && timeout > 0)
                             || offReason == WindowManagerPolicyConstants.OFF_BECAUSE_OF_USER)
                             && !lockImmediately) {
