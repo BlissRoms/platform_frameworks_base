@@ -146,8 +146,10 @@ public class QSTileView extends QSTileBaseView {
 
             if (state.state == Tile.STATE_ACTIVE) {
                 if (setQsLabelUseNewTint == 1 && useFWbg) {
-                    mSecondLine.setTextColor(mColorLabelActive);
+                    mSecondLine.setTextColor(mColorLabelActiveRandom);
                 } else if (setQsLabelUseNewTint == 2 && useFWbg) {
+                    mSecondLine.setTextColor(mColorLabelActive);
+                } else if (setQsLabelUseNewTint == 3 && useFWbg) {
                     mSecondLine.setTextColor(mColorLabelGradient);
                 } else {
                     mSecondLine.setTextColor(mColorLabelDefault);
@@ -162,8 +164,10 @@ public class QSTileView extends QSTileBaseView {
         }
         if (state.state == Tile.STATE_ACTIVE) {
             if (setQsLabelUseNewTint == 1 && useFWbg) {
-                mLabel.setTextColor(mColorLabelActive);
+                mLabel.setTextColor(mColorLabelActiveRandom);
             } else if (setQsLabelUseNewTint == 2 && useFWbg) {
+                mLabel.setTextColor(mColorLabelActive);
+            } else if (setQsLabelUseNewTint == 3 && useFWbg) {
                 mLabel.setTextColor(mColorLabelGradient);
             } else {
                 mLabel.setTextColor(mColorLabelDefault);
