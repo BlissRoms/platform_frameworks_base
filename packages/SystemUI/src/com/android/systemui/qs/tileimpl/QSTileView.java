@@ -53,6 +53,7 @@ public class QSTileView extends QSTileBaseView {
     private ColorStateList mColorLabelActive;
     private ColorStateList mColorLabelUnavailable;
     private int mColorLabelGradient;
+    private int mColorLabelActiveRandom;
 
     private int setQsLabelUseNewTint;
     private boolean useFWbg;
@@ -75,11 +76,8 @@ public class QSTileView extends QSTileBaseView {
         boolean setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.QS_PANEL_BG_USE_NEW_TINT, 0, UserHandle.USER_CURRENT) == 1;
         mColorLabelDefault = Utils.getColorAttr(getContext(), android.R.attr.textColorPrimary);
-        if (setQsUseNewTint)
-            mColorLabelActive = Utils.getColorAttr(getContext(), android.R.attr.colorAccent);
-        else
-            mColorLabelActive = mColorLabelDefault;
         mColorLabelGradient = getResources().getColor(com.android.internal.R.color.gradient_end);
+        mColorLabelActiveRandom = ColorUtils.genRandomAccentColor(isThemeDark(context));
         // The text color for unavailable tiles is textColorSecondary, same as secondaryLabel for
         // contrast purposes
         mColorLabelUnavailable = Utils.getColorAttr(getContext(),
@@ -146,8 +144,10 @@ public class QSTileView extends QSTileBaseView {
 
             if (state.state == Tile.STATE_ACTIVE) {
                 if (setQsLabelUseNewTint == 1 && useFWbg) {
-                    mSecondLine.setTextColor(mColorLabelActive);
+                    mSecondLine.setTextColor(mColorLabelActiveRandom);
                 } else if (setQsLabelUseNewTint == 2 && useFWbg) {
+                    mSecondLine.setTextColor(mColorLabelActive);
+                } else if (setQsLabelUseNewTint == 3 && useFWbg) {
                     mSecondLine.setTextColor(mColorLabelGradient);
                 } else {
                     mSecondLine.setTextColor(mColorLabelDefault);
@@ -162,8 +162,10 @@ public class QSTileView extends QSTileBaseView {
         }
         if (state.state == Tile.STATE_ACTIVE) {
             if (setQsLabelUseNewTint == 1 && useFWbg) {
-                mLabel.setTextColor(mColorLabelActive);
+                mLabel.setTextColor(mColorLabelActiveRandom);
             } else if (setQsLabelUseNewTint == 2 && useFWbg) {
+                mLabel.setTextColor(mColorLabelActive);
+            } else if (setQsLabelUseNewTint == 3 && useFWbg) {
                 mLabel.setTextColor(mColorLabelGradient);
             } else {
                 mLabel.setTextColor(mColorLabelDefault);
