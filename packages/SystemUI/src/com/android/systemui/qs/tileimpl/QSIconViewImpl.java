@@ -199,7 +199,7 @@ public class QSIconViewImpl extends QSIconView {
                 int alpha = (int) (fromAlpha + (toAlpha - fromAlpha) * fraction);
                 int channel = (int) (fromChannel + (toChannel - fromChannel) * fraction);
 
-                if (setQsUseNewTint == 0) {
+                if (setQsUseNewTint == 0 || setQsUseNewTint == 3) {
                     setTint(iv, Color.argb(alpha, channel, channel, channel));
                 } else {
                     setTint(iv, toColor);
