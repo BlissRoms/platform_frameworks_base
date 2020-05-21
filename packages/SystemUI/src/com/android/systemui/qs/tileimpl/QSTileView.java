@@ -76,6 +76,7 @@ public class QSTileView extends QSTileBaseView {
         boolean setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.QS_PANEL_BG_USE_NEW_TINT, 0, UserHandle.USER_CURRENT) == 1;
         mColorLabelDefault = Utils.getColorAttr(getContext(), android.R.attr.textColorPrimary);
+        mColorLabelActive = Utils.getColorAttr(getContext(), android.R.attr.colorAccent);
         mColorLabelGradient = getResources().getColor(com.android.internal.R.color.gradient_end);
         mColorLabelActiveRandom = ColorUtils.genRandomAccentColor(isThemeDark(context));
         // The text color for unavailable tiles is textColorSecondary, same as secondaryLabel for
