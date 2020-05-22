@@ -90,6 +90,9 @@
         orientation. If zero, the value of rounded_corner_radius is used. -->
     <dimen name="rounded_corner_radius_bottom">0dp</dimen>
 
+    <!-- Radius of the software rounded corners at the top of the immersive display -->
+    <dimen name="rounded_corner_radius_top_immersive">0dp</dimen>
+
     <!-- Default adjustment for the software rounded corners since corners are not perfectly
         round. This value is used when retrieving the "radius" of the rounded corner in cases
         where the exact bezier curve cannot be retrieved.  This value will be subtracted from

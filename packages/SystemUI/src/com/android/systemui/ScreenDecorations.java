@@ -340,7 +340,10 @@ public class ScreenDecorations extends SystemUI implements Tunable,
         mRotation = RotationUtils.getExactRotation(mContext);
         mWindowManager = mContext.getSystemService(WindowManager.class);
 
-        updateRoundedCornerRadii();
+	if (mImmerseMode)
+	    applyRoundedCornerTopRadiusImmersive();
+	else
+            updateRoundedCornerRadii();
 
         Dependency.get(Dependency.MAIN_HANDLER).post(
                 () -> Dependency.get(TunerService.class).addTunable(this, SIZE));
@@ -498,7 +501,12 @@ public class ScreenDecorations extends SystemUI implements Tunable,
             int oldRotation = mRotation;
             mPendingRotationChange = false;
             updateOrientation();
-            updateRoundedCornerRadii();
+
+	    if (mImmerseMode)
+		applyRoundedCornerTopRadiusImmersive();
+	    else
+                updateRoundedCornerRadii();
+
             if (DEBUG) Log.i(TAG, "onConfigChanged from rot " + oldRotation + " to " + mRotation);
             if (shouldDrawCutout() && mOverlay == null) {
                 setupDecorations();
@@ -545,6 +553,17 @@ public class ScreenDecorations extends SystemUI implements Tunable,
             mBottomOverlay.findViewById(R.id.assist_hint_left).setVisibility(View.GONE);
             mBottomOverlay.findViewById(R.id.assist_hint_right).setVisibility(View.GONE);
             mAssistHintVisible = false;
+        }
+    }
+
+    private void applyRoundedCornerTopRadiusImmersive() {
+        final int newRoundedDefaultTop = mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.rounded_corner_radius_top_immersive);
+
+        final boolean roundedCornersChanged = mRoundedDefaultTop != newRoundedDefaultTop;
+        if (roundedCornersChanged) {
+            mRoundedDefaultTop = newRoundedDefaultTop;
+            onTuningChanged(SIZE, null);
         }
     }
 
