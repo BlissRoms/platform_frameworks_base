@@ -108,6 +108,15 @@ public class BlissUtils {
         return wifi.isConnected() || mobile.isConnected();
     }
 
+    // Returns today's passed time in Millisecond
+    public static long getTodayMillis() {
+        final long passedMillis;
+        Time time = new Time();
+        time.set(System.currentTimeMillis());
+        passedMillis = ((time.hour * 60 * 60) + (time.minute * 60) + time.second) * 1000;
+        return passedMillis;
+    }
+
     public static String batteryTemperature(Context context, Boolean ForC) {
         Intent intent = context.registerReceiver(null, new IntentFilter(
                 Intent.ACTION_BATTERY_CHANGED));
