@@ -165,6 +165,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private BatteryMeterView mBatteryRemainingIcon;
     private BatteryMeterView mBatteryIcon;
     private boolean mPermissionsHubEnabled;
+    private DataUsageView mDataUsageView;
+    private boolean mDataUsageEnalbed;
 
     private boolean mLandscape;
     private boolean mHeaderImageEnabled;
@@ -214,6 +216,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             "system:" + Settings.System.QS_SYSTEM_INFO;
     public static final String STATUS_BAR_CUSTOM_HEADER_HEIGHT =
             "system:" + Settings.System.STATUS_BAR_CUSTOM_HEADER_HEIGHT;
+    public static final String QS_DATAUSAGE =
+            "system:" + Settings.System.QS_DATAUSAGE;
 
     private final BroadcastReceiver mRingerReceiver = new BroadcastReceiver() {
         @Override
@@ -328,6 +332,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mDateView = findViewById(R.id.date);
         mSpace = findViewById(R.id.space);
         mDateView.setOnClickListener(this);
+        mDataUsageView = findViewById(R.id.data_sim_usage);
 
         // Tint for the battery icons are handled in setupHost()
         mBatteryRemainingIcon = findViewById(R.id.batteryRemainingIcon);
@@ -354,6 +359,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 STATUS_BAR_CUSTOM_HEADER_HEIGHT,
                 QSFooterImpl.QS_SHOW_DRAG_HANDLE,
                 QS_BATTERY_STYLE,
+                QS_DATAUSAGE,
                 QS_SYSTEM_INFO,
                 QS_BATTERY_LOCATION,
                 QS_SHOW_BRIGHTNESS_SLIDER,
@@ -603,6 +609,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         updateStatusIconAlphaAnimator();
         updateHeaderTextContainerAlphaAnimator();
         updatePrivacyChipAlphaAnimator();
+        updateDataUsageView();
 
         boolean shouldUseWallpaperTextColor = mLandscape && !mHeaderImageEnabled;
         mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
@@ -623,6 +630,14 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mSysBatTempMultiplier = resources.getInteger(
                   com.android.internal.R.integer.config_sysBatteryTempMultiplier);
     }
+
+    private void updateDataUsageView() {
+        if (mDataUsageEnabled) {
+            mDataUsageView.setVisibility(View.VISIBLE);
+        } else {
+            mDataUsageView.setVisibility(View.GONE);
+        }
+     }
 
     private void updateStatusIconAlphaAnimator() {
         mStatusIconsAlphaAnimator = new TouchAnimator.Builder()
@@ -1032,6 +1047,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 break;
             case QSPanel.QS_SHOW_BRIGHTNESS_BUTTONS:
                 mBrightnessButton =
+                        TunerService.parseIntegerSwitch(newValue, true);
+                updateResources();
+                break;
+            case QS_DATAUSAGE:
+                mDataUsageEnalbed =
                         TunerService.parseIntegerSwitch(newValue, true);
                 updateResources();
                 break;
