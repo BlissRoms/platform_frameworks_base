@@ -494,38 +494,37 @@ public class KeyguardClockSwitch extends RelativeLayout {
 
     public void textClockAllignment() {
         final ContentResolver resolver = mContext.getContentResolver();
-        boolean mClockSelection = Settings.System.getIntForUser(resolver,
-                Settings.System.LOCKSCREEN_CLOCK_SELECTION, 0, UserHandle.USER_CURRENT) == 12
-                || Settings.System.getIntForUser(resolver,
-                Settings.System.LOCKSCREEN_CLOCK_SELECTION, 0, UserHandle.USER_CURRENT) == 13;
         int mTextClockAlignment = Settings.System.getIntForUser(resolver,
                 Settings.System.TEXT_CLOCK_ALIGNMENT, 0, UserHandle.USER_CURRENT);
 
-        if (mClockSelection) {
-            switch (mTextClockAlignment) {
-                case 0:
-                default:
-                    mKeyguardStatusArea.setRowGravity(Gravity.START);
-                    mKeyguardStatusArea.setRowPadding(updateTextClockPadding(), 0, 0, 0);
-                    break;
-                case 1:
-                    mKeyguardStatusArea.setRowGravity(Gravity.CENTER);
-                    mKeyguardStatusArea.setRowPadding(0, 0, 0, 0);
-                    break;
-                case 2:
-                    mKeyguardStatusArea.setRowGravity(Gravity.END);
-                    mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding(), 0);
-                case 3:
-                    mKeyguardStatusArea.setRowGravity(Gravity.END);
-                    mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding(), 0);
-                    break;
-                case 4:
-                    mKeyguardStatusArea.setRowGravity(Gravity.START);
-                    mKeyguardStatusArea.setRowPadding(updateTextClockPadding(), 0, 0, 0);
-            }
-        } else {
-            mKeyguardStatusArea.setRowGravity(Gravity.CENTER);
+        switch (mTextClockAlignment) {
+            case 0:
+            default:
+                mKeyguardStatusArea.setRowGravity(Gravity.START);
+                mKeyguardStatusArea.setRowPadding(updateTextClockPadding(), 0, 0, 0);
+                break;
+            case 1:
+                mKeyguardStatusArea.setRowGravity(Gravity.CENTER);
+                mKeyguardStatusArea.setRowPadding(0, 0, 0, 0);
+                break;
+            case 2:
+                mKeyguardStatusArea.setRowGravity(Gravity.END);
+                mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding(), 0);
+                break;
+            case 3:
+                mKeyguardStatusArea.setRowGravity(Gravity.END);
+                mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding(), 0);
+                break;
+            case 4:
+                mKeyguardStatusArea.setRowGravity(Gravity.START);
+                mKeyguardStatusArea.setRowPadding(updateTextClockPadding(), 0, 0, 0);
+                break;
         }
+    }
+
+    public void centerAllignment() {
+            mKeyguardStatusArea.setRowGravity(Gravity.CENTER);
+            mKeyguardStatusArea.setRowPadding(0, 0, 0, 0);
     }
 
     private void adjustStatusAreaPadding(ClockPlugin plugin) {
