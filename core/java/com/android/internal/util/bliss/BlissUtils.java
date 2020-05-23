@@ -44,6 +44,7 @@ import android.os.UserHandle;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.text.format.Time;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.os.SystemProperties;
@@ -430,6 +431,15 @@ public class BlissUtils {
         boolean maskDisplayCutout = context.getResources().getBoolean(R.bool.config_maskMainBuiltInDisplayCutout);
         boolean displayCutoutExists = (hasNotch && !maskDisplayCutout);
         return displayCutoutExists;
+    }
+
+    // Returns today's passed time in Millisecond
+    public static long getTodayMillis() {
+        final long passedMillis;
+        Time time = new Time();
+        time.set(System.currentTimeMillis());
+        passedMillis = ((time.hour * 60 * 60) + (time.minute * 60) + time.second) * 1000;
+        return passedMillis;
     }
 
    /* e.g.
