@@ -79,6 +79,8 @@ public class QSContainerImpl extends FrameLayout implements
     private boolean mQsDisabled;
 
     private Drawable mQsBackGround;
+    private Drawable mQsBackGroundNew;
+    private boolean mQsBgNewEnabled;
 
     private boolean mHeaderImageEnabled;
     private ImageView mBackgroundImage;
@@ -122,6 +124,7 @@ public class QSContainerImpl extends FrameLayout implements
         mBackgroundGradient = findViewById(R.id.quick_settings_gradient_view);
         mSideMargins = getResources().getDimensionPixelSize(R.dimen.notification_side_paddings);
         mQsBackGround = getContext().getDrawable(R.drawable.qs_background_primary);
+        mQsBackGroundNew = getContext().getDrawable(R.drawable.qs_background_primary_new);
         mBackgroundImage = findViewById(R.id.qs_header_image_view);
         mBackgroundImage.setClipToOutline(true);
         mColorExtractor = Dependency.get(SysuiColorExtractor.class);
@@ -190,6 +193,9 @@ public class QSContainerImpl extends FrameLayout implements
             getContext().getContentResolver().registerContentObserver(Settings.System
                             .getUriFor(Settings.System.STATUS_BAR_CUSTOM_HEADER_HEIGHT), false,
                     this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_NEW_BG_ENABLED), false, this,
+                    UserHandle.USER_ALL);
         }
 
         @Override
@@ -211,6 +217,8 @@ public class QSContainerImpl extends FrameLayout implements
         mQsBackGroundAlpha = Settings.System.getIntForUser(resolver,
                 Settings.System.OMNI_QS_PANEL_BG_ALPHA, 255,
                 UserHandle.USER_CURRENT);
+        mQsBgNewEnabled = Settings.System.getIntForUser(getContext().getContentResolver(),
+                    Settings.System.QS_NEW_BG_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
         mQsBackGroundColor = ColorUtils.getValidQsColor(Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.QS_PANEL_BG_COLOR, ColorUtils.genRandomQsColor(),
                 UserHandle.USER_CURRENT));
@@ -232,7 +240,11 @@ public class QSContainerImpl extends FrameLayout implements
 
     private void setQsBackground() {
         if (mSetQsFromResources) {
-            mQsBackGround = getContext().getDrawable(R.drawable.qs_background_primary);
+            if (!mQsBgNewEnabled) {
+                mQsBackGround = getContext().getDrawable(R.drawable.qs_background_primary);
+            } else {
+                mQsBackGroundNew = getContext().getDrawable(R.drawable.qs_background_primary_new);
+            }
             try {
                 mOverlayManager.setEnabled("com.android.systemui.qstheme.color",
                         false, ActivityManager.getCurrentUser());
@@ -240,20 +252,28 @@ public class QSContainerImpl extends FrameLayout implements
                 Log.w("QSContainerImpl", "Can't change qs theme", e);
             }
         } else {
-            if (mQsBackGround != null) {
+            if (!mQsBgNewEnabled) {
                 mQsBackGround.setColorFilter(mCurrentColor, PorterDuff.Mode.SRC_ATOP);
-            }
-            try {
+            } else {
+                mQsBackGroundNew.setColorFilter(mCurrentColor, PorterDuff.Mode.SRC_ATOP);
+	    }
+	    try {
                 mOverlayManager.setEnabled("com.android.systemui.qstheme.color",
                         true, ActivityManager.getCurrentUser());
             } catch (RemoteException e) {
                 Log.w("QSContainerImpl", "Can't change qs theme", e);
             }
         }
-        if (mQsBackGround != null)
+        if (!mQsBgNewEnabled) {
             mQsBackGround.setAlpha(mQsBackGroundAlpha);
-        if (mQsBackGround != null && mBackground != null)
+        } else {
+            mQsBackGroundNew.setAlpha(mQsBackGroundAlpha);
+        }
+        if (!mQsBgNewEnabled && mBackground != null) {
             mBackground.setBackground(mQsBackGround);
+        } else {
+            mBackground.setBackground(mQsBackGroundNew);
+        }
     }
 
     @Override
