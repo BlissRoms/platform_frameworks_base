@@ -38,4 +38,7 @@
 
     <!-- Screenrecord -->
     <color name="screenrecord_icon_color">#B71C1C</color>
+
+    <color name="config_fodColorBackground">#20000000</color>
+
 </resources>
