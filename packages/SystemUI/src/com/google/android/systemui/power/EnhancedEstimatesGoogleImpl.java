@@ -7,52 +7,31 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.net.Uri.Builder;
-import android.os.BatteryStats;
-import android.os.Bundle;
-import android.os.SystemClock;
-import android.os.UserManager;
 import android.provider.Settings;
 import android.util.KeyValueListParser;
 import android.util.Log;
-import com.android.internal.os.BatteryStatsHelper;
 import com.android.settingslib.fuelgauge.Estimate;
-import com.android.settingslib.fuelgauge.EstimateKt;
 import com.android.settingslib.utils.PowerUtil;
 import com.android.systemui.power.EnhancedEstimates;
 import java.time.Duration;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-@Singleton
 public class EnhancedEstimatesGoogleImpl implements EnhancedEstimates {
     private Context mContext;
     private final KeyValueListParser mParser = new KeyValueListParser(',');
 
-    BatteryStatsHelper mBatteryStatsHelper;
-    UserManager mUserManager;
-
-    @Inject
     public EnhancedEstimatesGoogleImpl(Context context) {
         mContext = context;
-        mBatteryStatsHelper = new BatteryStatsHelper(context,
-                true /* collectBatteryBroadcast */);
-        mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
     }
 
     @Override
     public boolean isHybridNotificationEnabled() {
-        if (getAospEstimate() != null) {
-            return true;
-        }
-
         try {
             if (!mContext.getPackageManager().getPackageInfo("com.google.android.apps.turbo", PackageManager.MATCH_DISABLED_COMPONENTS).applicationInfo.enabled) {
                 return false;
             }
             updateFlags();
             return mParser.getBoolean("hybrid_enabled", true);
-        } catch (PackageManager.NameNotFoundException unused) {
+        } catch (Exception unused) {
             return false;
         }
     }
@@ -91,14 +70,14 @@ public class EnhancedEstimatesGoogleImpl implements EnhancedEstimates {
                 }
             }
             if (query == null) {
-                return getAospEstimate();
+                return null;
             }
             query.close();
-            return getAospEstimate();
+            return null;
         } catch (Exception e) {
-            Log.d("EnhancedEstimates", "Something went wrong when getting battery estimate", e);
+            Log.d("EnhancedEstimates", "Something went wrong when getting an estimate from Turbo", e);
+            return null;
         }
-        return getAospEstimate();
     }
 
     @Override
@@ -126,26 +105,5 @@ public class EnhancedEstimatesGoogleImpl implements EnhancedEstimates {
             Log.e("EnhancedEstimates", "Bad hybrid sysui warning flags");
         }
     }
-
-    public Estimate getAospEstimate() {
-        try {
-            mBatteryStatsHelper.create((Bundle) null);
-            mBatteryStatsHelper.clearStats();
-            mBatteryStatsHelper.refreshStats(BatteryStats.STATS_SINCE_CHARGED, mUserManager.getUserProfiles());
-            BatteryStats stats = mBatteryStatsHelper.getStats();
-            if (stats != null) {
-                long remaining = stats.computeBatteryTimeRemaining(PowerUtil.convertMsToUs(
-                        SystemClock.elapsedRealtime()));
-                if (remaining != -1) {
-                    return new Estimate(PowerUtil.convertUsToMs(remaining), false,
-                            EstimateKt.AVERAGE_TIME_TO_DISCHARGE_UNKNOWN);
-                }
-            }
-            if (stats == null)
-                return null;
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
-            Log.d("EnhancedAospEstimates", "Something went wrong when getting battery estimate", e);
-        }
-        return null;
-    }
 }
+
