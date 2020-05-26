@@ -57,6 +57,13 @@ abstract class SystemUIDefaultModule {
     }
 
     @Binds
+    abstract EnhancedEstimates bindEnhancedEstimates(EnhancedEstimatesImpl enhancedEstimates);
+
+    @Binds
+    abstract NotificationLockscreenUserManager bindNotificationLockscreenUserManager(
+            NotificationLockscreenUserManagerImpl notificationLockscreenUserManager);
+
+    @Binds
     abstract DockManager bindDockManager(DockManagerImpl dockManager);
 
     @Binds
