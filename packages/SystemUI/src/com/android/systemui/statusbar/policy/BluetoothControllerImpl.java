@@ -235,16 +235,15 @@ public class BluetoothControllerImpl implements BluetoothController, BluetoothCa
         mConnectedDevices.clear();
         // If any of the devices are in a higher state than the adapter, move the adapter into
         // that state.
-        for (CachedBluetoothDevice device : getDevices()) {
-            int maxDeviceState = device.getMaxConnectionState();
-            if (maxDeviceState > state) {
-                state = maxDeviceState;
-            }
-            if (device.isConnected()) {
-                mConnectedDevices.add(device);
-            }
+	for (CachedBluetoothDevice device : getDevices()) {
+	    int maxDeviceState = device.getMaxConnectionState();
+	    if (maxDeviceState > state) {
+		state = maxDeviceState;
+	    }
+	    if (state == BluetoothProfile.STATE_CONNECTED) {
+		mConnectedDevices.add(device);
+	    }
         }
-
         if (mConnectedDevices.isEmpty() && state == BluetoothAdapter.STATE_CONNECTED) {
             // If somehow we think we are connected, but have no connected devices, we aren't
             // connected.
