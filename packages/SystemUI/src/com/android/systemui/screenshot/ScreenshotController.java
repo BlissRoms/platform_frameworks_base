@@ -53,14 +53,21 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
+import android.hardware.camera2.CameraManager;
 import android.hardware.display.DisplayManager;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.AudioSystem;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.RemoteException;
+import android.os.SystemProperties;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -261,6 +268,9 @@ public class ScreenshotController {
     private final WindowManager.LayoutParams mWindowLayoutParams;
     private final AccessibilityManager mAccessibilityManager;
     private final ListenableFuture<MediaPlayer> mCameraSound;
+    private final AudioManager mAudioManager;
+    private final CameraManager mCameraManager;
+    private final Vibrator mVibrator;
     private final ScrollCaptureClient mScrollCaptureClient;
     private final PhoneWindow mWindow;
     private final DisplayManager mDisplayManager;
@@ -274,6 +284,7 @@ public class ScreenshotController {
     private SaveImageInBackgroundTask mSaveInBgTask;
     private boolean mScreenshotTakenInPortrait;
     private boolean mBlockAttach;
+    private int mCamsInUse = 0;
 
     private Animator mScreenshotAnimation;
     private RequestCallback mCurrentRequestCallback;
@@ -382,6 +393,13 @@ public class ScreenshotController {
 
         // Initialize current foreground package name
         mTaskListener.onTaskStackChanged();
+
+        // Grab system services needed for screenshot sound
+        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        mCameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
+        mCameraManager.registerAvailabilityCallback(mCamCallback,
+                new Handler(Looper.getMainLooper()));
 
         mCopyBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -894,6 +912,27 @@ public class ScreenshotController {
     }
 
     private void playCameraSound() {
+       boolean playSound = readCameraSoundForced() && mCamsInUse > 0;
+
+        switch (mAudioManager.getRingerMode()) {
+            case AudioManager.RINGER_MODE_SILENT:
+                // do nothing
+                break;
+            case AudioManager.RINGER_MODE_VIBRATE:
+                if (mVibrator != null && mVibrator.hasVibrator()) {
+                    mVibrator.vibrate(VibrationEffect.createOneShot(50,
+                            VibrationEffect.DEFAULT_AMPLITUDE));
+                }
+                break;
+            case AudioManager.RINGER_MODE_NORMAL:
+                // in this case we want to play sound even if not forced on
+                playSound = true;
+                break;
+        }
+
+        if (!playSound)
+            return;
+
         mCameraSound.addListener(() -> {
             try {
                 MediaPlayer player = mCameraSound.get();
@@ -950,6 +989,7 @@ public class ScreenshotController {
         if (DEBUG_ANIM) {
             Log.d(TAG, "starting post-screenshot animation");
         }
+
         mScreenshotAnimation.start();
     }
 
@@ -1182,5 +1222,24 @@ public class ScreenshotController {
                 }
             };
         }
+    }
+
+    private CameraManager.AvailabilityCallback mCamCallback =
+            new CameraManager.AvailabilityCallback() {
+        @Override
+        public void onCameraOpened(String cameraId, String packageId) {
+            mCamsInUse++;
+        }
+
+        @Override
+        public void onCameraClosed(String cameraId) {
+            mCamsInUse--;
+        }
+    };
+
+    private boolean readCameraSoundForced() {
+        return SystemProperties.getBoolean("audio.camerasound.force", false) ||
+                mContext.getResources().getBoolean(
+                        com.android.internal.R.bool.config_camera_sound_forced);
     }
 }
