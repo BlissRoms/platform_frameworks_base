@@ -400,9 +400,6 @@ public class KeyguardStatusView extends GridLayout implements
     @Override
     public void onDensityOrFontScaleChanged() {
         if (mClockView != null) {
-            mSmallClockView.setVisibility(mDarkAmount != 1
-                    ? (mHideClock ? View.GONE : View.VISIBLE) : View.VISIBLE);
-
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
                     mKeyguardSlice.getLayoutParams();
 
@@ -420,7 +417,8 @@ public class KeyguardStatusView extends GridLayout implements
                 params.addRule(RelativeLayout.BELOW, R.id.custom_text_clock_view);
             } else {
                 mTextClock.setVisibility(View.GONE);
-                mSmallClockView.setVisibility(View.VISIBLE);
+                mSmallClockView.setVisibility(mDarkAmount != 1
+                    ? (mHideClock ? View.GONE : View.VISIBLE) : View.VISIBLE);
                 params.addRule(RelativeLayout.BELOW, R.id.clock_view);
             }
 
