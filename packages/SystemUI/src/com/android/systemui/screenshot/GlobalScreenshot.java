@@ -64,6 +64,7 @@ import android.graphics.Picture;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.media.AudioManager;
 import android.media.MediaActionSound;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -79,6 +80,8 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.DeviceConfig;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -664,6 +667,8 @@ class GlobalScreenshot {
     private AsyncTask<Void, Void, Void> mSaveInBgTask;
 
     private Ringtone  mScreenshotSound;
+    private AudioManager mAudioManager;
+    private Vibrator mVibrator;
 
 
     /**
@@ -737,6 +742,10 @@ class GlobalScreenshot {
         // Setup the Screenshot sound
         mScreenshotSound= RingtoneManager.getRingtone(mContext,
                     Uri.parse("file://" + "/system/media/audio/ui/camera_click.ogg"));
+
+        // Grab system services needed for screenshot sound
+        mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     /**
@@ -971,12 +980,25 @@ class GlobalScreenshot {
         mScreenshotLayout.post(new Runnable() {
             @Override
             public void run() {
-                // Play the shutter sound to notify that we've taken a screenshot
-                if (Settings.System.getIntForUser(mContext.getContentResolver(),
+                switch (mAudioManager.getRingerMode()) {
+                    case AudioManager.RINGER_MODE_SILENT:
+                        // do nothing
+                        break;
+                    case AudioManager.RINGER_MODE_VIBRATE:
+                        if (mVibrator != null && mVibrator.hasVibrator()) {
+                            mVibrator.vibrate(VibrationEffect.createOneShot(50,
+                                    VibrationEffect.DEFAULT_AMPLITUDE));
+                        }
+                        break;
+                    case AudioManager.RINGER_MODE_NORMAL:
+                        // Play the shutter sound to notify that we've taken a screenshot
+                        if (Settings.System.getIntForUser(mContext.getContentResolver(),
                         Settings.System.SCREENSHOT_SOUND, 1, UserHandle.USER_CURRENT) == 1) {
-                    if (mScreenshotSound != null) {
-                        mScreenshotSound.play();
-                    }
+                                if (mScreenshotSound != null) {
+                                    mScreenshotSound.play();
+                                }
+                        }
+                        break;
                 }
 
                 mScreenshotView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
