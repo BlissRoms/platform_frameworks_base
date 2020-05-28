@@ -33,6 +33,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.hardware.input.InputManager;
+import android.net.NetworkInfo;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Handler;
@@ -329,6 +330,15 @@ public class BlissUtils {
         newColor[2] = empty[2] + ((full[2]-empty[2])*blendFactor);
         int newAlpha = (int) (emptyAlpha + ((fullAlpha-emptyAlpha)*blendFactor));
         return Color.HSVToColor(newAlpha, newColor);
+    }
+
+    // Check if device is connected to Wi-Fi
+    public static boolean isWiFiConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return false;
+
+        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifi.isConnected();
     }
 
     // Check if device is connected to the internet
