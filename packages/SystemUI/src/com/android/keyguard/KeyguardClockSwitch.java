@@ -280,12 +280,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
             }
         }
 
-
-
-        // Hide default clock.
-        if (!plugin.shouldShowStatusArea()) {
-            mKeyguardStatusArea.setVisibility(View.GONE);
-        }
+        // Show / hide status area
+        mKeyguardStatusArea.setVisibility(plugin.shouldShowStatusArea() ? View.VISIBLE : View.GONE);
         // Initialize plugin parameters.
         mClockPlugin = plugin;
         mClockPlugin.setStyle(getPaint().getStyle());
