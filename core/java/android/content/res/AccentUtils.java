@@ -30,7 +30,14 @@ public class AccentUtils {
                 || resName.contains("material_pixel_blue_dark")
                 || resName.contains("material_pixel_blue_bright")
                 || resName.contains("gradient_start")
-                || resName.contains("colorAccent");
+                || resName.contains("colorAccent")
+                || resName.contains("holo_blue_light")
+                || resName.contains("holo_blue_dark")
+                || resName.contains("omni_color5")
+                || resName.contains("omni_color4")
+                || resName.contains("dialer_theme_color")
+                || resName.contains("dialer_theme_color_dark")
+                || resName.contains("dialer_theme_color_20pct");
     }
 
     static boolean isResourceGradient(String resName) {
