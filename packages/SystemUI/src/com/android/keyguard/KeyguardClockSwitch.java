@@ -501,7 +501,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
             case 0:
             default:
                 mKeyguardStatusArea.setRowGravity(Gravity.START);
-                mKeyguardStatusArea.setRowPadding(updateTextClockPadding(), 0, 0, 0);
+                mKeyguardStatusArea.setRowPadding(updateTextClockPadding() - 20, 0, 0, 0);
                 break;
             case 1:
                 mKeyguardStatusArea.setRowGravity(Gravity.CENTER);
@@ -785,6 +785,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
             case 38:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_date_font_size_38);
             case 39:
+            default:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_date_font_size_39);
             case 40:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_date_font_size_40);
@@ -817,7 +818,6 @@ public class KeyguardClockSwitch extends RelativeLayout {
             case 54:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_clock_font_size_54);
             case 55:
-            default:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_clock_font_size_55);
             case 56:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_clock_font_size_56);
