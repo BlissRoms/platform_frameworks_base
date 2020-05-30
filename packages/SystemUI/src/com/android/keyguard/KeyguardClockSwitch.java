@@ -501,7 +501,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
             case 0:
             default:
                 mKeyguardStatusArea.setRowGravity(Gravity.START);
-                mKeyguardStatusArea.setRowPadding(updateTextClockPadding(), 0, 0, 0);
+                mKeyguardStatusArea.setRowPadding(updateTextClockPadding() - 29, 0, 0, 0);
                 break;
             case 1:
                 mKeyguardStatusArea.setRowGravity(Gravity.CENTER);
@@ -509,15 +509,15 @@ public class KeyguardClockSwitch extends RelativeLayout {
                 break;
             case 2:
                 mKeyguardStatusArea.setRowGravity(Gravity.END);
-                mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding(), 0);
+                mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding() - 29, 0);
                 break;
             case 3:
                 mKeyguardStatusArea.setRowGravity(Gravity.END);
-                mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding(), 0);
+                mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding() - 29, 0);
                 break;
             case 4:
                 mKeyguardStatusArea.setRowGravity(Gravity.START);
-                mKeyguardStatusArea.setRowPadding(updateTextClockPadding(), 0, 0, 0);
+                mKeyguardStatusArea.setRowPadding(updateTextClockPadding() - 29, 0, 0, 0);
                 break;
         }
     }
