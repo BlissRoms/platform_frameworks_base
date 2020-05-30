@@ -100,4 +100,9 @@ public class ThemesUtils {
             "com.android.theme.materialocean.system",
             "com.android.theme.materialocean.systemui",
     };
+
+    public static final String[] XTENDED_CLEAR = {
+            "com.android.theme.xtendedclear.system",
+            "com.android.theme.xtendedclear.systemui",
+    };
 }
