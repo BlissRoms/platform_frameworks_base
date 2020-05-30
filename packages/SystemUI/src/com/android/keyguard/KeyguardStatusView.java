@@ -681,11 +681,11 @@ public class KeyguardStatusView extends GridLayout implements
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
             case LOCK_CLOCK_FONT_STYLE:
-                    mLockClockFontStyle = TunerService.parseInteger(newValue, 4);
+                    mLockClockFontStyle = TunerService.parseInteger(newValue, 36);
                 onDensityOrFontScaleChanged();
                 break;
             case LOCK_DATE_FONT_STYLE:
-                    mLockDateFontStyle = TunerService.parseInteger(newValue, 14);
+                    mLockDateFontStyle = TunerService.parseInteger(newValue, 36);
                 onDensityOrFontScaleChanged();
                 break;
             case LOCKSCREEN_CLOCK_SELECTION:
@@ -717,7 +717,7 @@ public class KeyguardStatusView extends GridLayout implements
                 onDensityOrFontScaleChanged();
                 break;
             case LOCK_OWNERINFO_FONTS:
-                    mOwnerInfoFontStyle = TunerService.parseInteger(newValue, 4);
+                    mOwnerInfoFontStyle = TunerService.parseInteger(newValue, 36);
                 onDensityOrFontScaleChanged();
                 break;
             default:
@@ -836,6 +836,7 @@ public class KeyguardStatusView extends GridLayout implements
                 view.setTextFont(Typeface.create("googlesans", Typeface.NORMAL));
                 break;
             case FONT_ONEPLUSSLATE:
+            default:
                 view.setTextFont(Typeface.create("oneplusslate", Typeface.NORMAL));
                 break;
             case FONT_SAMSUNGONE:
@@ -970,8 +971,6 @@ public class KeyguardStatusView extends GridLayout implements
             case FONT_SOFIA_SEMICONDENSED_MEDIUM:
                 view.setTextFont(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
                 break;
-            default:
-                break;
         }
     }
 
@@ -1098,6 +1097,7 @@ public class KeyguardStatusView extends GridLayout implements
                         getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_49));
                 break;
             case 50:
+            default:
                 view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                         getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_50));
                 break;
@@ -1333,8 +1333,6 @@ public class KeyguardStatusView extends GridLayout implements
                 view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                         getResources().getDimensionPixelSize(R.dimen.lock_clock_font_size_108));
                 break;
-            default:
-                break;
         }
     }
 
@@ -1518,6 +1516,7 @@ public class KeyguardStatusView extends GridLayout implements
                 mOwnerInfo.setTypeface(Typeface.create("googlesans", Typeface.NORMAL));
                 break;
             case FONT_ONEPLUSSLATE:
+            default:
                 mOwnerInfo.setTypeface(Typeface.create("oneplusslate", Typeface.NORMAL));
                 break;
             case FONT_SAMSUNGONE:
@@ -1651,8 +1650,6 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case FONT_SOFIA_SEMICONDENSED_MEDIUM:
                 mOwnerInfo.setTypeface(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
-                break;
-            default:
                 break;
         }
     }

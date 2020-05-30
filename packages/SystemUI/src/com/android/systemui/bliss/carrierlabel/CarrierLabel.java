@@ -206,7 +206,7 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
                 break;
             case STATUS_BAR_CARRIER_FONT_STYLE:
                 mCarrierLabelFontStyle =
-                        TunerService.parseInteger(newValue, 14);
+                        TunerService.parseInteger(newValue, 36);
                 setCarrierLabel();
                 break;
             case STATUS_BAR_CARRIER_COLOR:
@@ -222,7 +222,6 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
     public void getFontStyle(int font) {
         switch (font) {
             case FONT_NORMAL:
-            default:
                 setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
             case FONT_ITALIC:
@@ -310,6 +309,7 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
                 setTypeface(Typeface.create("googlesans", Typeface.NORMAL));
                 break;
             case FONT_ONEPLUSSLATE:
+            default:
                 setTypeface(Typeface.create("oneplusslate", Typeface.NORMAL));
                 break;
             case FONT_SAMSUNGONE:

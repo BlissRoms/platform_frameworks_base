@@ -523,7 +523,7 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
                 break;
             case STATUS_BAR_CLOCK_FONT_STYLE:
                 mClockFontStyle =
-                        TunerService.parseInteger(newValue, 28);
+                        TunerService.parseInteger(newValue, 36);
                 break;
             default:
                 break;
@@ -780,7 +780,6 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     public void getFontStyle(int font) {
         switch (font) {
             case FONT_NORMAL:
-            default:
                 setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
             case FONT_ITALIC:
@@ -868,6 +867,7 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
                 setTypeface(Typeface.create("googlesans", Typeface.NORMAL));
                 break;
             case FONT_ONEPLUSSLATE:
+            default:
                 setTypeface(Typeface.create("oneplusslate", Typeface.NORMAL));
                 break;
             case FONT_SAMSUNGONE:

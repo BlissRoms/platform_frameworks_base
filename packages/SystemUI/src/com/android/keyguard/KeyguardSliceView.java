@@ -562,7 +562,6 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
                 view.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 break;
             case FONT_MEDIUM:
-            default:
                 view.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 break;
             case FONT_MEDIUM_ITALIC:
@@ -629,6 +628,7 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
             case FONT_GOOGLESANS:
                 view.setTypeface(Typeface.create("googlesans", Typeface.NORMAL));
                 break;
+            default:
             case FONT_ONEPLUSSLATE:
                 view.setTypeface(Typeface.create("oneplusslate", Typeface.NORMAL));
                 break;
