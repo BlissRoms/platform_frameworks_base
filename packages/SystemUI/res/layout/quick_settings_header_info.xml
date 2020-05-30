@@ -113,7 +113,7 @@
                     android:layout_height="match_parent"
                     android:singleLine="true"
                     android:paddingEnd="@dimen/status_bar_clock_end_padding"
-                    android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+                    android:textAppearance="@style/TextAppearance.QS.Status"
                     android:gravity="center_vertical|end"
                     android:visibility="gone"/>
         </LinearLayout>
