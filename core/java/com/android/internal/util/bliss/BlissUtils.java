@@ -101,6 +101,11 @@ public class BlissUtils {
             "com.android.theme.darkgrey.systemui",
     };
 
+    public static final String[] XTENDED_CLEAR = {
+            "com.android.theme.xtendedclear.system",
+            "com.android.theme.xtendedclear.systemui",
+    };
+
      // Switch themes
     private static final String[] SWITCH_THEMES = {
         "com.android.system.switch.stock", // 0
