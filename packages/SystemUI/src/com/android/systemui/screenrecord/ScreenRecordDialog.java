@@ -241,9 +241,13 @@ public class ScreenRecordDialog extends Activity {
                 break;
             default:
                 if (resultCode == RESULT_OK) {
-                    startForegroundService(
-                            RecordingService.getStartIntent(this, resultCode, data, mAudioSourceOpt,
-                                    mShowTaps, mShowDot, mVideoBitrateOpt));
+                    try {
+                      startForegroundService(
+                               RecordingService.getStartIntent(this, resultCode, data, mAudioSourceOpt,
+                                        mShowTaps, mShowDot, mVideoBitrateOpt));
+                    } catch (RemoteServiceException e) {
+                      // do nothing
+                    }
                 } else {
                     Toast.makeText(this,
                             getResources().getString(R.string.screenrecord_permission_error),
