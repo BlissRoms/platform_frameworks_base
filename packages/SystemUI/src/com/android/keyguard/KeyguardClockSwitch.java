@@ -807,6 +807,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
             case 49:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_date_font_size_49);
             case 50:
+            default:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_date_font_size_50);
             case 51:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_clock_font_size_51);
@@ -817,7 +818,6 @@ public class KeyguardClockSwitch extends RelativeLayout {
             case 54:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_clock_font_size_54);
             case 55:
-            default:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_clock_font_size_55);
             case 56:
                 return (int) mContext.getResources().getDimension(R.dimen.lock_clock_font_size_56);
