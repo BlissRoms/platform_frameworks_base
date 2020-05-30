@@ -176,6 +176,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private String mSysGPULoad;
     private int mSysCPUTempMultiplier;
     private int mSysBatTempMultiplier;
+    private boolean mHideDragHandle;
 
     private static final String SHOW_QS_CLOCK =
             "system:" + Settings.System.SHOW_QS_CLOCK;
@@ -187,7 +188,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             "system:" + Settings.System.STATUS_BAR_BATTERY_STYLE;
     public static final String OMNI_STATUS_BAR_CUSTOM_HEADER =
             "system:" + Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER;
-    private boolean mHideDragHandle;
     public static final String QS_BATTERY_STYLE =
             "system:" + Settings.System.QS_BATTERY_STYLE;
     public static final String QS_BATTERY_LOCATION =
@@ -323,6 +323,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 STATUS_BAR_BATTERY_STYLE,
                 OMNI_STATUS_BAR_CUSTOM_HEADER,
                 STATUS_BAR_CUSTOM_HEADER_HEIGHT,
+                QSFooterImpl.QS_SHOW_DRAG_HANDLE,
                 QS_BATTERY_STYLE,
                 QS_SYSTEM_INFO,
                 QS_BATTERY_LOCATION);
@@ -630,9 +631,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         super.onAttachedToWindow();
         mStatusBarIconController.addIconGroup(mIconManager);
         requestApplyInsets();
-
-        final TunerService tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(this, QSFooterImpl.QS_SHOW_DRAG_HANDLE);
     }
 
     @Override
