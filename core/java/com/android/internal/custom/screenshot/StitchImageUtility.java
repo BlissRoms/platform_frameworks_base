@@ -79,7 +79,7 @@ public class StitchImageUtility {
         }
         if (focusedPackageName.equals("com.android.systemui")){
             return false;
-        }
+        }/*
         Intent i = new Intent(Intent.ACTION_MAIN);
         i.addCategory(Intent.CATEGORY_HOME);
         List<ResolveInfo> homePackages = mPackageManager.queryIntentActivities(i, 0);
@@ -87,7 +87,7 @@ public class StitchImageUtility {
             if (focusedPackageName.equals(resolveInfo.activityInfo.packageName)){
                 return false;
             }
-        }
+        }*/
         return true;
     }
 }
