@@ -518,6 +518,7 @@ public class FODCircleView extends ImageView implements TunerService.Tunable {
         dispatchPress();
 
         setImageDrawable(null);
+        updatePosition();
         invalidate();
         if (mIsRecognizingAnimEnabled) {
             mFODAnimation.showFODanimation();
@@ -623,7 +624,7 @@ public class FODCircleView extends ImageView implements TunerService.Tunable {
         mPressedParams.x = mParams.x = x;
         mPressedParams.y = mParams.y = y;
 
-        if (mIsDreaming) {
+        if (mIsDreaming && !mIsCircleShowing) {
             mParams.y += mDreamingOffsetY;
             if (mIsRecognizingAnimEnabled) {
                 mFODAnimation.updateParams(mParams.y);
