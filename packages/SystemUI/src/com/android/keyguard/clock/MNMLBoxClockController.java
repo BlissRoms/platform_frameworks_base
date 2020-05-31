@@ -76,6 +76,7 @@ public class MNMLBoxClockController implements ClockPlugin {
      */
     private TextView mClock;
     private TextView mDate;
+    private TextView mDateDay;
 
     /**
      * Time and calendars to check the date
@@ -103,7 +104,7 @@ public class MNMLBoxClockController implements ClockPlugin {
                 .inflate(R.layout.digital_mnml_box, null);
         mClock = mBigClockView.findViewById(R.id.clock);
         mDate = mBigClockView.findViewById(R.id.bigDate);
-        onTimeTick();
+        mDateDay = mBigClockView.findViewById(R.id.bigDateDay);
     }
 
     @Override
@@ -111,6 +112,7 @@ public class MNMLBoxClockController implements ClockPlugin {
         mBigClockView = null;
         mClock = null;
         mDate = null;
+        mDateDay = null;
     }
 
     @Override
@@ -176,6 +178,8 @@ public class MNMLBoxClockController implements ClockPlugin {
     @Override
     public void setTextColor(int color) {
         mClock.setTextColor(color);
+        mDate.setTextColor(color);
+        mDateDay.setTextColor(color);
     }
 
     @Override
@@ -193,6 +197,7 @@ public class MNMLBoxClockController implements ClockPlugin {
 
     @Override
     public void onTimeTick() {
+<<<<<<< HEAD
         mTime.setTimeInMillis(System.currentTimeMillis());
         final int hour = mTime.get(Calendar.HOUR) % 12;
         // lazy and ugly workaround for the it's string
@@ -204,6 +209,9 @@ public class MNMLBoxClockController implements ClockPlugin {
         DateFormat dateFormat = DateFormat.getInstanceForSkeleton("EEEEMMMMd", Locale.getDefault());
         dateFormat.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
         mDate.setText(dateFormat.format(mTime.getInstance().getTimeInMillis()));
+=======
+
+>>>>>>> aeda6ca45d51... MNMLBox Clock: Clean up hacky layouts
     }
 
     @Override
