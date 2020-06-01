@@ -580,14 +580,15 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     /**
      * If panel is expanded/expanding it usually means QS shade is opening, so
      * don't set the clock GONE otherwise it'll mess up the animation.
-     */
     private int clockHiddenMode() {
         if (!mPanelExpansionStateManager.isClosed() && !mKeyguardStateController.isShowing()
-                && !mStatusBarStateController.isDozing()) {
+                && !mStatusBarStateController.isDozing()
+                && mClockController.getClock().shouldBeVisible()) {
             return View.INVISIBLE;
         }
         return View.GONE;
     }
+     */
 
     public void hideNotificationIconArea(boolean animate) {
         animateHide(mNotificationIconAreaInner, animate, true);
