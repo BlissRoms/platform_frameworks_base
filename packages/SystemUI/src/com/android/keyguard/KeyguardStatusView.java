@@ -1780,7 +1780,7 @@ public class KeyguardStatusView extends GridLayout implements
         final ContentResolver resolver = mContext.getContentResolver();
         String currentClock = Settings.Secure.getString(
             resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
-        final boolean mIsDefaultClock = currentClock.contains("DefaultClock") ? true : false;
+        final boolean mIsDefaultClock = currentClock != null && currentClock.contains("DefaultClock") ? true : false;
         return mIsDefaultClock;
     }
 
