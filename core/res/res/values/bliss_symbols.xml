@@ -108,4 +108,8 @@
    <!-- Pocket Service -->
    <java-symbol type="string" name="config_pocketJudgeVendorSensorName" />
    <java-symbol type="string" name="config_pocketJudgeVendorProximitySensorName" />
+
+    <!-- SystemUI Restart -->
+    <java-symbol type="string" name="systemui_restart_title" />
+    <java-symbol type="string" name="systemui_restart_message" />
 </resources>
