@@ -44,15 +44,20 @@ import com.android.systemui.R;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
+import lineageos.providers.LineageSettings;
+
 /** A dialog that provides controls for adjusting the screen brightness. */
 public class BrightnessDialog extends Activity implements Tunable {
 
     private BrightnessController mBrightnessController;
+    public static final String QS_SHOW_BRIGHTNESS_SLIDER =
+            "lineagesecure:" + LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER;
 
     private ImageView mMinBrightness;
     private ImageView mMaxBrightness;
     private ImageView mAdaptiveBrightness;
     private boolean mAutoBrightnessEnabled;
+    private int mQsBrightnessSlider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +145,7 @@ public class BrightnessDialog extends Activity implements Tunable {
         final TunerService tunerService = Dependency.get(TunerService.class);
         tunerService.addTunable(this, QSPanel.QS_SHOW_AUTO_BRIGHTNESS);
         tunerService.addTunable(this, QSPanel.QS_SHOW_BRIGHTNESS_BUTTONS);
+        tunerService.addTunable(this, QS_SHOW_BRIGHTNESS_SLIDER);
     }
 
     @Override
@@ -179,15 +185,21 @@ public class BrightnessDialog extends Activity implements Tunable {
         } else if (QSPanel.QS_SHOW_BRIGHTNESS_BUTTONS.equals(key)) {
             updateViewVisibilityForTuningValue(mMinBrightness, newValue);
             updateViewVisibilityForTuningValue(mMaxBrightness, newValue);
+        } else if (QS_SHOW_BRIGHTNESS_SLIDER.equals(key)) {
+            mQsBrightnessSlider = TunerService.parseInteger(newValue, 0);
         }
     }
 
     private void updateAutoBrightnessVisibility() {
-        mAdaptiveBrightness.setVisibility(mAutoBrightnessEnabled ? View.VISIBLE : View.GONE);
+        if (mQsBrightnessSlider < 3 ) {
+            mAdaptiveBrightness.setVisibility(mAutoBrightnessEnabled ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void updateViewVisibilityForTuningValue(View view, @Nullable String newValue) {
-        view.setVisibility(newValue == null || Integer.parseInt(newValue) != 0
-                ? View.VISIBLE : View.GONE);
+        if (mQsBrightnessSlider < 3 ) {
+            view.setVisibility(newValue == null || Integer.parseInt(newValue) != 0
+                    ? View.VISIBLE : View.GONE);
+        }
     }
 }
