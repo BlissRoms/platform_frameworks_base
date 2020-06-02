@@ -519,10 +519,17 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
 
         if (mIsQuickQsBrightnessEnabled) {
-            qqsHeight += mContext.getResources().getDimensionPixelSize(
-                    R.dimen.brightness_mirror_height)
-                    + mContext.getResources().getDimensionPixelSize(
-                    R.dimen.qs_tile_margin_top);
+           if (!mHeaderImageEnabled) {
+               qqsHeight += mContext.getResources().getDimensionPixelSize(
+                       R.dimen.brightness_mirror_height)
+                       + mContext.getResources().getDimensionPixelSize(
+                       R.dimen.qs_tile_margin_top);
+           } else {
+               qqsHeight += mContext.getResources().getDimensionPixelSize(
+                       R.dimen.brightness_mirror_height)
+                       + mContext.getResources().getDimensionPixelSize(
+                       R.dimen.qs_tile_margin_top) + mHeaderImageHeight;
+           }
         }
 
         setMinimumHeight(sbHeight + qqsHeight);
@@ -1042,6 +1049,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 mHeaderImageHeight = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_4);
                 break;
             case 5:
+            default:
                 mHeaderImageHeight = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_5);
                 break;
             case 6:
@@ -1102,7 +1110,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 mHeaderImageHeight = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_24);
                 break;
             case 25:
-            default:
                 mHeaderImageHeight = mContext.getResources().getDimensionPixelSize(R.dimen.lock_date_font_size_25);
                 break;
             case 26:
