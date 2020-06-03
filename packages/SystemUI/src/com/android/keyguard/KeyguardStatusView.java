@@ -617,7 +617,7 @@ public class KeyguardStatusView extends GridLayout implements
                     Settings.System.TEXT_CLOCK_ALIGNMENT, 0, UserHandle.USER_CURRENT);
             String currentClock = Settings.Secure.getString(
                 resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
-            boolean mCustomClockSelection = currentClock == null ? false : currentClock.contains("Type");
+            boolean mCustomClockSelection = currentClock == null ? false : currentClock.contains("TypeClockController");
 
             if (mClockSelection) {
                 switch (mTextClockAlign) {
