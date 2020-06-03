@@ -52,4 +52,6 @@
     <dimen name="right_tri_state_up_bottom_right_radius">0.0dip</dimen>
     <dimen name="right_tri_state_up_top_left_radius">24.0dip</dimen>
     <dimen name="right_tri_state_up_top_right_radius">24.0dip</dimen>
+    <dimen name="tri_state_position_padding_extra">@*android:dimen/status_bar_height</dimen>
+
 </resources>
