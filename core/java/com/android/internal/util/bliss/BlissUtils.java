@@ -73,6 +73,7 @@ public class BlissUtils {
 
     public static final String INTENT_SCREENSHOT = "action_take_screenshot";
     public static final String INTENT_REGION_SCREENSHOT = "action_take_region_screenshot";
+    public static final String INTENT_LONG_SCREENSHOT = "action_take_long_screenshot";
     public static final String DOZE_PACKAGE_NAME = "Doze";
     public static final String LINEAGE_DOZE_PACKAGE_NAME = "org.lineageos.settings.doze";
     public static final String CUSTOM_DOZE_PACKAGE_NAME = "com.custom.ambient.display";
@@ -401,10 +402,23 @@ public class BlissUtils {
         return needsNav;
     }
 
-    public static void takeScreenshot(boolean full) {
+    public static void takeScreenshot(int type) {
         IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
         try {
-            wm.sendCustomAction(new Intent(full? INTENT_SCREENSHOT : INTENT_REGION_SCREENSHOT));
+            switch (type) {
+            case 0:
+                // Do Nothing
+                break;
+            case 1:
+                wm.sendCustomAction(new Intent(INTENT_SCREENSHOT));
+                break;
+            case 2:
+                wm.sendCustomAction(new Intent(INTENT_REGION_SCREENSHOT));
+                break;
+            case 3:
+                wm.sendCustomAction(new Intent(INTENT_LONG_SCREENSHOT));
+                break;
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
