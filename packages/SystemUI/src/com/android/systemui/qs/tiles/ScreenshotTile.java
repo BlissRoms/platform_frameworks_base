@@ -24,22 +24,22 @@ import android.service.quicksettings.Tile;
 import com.android.internal.util.bliss.BlissUtils;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.systemui.qs.QSHost;
-import com.android.systemui.plugins.qs.QSTile.BooleanState;
+import com.android.systemui.plugins.qs.QSTile.State;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.R;
 
 import javax.inject.Inject;
 
 /** Quick settings tile: Screenshot **/
-public class ScreenshotTile extends QSTileImpl<BooleanState> {
+public class ScreenshotTile extends QSTileImpl<State> {
 
-    private boolean mRegion;
+    private int type;
 
     @Inject
     public ScreenshotTile(QSHost host) {
         super(host);
-        mRegion = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.SCREENSHOT_DEFAULT_MODE, 0, UserHandle.USER_CURRENT) == 1;
+        type = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
     }
 
     @Override
@@ -48,8 +48,8 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
-    public BooleanState newTileState() {
-        return new BooleanState();
+    public State newTileState() {
+        return new State();
     }
 
     @Override
@@ -57,10 +57,12 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
 
     @Override
     public void handleClick() {
-        mRegion = !mRegion;
-        Settings.System.putIntForUser(mContext.getContentResolver(),
-                Settings.System.SCREENSHOT_DEFAULT_MODE, mRegion ? 1 : 0,
-                UserHandle.USER_CURRENT);
+        int type = getScreenShotType();
+        if (type < 2) {
+            type++;
+        } else {
+            type = 0;
+        }
         refreshState();
     }
 
@@ -72,7 +74,7 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
         try {
              Thread.sleep(1000); //1s
         } catch (InterruptedException ie) {}
-        BlissUtils.takeScreenshot(mRegion ? false : true);
+        BlissUtils.takeScreenshot(type);
     }
 
     @Override
@@ -89,19 +91,38 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
         return mContext.getString(R.string.quick_settings_screenshot_label);
     }
 
+    private int getScreenShotType() {
+        int type = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
+        if (type == 0) {
+            type = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT) == 1 ? 2 : 0;
+        }
+        return type;
+    }
+
     @Override
-    protected void handleUpdateState(BooleanState state, Object arg) {
+    protected void handleUpdateState(State state, Object arg) {
         state.state = Tile.STATE_INACTIVE;
-        if (mRegion) {
-            state.label = mContext.getString(R.string.quick_settings_region_screenshot_label);
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_region_screenshot);
-            state.contentDescription =  mContext.getString(
-                    R.string.quick_settings_region_screenshot_label);
-        } else {
-            state.label = mContext.getString(R.string.quick_settings_screenshot_label);
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
-            state.contentDescription =  mContext.getString(
-                    R.string.quick_settings_screenshot_label);
+        switch (type) {
+           case 0:
+              state.label = mContext.getString(R.string.quick_settings_screenshot_label);
+              state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
+              state.contentDescription =  mContext.getString(
+                      R.string.quick_settings_screenshot_label);
+              break;
+           case 1:
+              state.label = mContext.getString(R.string.quick_settings_region_screenshot_label);
+              state.icon = ResourceIcon.get(R.drawable.ic_qs_region_screenshot);
+              state.contentDescription =  mContext.getString(
+                      R.string.quick_settings_region_screenshot_label);
+              break;
+           case 2:
+              state.label = mContext.getString(R.string.quick_settings_region_screenshot_label);
+              state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
+              state.contentDescription =  mContext.getString(
+                      R.string.quick_settings_long_screenshot_label);
+              break;
         }
     }
 }

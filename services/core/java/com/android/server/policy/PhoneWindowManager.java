@@ -6359,6 +6359,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mContext.enforceCallingOrSelfPermission(Manifest.permission.ACCESS_SURFACE_FLINGER,
                         TAG + "sendCustomAction permission denied");
                 takeScreenshot(TAKE_SCREENSHOT_SELECTED_REGION);
+            } else if (BlissUtils.INTENT_LONG_SCREENSHOT.equals(action)) {
+                mContext.enforceCallingOrSelfPermission(Manifest.permission.ACCESS_SURFACE_FLINGER,
+                        TAG + "sendCustomAction permission denied");
+                takeAlternativeScreenshot();
             }
         }
     }
