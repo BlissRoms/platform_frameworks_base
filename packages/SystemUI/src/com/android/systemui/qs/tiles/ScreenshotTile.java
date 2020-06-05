@@ -33,13 +33,11 @@ import javax.inject.Inject;
 /** Quick settings tile: Screenshot **/
 public class ScreenshotTile extends QSTileImpl<BooleanState> {
 
-    private boolean mRegion;
+    private int type;
 
     @Inject
     public ScreenshotTile(QSHost host) {
         super(host);
-        mRegion = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.SCREENSHOT_DEFAULT_MODE, 0, UserHandle.USER_CURRENT) == 1;
     }
 
     @Override
@@ -57,10 +55,10 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
 
     @Override
     public void handleClick() {
-        mRegion = !mRegion;
-        Settings.System.putIntForUser(mContext.getContentResolver(),
-                Settings.System.SCREENSHOT_DEFAULT_MODE, mRegion ? 1 : 0,
-                UserHandle.USER_CURRENT);
+        type = 0;
+        if (type <3) {
+           type++;
+        }
         refreshState();
     }
 
@@ -72,7 +70,7 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
         try {
              Thread.sleep(1000); //1s
         } catch (InterruptedException ie) {}
-        BlissUtils.takeScreenshot(mRegion ? false : true);
+        BlissUtils.takeScreenshot(type);
     }
 
     @Override
@@ -89,19 +87,33 @@ public class ScreenshotTile extends QSTileImpl<BooleanState> {
         return mContext.getString(R.string.quick_settings_screenshot_label);
     }
 
+    private int getScreenShotType() {
+        type = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
+        return type;
+    }
+
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        state.state = Tile.STATE_INACTIVE;
-        if (mRegion) {
-            state.label = mContext.getString(R.string.quick_settings_region_screenshot_label);
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_region_screenshot);
-            state.contentDescription =  mContext.getString(
-                    R.string.quick_settings_region_screenshot_label);
-        } else {
-            state.label = mContext.getString(R.string.quick_settings_screenshot_label);
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
-            state.contentDescription =  mContext.getString(
-                    R.string.quick_settings_screenshot_label);
+        switch (type) {
+           case 0:
+              state.label = mContext.getString(R.string.quick_settings_screenshot_label);
+              state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
+              state.contentDescription =  mContext.getString(
+                      R.string.quick_settings_screenshot_label);
+              break;
+           case 1:
+              state.label = mContext.getString(R.string.quick_settings_region_screenshot_label);
+              state.icon = ResourceIcon.get(R.drawable.ic_qs_region_screenshot);
+              state.contentDescription =  mContext.getString(
+                      R.string.quick_settings_region_screenshot_label);
+              break;
+           case 2:
+              state.label = mContext.getString(R.string.quick_settings_region_screenshot_label);
+              state.icon = ResourceIcon.get(R.drawable.ic_qs_screenshot);
+              state.contentDescription =  mContext.getString(
+                      R.string.quick_settings_long_screenshot_label);
+              break;
         }
     }
 }
