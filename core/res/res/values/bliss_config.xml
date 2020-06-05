@@ -173,4 +173,7 @@
     <!-- Defines custom OEM sensor for pocket detection. -->
     <string name="config_pocketJudgeVendorSensorName"></string>
 
+    <!-- Default fod pressed icon -->
+    <integer name="config_pressed_fod_icon">0</integer>
+
 </resources>
