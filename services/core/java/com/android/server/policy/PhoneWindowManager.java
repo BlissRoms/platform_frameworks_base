@@ -1617,12 +1617,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             + SCREENSHOT_CHORD_DEBOUNCE_DELAY_MILLIS) {
                 mScreenshotChordVolumeDownKeyConsumed = true;
                 cancelPendingPowerKeyAction();
-                if (Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT) == 1) {
-                    takeScreenshotDelayed(TAKE_SCREENSHOT_SELECTED_REGION, getScreenshotChordLongPressDelay());
-                } else {
-                    takeScreenshotDelayed(TAKE_SCREENSHOT_FULLSCREEN, getScreenshotChordLongPressDelay());
-                }
+                takeScreenshotDelayed(TAKE_SCREENSHOT_FULLSCREEN, getScreenshotChordLongPressDelay());
             }
         }
     }
