@@ -361,6 +361,7 @@ public class AppOpsControllerImpl implements AppOpsController,
     private void notifySuscribers(int code, int uid, String packageName, boolean active) {
         if (mCallbacksByCode.containsKey(code)
                 && isUserVisible(code, uid, packageName)) {
+            if (DEBUG) Log.d(TAG, "Notifying of change in package " + packageName);
             for (Callback cb: mCallbacksByCode.get(code)) {
                 cb.onActiveStateChanged(code, uid, packageName, active);
             }
