@@ -28,6 +28,7 @@ import com.android.internal.util.ArrayUtils;
  */
 public class DataUsageUtils {
     private static final String TAG = "DataUsageUtils";
+    private static final boolean DEBUG = false;
 
     /**
      * Return mobile NetworkTemplate based on {@code subId}
@@ -41,7 +42,9 @@ public class DataUsageUtils {
                 telephonyManager.getSubscriberId(subId));
 
         if (!subscriptionManager.isActiveSubId(subId)) {
-            Log.i(TAG, "Subscription is not active: " + subId);
+            if (DEBUG) {
+                Log.i(TAG, "Subscription is not active: " + subId);
+            }
             return mobileAll;
         }
 
@@ -49,7 +52,9 @@ public class DataUsageUtils {
                 .getMergedSubscriberIdsFromGroup();
 
         if (ArrayUtils.isEmpty(mergedSubscriberIds)) {
-            Log.i(TAG, "mergedSubscriberIds is null.");
+            if (DEBUG) {
+                Log.i(TAG, "mergedSubscriberIds is null.");
+            }
             return mobileAll;
         }
 
