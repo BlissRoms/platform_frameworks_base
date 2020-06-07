@@ -264,6 +264,47 @@ class BluetoothManagerService extends IBluetoothManager.Stub {
                 }
             };
 
+    public boolean onFactoryReset() {
+        // Wait for stable state if bluetooth is temporary state.
+        int state = getState();
+        if (state == BluetoothAdapter.STATE_BLE_TURNING_ON
+                || state == BluetoothAdapter.STATE_TURNING_ON
+                || state == BluetoothAdapter.STATE_TURNING_OFF) {
+            if (!waitForState(new HashSet<Integer>(Arrays.asList(BluetoothAdapter.STATE_BLE_ON,
+                      BluetoothAdapter.STATE_ON)))) {
+                return false;
+            }
+        }
+
+        // Clear registered LE apps to force shut-off Bluetooth
+        clearBleApps();
+        state = getState();
+        try {
+            mBluetoothLock.readLock().lock();
+            if (mBluetooth == null) {
+                return false;
+            }
+            if (state == BluetoothAdapter.STATE_BLE_ON) {
+                addActiveLog(
+                        BluetoothProtoEnums.ENABLE_DISABLE_REASON_FACTORY_RESET,
+                        mContext.getPackageName(), false);
+                mBluetooth.onBrEdrDown();
+                return true;
+            } else if (state == BluetoothAdapter.STATE_ON) {
+                addActiveLog(
+                        BluetoothProtoEnums.ENABLE_DISABLE_REASON_FACTORY_RESET,
+                        mContext.getPackageName(), false);
+                mBluetooth.disable();
+                return true;
+            }
+        } catch (RemoteException e) {
+            Slog.e(TAG, "Unable to shutdown Bluetooth", e);
+        } finally {
+            mBluetoothLock.readLock().unlock();
+        }
+        return false;
+    }
+
     public void onAirplaneModeChanged() {
         synchronized (this) {
             if (isBluetoothPersistedStateOn()) {

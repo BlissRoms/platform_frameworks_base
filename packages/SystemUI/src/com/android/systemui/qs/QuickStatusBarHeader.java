@@ -723,10 +723,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         int paddingEnd = getResources().getDimensionPixelSize(R.dimen.status_bar_padding_end);
         int paddingTop = getResources().getDimensionPixelSize(R.dimen.status_bar_padding_top);
         if (padding == null) {
-            mSystemIconsView.setPaddingRelative(
             mSystemIconsView.setPaddingRelative(paddingStart, paddingTop, paddingEnd, 0);
         } else {
-            mSystemIconsView.setPadding(
             mSystemIconsView.setPadding(Math.max(paddingStart, padding.first), paddingTop,
                     Math.max(paddingEnd, padding.second), 0);
         }
