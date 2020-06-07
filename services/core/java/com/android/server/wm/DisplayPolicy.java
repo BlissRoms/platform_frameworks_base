@@ -3732,15 +3732,29 @@ public class DisplayPolicy {
      */
     public void takeScreenshot(int screenshotType) {
         if (mScreenshotHelper != null) {
-            final boolean fullShot = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT) == 0;
-            String packageName = fullShot ? "com.android.systemui" :
+            String packageName = defaultSsType() ? "com.android.systemui" :
                     (mFocusedWindow == null ? "" : mFocusedWindow.getAttrs().packageName);
             mScreenshotHelper.takeScreenshot(screenshotType,
                     mStatusBar != null && mStatusBar.isVisibleLw(),
                     mNavigationBar != null && mNavigationBar.isVisibleLw(),
                     mHandler, null /* completionConsumer */,
                     packageName);
+        }
+    }
+
+    private boolean defaultSsType() {
+        final boolean fullShot = Settings.System.getIntForUser(mContext.getContentResolver(),
+              Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT) == 0;
+        final int defaultShot = Settings.System.getIntForUser(mContext.getContentResolver(),
+              Settings.System.SCREENSHOT_DEFAULT_MODE, 0, UserHandle.USER_CURRENT);
+        if (defaultShot == 0) {
+            return true;
+        } else if (defaultShot == 2) {
+            return false;
+        } else if (fullShot) {
+            return true;
+        } else {
+            return false;
         }
     }
 
