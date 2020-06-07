@@ -159,4 +159,7 @@
     <!-- Enable face auth when swiping security view -->
     <bool name="config_faceAuthOnSecurityView">false</bool>
 
+    <!-- FOD -->
+    <bool name="config_targetUsesInKernelDimming">true</bool>
+
 </resources>
