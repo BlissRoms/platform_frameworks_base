@@ -3732,16 +3732,32 @@ public class DisplayPolicy {
      */
     public void takeScreenshot(int screenshotType) {
         if (mScreenshotHelper != null) {
-            final boolean fullShot = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT) == 0;
-            String packageName = fullShot ? "com.android.systemui" :
-                    (mFocusedWindow == null ? "" : mFocusedWindow.getAttrs().packageName);
+            String packageName = defaultSsType();
             mScreenshotHelper.takeScreenshot(screenshotType,
                     mStatusBar != null && mStatusBar.isVisibleLw(),
                     mNavigationBar != null && mNavigationBar.isVisibleLw(),
                     mHandler, null /* completionConsumer */,
                     packageName);
         }
+    }
+
+    private String defaultSsType() {
+        final int fullShot = Settings.System.getIntForUser(mContext.getContentResolver(),
+              Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
+        final int defaultShot = Settings.System.getIntForUser(mContext.getContentResolver(),
+              Settings.System.SCREENSHOT_DEFAULT_MODE, 0, UserHandle.USER_CURRENT);
+        String normal = "com.android.systemui";
+        String asus = mFocusedWindow == null ? "" : mFocusedWindow.getAttrs().packageName;
+        if (defaultShot == 0) {
+            return normal;
+        } else if (defaultShot == 2) {
+            return asus;
+        } else if (fullShot == 0) {
+            return normal;
+        } else if (fullShot == 2) {
+            return asus;
+        }
+        return asus;
     }
 
     RefreshRatePolicy getRefreshRatePolicy() {
