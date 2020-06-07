@@ -3732,19 +3732,32 @@ public class DisplayPolicy {
      */
     public void takeScreenshot(int screenshotType) {
         if (mScreenshotHelper != null) {
-            final boolean fullShot = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT) == 0;
-            // if screenshot tile is set to screenshot take normal screenshot
-            final boolean defaultShot = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.SCREENSHOT_DEFAULT_MODE, 0, UserHandle.USER_CURRENT) == 1;
-            String packageName = (defaultShot || fullShot) ? "com.android.systemui" :
-                    (mFocusedWindow == null ? "" : mFocusedWindow.getAttrs().packageName);
+            String packageName = getScreenShotType();
             mScreenshotHelper.takeScreenshot(screenshotType,
                     mStatusBar != null && mStatusBar.isVisibleLw(),
                     mNavigationBar != null && mNavigationBar.isVisibleLw(),
                     mHandler, null /* completionConsumer */,
                     packageName);
         }
+    }
+
+    private String getScreenShotType() {
+        final int fullShot = Settings.System.getIntForUser(mContext.getContentResolver(),
+              Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
+        final int defaultShot = Settings.System.getIntForUser(mContext.getContentResolver(),
+              Settings.System.SCREENSHOT_DEFAULT_MODE, 0, UserHandle.USER_CURRENT);
+        String normal = "com.android.systemui";
+        String asus = mFocusedWindow == null ? "" : mFocusedWindow.getAttrs().packageName;
+        if (defaultShot == 1) {
+            return normal;
+        } else if (defaultShot == 3) {
+            return asus;
+        } else if (fullShot == 0) {
+            return normal;
+        } else if (fullShot == 2) {
+            return asus;
+        }
+        return asus;
     }
 
     RefreshRatePolicy getRefreshRatePolicy() {
