@@ -156,4 +156,7 @@
     <!-- Whether key handler sends intent when changing slider position -->
     <string name="config_alertSliderIntent"></string>
 
+    <!-- FOD -->
+    <bool name="config_targetUsesInKernelDimming">true</bool>
+
 </resources>
