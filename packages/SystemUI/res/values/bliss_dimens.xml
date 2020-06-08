@@ -138,4 +138,10 @@
     <dimen name="opa_line_x_trans_bg">30dp</dimen>
     <dimen name="opa_line_x_trans_ry">15dp</dimen>
     <dimen name="opa_line_y_translation">16dp</dimen>
+
+    <!-- Padding on the start of the quick statusbar (not top-most statusbar) -->
+    <dimen name="qs_header_start_padding">@dimen/status_bar_padding_start</dimen>
+
+    <!-- Padding on the end of the quick statusbar (not top-most statusbar) -->
+    <dimen name="qs_header_end_padding">@dimen/status_bar_padding_end</dimen>
 </resources>
