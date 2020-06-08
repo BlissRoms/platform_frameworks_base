@@ -94,6 +94,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener, T
     private final int mSize;
     private final int mDreamingMaxOffset;
     private final int mNavigationBarSize;
+    private static final int FADE_ANIM_DURATION = 250;
     private final boolean mShouldBoostBrightness;
     private final boolean mTargetUsesInKernelDimming;
     private final Paint mPaintFingerprintBackground = new Paint();
@@ -111,6 +112,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener, T
     private int mCurrentBrightness;
 
     private boolean mIsBiometricRunning;
+    private boolean mFading;
     private boolean mIsBouncer;
     private boolean mIsDreaming;
     private boolean mIsKeyguard;
@@ -489,6 +491,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener, T
     }
 
     public void dispatchPress() {
+        if (mFading) return;
         IFingerprintInscreen daemon = getFingerprintInScreenDaemon();
         try {
             daemon.onPress();
@@ -525,6 +528,9 @@ public class FODCircleView extends ImageView implements ConfigurationListener, T
     }
 
     public void showCircle() {
+        if (mFading) {
+            return;
+        }
         mIsCircleShowing = true;
 
         setKeepScreenOn(true);
@@ -578,6 +584,12 @@ public class FODCircleView extends ImageView implements ConfigurationListener, T
 
         updatePosition();
 
+        setVisibility(View.VISIBLE);
+        animate().withStartAction(() -> mFading = true)
+                .alpha(1)
+                .setDuration(FADE_ANIM_DURATION)
+                .withEndAction(() -> mFading = false)
+                .start();
         dispatchShow();
         Dependency.get(TunerService.class).addTunable(this, SCREEN_BRIGHTNESS);
         setVisibility(View.VISIBLE);
@@ -585,7 +597,14 @@ public class FODCircleView extends ImageView implements ConfigurationListener, T
 
     public void hide() {
         Dependency.get(TunerService.class).removeTunable(this);
-        setVisibility(View.GONE);
+        animate().withStartAction(() -> mFading = true)
+                .alpha(0)
+                .setDuration(FADE_ANIM_DURATION)
+                .withEndAction(() -> {
+                    setVisibility(View.GONE);
+                    mFading = false;
+                })
+                .start();
         hideCircle();
         dispatchHide();
     }
