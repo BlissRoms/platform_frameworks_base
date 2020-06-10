@@ -4783,6 +4783,13 @@ public final class Settings {
                 "lockscreen_quick_unlock_control";
 
         /**
+         * The amount of time in milliseconds before the device goes to sleep or begins
+         * to dream after a period of inactivity in the keyguard.
+         * @hide
+         */
+        public static final String LOCKSCREEN_TIMEOUT = "lockscreen_timeout";
+
+        /**
          * Whether to display qs tile titles in the qs panel
          * @hide
          */
