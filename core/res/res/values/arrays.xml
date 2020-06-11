@@ -143,6 +143,10 @@
       <item>@drawable/decor_minimize_button_light</item>
       <item>@drawable/decor_pip_button_dark</item>
       <item>@drawable/decor_pip_button_light</item>
+      <!-- region @boringdroid -->
+      <item>@drawable/decor_back_button_dark</item>
+      <item>@drawable/decor_back_button_light</item>
+      <!-- endregion -->
    </array>
 
     <!-- Used in LocalePicker -->
