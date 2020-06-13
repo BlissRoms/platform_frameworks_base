@@ -737,7 +737,17 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         final int sp = getResources().getDimensionPixelSize(R.dimen.notification_side_paddings);
         RelativeLayout.LayoutParams lpQuickQsBrightness = (RelativeLayout.LayoutParams)
                 mQuickQsBrightness.getLayoutParams();
+        RelativeLayout.LayoutParams headerPanel = (RelativeLayout.LayoutParams)
+                mHeaderQsPanel.getLayoutParams();
         lpQuickQsBrightness.setMargins(sp - mPaddingLeft, 0, sp - mPaddingRight, 0);
+        if (mIsQuickQsBrightnessEnabled == 3) {
+            lpQuickQsBrightness.addRule(RelativeLayout.BELOW, R.id.header_text_container);
+            mHeaderQsPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_brightness_bar);
+        } else {
+            lpQuickQsBrightness.addRule(RelativeLayout.BELOW, R.id.quick_qs_panel);
+            mHeaderQsPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_status_icons);
+        }
+        mHeaderQsPanel.setLayoutParams(headerPanel);
         mQuickQsBrightness.setLayoutParams(lpQuickQsBrightness);
         return super.onApplyWindowInsets(insets);
     }
@@ -1005,12 +1015,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 updateSysInfoResources();
                 break;
             case QS_SHOW_BRIGHTNESS_SLIDER:
-                try {
-                    mIsQuickQsBrightnessEnabled = Integer.parseInt(newValue) > 2;
-                } catch (NumberFormatException e) {
-                    // Catches exception as newValue may be null or malformed.
-                    mIsQuickQsBrightnessEnabled = false;
-                }
+                int val =
+                        TunerService.parseInteger(newValue, 1);
+                mIsQuickQsBrightnessEnabled = val > 2;
                 updateResources();
                 break;
             case QS_SHOW_AUTO_BRIGHTNESS:
