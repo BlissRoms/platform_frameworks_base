@@ -175,6 +175,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private boolean mIsQuickQsBrightnessEnabled;
     private boolean mIsQsAutoBrightnessEnabled;
     private boolean mBrightnessButton;
+    private int mBrightnessSlider;
     private ImageView mMinBrightness;
     private ImageView mMaxBrightness;
 
@@ -552,6 +553,15 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mSystemIconsView.setLayoutParams(mSystemIconsView.getLayoutParams());
 
         if (mIsQuickQsBrightnessEnabled) {
+            RelativeLayout.LayoutParams headerPanel = (RelativeLayout.LayoutParams)
+                    mHeaderQsPanel.getLayoutParams();
+            if (mBrightnessSlider == 3) {
+                headerPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_brightness_bar);
+            } else {
+                headerPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_status_icons);
+            }
+            mHeaderQsPanel.setLayoutParams(headerPanel);
+
             if (mIsQsAutoBrightnessEnabled && resources.getBoolean(
                     com.android.internal.R.bool.config_automatic_brightness_available)) {
                ImageView brightnessIcon = (ImageView) mQuickQsBrightness.findViewById(R.id.brightness_icon);
@@ -738,6 +748,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         RelativeLayout.LayoutParams lpQuickQsBrightness = (RelativeLayout.LayoutParams)
                 mQuickQsBrightness.getLayoutParams();
         lpQuickQsBrightness.setMargins(sp - mPaddingLeft, 0, sp - mPaddingRight, 0);
+        if (mBrightnessSlider == 3) {
+            lpQuickQsBrightness.addRule(RelativeLayout.BELOW, R.id.header_text_container);
+        } else {
+            lpQuickQsBrightness.addRule(RelativeLayout.BELOW, R.id.quick_qs_panel);
+        }
         mQuickQsBrightness.setLayoutParams(lpQuickQsBrightness);
         return super.onApplyWindowInsets(insets);
     }
@@ -1005,12 +1020,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 updateSysInfoResources();
                 break;
             case QS_SHOW_BRIGHTNESS_SLIDER:
-                try {
-                    mIsQuickQsBrightnessEnabled = Integer.parseInt(newValue) > 2;
-                } catch (NumberFormatException e) {
-                    // Catches exception as newValue may be null or malformed.
-                    mIsQuickQsBrightnessEnabled = false;
-                }
+                mBrightnessSlider =
+                        TunerService.parseInteger(newValue, 3);
+                mIsQuickQsBrightnessEnabled = mBrightnessSlider > 2;
                 updateResources();
                 break;
             case QS_SHOW_AUTO_BRIGHTNESS:
