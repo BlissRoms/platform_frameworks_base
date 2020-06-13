@@ -552,15 +552,15 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mSystemIconsView.getLayoutParams().height = topMargin;
         mSystemIconsView.setLayoutParams(mSystemIconsView.getLayoutParams());
 
+        RelativeLayout.LayoutParams headerPanel = (RelativeLayout.LayoutParams)
+                mHeaderQsPanel.getLayoutParams();
+
         if (mIsQuickQsBrightnessEnabled) {
-            RelativeLayout.LayoutParams headerPanel = (RelativeLayout.LayoutParams)
-                    mHeaderQsPanel.getLayoutParams();
             if (mBrightnessSlider == 3) {
                 headerPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_brightness_bar);
             } else {
                 headerPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_status_icons);
             }
-            mHeaderQsPanel.setLayoutParams(headerPanel);
 
             if (mIsQsAutoBrightnessEnabled && resources.getBoolean(
                     com.android.internal.R.bool.config_automatic_brightness_available)) {
@@ -576,6 +576,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         } else {
             mQuickQsBrightness.setVisibility(View.GONE);
         }
+
+        headerPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_status_icons);
+        mHeaderQsPanel.setLayoutParams(headerPanel);
 
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         if (mQsDisabled) {
