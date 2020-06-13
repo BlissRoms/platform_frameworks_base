@@ -558,6 +558,8 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
     private boolean mPreDrawRegistered;
     private boolean mPreDrawListenerDetached;
 
+    private boolean mStaticHeight;
+
     private TextClassifier mTextClassifier;
     private TextClassifier mTextClassificationSession;
     private TextClassificationContext mTextClassificationContext;
@@ -11244,6 +11246,20 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
      */
     @UnsupportedAppUsage
     private void checkForRelayout() {
+
+        if (mStaticHeight) {
+            int want = mLayout.getWidth();
+            int hintWant = mHintLayout == null ? 0 : mHintLayout.getWidth();
+
+            makeNewLayout(want, hintWant, UNKNOWN_BORING, UNKNOWN_BORING,
+                          mRight - mLeft - getCompoundPaddingLeft() - getCompoundPaddingRight(),
+                          false);
+
+            autoSizeText();
+            invalidate();
+            return;
+        }
+
         // If we have a fixed width, we can just swap in a new text layout
         // if the text height stays the same or if the view height is fixed.
 
@@ -15358,6 +15374,14 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
      */
     protected void setCursorPosition_internal(int start, int end) {
         Selection.setSelection(((Editable) mText), start, end);
+    }
+
+    /**
+     * Forcefully prevents requestLayout() in checkForRelayout()
+     * @hide
+     */
+    protected void setStaticHeight(boolean enable) {
+        mStaticHeight = enable;
     }
 
     /**
