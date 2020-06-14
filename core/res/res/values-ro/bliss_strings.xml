@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Button that copies the url to the log of a crashed application -->
+    <string name="aerr_copy">Copiază URL-ul jurnalului de erori</string>
+    <string name="url_copy_success">URL-ul a fost copiat cu succes</string>
+    <string name="url_copy_failed">A apărut o eroare la încărcarea log-ului în dogbin</string>
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_fakePackageSignature">Păcălește semnătura pachetului</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_fakePackageSignature">Permite aplicației să pretindă că este o aplicație diferită. Aplicațiile rău-intenționate ar putea să utilizeze aceasta pentru a accesa datele aplicațiilor private. Acordați această permisiune numai cu prudență!</string>
+    <!-- Title of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgrouplab_fake_package_signature">Păcălește semnătura pachetului</string>
+    <!-- Description of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgroupdesc_fake_package_signature">permite falsificarea semnăturii pachetului</string>
+    <!-- Message shown to the user when the apps requests permission from this group. If ever possible this should stay below 80 characters (assuming the parameters takes 20 characters). Don't abbreviate until the message reaches 120 characters though. [CHAR LIMIT=120] -->
+    <string name="permgrouprequest_fake_package_signature">Permiteţi aplicaţiei
+        &lt;b&gt;<xliff:g id="app_name" example="Gmail">%1$s</xliff:g>&lt;/b&gt; să falsifice semnătura pachetului?</string>
+    <!-- AOKP custom system animations -->
+    <string name="animation_fade">Estompare</string>
+    <string name="animation_slide_right">Glisare la dreapta</string>
+    <string name="animation_slide_left">Glisare la stânga</string>
+    <string name="animation_slide_right_no_fade">Glisare in partea dreaptă (Fără estompare)</string>
+    <string name="animation_slide_left_no_fade">Glisare in stânga (Fara estompare)</string>
+    <string name="animation_slide_up">Glisare în jos</string>
+    <string name="animation_slide_down">Glisare în sus</string>
+    <string name="animation_default">Prestabilit</string>
+    <string name="animation_translucent">Translucent</string>
+    <string name="animation_grow_shrink">Crește în (Sus)</string>
+    <string name="animation_grow_shrink_center">Creștere (Centru)</string>
+    <string name="animation_grow_shrink_bottom">Crește în (Jos)</string>
+    <string name="animation_grow_shrink_left">Crește în (Stânga)</string>
+    <string name="animation_grow_shrink_right">Crește în (Dreapta)</string>
+    <string name="animation_random">Aleatoriu</string>
+    <string name="action_null">Necompletat</string>
+    <string name="animation_ethans">Ethans</string>
+    <!-- Vendor mismatch fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">Imaginea vendor nu se potrivește cu sistemul. Te rog să instalezi imaginea vendor <xliff:g id="string">%s</xliff:g> pentru dispozitivul tău</string>
+    <!-- Alert slider proc nodes paths. -->
+    <!-- Gaming mode -->
+    <string name="notification_channel_gaming">Mod de joc</string>
+    <string name="gaming_mode_notification_title">Mod de joc activat</string>
+    <string name="gaming_mode_notification_content">Apăsaţi pentru a opri modul de joc</string>
+    <string name="gaming_mode_enabled_toast">Mod pentru jocuri pornit</string>
+    <string name="gaming_mode_disabled_toast">Mod pentru jocuri oprit</string>
+    <!-- Screen recorder -->
+    <string name="global_action_screenrecord">Înregistrare Ecran</string>
+</resources>

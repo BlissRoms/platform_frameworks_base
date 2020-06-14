@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Button that copies the url to the log of a crashed application -->
+    <string name="aerr_copy">Копіювати URL лог збою</string>
+    <string name="url_copy_success">URL успішно скопійовано</string>
+    <string name="url_copy_failed">Помилка під час завантаження файла звіту до dogbin</string>
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_fakePackageSignature">Підробити підпис пакета</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_fakePackageSignature">Дозволити додатку видавати себе за інший додаток. Небезпечні додатки можуть отримати доступ до приватних даних. Будьте обережні надаючи цей дозвіл!</string>
+    <!-- Title of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgrouplab_fake_package_signature">Дозволити підміну підпису</string>
+    <!-- Description of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgroupdesc_fake_package_signature">дозволити підробити підпис пакета</string>
+    <!-- Message shown to the user when the apps requests permission from this group. If ever possible this should stay below 80 characters (assuming the parameters takes 20 characters). Don't abbreviate until the message reaches 120 characters though. [CHAR LIMIT=120] -->
+    <string name="permgrouprequest_fake_package_signature">Дозволити
+        &lt;b&gt;<xliff:g id="app_name" example="Gmail">%1$s</xliff:g>&lt;/b&gt; підробити підпис пакету?</string>
+    <!-- AOKP custom system animations -->
+    <string name="animation_fade">Затухання</string>
+    <string name="animation_slide_right">Зсунути праворуч</string>
+    <string name="animation_slide_left">Зсунути ліворуч</string>
+    <string name="animation_slide_right_no_fade">Зсунути праворуч (без згасання)</string>
+    <string name="animation_slide_left_no_fade">Зсунути ліворуч (без згасання)</string>
+    <string name="animation_slide_up">Зсув вниз</string>
+    <string name="animation_slide_down">Зсув вгору</string>
+    <string name="animation_default">За замовчанням</string>
+    <string name="animation_translucent">Напівпрозорий</string>
+    <string name="animation_grow_shrink">Збільшення (догори)</string>
+    <string name="animation_grow_shrink_center">Збільшення (в центрі)</string>
+    <string name="animation_grow_shrink_bottom">Збільшення (вниз)</string>
+    <string name="animation_grow_shrink_left">Збільшення (ліворуч)</string>
+    <string name="animation_grow_shrink_right">Збільшення (праворуч)</string>
+    <string name="animation_random">Рандомно</string>
+    <string name="action_null">Порожньо</string>
+    <string name="animation_ethans">Етани</string>
+    <!-- Vendor mismatch fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">Vendor не відповідає системі. Будь ласка, прошийте <xliff:g id="string">%s</xliff:g> vendor образ для вашого пристрою</string>
+    <!-- Alert slider proc nodes paths. -->
+    <!-- Gaming mode -->
+    <string name="notification_channel_gaming">Ігровий режим</string>
+    <string name="gaming_mode_notification_title">Ігровий режим увімкнений</string>
+    <string name="gaming_mode_notification_content">Натисніть, щоб відключити ігровий режим</string>
+    <string name="gaming_mode_enabled_toast">Ігровий режим увімкнено</string>
+    <string name="gaming_mode_disabled_toast">Ігровий режим вимкнено</string>
+    <!-- Screen recorder -->
+    <string name="global_action_screenrecord">Запис екрану</string>
+</resources>

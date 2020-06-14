@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Button that copies the url to the log of a crashed application -->
+    <string name="aerr_copy">Copia l\'URL del log di crash</string>
+    <string name="url_copy_success">URL copiato con successo</string>
+    <string name="url_copy_failed">Si è verificato un errore durante il caricamento del log su dogbin</string>
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_fakePackageSignature">Simula firma del pacchetto</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_fakePackageSignature">Consente all\'applicazione di fingere di essere un\'altra app. Le applicazioni dannose potrebbero essere in grado di utilizzarlo per accedere ai dati delle applicazioni private. Concedi queste autorizzazioni con attenzione!</string>
+    <!-- Title of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgrouplab_fake_package_signature">Simula firma del pacchetto</string>
+    <!-- Description of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgroupdesc_fake_package_signature">permetti di simulare la firma del pacchetto</string>
+    <!-- Message shown to the user when the apps requests permission from this group. If ever possible this should stay below 80 characters (assuming the parameters takes 20 characters). Don't abbreviate until the message reaches 120 characters though. [CHAR LIMIT=120] -->
+    <string name="permgrouprequest_fake_package_signature">Consentire all\'app &lt;b&gt;<xliff:g id="App_NAME">%1$s</xliff:g>&lt;/b&gt; di falsificare la firma del pacchetto?</string>
+    <!-- AOKP custom system animations -->
+    <string name="animation_fade">Dissolvenza</string>
+    <string name="animation_slide_right">Scorri verso destra</string>
+    <string name="animation_slide_left">Scorri verso sinistra</string>
+    <string name="animation_slide_right_no_fade">Scorri verso destra (senza dissolvenza)</string>
+    <string name="animation_slide_left_no_fade">Scorri verso sinistra (senza dissolvenza)</string>
+    <string name="animation_slide_up">Scorri in basso</string>
+    <string name="animation_slide_down">Scorri in alto</string>
+    <string name="animation_default">Predefinita</string>
+    <string name="animation_translucent">Trasparenza</string>
+    <string name="animation_grow_shrink">Espansione (verso l\'alto)</string>
+    <string name="animation_grow_shrink_center">Espandi (Verso il centro)</string>
+    <string name="animation_grow_shrink_bottom">Espansione (verso il basso)</string>
+    <string name="animation_grow_shrink_left">Espandi (a sinistra)</string>
+    <string name="animation_grow_shrink_right">Espandi (da destra)</string>
+    <string name="animation_random">Casuale</string>
+    <string name="action_null">Nessun\'animazione</string>
+    <string name="animation_ethans">\"Lucido\"</string>
+    <!-- Vendor mismatch fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">L\'immagine vendor non corrisponde al sistema. Per favore, installa l\'immagine vendor <xliff:g id="string">%s</xliff:g> per il tuo dispositivo</string>
+    <!-- Alert slider proc nodes paths. -->
+    <!-- Gaming mode -->
+    <string name="notification_channel_gaming">Modalità Gaming</string>
+    <string name="gaming_mode_notification_title">Modalità Gaming attivata</string>
+    <string name="gaming_mode_notification_content">Tocca per disattivare la Modalità Gaming</string>
+    <string name="gaming_mode_enabled_toast">Modalità Gaming attivata</string>
+    <string name="gaming_mode_disabled_toast">Modalità Gaming disattivata</string>
+    <!-- Screen recorder -->
+    <string name="global_action_screenrecord">Registra Schermo</string>
+</resources>

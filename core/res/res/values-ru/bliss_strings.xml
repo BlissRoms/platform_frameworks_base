@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Button that copies the url to the log of a crashed application -->
+    <string name="aerr_copy">Скопировать ссылку лога ошибки</string>
+    <string name="url_copy_success">Ссылка скопирована успешно</string>
+    <string name="url_copy_failed">Произошла ошибка во время загрузки лога на dogbin</string>
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_fakePackageSignature">Подмена подписи приложения</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_fakePackageSignature">Разрешать приложениям обходить систему безопасности, выдавая себя за другое приложение. Вредоносные приложения могут использовать это для доступа к частным данным. На свой страх и риск!</string>
+    <!-- Title of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgrouplab_fake_package_signature">Подмена подписи приложения</string>
+    <!-- Description of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgroupdesc_fake_package_signature">рзрешить подмену подписи</string>
+    <!-- Message shown to the user when the apps requests permission from this group. If ever possible this should stay below 80 characters (assuming the parameters takes 20 characters). Don't abbreviate until the message reaches 120 characters though. [CHAR LIMIT=120] -->
+    <string name="permgrouprequest_fake_package_signature">Разрешить
+&lt;b&gt;<xliff:g id="app_name" example="Gmail">%1$s</xliff:g>&lt;/b&gt;
+подменить подпись?</string>
+    <!-- AOKP custom system animations -->
+    <string name="animation_fade">Затухание</string>
+    <string name="animation_slide_right">Сдвиг вправо</string>
+    <string name="animation_slide_left">Сдвиг влево</string>
+    <string name="animation_slide_right_no_fade">Сдвиг справа (без затухания)</string>
+    <string name="animation_slide_left_no_fade">Сдвиг слева (без затухания)</string>
+    <string name="animation_slide_up">Сдвиг вниз</string>
+    <string name="animation_slide_down">Сдвиг сверху</string>
+    <string name="animation_default">По умолчанию</string>
+    <string name="animation_translucent">Полупрозрачный</string>
+    <string name="animation_grow_shrink">Увеличение (вверх)</string>
+    <string name="animation_grow_shrink_center">Увеличение (по центру)</string>
+    <string name="animation_grow_shrink_bottom">Увеличение (низ)</string>
+    <string name="animation_grow_shrink_left">Увеличение (слева)</string>
+    <string name="animation_grow_shrink_right">Вырастать (справа)</string>
+    <string name="animation_random">Случайный</string>
+    <string name="action_null">Пусто</string>
+    <string name="animation_ethans">Ethans</string>
+    <!-- Vendor mismatch fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">Образ не соответствует системе. Пожалуйста прошейте образ <xliff:g id="string">%s</xliff:g> для вашего устройства</string>
+    <!-- Alert slider proc nodes paths. -->
+    <!-- Gaming mode -->
+    <string name="notification_channel_gaming">Игровой режим</string>
+    <string name="gaming_mode_notification_title">Игровой режим включен</string>
+    <string name="gaming_mode_notification_content">Нажмите, чтобы отключить игровой режим</string>
+    <string name="gaming_mode_enabled_toast">Игровой режим включён</string>
+    <string name="gaming_mode_disabled_toast">Игровой режим выключен</string>
+    <!-- Screen recorder -->
+    <string name="global_action_screenrecord">Запись экрана</string>
+</resources>
