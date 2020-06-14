@@ -48,6 +48,7 @@ import android.text.TextUtils;
 import android.text.format.Time;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.InputDevice;
@@ -758,5 +759,11 @@ public class BlissUtils {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static int getThemeAccentColor (final Context context) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.colorAccent, value, true);
+        return value.data;
     }
 }
