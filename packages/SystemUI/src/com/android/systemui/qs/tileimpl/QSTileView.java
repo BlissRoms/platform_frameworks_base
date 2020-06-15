@@ -145,7 +145,13 @@ public class QSTileView extends QSTileBaseView {
         if (!Objects.equals(mSecondLine.getText(), state.secondaryLabel)) {
 
             if (state.state == Tile.STATE_ACTIVE) {
-                mSecondLine.setTextColor(mColorLabelActive);
+                if (setQsLabelUseNewTint == 1 && useFWbg) {
+                    mSecondLine.setTextColor(mColorLabelActive);
+                } else if (setQsLabelUseNewTint == 2 && useFWbg) {
+                    mSecondLine.setTextColor(mColorLabelGradient);
+                } else {
+                    mSecondLine.setTextColor(mColorLabelDefault);
+                }
             } else if (state.state == Tile.STATE_INACTIVE) {
                 mSecondLine.setTextColor(mColorLabelDefault);
             }
