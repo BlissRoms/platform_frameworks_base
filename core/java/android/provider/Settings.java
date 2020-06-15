@@ -6417,6 +6417,15 @@ public final class Settings {
         public static final String LOCKOWNER_FONT_SIZE= "lockowner_font_size";
 
         /**
+         * Height of the navigation handle.
+         * @hide
+         */
+        public static final String NAVIGATION_HANDLE_HEIGHT = "navigation_handle_height";
+
+        /** @hide */
+        private static final Validator NAVIGATION_HANDLE_HEIGHT_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
+        /**
          * Ambient Edge Light Layout
          * @hide
          */
@@ -6845,6 +6854,7 @@ public final class Settings {
             THEMING_SETTINGS_DASHBOARD_ICONS,
             FORCE_FULLSCREEN_CUTOUT_APPS,
             LOCKSCREEN_WEATHER_SHOW_IMAGE,
+            NAVIGATION_HANDLE_HEIGHT,
         };
 
         /**
@@ -7053,6 +7063,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(THEMING_SETTINGS_DASHBOARD_ICONS);
             PRIVATE_SETTINGS.add(FORCE_FULLSCREEN_CUTOUT_APPS);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_IMAGE);
+            PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_HEIGHT);
         }
 
         /**
@@ -7249,6 +7260,7 @@ public final class Settings {
             VALIDATORS.put(THEMING_SETTINGS_DASHBOARD_ICONS, THEMING_SETTINGS_DASHBOARD_ICONS_VALIDATOR);
             VALIDATORS.put(FORCE_FULLSCREEN_CUTOUT_APPS, FORCE_FULLSCREEN_CUTOUT_APPS_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_IMAGE, LOCKSCREEN_WEATHER_SHOW_IMAGE_VALIDATOR);
+            VALIDATORS.put(NAVIGATION_HANDLE_HEIGHT, NAVIGATION_HANDLE_HEIGHT_VALIDATOR);
         }
 
         /**
