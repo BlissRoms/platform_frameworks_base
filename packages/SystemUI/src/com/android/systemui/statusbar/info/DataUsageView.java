@@ -3,6 +3,7 @@ package com.android.systemui.statusbar.info;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.AsyncTask;
 import android.provider.Settings;
 import android.telephony.SubscriptionManager;
 import android.text.BidiFormatter;
@@ -36,10 +37,17 @@ public class DataUsageView extends TextView {
 
         if ((isDataUsageEnabled() == 0) && this.getText().toString() != "") {
             setText("");
-        } else if (isDataUsageEnabled() != 0 && shouldUpdateData) {
-            shouldUpdateData = false;
-            updateUsageData();
-            setText(formatedinfo);
+        } else if (isDataUsageEnabled() != 0) {
+            if (shouldUpdateData) {
+                shouldUpdateData = false;
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateUsageData();
+                    }
+                });
+                setText(formatedinfo);
+            }
         }
     }
 

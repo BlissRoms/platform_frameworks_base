@@ -644,7 +644,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         if (mDataUsageEnabled != 0) {
             if (!BlissUtils.isWifiOnly(mContext)) {
                 if (BlissUtils.isConnected(mContext)) {
-                    DataUsageView.updateUsage();
                     mDataUsageLayout.setVisibility(View.VISIBLE);
                     mDataUsageImage.setVisibility(View.VISIBLE);
                     mDataUsageView.setVisibility(View.VISIBLE);
