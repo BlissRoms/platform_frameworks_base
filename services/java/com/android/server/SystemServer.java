@@ -243,6 +243,9 @@ import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 
+// LineageHardware
+import com.android.server.bliss.LineageHardwareService;
+
 /**
  * Entry point to {@code system_server}.
  */
@@ -2573,6 +2576,11 @@ public final class SystemServer implements Dumpable {
 
             t.traceBegin("StartBackgroundInstallControlService");
             mSystemServiceManager.startService(BackgroundInstallControlService.class);
+            t.traceEnd();
+
+            // LineageHardware
+            t.traceBegin("StartLineageHardwareService");
+            mSystemServiceManager.startService(LineageHardwareService.class);
             t.traceEnd();
         }
 
