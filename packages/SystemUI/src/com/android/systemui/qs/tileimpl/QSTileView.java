@@ -162,8 +162,10 @@ public class QSTileView extends QSTileBaseView {
             } else {
                 mLabel.setTextColor(mColorLabelDefault);
             }
+            mExpandIndicator.setImageTintList(mColorLabelActive);
         } else if (state.state == Tile.STATE_INACTIVE) {
             mLabel.setTextColor(mColorLabelDefault);
+            mExpandIndicator.setImageTintList(mColorLabelDefault);
         }
         boolean dualTarget = DUAL_TARGET_ALLOWED && state.dualTarget;
         mExpandIndicator.setVisibility(dualTarget ? View.VISIBLE : View.GONE);
