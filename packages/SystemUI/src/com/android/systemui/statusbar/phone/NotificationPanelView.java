@@ -2388,6 +2388,7 @@ public class NotificationPanelView extends PanelView implements
         }
         mNotificationStackScroller.setAlpha(alpha);
         mStatusBar.setDismissAllVisible(true);
+        mStatusBar.updateQSDataUsageInfo();
         mStatusBar.updateBlurVisibility();
     }
 
