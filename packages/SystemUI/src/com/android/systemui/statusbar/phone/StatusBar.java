@@ -5912,4 +5912,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         setCutoutOverlay(hideCutoutMode);
         setStatusBarStockOverlay(hideCutoutMode && statusBarStock);
     }
+
+    public void updateQSDataUsageInfo() {
+        DataUsageView.updateUsage();
+    }
 }
