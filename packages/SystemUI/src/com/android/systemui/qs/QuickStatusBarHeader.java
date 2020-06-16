@@ -330,6 +330,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mIconManager.setTint(fillColor);
         mNextAlarmIcon.setImageTintList(ColorStateList.valueOf(fillColor));
         mRingerModeIcon.setImageTintList(ColorStateList.valueOf(fillColor));
+        mSystemInfoIcon.setImageTintList(ColorStateList.valueOf(fillColor));
 
         mClockView = findViewById(R.id.clock);
         mClockView.setOnClickListener(this);
@@ -350,6 +351,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mBatteryRemainingIcon.setOnClickListener(this);
         mRingerModeTextView.setSelected(true);
         mNextAlarmTextView.setSelected(true);
+
+        // Set the correct tint for these icons for contrast
+        mDataUsageImage.setImageTintList(ColorStateList.valueOf(fillColor));
 
         updateResources();
 
@@ -912,7 +916,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mHeaderQsPanel.setQSPanelAndHeader(mQsPanel, this);
         mHeaderQsPanel.setHost(host, null /* No customization in header */);
 
-
         Rect tintArea = new Rect(0, 0, 0, 0);
         int colorForeground = Utils.getColorAttrDefaultColor(getContext(),
                 android.R.attr.colorForeground);
@@ -920,7 +923,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         int fillColor = mDualToneHandler.getSingleColor(intensity);
         mBatteryRemainingIcon.onDarkChanged(tintArea, intensity, fillColor);
         mBatteryIcon.setColorsFromContext(mHost.getContext());
-        mBatteryIcon.onDarkChanged(new Rect(), 0, DarkIconDispatcher.DEFAULT_ICON_TINT);
+        mBatteryIcon.onDarkChanged(tintArea, intensity, fillColor);
 
         if(mSystemInfoText != null &&  mSystemInfoIcon != null) {
             updateSystemInfoText();
