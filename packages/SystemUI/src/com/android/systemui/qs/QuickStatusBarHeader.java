@@ -330,6 +330,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mIconManager.setTint(fillColor);
         mNextAlarmIcon.setImageTintList(ColorStateList.valueOf(fillColor));
         mRingerModeIcon.setImageTintList(ColorStateList.valueOf(fillColor));
+        mSystemInfoIcon.setImageTintList(ColorStateList.valueOf(fillColor));
 
         mClockView = findViewById(R.id.clock);
         mClockView.setOnClickListener(this);
@@ -347,9 +348,14 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         // Don't need to worry about tuner settings for this icon
         mBatteryRemainingIcon.setIgnoreTunerUpdates(true);
         mBatteryIcon.setIgnoreTunerUpdates(true);
+        mBatteryIcon.useWallpaperTextColor(true);
+        mBatteryRemainingIcon.useWallpaperTextColor(true);
         mBatteryRemainingIcon.setOnClickListener(this);
         mRingerModeTextView.setSelected(true);
         mNextAlarmTextView.setSelected(true);
+
+        // Set the correct tint for these icons for contrast
+        mDataUsageImage.setImageTintList(ColorStateList.valueOf(fillColor));
 
         updateResources();
 
