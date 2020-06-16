@@ -72,24 +72,13 @@
         android:orientation="horizontal"
         android:gravity="center_vertical|end" >
 
-        <com.android.systemui.statusbar.LineageStatusBarItemHolder
-            android:id="@+id/network_traffic_holder"
+        <include layout="@layout/ongoing_privacy_chip" />
+
+         <com.android.systemui.statusbar.policy.NetworkTraffic
+            android:id="@+id/network_traffic"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|end"
-            >
-
-            <org.lineageos.internal.statusbar.NetworkTraffic
-                android:id="@+id/network_traffic"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:maxLines="2"
-                android:gravity="center_vertical|end"
-                android:visibility="gone" />
-
-        </com.android.systemui.statusbar.LineageStatusBarItemHolder>
-
-        <include layout="@layout/ongoing_privacy_chip" />
+            android:visibility="gone" />
 
         <com.android.systemui.bliss.logo.LogoImageViewQuickRight
             android:id="@+id/statusbar_logo_right"
