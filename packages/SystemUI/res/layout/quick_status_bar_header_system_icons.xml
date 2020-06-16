@@ -51,7 +51,6 @@
         android:layout_height="match_parent"
         android:minWidth="48dp"
         android:gravity="center_vertical|start"
-        android:paddingStart="@dimen/status_bar_left_clock_starting_padding"
         android:paddingEnd="@dimen/status_bar_left_clock_end_padding"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.StatusBar.Clock"
@@ -66,98 +65,71 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/daily_data_usage_layout"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:layout_marginStart="4dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical|end"
-        android:clipChildren="false" >
-
-            <ImageView
-                android:id="@+id/daily_data_usage_icon"
-                android:layout_height="@dimen/qs_temperatur_icon_size"
-                android:layout_width="wrap_content"
-                android:src="@drawable/ic_data_saver_off"
-                android:visibility="gone" />
-
-            <com.android.systemui.statusbar.info.DataUsageView
-                android:id="@+id/data_sim_usage"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:textAppearance="@style/TextAppearance.StatusBar.Clock"
-                android:singleLine="true"
-                android:visibility="gone" />
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:orientation="horizontal"
         android:gravity="center_vertical|end" >
 
-    <com.android.systemui.statusbar.LineageStatusBarItemHolder
-        android:id="@+id/network_traffic_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical|end"
-        >
-
-        <org.lineageos.internal.statusbar.NetworkTraffic
-            android:id="@+id/network_traffic"
+        <com.android.systemui.statusbar.LineageStatusBarItemHolder
+            android:id="@+id/network_traffic_holder"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:maxLines="2"
             android:gravity="center_vertical|end"
+            >
+
+            <org.lineageos.internal.statusbar.NetworkTraffic
+                android:id="@+id/network_traffic"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:maxLines="2"
+                android:gravity="center_vertical|end"
+                android:visibility="gone" />
+
+        </com.android.systemui.statusbar.LineageStatusBarItemHolder>
+
+        <include layout="@layout/ongoing_privacy_chip" />
+
+        <com.android.systemui.BatteryMeterView
+            android:id="@+id/batteryIcon"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical|end"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+            android:paddingStart="2dp"
+            systemui:showDark="false"
             android:visibility="gone" />
 
-    </com.android.systemui.statusbar.LineageStatusBarItemHolder>
+        <com.android.systemui.bliss.logo.LogoImageViewQuickRight
+            android:id="@+id/statusbar_logo_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="2dip"
+            android:scaleType="center"
+            android:gravity="center_vertical"
+            android:visibility="gone" />
 
-    <include layout="@layout/ongoing_privacy_chip" />
+        <com.android.systemui.bliss.statusbarweather.QsHeaderWeather
+            android:id="@+id/weather_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical|end"
+            android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            systemui:showDark="false" />
 
+        <com.android.systemui.bliss.statusbarweather.QsHeaderWeatherImage
+            android:id="@+id/weather_image"
+            android:layout_width="22dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical|end"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp" />
     </LinearLayout>
-
-    <com.android.systemui.BatteryMeterView
-        android:id="@+id/batteryIcon"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:gravity="center_vertical|end"
-        android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.StatusBar.Clock"
-        android:paddingStart="2dp"
-        systemui:showDark="false"
-        android:visibility="gone" />
-
-    <com.android.systemui.bliss.logo.LogoImageViewQuickRight
-        android:id="@+id/statusbar_logo_right"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingStart="2dip"
-        android:scaleType="center"
-        android:gravity="center_vertical"
-        android:visibility="gone" />
-
-    <com.android.systemui.bliss.statusbarweather.QsHeaderWeather
-        android:id="@+id/weather_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:maxLines="1"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical|end"
-        android:textAppearance="@style/TextAppearance.StatusBar.Clock"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
-        systemui:showDark="false" />
-
-    <com.android.systemui.bliss.statusbarweather.QsHeaderWeatherImage
-        android:id="@+id/weather_image"
-        android:layout_width="22dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical|end"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp" />
 
 </LinearLayout>
