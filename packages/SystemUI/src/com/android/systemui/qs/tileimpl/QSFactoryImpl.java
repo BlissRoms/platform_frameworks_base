@@ -31,6 +31,7 @@ import com.android.systemui.qs.tiles.AdbOverNetworkTile;
 import com.android.systemui.qs.tiles.AdbTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AmbientDisplayTile;
+import com.android.systemui.qs.tiles.AnimationsTile;
 import com.android.systemui.qs.tiles.AODTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
@@ -137,6 +138,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<ScreenStabilizationTile> mScreenStabilizationTileProvider;
     private final Provider<LocaleTile> mLocaleTileProvider;
     private final Provider<FPSInfoTile> mFPSInfoTileProvider;
+    private final Provider<AnimationsTile> mAnimationsTileProvider;
 
     private QSTileHost mHost;
 
@@ -189,7 +191,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<MonoToggleTile> monoToggleTileProvider,
             Provider<ScreenStabilizationTile> screenStabilizationTileProvider,
             Provider<LocaleTile> localeTileProvider,
-            Provider<FPSInfoTile> fpsInfoTileProvider) {
+            Provider<FPSInfoTile> fpsInfoTileProvider,
+            Provider<AnimationsTile> animationsTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -239,6 +242,7 @@ public class QSFactoryImpl implements QSFactory {
         mScreenStabilizationTileProvider = screenStabilizationTileProvider;
         mLocaleTileProvider = localeTileProvider;
         mFPSInfoTileProvider = fpsInfoTileProvider;
+        mAnimationsTileProvider = animationsTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -355,6 +359,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mLocaleTileProvider.get();
             case "fpsinfo":
                 return mFPSInfoTileProvider.get();
+            case "animations":
+                return mAnimationsTileProvider.get();
         }
 
         // Intent tiles.

@@ -234,4 +234,9 @@
     <!-- Daily data usage -->
     <string name="daily_data_usage_title">Today\'s usage</string>
 
+    <!-- Animations QS Tile -->
+    <string name="quick_settings_animation_label">Animations</string>
+    <string name="accessibility_quick_settings_animations_on">Animations On</string>
+    <string name="accessibility_quick_settings_animations_off">Animations Off</string>
+
 </resources>
