@@ -17,8 +17,6 @@
 package com.android.systemui.volume;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -62,20 +60,9 @@ public class VolumeToolTipView extends LinearLayout {
 
     private void drawArrow() {
         View arrowView = findViewById(R.id.arrow);
-
-        boolean isLandscape = getContext().getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
         ViewGroup.LayoutParams arrowLp = arrowView.getLayoutParams();
-        int arrowHeight = arrowLp.height;
-        int arrowWidth = arrowLp.width;
-
-        ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(arrowWidth, arrowHeight, true));
-        if (isLandscape) {
-            boolean isPointingLeft = getContext().getResources().getBoolean(
-                    R.bool.config_audioPanelOnLeftSide);
-            arrowView.setRotation(isPointingLeft ? 270 : 90);
-        }
-
+        ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.createHorizontal(
+                arrowLp.width, arrowLp.height, false));
         Paint arrowPaint = arrowDrawable.getPaint();
         TypedValue typedValue = new TypedValue();
         getContext().getTheme().resolveAttribute(android.R.attr.colorAccent, typedValue, true);
@@ -84,5 +71,6 @@ public class VolumeToolTipView extends LinearLayout {
         arrowPaint.setPathEffect(new CornerPathEffect(
                 getResources().getDimension(R.dimen.volume_tool_tip_arrow_corner_radius)));
         arrowView.setBackground(arrowDrawable);
+
     }
 }
