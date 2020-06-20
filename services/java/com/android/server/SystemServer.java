@@ -2208,8 +2208,9 @@ public final class SystemServer implements Dumpable {
             }
             t.traceEnd();
 
-            if (context.getPackageManager().hasSystemFeature(
-                    PackageManager.FEATURE_WIFI)) {
+            final boolean wifiSupported = context.getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_WIFI);
+            if (wifiSupported) {
                 // Wifi Service must be started first for wifi-related services.
                 t.traceBegin("StartWifi");
                 mSystemServiceManager.startServiceFromJar(
@@ -2229,7 +2230,7 @@ public final class SystemServer implements Dumpable {
                 t.traceEnd();
             }
 
-            if (context.getPackageManager().hasSystemFeature(
+            if (wifiSupported && context.getPackageManager().hasSystemFeature(
                     PackageManager.FEATURE_WIFI_RTT)) {
                 t.traceBegin("StartRttService");
                 mSystemServiceManager.startServiceFromJar(
@@ -2237,7 +2238,7 @@ public final class SystemServer implements Dumpable {
                 t.traceEnd();
             }
 
-            if (context.getPackageManager().hasSystemFeature(
+            if (wifiSupported && context.getPackageManager().hasSystemFeature(
                     PackageManager.FEATURE_WIFI_AWARE)) {
                 t.traceBegin("StartWifiAware");
                 mSystemServiceManager.startServiceFromJar(
@@ -2245,7 +2246,7 @@ public final class SystemServer implements Dumpable {
                 t.traceEnd();
             }
 
-            if (context.getPackageManager().hasSystemFeature(
+            if (wifiSupported && context.getPackageManager().hasSystemFeature(
                     PackageManager.FEATURE_WIFI_DIRECT)) {
                 t.traceBegin("StartWifiP2P");
                 mSystemServiceManager.startServiceFromJar(
