@@ -103,6 +103,7 @@ public class BlissUtils {
         "com.android.systemui.qstile.squaremedo", // 9
         "com.android.systemui.qstile.inkdrop", // 10
         "com.android.systemui.qstile.cookie", // 11
+        "com.android.systemui.qstile.circleoutline", //12
     };
 
     public static boolean isChineseLanguage() {
