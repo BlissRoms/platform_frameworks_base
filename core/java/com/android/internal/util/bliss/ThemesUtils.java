@@ -23,6 +23,11 @@ public class ThemesUtils {
             "com.android.systemui.qstile.circletrim",
             "com.android.systemui.qstile.dualtonecircletrim",
             "com.android.systemui.qstile.squircletrim",
+		    "com.android.systemui.qstile.wavey", // 4
+		    "com.android.systemui.qstile.pokesign", // 5
+		    "com.android.systemui.qstile.ninja", // 6
+		    "com.android.systemui.qstile.dottedcircle", // 7
+		    "com.android.systemui.qstile.attemptmountain", // 8
     };
 
 }
