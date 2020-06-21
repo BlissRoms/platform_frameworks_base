@@ -29,6 +29,7 @@ public class ThemesUtils {
 		    "com.android.systemui.qstile.dottedcircle", // 7
 		    "com.android.systemui.qstile.attemptmountain", // 8
 		    "com.android.systemui.qstile.squaremedo", // 9
+		    "com.android.systemui.qstile.inkdrop", // 10
     };
 
 }
