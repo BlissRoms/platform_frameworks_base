@@ -98,6 +98,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
      */
     private TextClock mClockView;
 
+    private int mAccentColor;
+
     /**
      * Custom Text clock.
      */
@@ -142,6 +144,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
     private boolean mSupportsDarkText;
     private int[] mColorPalette;
     private boolean mShowCurrentUserTime;
+    private final Resources mResources;
 
     /**
      * Track the state of the status bar to know when to hide the big_clock_container.
@@ -178,6 +181,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mStatusBarStateController = statusBarStateController;
         mStatusBarState = mStatusBarStateController.getState();
         mSysuiColorExtractor = colorExtractor;
+        mResources = context.getResources();
+        mAccentColor = mResources.getColor(R.color.CustomClockAccentColor, null);
         mClockManager = clockManager;
 
         mClockTransition = new ClockVisibilityTransition().setCutoff(
@@ -463,7 +468,11 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mSupportsDarkText = colors.supportsDarkText();
         mColorPalette = colors.getColorPalette();
         if (mClockPlugin != null) {
-            mClockPlugin.setColorPalette(mSupportsDarkText, mColorPalette);
+            if (!useAccentColor()) {
+                mClockPlugin.setColorPalette(mSupportsDarkText, mColorPalette);
+            } else {
+                mClockPlugin.setTextColor(mAccentColor);
+            }
         }
     }
 
@@ -534,6 +543,11 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mKeyguardStatusArea.setRowPadding(mIsTypeClock ? mContext.getResources()
                 .getDimensionPixelSize(R.dimen.keyguard_status_area_typeclock_padding) : 0, 0, 0,
                 0);
+    }
+
+    private boolean useAccentColor() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+          Settings.System.LOCKSCREEN_CLOCK_COLOR, 0) == 1;
     }
 
     /**

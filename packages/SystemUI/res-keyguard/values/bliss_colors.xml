@@ -40,4 +40,6 @@
 
     <color name="clock_sf_system_background_dark">@*android:color/background_device_default_dark</color>
 
+    <color name="CustomClockAccentColor">@*android:color/accent_device_default</color>
+
 </resources>
