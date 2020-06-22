@@ -124,6 +124,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     private boolean mDataDisabledIcon;
     private boolean mRoamingIconAllowed;
     private boolean mVolteIcon;
+    private boolean mVoWiFiIcon;
 
     private ImsManager mImsManager;
     private FeatureConnector<ImsManager> mFeatureConnector;
@@ -320,6 +321,9 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.SHOW_VOLTE_ICON), false,
                     this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.SHOW_VOWIFI_ICON), false,
+                    this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -345,6 +349,9 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
                 UserHandle.USER_CURRENT) == 1;
         mVolteIcon = Settings.System.getIntForUser(resolver,
                 Settings.System.SHOW_VOLTE_ICON, 1,
+                UserHandle.USER_CURRENT) == 1;
+        mVoWiFiIcon = Settings.System.getIntForUser(resolver,
+                Settings.System.SHOW_VOWIFI_ICON, 1,
                 UserHandle.USER_CURRENT) == 1;
         mConfig = Config.readConfig(mContext);
         setConfiguration(mConfig);
@@ -480,6 +487,19 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
         return mImsManager != null && mImsManager.isEnhanced4gLteModeSettingEnabledByUser();
     }
 
+    private int getVolteResId() {
+        int resId = 0;
+
+        if (mVoWiFiIcon && isVowifiAvailable()) {
+            return resId;
+        }
+
+        if (mCurrentState.imsRegistered && mVolteIcon) {
+            resId = R.drawable.ic_volte;
+        }
+        return resId;
+    }
+
     private void setListeners() {
         if (mImsManager == null) {
             Log.e(mTag, "setListeners mImsManager is null");
@@ -554,7 +574,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
 
         int resId = 0;
         if (mCurrentState.imsRegistered && mVolteIcon) {
-            resId = R.drawable.ic_volte;
+            resId = getVolteResId();
         }
 
         int volteId = mShowVolteIcon && isVolteSwitchOn() && mVolteIcon ? resId : 0;
@@ -618,7 +638,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
                     showDataIconStatusBar && !mCurrentState.airplaneMode,
                     getCurrentIconId(), contentDescription);
             MobileIconGroup vowifiIconGroup = getVowifiIconGroup();
-            if (vowifiIconGroup != null) {
+            if (vowifiIconGroup != null && mVoWiFiIcon) {
                 typeIcon = vowifiIconGroup.dataType;
                 statusIcon = new IconState(true,
                         mCurrentState.enabled && !mCurrentState.airplaneMode? statusIcon.icon : -1,
