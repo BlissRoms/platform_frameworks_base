@@ -914,7 +914,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         int fillColor = mDualToneHandler.getSingleColor(intensity);
         mBatteryRemainingIcon.onDarkChanged(tintArea, intensity, fillColor);
         mBatteryIcon.setColorsFromContext(mHost.getContext());
-        mBatteryIcon.onDarkChanged(tintArea, intensity, fillColor);
+        mBatteryIcon.onDarkChanged(new Rect(), 0, DarkIconDispatcher.DEFAULT_ICON_TINT);
 
         if(mSystemInfoText != null &&  mSystemInfoIcon != null) {
             updateSystemInfoText();
@@ -1016,6 +1016,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 if (location == 0) {
                     mBatteryIcon.setVisibility(View.GONE);
                     mBatteryRemainingIcon.setVisibility(View.VISIBLE);
+                } else if (showWeatherImage()) {
+                    mBatteryIcon.setVisibility(View.GONE);
+                    mBatteryRemainingIcon.setVisibility(View.VISIBLE);
                 } else {
                     mBatteryRemainingIcon.setVisibility(View.GONE);
                     mBatteryIcon.setVisibility(View.VISIBLE);
@@ -1067,6 +1070,13 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             default:
                 break;
         }
+    }
+
+    private boolean showWeatherImage() {
+        boolean mWeatherImageLocation = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_SHOW_WEATHER_LOCATION, 0,
+                UserHandle.USER_CURRENT) == 1;
+        return mWeatherImageLocation;
     }
 
     private void updateHeaderImage(int height) {
