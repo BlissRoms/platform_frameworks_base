@@ -704,6 +704,13 @@
             android:grantUriPermissions="true">
         </provider>
 
+        <provider
+            android:name="com.android.systemui.volume.VolumeOptionsProvider"
+            android:authorities="com.android.systemui.volume"
+            android:exported="true"
+            android:grantUriPermissions="true">
+        </provider>
+
         <receiver
             android:name=".statusbar.KeyboardShortcutsReceiver">
             <intent-filter>
