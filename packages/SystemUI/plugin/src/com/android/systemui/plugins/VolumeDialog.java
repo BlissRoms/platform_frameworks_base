@@ -14,6 +14,7 @@
 
 package com.android.systemui.plugins;
 
+import android.graphics.Bitmap;
 import com.android.systemui.plugins.VolumeDialog.Callback;
 import com.android.systemui.plugins.annotations.DependsOn;
 import com.android.systemui.plugins.annotations.ProvidesInterface;
@@ -30,6 +31,10 @@ public interface VolumeDialog extends Plugin {
 
     void init(int windowType, Callback callback);
     void destroy();
+    String getName();
+    String getTitle();
+    Bitmap getThumbnail();
+    Bitmap getPreview();
 
     @ProvidesInterface(version = VERSION)
     public interface Callback {
