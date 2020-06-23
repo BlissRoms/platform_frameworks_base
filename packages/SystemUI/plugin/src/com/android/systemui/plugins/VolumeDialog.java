@@ -30,6 +30,8 @@ public interface VolumeDialog extends Plugin {
 
     void init(int windowType, Callback callback);
     void destroy();
+    String getName();
+    String getTitle();
 
     @ProvidesInterface(version = VERSION)
     public interface Callback {
