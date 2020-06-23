@@ -116,6 +116,7 @@ public final class VolumeDialogManager {
         Resources res = context.getResources();
 
         addBuiltinDialog(() -> new VolumeDialogImpl(context));
+        addBuiltinDialog(() -> new AospVolumeDialogImpl(context));
     }
 
     /**

@@ -1161,4 +1161,16 @@
     <dimen name="config_rounded_mask_size">@*android:dimen/rounded_corner_radius</dimen>
     <dimen name="config_rounded_mask_size_top">@*android:dimen/rounded_corner_radius_top</dimen>
     <dimen name="config_rounded_mask_size_bottom">@*android:dimen/rounded_corner_radius_top</dimen>
+
+    <!-- AOSP PLUGIN -->
+    <dimen name="volume_dialog_stream_padding">8dp</dimen>
+    <dimen name="volume_dialog_ringer_size">64dp</dimen>
+    <dimen name="volume_dialog_ringer_icon_padding">20dp</dimen>
+    <dimen name="volume_dialog_caption_size">64dp</dimen>
+    <dimen name="volume_dialog_panel_transparent_padding_right">4dp</dimen>
+    <dimen name="volume_dialog_slider_margin_top">14dp</dimen>
+    <dimen name="volume_dialog_slider_margin_bottom">-2dp</dimen>
+    <dimen name="volume_dialog_row_margin_bottom">8dp</dimen>
+    <dimen name="volume_tool_tip_right_margin">76dp</dimen>
+    <dimen name="volume_tool_tip_bottom_margin">32dp</dimen>
 </resources>
