@@ -8696,6 +8696,17 @@ public final class Settings {
                 SettingsValidators.JSON_OBJECT_VALIDATOR;
 
         /**
+         * Indicates which volume dialog to show formatted as a serialised
+         * {@link org.json.JSONObject} with the format:
+         *     {"volume": id, "_applied_timestamp": timestamp}
+         * @hide
+         */
+        public static final String CUSTOM_VOLUME_DIALOG = "custom_volume_dialog";
+
+        private static final Validator CUSTOM_VOLUME_DIALOG_VALIDATOR =
+                SettingsValidators.JSON_OBJECT_VALIDATOR;
+
+        /**
          * Indicates which clock face to show on lock screen and AOD while docked.
          * @hide
          */
@@ -11601,7 +11612,8 @@ public final class Settings {
             AWARE_LOCK_ENABLED,
             VOLUME_LINK_NOTIFICATION,
             AWARE_TAP_PAUSE_GESTURE_COUNT,
-            AWARE_TAP_PAUSE_TOUCH_COUNT
+            AWARE_TAP_PAUSE_TOUCH_COUNT,
+            CUSTOM_VOLUME_DIALOG
         };
 
         /**
@@ -11803,6 +11815,7 @@ public final class Settings {
             VALIDATORS.put(AWARE_TAP_PAUSE_GESTURE_COUNT, NON_NEGATIVE_INTEGER_VALIDATOR);
             VALIDATORS.put(AWARE_TAP_PAUSE_TOUCH_COUNT, NON_NEGATIVE_INTEGER_VALIDATOR);
             VALIDATORS.put(TAP_GESTURE, TAP_GESTURE_VALIDATOR);
+            VALIDATORS.put(CUSTOM_VOLUME_DIALOG, CUSTOM_VOLUME_DIALOG_VALIDATOR);
         }
 
         /**
