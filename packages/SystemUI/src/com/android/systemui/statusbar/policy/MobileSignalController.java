@@ -109,6 +109,7 @@ public class MobileSignalController extends SignalController<
     private ImsManager.Connector mImsManagerConnector;
     private int mCallState = TelephonyManager.CALL_STATE_IDLE;
     private int mVoLTEicon = 0;
+    private int mVoWIFIicon = 0;
 
     public static final String ROAMING_INDICATOR_ICON =
             "system:" + Settings.System.ROAMING_INDICATOR_ICON;
@@ -120,6 +121,8 @@ public class MobileSignalController extends SignalController<
             "system:" + Settings.System.USE_OLD_MOBILETYPE;
     public static final String VOLTE_ICON_STYLE =
             "system:" + Settings.System.VOLTE_ICON_STYLE;
+    public static final String VOWIFI_ICON_STYLE =
+            "system:" + Settings.System.VOWIFI_ICON_STYLE;
 
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
@@ -192,6 +195,7 @@ public class MobileSignalController extends SignalController<
         Dependency.get(TunerService.class).addTunable(this, DATA_DISABLED_ICON);
         Dependency.get(TunerService.class).addTunable(this, USE_OLD_MOBILETYPE);
         Dependency.get(TunerService.class).addTunable(this, VOLTE_ICON_STYLE);
+        Dependency.get(TunerService.class).addTunable(this, VOWIFI_ICON_STYLE);
     }
 
     @Override
@@ -217,6 +221,11 @@ public class MobileSignalController extends SignalController<
                 break;
             case VOLTE_ICON_STYLE:
                 mVoLTEicon =
+                    TunerService.parseInteger(newValue, 0);
+                notifyListeners();
+                break;
+            case VOWIFI_ICON_STYLE:
+                mVoWIFIicon =
                     TunerService.parseInteger(newValue, 0);
                 notifyListeners();
                 break;
@@ -855,10 +864,28 @@ public class MobileSignalController extends SignalController<
     }
 
     private MobileIconGroup getVowifiIconGroup() {
+        if (mVoWIFIicon == 0) return null;
+
         if ( isVowifiAvailable() && !isCallIdle() ) {
             return TelephonyIcons.VOWIFI_CALLING;
         } else if (isVowifiAvailable()) {
-            return TelephonyIcons.VOWIFI;
+            switch (mVoWIFIicon) {
+                case 1:
+                default:
+                    return TelephonyIcons.VOWIFI;
+                // OOS
+                case 2:
+                    return TelephonyIcons.VOWIFI_ONEPLUS;
+                // Motorola
+                case 3:
+                    return TelephonyIcons.VOWIFI_MOTO;
+                // ASUS
+                case 4:
+                    return TelephonyIcons.VOWIFI_ASUS;
+                // EMUI (Huawei P10)
+                case 5:
+                    return TelephonyIcons.VOWIFI_EMUI;
+            }
         } else {
             return null;
         }
