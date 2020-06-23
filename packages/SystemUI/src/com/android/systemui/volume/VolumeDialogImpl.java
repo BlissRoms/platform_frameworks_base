@@ -48,6 +48,8 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
@@ -278,6 +280,26 @@ public class VolumeDialogImpl implements VolumeDialog,
         mContext.getTheme().applyStyle(mContext.getThemeResId(), true);
         removeAllMediaOutputRows();
         setDarkMode();
+    }
+
+    @Override
+    public String getName() {
+        return "AOSPA";
+    }
+
+    @Override
+    public String getTitle() {
+        return "aospa";
+    }
+
+    @Override
+    public Bitmap getThumbnail() {
+        return BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_thumbnail);
+    }
+
+    @Override
+    public Bitmap getPreview() {
+        return BitmapFactory.decodeResource(mContext.getResources(), R.drawable.default_preview);
     }
 
     private void setDarkMode() {
