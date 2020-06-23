@@ -6480,6 +6480,12 @@ public final class Settings {
         public static final String VOLTE_ICON_STYLE = "volte_icon_style";
 
         /**
+         * VoWiFi icon style
+         * @hide
+         */
+        public static final String VOWIFI_ICON_STYLE = "vowifi_icon_style";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
