@@ -275,6 +275,7 @@
     <!-- DataSwitch tile -->
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
 
+    <protected-broadcast android:name="com.android.systemui.action.PLUGIN_CHANGED" />
     <protected-broadcast android:name="com.android.systemui.doze.pulse" />
 
     <!-- Kill app from slim recents -->
