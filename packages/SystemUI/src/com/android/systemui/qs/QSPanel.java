@@ -116,6 +116,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     protected boolean mExpanded;
     protected boolean mListening;
     private boolean mIsAutomaticBrightnessAvailable = false;
+    private boolean mIsQuickQsBrightnessEnabled;
 
     private QSDetail.Callback mCallback;
     private BrightnessController mBrightnessController;
@@ -162,10 +163,12 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_dialog, this, false);
+        addView(mBrightnessView);
 
         mTileLayout = (QSTileLayout) LayoutInflater.from(mContext).inflate(
                 R.layout.qs_paged_tile_layout, this, false);
         mTileLayout.setListening(mListening);
+        addView((View) mTileLayout);
 
         mQsTileRevealController = new QSTileRevealController(mContext, this,
                 (PagedTileLayout) mTileLayout);
@@ -232,26 +235,25 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     }
 
     private void addQSPanel() {
-        if (mBrightnessSlider == 1 || mBrightnessSlider == 3) {
+        if (mBrightnessSlider == 1) {
+            restartQSPanel();
             addView(mBrightnessView);
             addView((View) mTileLayout);
+        } else if (mBrightnessSlider == 2) {
+            restartQSPanel();
+            addView((View) mTileLayout);
+            addView(mBrightnessView);
         } else {
+            restartQSPanel();
             addView((View) mTileLayout);
-            addView(mBrightnessView);
         }
 
-        addDivider();
-        addView(mFooter.getView());
         updateResources();
     }
 
     private void restartQSPanel() {
-        if (mFooter.getView() != null) removeView(mFooter.getView());
-        if (mDivider != null) removeView(mDivider);
         if ((View) mTileLayout != null) removeView((View) mTileLayout);
         if (mBrightnessView != null) removeView(mBrightnessView);
-
-        addQSPanel();
     }
 
     protected void addDivider() {
@@ -337,8 +339,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             updateViewVisibilityForTuningValue(mAutoBrightnessView, newValue);
         } else if (QS_SHOW_BRIGHTNESS_SLIDER.equals(key)) {
             mBrightnessSlider = TunerService.parseInteger(newValue, 1);
+            mIsQuickQsBrightnessEnabled = mBrightnessSlider > 2;
             mBrightnessView.setVisibility(mBrightnessSlider != 0 ? VISIBLE : GONE);
-            restartQSPanel();
+            addQSPanel();
         } else if (QS_SHOW_BRIGHTNESS_BUTTONS.equals(key)) {
             updateViewVisibilityForTuningValue(mMinBrightness, newValue);
             updateViewVisibilityForTuningValue(mMaxBrightness, newValue);
