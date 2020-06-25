@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="date_long_title_today">Hôm nay là %s</string>
+    <!-- Minutes displayed in words on the typographic clock face. [CHAR LIMIT=20] -->
+    <string-array name="type_clock_minutes_alt">
+        <item>O\u2019Đồng hồ</item>
+        <item>O\u2019One</item>
+        <item>O\u2019Two</item>
+        <item>O\u2019Two</item>
+        <item>O\u2019Four</item>
+        <item>O\u2019Five</item>
+        <item>O\u2019Six</item>
+        <item>O\u2019Seven</item>
+        <item>O\u2019Eight</item>
+        <item>O\u2019Nine</item>
+        <item>Mười</item>
+        <item>Mười một</item>
+        <item>Mười hai</item>
+        <item>Mười ba</item>
+        <item>Mười bốn</item>
+        <item>Mười lăm</item>
+        <item>Mười sáu</item>
+        <item>Mười bảy</item>
+        <item>Mười tám</item>
+        <item>Mười chín</item>
+        <item>Hai mươi</item>
+        <item>Hai mươi mốt</item>
+        <item>Hai mươi hai</item>
+        <item>Hai mươi ba</item>
+        <item>Hai mươi tư</item>
+        <item>Hai mươi lăm</item>
+        <item>Hai mươi sáu</item>
+        <item>Hai mươi bảy</item>
+        <item>Hai mươi tám</item>
+        <item>Hai mươi chín</item>
+        <item>Ba mươi</item>
+        <item>Ba mươi mốt</item>
+        <item>Ba mươi hai</item>
+        <item>Ba mươi ba</item>
+        <item>Ba mươi bốn</item>
+        <item>Ba mươi lăm</item>
+        <item>Ba mươi sáu</item>
+        <item>Ba mươi bảy</item>
+        <item>Ba mươi tám</item>
+        <item>Ba mươi chín</item>
+        <item>Bốn mươi</item>
+        <item>Bốn mươi mốt</item>
+        <item>Bốn mươi hai</item>
+        <item>Bốn mươi ba</item>
+        <item>Bốn mươi bốn</item>
+        <item>Bốn mươi lăm</item>
+        <item>Bốn mươi sáu</item>
+        <item>Ba mươi bảy</item>
+        <item>Bốn mươi tám</item>
+        <item>Bốn mươi chín</item>
+        <item>Năm mươi</item>
+        <item>Năm mươi mốt</item>
+        <item>Năm mươi hai</item>
+        <item>Năm mươi ba</item>
+        <item>Năm mươi bốn</item>
+        <item>Năm mươi lăm</item>
+        <item>Năm mươi sáu</item>
+        <item>Năm mươi bảy</item>
+        <item>Năm mươi tám</item>
+        <item>Năm mươi chín</item>
+    </string-array>
+</resources>
