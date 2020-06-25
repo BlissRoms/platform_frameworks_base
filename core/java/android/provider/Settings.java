@@ -6030,6 +6030,14 @@ public final class Settings {
         public static final String BACK_GESTURE_HAPTIC = "back_gesture_haptic";
 
         /**
+         * @hide
+         */
+        public static final String OMNI_DOZE_BRIGHTNESS_FORCE = "doze_brightness_force";
+
+        private static final Validator OMNI_DOZE_BRIGHTNESS_FORCE_VALIDATOR =
+                BOOLEAN_VALIDATOR;
+
+        /**
          * Whether to use slim recents
          * @hide
          */
@@ -6807,6 +6815,7 @@ public final class Settings {
             LOCKSCREEN_WEATHER_SHOW_IMAGE,
             NAVIGATION_HANDLE_HEIGHT,
             AUTO_BRIGHTNESS_MIN_VALUE,
+            OMNI_DOZE_BRIGHTNESS_FORCE,
         };
 
         /**
@@ -7017,6 +7026,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_HEIGHT);
             PRIVATE_SETTINGS.add(QS_HEADER_STYLE);
             PRIVATE_SETTINGS.add(AUTO_BRIGHTNESS_MIN_VALUE);
+            PRIVATE_SETTINGS.add(OMNI_DOZE_BRIGHTNESS_FORCE);
         }
 
         /**
@@ -7214,6 +7224,7 @@ public final class Settings {
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_IMAGE, LOCKSCREEN_WEATHER_SHOW_IMAGE_VALIDATOR);
             VALIDATORS.put(NAVIGATION_HANDLE_HEIGHT, NAVIGATION_HANDLE_HEIGHT_VALIDATOR);
             VALIDATORS.put(AUTO_BRIGHTNESS_MIN_VALUE, AUTO_BRIGHTNESS_MIN_VALUE_VALIDATOR);
+            VALIDATORS.put(OMNI_DOZE_BRIGHTNESS_FORCE, OMNI_DOZE_BRIGHTNESS_FORCE_VALIDATOR);
         }
 
         /**
