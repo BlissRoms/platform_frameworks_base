@@ -116,6 +116,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     protected boolean mExpanded;
     protected boolean mListening;
     private boolean mIsAutomaticBrightnessAvailable = false;
+    private boolean mIsQuickQsBrightnessEnabled;
 
     private QSDetail.Callback mCallback;
     private BrightnessController mBrightnessController;
@@ -136,7 +137,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
     private ImageView mMinBrightness;
     private ImageView mMaxBrightness;
-    private int mBrightnessSlider = 1;
+    private int mBrightnessSlider;
     private int animStyle, animDuration, interpolatorType;
 
     private final Vibrator mVibrator;
@@ -162,10 +163,12 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_dialog, this, false);
+        addView(mBrightnessView);
 
         mTileLayout = (QSTileLayout) LayoutInflater.from(mContext).inflate(
                 R.layout.qs_paged_tile_layout, this, false);
         mTileLayout.setListening(mListening);
+        addView((View) mTileLayout);
 
         mQsTileRevealController = new QSTileRevealController(mContext, this,
                 (PagedTileLayout) mTileLayout);
@@ -219,11 +222,12 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         mFooter = new QSSecurityFooter(this, context);
 
         addQSPanel();
-
-        mBrightnessController = new BrightnessController(context,
-                findViewById(R.id.brightness_icon),
-                findViewById(R.id.brightness_slider));
-        mDumpController = dumpController;
+        if (mBrightnessView != null) {
+            mBrightnessController = new BrightnessController(context,
+                    findViewById(R.id.brightness_icon),
+                    findViewById(R.id.brightness_slider));
+            mDumpController = dumpController;
+        }
 
         mAutoBrightnessView = findViewById(R.id.brightness_icon);
 
@@ -232,10 +236,10 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     }
 
     private void addQSPanel() {
-        if (mBrightnessSlider == 1 || mBrightnessSlider == 3) {
+        if (mBrightnessSlider == 1) {
             addView(mBrightnessView);
             addView((View) mTileLayout);
-        } else {
+        } else if (mBrightnessSlider == 2) {
             addView((View) mTileLayout);
             addView(mBrightnessView);
         }
@@ -248,8 +252,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private void restartQSPanel() {
         if (mFooter.getView() != null) removeView(mFooter.getView());
         if (mDivider != null) removeView(mDivider);
-        if ((View) mTileLayout != null) removeView((View) mTileLayout);
-        if (mBrightnessView != null) removeView(mBrightnessView);
+        if ((View) mTileLayout != null && !mIsQuickQsBrightnessEnabled) removeView((View) mTileLayout);
+        if (mBrightnessView != null && !mIsQuickQsBrightnessEnabled) removeView(mBrightnessView);
 
         addQSPanel();
     }
@@ -337,6 +341,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             updateViewVisibilityForTuningValue(mAutoBrightnessView, newValue);
         } else if (QS_SHOW_BRIGHTNESS_SLIDER.equals(key)) {
             mBrightnessSlider = TunerService.parseInteger(newValue, 1);
+            mIsQuickQsBrightnessEnabled = mBrightnessSlider > 2;
             mBrightnessView.setVisibility(mBrightnessSlider != 0 ? VISIBLE : GONE);
             restartQSPanel();
         } else if (QS_SHOW_BRIGHTNESS_BUTTONS.equals(key)) {
