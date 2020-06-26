@@ -133,7 +133,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
 
     private ImageView mMinBrightness;
     private ImageView mMaxBrightness;
-    private int mBrightnessSlider = 1;
+    private int mBrightnessSlider;
     private int animStyle, animDuration, interpolatorType;
 
     private final Vibrator mVibrator;
@@ -159,13 +159,16 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
 
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_dialog, this, false);
+        addView(mBrightnessView);
 
         mTileLayout = (QSTileLayout) LayoutInflater.from(mContext).inflate(
                 R.layout.qs_paged_tile_layout, this, false);
         mTileLayout.setListening(mListening);
+        addView((View) mTileLayout);
 
         mQsTileRevealController = new QSTileRevealController(mContext, this,
                 (PagedTileLayout) mTileLayout);
+        addDivider();
 
         mMinBrightness = mBrightnessView.findViewById(R.id.brightness_left);
         mMinBrightness.setOnClickListener(new View.OnClickListener() {
@@ -214,8 +217,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
         });
 
         mFooter = new QSSecurityFooter(this, context);
-
-        addQSPanel();
+        addView(mFooter.getView());
 
         mBrightnessController = new BrightnessController(context,
                 findViewById(R.id.brightness_icon),
@@ -229,22 +231,30 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
     }
 
     private void addQSPanel() {
-        if (mBrightnessSlider == 1 || mBrightnessSlider == 3) {
-            addView(mBrightnessView);
-            addView((View) mTileLayout);
-        } else {
-            addView((View) mTileLayout);
-            addView(mBrightnessView);
+        switch (mBrightnessSlider) {
+            case 0:
+                break;
+            case 1:
+            default:
+                addView(mBrightnessView);
+                addView((View) mTileLayout);
+                break;
+            case 2:
+                addView((View) mTileLayout);
+                addView(mBrightnessView);
+                break;
+            case 3:
+                addView((View) mTileLayout);
+                break;
+            case 4:
+                addView((View) mTileLayout);
+                break;
         }
 
-        addDivider();
-        addView(mFooter.getView());
         updateResources();
     }
 
     private void restartQSPanel() {
-        if (mFooter.getView() != null) removeView(mFooter.getView());
-        if (mDivider != null) removeView(mDivider);
         if ((View) mTileLayout != null) removeView((View) mTileLayout);
         if (mBrightnessView != null) removeView(mBrightnessView);
 
