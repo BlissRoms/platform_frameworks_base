@@ -133,7 +133,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
 
     private ImageView mMinBrightness;
     private ImageView mMaxBrightness;
-    private int mBrightnessSlider = 1;
+    private int mBrightnessSlider;
     private int animStyle, animDuration, interpolatorType;
 
     private final Vibrator mVibrator;
@@ -159,10 +159,12 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
 
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_dialog, this, false);
+        addView(mBrightnessView);
 
         mTileLayout = (QSTileLayout) LayoutInflater.from(mContext).inflate(
                 R.layout.qs_paged_tile_layout, this, false);
         mTileLayout.setListening(mListening);
+        addView((View) mTileLayout);
 
         mQsTileRevealController = new QSTileRevealController(mContext, this,
                 (PagedTileLayout) mTileLayout);
@@ -229,12 +231,14 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
     }
 
     private void addQSPanel() {
-        if (mBrightnessSlider == 1 || mBrightnessSlider == 3) {
+        if (mBrightnessSlider == 1) {
             addView(mBrightnessView);
             addView((View) mTileLayout);
+        } else if (mBrightnessSlider == 2) {
+            addView((View) mTileLayout);
+            addView(mBrightnessView);
         } else {
             addView((View) mTileLayout);
-            addView(mBrightnessView);
         }
 
         addDivider();
