@@ -5930,7 +5930,7 @@ public final class Settings {
 
         /** @hide */
         private static final Validator FOD_ANIM_VALIDATOR =
-                new SettingsValidators.InclusiveIntegerRangeValidator(0, 19);
+                new SettingsValidators.InclusiveIntegerRangeValidator(0, 20);
 
         /**
          * FOD recognizing animation
