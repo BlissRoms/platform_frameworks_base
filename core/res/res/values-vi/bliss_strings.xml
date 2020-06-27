@@ -56,4 +56,6 @@
     <string name="gaming_mode_disabled_toast">Chế độ chơi game đã tắt</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Quay màn hình</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Bấm và giữ nút nguồn để mở khoá</string>
 </resources>

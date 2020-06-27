@@ -56,4 +56,6 @@
     <string name="gaming_mode_disabled_toast">Mängurežiim välja lülitatud</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Ekraani salvestus</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Avamiseks vajutage ja hoidke all toitenuppu</string>
 </resources>

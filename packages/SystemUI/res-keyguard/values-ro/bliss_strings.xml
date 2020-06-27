@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="date_long_title_today">Astăzi este %s</string>
+    <!-- Minutes displayed in words on the typographic clock face. [CHAR LIMIT=20] -->
+    <string-array name="type_clock_minutes_alt">
+        <item>Ora</item>
+        <item>O\u2019Unu</item>
+        <item>O\u2019Doi</item>
+        <item>O\u2019Trei</item>
+        <item>O\u2019Patru</item>
+        <item>O\u2019Cinci</item>
+        <item>O\u2019Șase</item>
+        <item>O\u2019Șapte</item>
+        <item>O\u2019Opt</item>
+        <item>O\u2019Nouă</item>
+        <item>Zece</item>
+        <item>Unsprezece</item>
+        <item>Doisprezece</item>
+        <item>Treisprezece</item>
+        <item>Paisprezece</item>
+        <item>Cincisprezece</item>
+        <item>Șaisprezece</item>
+        <item>Șaptesprezece</item>
+        <item>Optsprezece</item>
+        <item>Nouăsprezece</item>
+        <item>Douăzeci</item>
+        <item>Douăzeci și unu</item>
+        <item>Douăzeci şi Doi</item>
+        <item>Douăzeci și Trei</item>
+        <item>Douăzeci și Patru</item>
+        <item>Douăzeci și Cinci</item>
+        <item>Douăzeci și Şase</item>
+        <item>Douăzeci și Şapte</item>
+        <item>Douăzeci și Opt</item>
+        <item>Douăzeci și Nouă</item>
+        <item>Treizeci</item>
+        <item>Treizeci și Unu</item>
+        <item>Treizeci și Doi</item>
+        <item>Treizeci și Trei</item>
+        <item>Treizeci și Patru</item>
+        <item>Treizeci și Cinci</item>
+        <item>Treizeci și Şase</item>
+        <item>Treizeci și Şapte</item>
+        <item>Treizeci și Opt</item>
+        <item>Treizeci și Nouă</item>
+        <item>Patruzeci</item>
+        <item>Patruzeci și Unu</item>
+        <item>Patruzeci și Doi</item>
+        <item>Patruzeci și Trei</item>
+        <item>Patruzeci și Patru</item>
+        <item>Patruzeci și Cinci</item>
+        <item>Patruzeci și Şase</item>
+        <item>Patruzeci și Şapte</item>
+        <item>Patruzeci şi Opt</item>
+        <item>Patruzeci și Nouă</item>
+        <item>Cincizeci</item>
+        <item>Cincizeci și unu</item>
+        <item>Cincizeci și Doi</item>
+        <item>Cincizeci și Trei</item>
+        <item>Cincizeci și patru</item>
+        <item>Cincizeci și cinci</item>
+        <item>Cincizeci și șase</item>
+        <item>Cincizeci și șapte</item>
+        <item>Cincizeci și opt</item>
+        <item>Cincizeci și nouă</item>
+    </string-array>
+</resources>
