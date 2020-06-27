@@ -892,6 +892,15 @@ public class MobileSignalController extends SignalController<
                 // EMUI (Huawei P10)
                 case 4:
                     return TelephonyIcons.VOWIFI_EMUI;
+                // Simple1
+                case 5:
+                    return TelephonyIcons.VOWIFI_Simple1;
+                // Simple2
+                case 6:
+                    return TelephonyIcons.VOWIFI_Simple2;
+                // Simple3
+                case 7:
+                    return TelephonyIcons.VOWIFI_Simple3;
                 default:
                     return TelephonyIcons.VOWIFI;
             }

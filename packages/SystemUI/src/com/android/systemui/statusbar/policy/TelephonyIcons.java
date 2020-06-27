@@ -46,6 +46,9 @@ public class TelephonyIcons {
     static final int ICON_VOWIFI_MOTO = R.drawable.ic_vowifi_moto;
     static final int ICON_VOWIFI_ONEPLUS = R.drawable.ic_vowifi_oneplus;
     static final int ICON_VOWIFI_EMUI = R.drawable.ic_vowifi_emui;
+    static final int ICON_VOWIFI_Simple1 = R.drawable.ic_vowifi_simple1;
+    static final int ICON_VOWIFI_Simple2 = R.drawable.ic_vowifi_simple2;
+    static final int ICON_VOWIFI_Simple3 = R.drawable.ic_vowifi_simple3;
 
     static final MobileIconGroup CARRIER_NETWORK_CHANGE = new MobileIconGroup(
             "CARRIER_NETWORK_CHANGE",
@@ -358,6 +361,45 @@ public class TelephonyIcons {
             AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH[0],
             0,
             TelephonyIcons.ICON_VOWIFI_EMUI,
+            false);
+	    
+    static final MobileIconGroup VOWIFI_Simple1 = new MobileIconGroup(
+            "VoWIFI_Simple1",
+            null,
+            null,
+            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH,
+            0, 0,
+            0,
+            0,
+            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH[0],
+            0,
+            TelephonyIcons.ICON_VOWIFI_Simple1,
+            false);
+	    
+    static final MobileIconGroup VOWIFI_Simple2 = new MobileIconGroup(
+            "VoWIFI_Simple2",
+            null,
+            null,
+            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH,
+            0, 0,
+            0,
+            0,
+            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH[0],
+            0,
+            TelephonyIcons.ICON_VOWIFI_Simple2,
+            false);
+	    
+    static final MobileIconGroup VOWIFI_Simple3 = new MobileIconGroup(
+            "VoWIFI_Simple3",
+            null,
+            null,
+            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH,
+            0, 0,
+            0,
+            0,
+            AccessibilityContentDescriptions.PHONE_SIGNAL_STRENGTH[0],
+            0,
+            TelephonyIcons.ICON_VOWIFI_Simple3,
             false);
 
     /** Mapping icon name(lower case) to the icon object. */
