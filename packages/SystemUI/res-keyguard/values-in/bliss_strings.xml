@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="date_long_title_today">Hari ini %s</string>
+    <!-- Minutes displayed in words on the typographic clock face. [CHAR LIMIT=20] -->
+    <string-array name="type_clock_minutes_alt">
+        <item>O\u2019Jam</item>
+        <item>O\u2019Satu</item>
+        <item>O\u2019Dua</item>
+        <item>O\u2019Tiga</item>
+        <item>O\u2019Empat</item>
+        <item>O\u2019Lima</item>
+        <item>O\u2019Enam</item>
+        <item>O\u2019Tujuh</item>
+        <item>O\u2019Delapan</item>
+        <item>O\u2019Sembilan</item>
+        <item>Sepuluh</item>
+        <item>Sebelas</item>
+        <item>Dua Belas</item>
+        <item>Tiga Belas</item>
+        <item>Empat Belas</item>
+        <item>Lima Belas</item>
+        <item>Enam Belas</item>
+        <item>Tujuh Belas</item>
+        <item>Delapan Belas</item>
+        <item>Sembilan Belas</item>
+        <item>Dua Puluh</item>
+        <item>Dua Puluh Satu</item>
+        <item>Dua Puluh
+Dua</item>
+        <item>Dua Puluh Tiga</item>
+        <item>Dua Puluh
+Empat</item>
+        <item>Dua Puluh
+Lima</item>
+        <item>Dua puluh Enam</item>
+        <item>Dua puluh Tujuh</item>
+        <item>Dua puluh Delapan</item>
+        <item>Dua puluh Sembilan</item>
+        <item>Tiga Puluh</item>
+        <item>Tiga puluh Satu</item>
+        <item>Tiga puluh Dua</item>
+        <item>Tiga puluh Tiga</item>
+        <item>Tiga puluh Empat</item>
+        <item>Tiga puluh Lima</item>
+        <item>Tiga puluh Enam</item>
+        <item>Tiga puluh Tujuh</item>
+        <item>Tiga puluh Delapan</item>
+        <item>Tiga puluh Sembilan</item>
+        <item>Empat Puluh</item>
+        <item>Empat puluh Satu</item>
+        <item>Empat puluh Dua</item>
+        <item>Empat puluh Tiga</item>
+        <item>Empat puluh Empat</item>
+        <item>Empat puluh Lima</item>
+        <item>Empat puluh Enam</item>
+        <item>Empat puluh Tujuh</item>
+        <item>Empat puluh Delapan</item>
+        <item>Empat puluh Sembilan</item>
+        <item>Lima Puluh</item>
+        <item>Lima puluh Satu</item>
+        <item>Lima puluh Dua</item>
+        <item>Lima puluh Tiga</item>
+        <item>Lima puluh Empat</item>
+        <item>Lima puluh Lima</item>
+        <item>Lima puluh Enam</item>
+        <item>Lima puluh Tujuh</item>
+        <item>Lima puluh Delapan</item>
+        <item>Lima puluh Sembilan</item>
+    </string-array>
+</resources>

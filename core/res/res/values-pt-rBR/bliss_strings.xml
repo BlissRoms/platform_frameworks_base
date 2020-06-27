@@ -55,4 +55,6 @@
     <string name="gaming_mode_disabled_toast">Modo de jogo desativado.</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Gravador de tela</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Pressione e segure o botão liga/desliga para desbloquear</string>
 </resources>

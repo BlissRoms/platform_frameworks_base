@@ -56,4 +56,6 @@ example=\"Gmail\"&gt;%1$s&lt;/xliff:g&gt;&lt;/b&gt; paket imzasını taklit etme
     <string name="gaming_mode_disabled_toast">Oyun modu kapalı</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Ekran kaydı</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Kilidi açmak için güç tuşuna basılı tutun</string>
 </resources>

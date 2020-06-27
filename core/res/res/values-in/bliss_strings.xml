@@ -56,4 +56,6 @@
     <string name="gaming_mode_disabled_toast">Mode permainan nonaktif</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Perekam layar</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Tekan dan tahan tombol power untuk membuka kunci</string>
 </resources>

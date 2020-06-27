@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • Dash-laadimine (täitumiseni <xliff:g id="charging_time_left" example="4 hours and 2 minutes">%1$s</xliff:g>)</string>
+    <string name="keyguard_plugged_in_dash_charging"><xliff:g id="percentage">%s</xliff:g> • Dash-laadimine</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a warp charger. Should match keyguard_plugged_in_warp_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_warp_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • Warp-laadimine (täitumiseni <xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g>)</string>
+    <string name="keyguard_plugged_in_warp_charging"> • Warp-laadimine</string>
+    <!-- Name of the nfc status bar icon. -->
+    <string name="status_bar_nfc">NFC</string>
+    <!-- Accessibility label for nfc icon (not shown on screen) [CHAR LIMIT=NONE] -->
+    <string name="accessibility_status_bar_nfc">Nfc</string>
+    <!-- CPUInfo tile -->
+    <string name="quick_settings_cpuinfo_label">CPU info</string>
+    <string name="accessibility_quick_settings_cpuinfo_off">CPU info väljas</string>
+    <string name="accessibility_quick_settings_cpuinfo_on">CPU info sees</string>
+    <!-- ADB QS Tile -->
+    <string name="quick_settings_adb_label">ADB</string>
+    <!-- Screenshot Delete Toast -->
+    <string name="delete_screenshot_toast">Kuvatõmmis kustutatud</string>
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_off">VÄLJAS</string>
+    <string name="quick_settings_screenshot_label">Kuvatõmmis</string>
+    <string name="quick_settings_region_screenshot_label">Osaline kuvatõmmis</string>
+    <string name="quick_settings_long_screenshot_label">Pikk kuvatõmmis</string>
+    <!-- Sound Search tile -->
+    <string name="quick_settings_sound_search">Heliotsing</string>
+    <string name="quick_settings_sound_search_no_app">Vabandame, kuid see ei tööta, kui teil puudub heliotsingu rakendus.</string>
+    <!-- AOD QS tile -->
+    <string name="quick_settings_aod_label">Alati-sees ekraan</string>
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Heli</string>
+    <string name="quick_settings_sound_mute">Hääletu</string>
+    <string name="quick_settings_sound_ring">Helin</string>
+    <string name="quick_settings_sound_vibrate">Vibreering</string>
+    <!-- Music tile -->
+    <string name="quick_settings_music_label">Muusika</string>
+    <string name="quick_settings_music_play">Esita</string>
+    <string name="quick_settings_music_pause">Peata</string>
+    <!-- Compass QS Tile -->
+    <string name="quick_settings_compass_label">Kompass</string>
+    <string name="quick_settings_compass_value"><xliff:g id="degrees">%1$.0f</xliff:g>\u00b0 <xliff:g id="direction">%2$s</xliff:g></string>
+    <string name="quick_settings_compass_init">Määratlen\u2026</string>
+    <string name="accessibility_quick_settings_compass_off">Kompass väljas</string>
+    <string name="accessibility_quick_settings_compass_on">Kompass sees</string>
+    <string name="accessibility_quick_settings_compass_changed_off">Kompass on välja lülitatud</string>
+    <string name="accessibility_quick_settings_compass_changed_on">Kompass on sisse lülitatud</string>
+    <string name="quick_settings_compass_N">Põhi</string>
+    <string name="quick_settings_compass_NE">Kirre</string>
+    <string name="quick_settings_compass_E">Ida</string>
+    <string name="quick_settings_compass_SE">Kagu</string>
+    <string name="quick_settings_compass_S">Lõuna</string>
+    <string name="quick_settings_compass_SW">Edel</string>
+    <string name="quick_settings_compass_W">Lääs</string>
+    <string name="quick_settings_compass_NW">Loe</string>
+    <!-- SleepScreen QS Tile -->
+    <string name="quick_settings_sleepscreen_label">Ekraan väljalülitada</string>
+    <!-- VPN QS tile -->
+    <string name="quick_settings_vpn_label">VPN</string>
+    <string name="quick_settings_vpn_connect_dialog_title">Ühendatud\u2026</string>
+    <string name="vpn_credentials_hint">Sisestage oma mandaadid <xliff:g id="name">%s</xliff:g> ühenduse loomiseks</string>
+    <string name="vpn_credentials_username">Kasutajanimi</string>
+    <string name="vpn_credentials_password">Parool</string>
+    <string name="vpn_credentials_dialog_connect">Ühenda</string>
+    <!-- Hint for custom lockscreen shortcuts -->
+    <string name="custom_swipe_hint">Lohista ikoonilt <xliff:g name="target">%s</xliff:g> jaoks</string>
+    <!-- Screen record -->
+    <string name="screenrecord_dialog_title">Alusta salvestust?</string>
+    <string name="screenrecord_dialog_summary">Salvestamise ajal saab Androidi süsteem koguda tundlikku teavet, mis on ekraanil nähtav või mida teie seadmes esitatakse. See hõlmab paroole, makseteavet, fotosid, sõnumeid ja heli.</string>
+    <string name="screenrecord_dialog_start">Käivita</string>
+    <string name="screenrecord_dialog_cancel">Tühista</string>
+    <string name="screenrecord_audio_recording_title">Heli allikas</string>
+    <string name="screenrecord_audio_recording_internal">Sisemine</string>
+    <string name="screenrecord_audio_recording_microphone">Mikrofon</string>
+    <string name="screenrecord_audio_recording_off">Keelatud</string>
+    <string name="screenrecord_taps_title">Kuva puudutusi ekraanil</string>
+    <string name="screenrecord_stopdot_title">Kuva peatamispunkti</string>
+    <string name="screenrecord_video_bitrate_title">Video bitikiirus</string>
+    <!-- Power menu item for taking a screenshot [CHAR LIMIT=20]-->
+    <string name="global_action_screenshot_cust">Kuvatõmmis</string>
+    <!--Screenrecord Tile-->
+    <string name="screenrecorder_title_tile">Ekraani salvestus</string>
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Piilumis teated jäävad 1 minutiks.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%s</xliff:g> - Piilumis teated jäävad <xliff:g id="number">%d</xliff:g> minutiks.</string>
+    <!-- Kill button in notification guts -->
+    <string name="force_stop_dlg_title">Sunnid peatuma?</string>
+    <string name="force_stop_dlg_text">Kui sunnite rakenduse peatuma, võib see valesti käituda.</string>
+    <string name="dlg_ok">@android:string/ok</string>
+    <string name="dlg_cancel">@android:string/cancel</string>
+    <string name="guts_force_close_app">Sule rakendus</string>
+    <!-- Reboot/Recovery/PowerOff QS tile -->
+    <string name="quick_settings_reboot_label">Taaskäivitus</string>
+    <string name="quick_settings_reboot_recovery_label">Taastus</string>
+    <string name="quick_settings_poweroff_label">Toide välja</string>
+    <!-- Gaming mode -->
+    <string name="gaming_mode_not_enabled">Mängimisrežiim on seadetes keelatud</string>
+    <string name="quick_settings_gaming_mode_label">Mängimisrežiim</string>
+    <!-- Content description of the Gaming mode tile in quick settings when disabled (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_gaming_mode_disabled">Mängurežiim välja lülitatud.</string>
+    <!-- Content description of the Gaming mode tile in quick settings when enabled (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_gaming_mode_enabled">Mängurežiim sisselülitatud.</string>
+    <!-- Name of the camera status bar icon. -->
+    <string name="status_bar_camera">Kaamera</string>
+    <!-- Name of the location status bar icon. -->
+    <string name="status_bar_location">Asukoht</string>
+    <!-- Name of the microphone status bar icon. -->
+    <string name="status_bar_microphone">Mikrofon</string>
+    <!-- Omnijaws Weather -->
+    <string name="omnijaws_service_error">Tõrge</string>
+    <string name="omnijaws_service_unkown">Ilmaandmed puuduvad</string>
+    <string name="omnijaws_service_error_long">Tõrge ilmaandmete laadimisel</string>
+    <string name="omnijaws_service_disabled">Teenus on keelatud</string>
+    <string name="omnijaws_detail_header">Ilm</string>
+    <string name="omnijaws_label_default">Ilm</string>
+    <string name="omnijaws_current_text">Nüüd</string>
+    <string name="omnijaws_package_not_available">OmniJaws ei ole kättesaadav</string>
+    <string name="omnijaws_service_last_update">Viimane värskendus:</string>
+    <string name="tuner_show_drag_handle">Kuva lohistamiskäepide</string>
+    <!-- DataSwitch Tile -->
+    <string name="qs_data_switch_label">Andmekaardi vahetamine</string>
+    <string name="qs_data_switch_changed_1">Kasutad andmesideks SIM 1-te</string>
+    <string name="qs_data_switch_changed_2">Kasutad andmesideks SIM 2-te</string>
+    <!-- Restart SystemUI via Advanced Power Menu -->
+    <string name="global_action_restart_systemui">SystemUI</string>
+    <!-- Weather string format in expanded statusbar header -->
+    <string name="status_bar_weather_format"><xliff:g id="temp">%1$s</xliff:g></string>
+    <!-- accessibility label for button to open running apps prefscreen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_running_services">Avage jooksvate teenuste kuva.</string>
+    <!-- Spidey Analog clock -->
+    <!-- Spectrum Analog clock -->
+    <!-- Dot Analog clock -->
+    <!-- Sneeky Analog clock -->
+    <!-- Bliss Analog clock -->
+    <!-- Custom num Analog clock -->
+    <!-- Immersive mode Tile -->
+    <string name="quick_settings_immersive_tile">Täisekraanirežiim</string>
+    <string name="quick_settings_immersive_tile_off">Tavaline režiim</string>
+    <string name="quick_settings_immersive_tile_statusbar">Peida olekuriba</string>
+    <string name="quick_settings_immersive_tile_navbar">Peida navigeerimisriba</string>
+    <string name="quick_settings_immersive_tile_full">Täisekraanirežiim</string>
+    <!-- Mono Tile-->
+    <string name="quick_settings_monotoggle_tile">Helirežiim</string>
+    <string name="quick_settings_monotoggle_tile_mono">Monoheli</string>
+    <string name="quick_settings_monotoggle_tile_stereo">Stereo heli</string>
+    <string name="tuner_show_secure_title">Kuva turvainfo</string>
+    <!-- Screen Stabilization -->
+    <string name="quick_settings_stabilization_label">Ekraani stabiliseerimine</string>
+    <string name="quick_settings_stabilization_off">Stabiliseerimine on keelatud</string>
+    <string name="quick_settings_stabilization_on">Stabiliseerimine on lubatud</string>
+    <string name="low_label">Madal</string>
+    <string name="high_label">Kõrge</string>
+    <string name="stabilization_velocity_friction">Hõõrdekiirus</string>
+    <string name="stabilization_velocity_amplitude">Amplituudikiirus</string>
+    <string name="stabilization_position_friction">Hõõrdeasend</string>
+    <!-- Language toggle tile -->
+    <string name="quick_settings_locale_label">Keel</string>
+    <string name="quick_settings_locale_more_locales_toast">Palun seadistage mitu keelt, et lubada sisse- ja väljalülitamis võimalus</string>
+    <!-- FPS Info tile -->
+    <string name="quick_settings_fpsinfo_label">K/S info</string>
+    <string name="accessibility_quick_settings_fpsinfo_off">K/S info väljas</string>
+    <string name="accessibility_quick_settings_fpsinfo_on">K/S info sees</string>
+    <!-- Alerting notification header label -->
+    <string name="notification_section_header_alerting">Hoiatusteated</string>
+    <!-- PowerShare QS tile -->
+    <string name="quick_settings_powershare_label">Juhtmevaba energia jagamine</string>
+    <string name="quick_settings_powershare_off_powersave_label">Juhtmevaba energia jagamine on välja lülitatud\nAkusäästja</string>
+    <string name="quick_settings_powershare_off_low_battery_label">Juhtmevaba energiajagamine väljas\nAku on liiga tühi</string>
+    <string name="quick_settings_powershare_enabled_label">Juhtmevaba energia jagamine on sisse lülitatud</string>
+    <!-- Daily data usage -->
+    <string name="daily_data_usage_title">Tänane kasutus</string>
+    <!-- Animations QS Tile -->
+    <string name="quick_settings_animation_label">Keela animatsioonid</string>
+    <string name="accessibility_quick_settings_animations_on">Animatsioonid sees</string>
+    <string name="accessibility_quick_settings_animations_off">Animatsioonid väljas</string>
+    <!-- HW Keys Tile -->
+    <string name="quick_settings_hw_keys_label">Füüsilised nupud</string>
+</resources>
