@@ -147,6 +147,14 @@ public class KeyguardStatusView extends GridLayout implements
     private static final int FONT_SOFIA_SANS_MEDIUM = 78;
     private static final int FONT_SOFIA_SEMICONDENSED_REGULAR = 79;
     private static final int FONT_SOFIA_SEMICONDENSED_MEDIUM = 80;
+    private static final int FONT_SAMSUNG = 81;
+    private static final int FONT_MEXCELLENT = 82;
+    private static final int FONT_BURNSTOWN = 83;
+    private static final int FONT_DUMBLEDOR = 84;
+    private static final int FONT_PHANTOMBOLD = 85;
+    private static final int FONT_SNOWSTORM = 86;
+    private static final int FONT_NEONEON = 87;
+    private static final int FONT_CIRCULARSTD = 88;
 
     private final LockPatternUtils mLockPatternUtils;
     private final IActivityManager mIActivityManager;
@@ -971,6 +979,30 @@ public class KeyguardStatusView extends GridLayout implements
             case FONT_SOFIA_SEMICONDENSED_MEDIUM:
                 view.setTextFont(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
                 break;
+            case FONT_SAMSUNG:
+                view.setTextFont(Typeface.create("samsung-sys", Typeface.NORMAL));
+                break;
+            case FONT_MEXCELLENT:
+                view.setTextFont(Typeface.create("mexcellent-sys", Typeface.NORMAL));
+                break;
+            case FONT_BURNSTOWN:
+                view.setTextFont(Typeface.create("burnstown-sys", Typeface.NORMAL));
+                break;
+            case FONT_DUMBLEDOR:
+                view.setTextFont(Typeface.create("dumbledor-sys", Typeface.NORMAL));
+                break;
+            case FONT_PHANTOMBOLD:
+                view.setTextFont(Typeface.create("phantombold-sys", Typeface.NORMAL));
+                break;
+            case FONT_SNOWSTORM:
+                view.setTextFont(Typeface.create("snowstorm-sys", Typeface.NORMAL));
+                break;
+            case FONT_NEONEON:
+                view.setTextFont(Typeface.create("neoneon-sys", Typeface.NORMAL));
+                break;
+            case FONT_CIRCULARSTD:
+                view.setTextFont(Typeface.create("circularstd-sys", Typeface.NORMAL));
+                break;
         }
     }
 
@@ -1650,6 +1682,30 @@ public class KeyguardStatusView extends GridLayout implements
                 break;
             case FONT_SOFIA_SEMICONDENSED_MEDIUM:
                 mOwnerInfo.setTypeface(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
+                break;
+            case FONT_SAMSUNG:
+                mOwnerInfo.setTypeface(Typeface.create("samsung-sys", Typeface.NORMAL));
+                break;
+            case FONT_MEXCELLENT:
+                mOwnerInfo.setTypeface(Typeface.create("mexcellent-sys", Typeface.NORMAL));
+                break;
+            case FONT_BURNSTOWN:
+                mOwnerInfo.setTypeface(Typeface.create("burnstown-sys", Typeface.NORMAL));
+                break;
+            case FONT_DUMBLEDOR:
+                mOwnerInfo.setTypeface(Typeface.create("dumbledor-sys", Typeface.NORMAL));
+                break;
+            case FONT_PHANTOMBOLD:
+                mOwnerInfo.setTypeface(Typeface.create("phantombold-sys", Typeface.NORMAL));
+                break;
+            case FONT_SNOWSTORM:
+                mOwnerInfo.setTypeface(Typeface.create("snowstorm-sys", Typeface.NORMAL));
+                break;
+            case FONT_NEONEON:
+                mOwnerInfo.setTypeface(Typeface.create("neoneon-sys", Typeface.NORMAL));
+                break;
+            case FONT_CIRCULARSTD:
+                mOwnerInfo.setTypeface(Typeface.create("circularstd-sys", Typeface.NORMAL));
                 break;
         }
     }

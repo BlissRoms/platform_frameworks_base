@@ -135,6 +135,14 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
     private static final int FONT_SOFIA_SANS_MEDIUM = 78;
     private static final int FONT_SOFIA_SEMICONDENSED_REGULAR = 79;
     private static final int FONT_SOFIA_SEMICONDENSED_MEDIUM = 80;
+    private static final int FONT_SAMSUNG = 81;
+    private static final int FONT_MEXCELLENT = 82;
+    private static final int FONT_BURNSTOWN = 83;
+    private static final int FONT_DUMBLEDOR = 84;
+    private static final int FONT_PHANTOMBOLD = 85;
+    private static final int FONT_SNOWSTORM = 86;
+    private static final int FONT_NEONEON = 87;
+    private static final int FONT_CIRCULARSTD = 88;
 
     private static final String STATUS_BAR_SHOW_CARRIER =
             "system:" + Settings.System.STATUS_BAR_SHOW_CARRIER;
@@ -443,6 +451,30 @@ public class CarrierLabel extends TextView implements DarkReceiver, TunerService
                 break;
             case FONT_SOFIA_SEMICONDENSED_MEDIUM:
                 setTypeface(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
+                break;
+            case FONT_SAMSUNG:
+                setTypeface(Typeface.create("samsung-sys", Typeface.NORMAL));
+                break;
+            case FONT_MEXCELLENT:
+                setTypeface(Typeface.create("mexcellent-sys", Typeface.NORMAL));
+                break;
+            case FONT_BURNSTOWN:
+                setTypeface(Typeface.create("burnstown-sys", Typeface.NORMAL));
+                break;
+            case FONT_DUMBLEDOR:
+                setTypeface(Typeface.create("dumbledor-sys", Typeface.NORMAL));
+                break;
+            case FONT_PHANTOMBOLD:
+                setTypeface(Typeface.create("phantombold-sys", Typeface.NORMAL));
+                break;
+            case FONT_SNOWSTORM:
+                setTypeface(Typeface.create("snowstorm-sys", Typeface.NORMAL));
+                break;
+            case FONT_NEONEON:
+                setTypeface(Typeface.create("neoneon-sys", Typeface.NORMAL));
+                break;
+            case FONT_CIRCULARSTD:
+                setTypeface(Typeface.create("circularstd-sys", Typeface.NORMAL));
                 break;
         }
     }
