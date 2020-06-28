@@ -561,6 +561,30 @@
     <family name="sofia-semicondensed-medium">
         <font weight="300" style="normal">SofiaSansSemiCond-Medium.ttf</font>
     </family>
+    <family name="snowstorm-sys">
+        <font weight="300" style="normal">Snowstorm-Regular.ttf</font>
+    </family>
+    <family name="neoneon-sys">
+        <font weight="300" style="normal">Neoneon-Regular.ttf</font>
+    </family>
+    <family name="mexcellent-sys">
+        <font weight="300" style="normal">Mexcellent-Regular.ttf</font>
+    </family>
+    <family name="burnstown-sys">
+        <font weight="300" style="normal">Burnstown-Regular.ttf</font>
+    </family>
+    <family name="dumbledor-sys">
+        <font weight="300" style="normal">Dumbledor-Regular.ttf</font>
+    </family>
+    <family name="samsung-sys">
+        <font weight="300" style="normal">Shamshung.ttf</font>
+    </family>
+    <family name="phantombold-sys">
+        <font weight="300" style="normal">PhantomBold-Regular.ttf</font>
+    </family>
+    <family name="circularstd-sys">
+        <font weight="400" style="normal">CircularStd.ttf</font>
+    </family>
 
     <family name="monospace">
         <font weight="400" style="normal">DroidSansMono.ttf</font>

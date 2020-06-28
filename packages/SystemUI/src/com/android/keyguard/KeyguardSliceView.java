@@ -170,6 +170,14 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
     private static final int FONT_SOFIA_SANS_MEDIUM = 78;
     private static final int FONT_SOFIA_SEMICONDENSED_REGULAR = 79;
     private static final int FONT_SOFIA_SEMICONDENSED_MEDIUM = 80;
+    private static final int FONT_SAMSUNG = 81;
+    private static final int FONT_MEXCELLENT = 82;
+    private static final int FONT_BURNSTOWN = 83;
+    private static final int FONT_DUMBLEDOR = 84;
+    private static final int FONT_PHANTOMBOLD = 85;
+    private static final int FONT_SNOWSTORM = 86;
+    private static final int FONT_NEONEON = 87;
+    private static final int FONT_CIRCULARSTD = 88;
 
     public static final int DEFAULT_ANIM_DURATION = 550;
 
@@ -758,11 +766,29 @@ public class KeyguardSliceView extends LinearLayout implements View.OnClickListe
             case FONT_SOFIA_SANS_MEDIUM:
                 view.setTypeface(Typeface.create("sofia-sans-medium", Typeface.NORMAL));
                 break;
-            case FONT_SOFIA_SEMICONDENSED_REGULAR:
-                view.setTypeface(Typeface.create("sofia-semicondensed-regular", Typeface.NORMAL));
+            case FONT_SAMSUNG:
+                view.setTypeface(Typeface.create("samsung-sys", Typeface.NORMAL));
                 break;
-            case FONT_SOFIA_SEMICONDENSED_MEDIUM:
-                view.setTypeface(Typeface.create("sofia-semicondensed-medium", Typeface.NORMAL));
+            case FONT_MEXCELLENT:
+                view.setTypeface(Typeface.create("mexcellent-sys", Typeface.NORMAL));
+                break;
+            case FONT_BURNSTOWN:
+                view.setTypeface(Typeface.create("burnstown-sys", Typeface.NORMAL));
+                break;
+            case FONT_DUMBLEDOR:
+                view.setTypeface(Typeface.create("dumbledor-sys", Typeface.NORMAL));
+                break;
+            case FONT_PHANTOMBOLD:
+                view.setTypeface(Typeface.create("phantombold-sys", Typeface.NORMAL));
+                break;
+            case FONT_SNOWSTORM:
+                view.setTypeface(Typeface.create("snowstorm-sys", Typeface.NORMAL));
+                break;
+            case FONT_NEONEON:
+                view.setTypeface(Typeface.create("neoneon-sys", Typeface.NORMAL));
+                break;
+            case FONT_CIRCULARSTD:
+                view.setTypeface(Typeface.create("circularstd-sys", Typeface.NORMAL));
                 break;
         }
     }
