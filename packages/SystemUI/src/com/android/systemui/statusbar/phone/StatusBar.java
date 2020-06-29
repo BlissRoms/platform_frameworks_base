@@ -2288,6 +2288,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_TILE_STYLE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DUAL_NOTCH_PILL_HIDE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2338,7 +2341,11 @@ public class StatusBar extends SystemUI implements DemoMode,
                 stockTileStyle();
                 updateTileStyle();
                 mQSPanel.getHost().reloadAllTiles();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.DUAL_NOTCH_PILL_HIDE))) {
+                setDualNotchOverlay();
             }
+
             update();
         }
 
@@ -2356,12 +2363,21 @@ public class StatusBar extends SystemUI implements DemoMode,
             setHeadsUpBlacklist();
             handleCutout(null);
             setMediaHeadsup();
+            setDualNotchOverlay();
         }
     }
 
     private void setMediaHeadsup() {
         if (mMediaManager != null) {
             mMediaManager.setMediaHeadsup();
+        }
+    }
+    private void setDualNotchOverlay() {
+        try {
+            mOverlayManager.setEnabled("org.lineageos.overlay.notch.nofill",
+                        enable, mLockscreenUserManager.getCurrentUserId());
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed to handle dual notch overlay", e);
         }
     }
 
