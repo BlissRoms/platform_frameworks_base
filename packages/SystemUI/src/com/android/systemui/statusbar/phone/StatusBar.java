@@ -746,6 +746,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             };
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
 
+    private boolean mHideNotch;
     private HeadsUpAppearanceController mHeadsUpAppearanceController;
     private boolean mVibrateOnOpening;
     protected VibratorHelper mVibratorHelper;
@@ -2288,6 +2289,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_TILE_STYLE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DUAL_NOTCH_PILL_HIDE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2338,7 +2342,11 @@ public class StatusBar extends SystemUI implements DemoMode,
                 stockTileStyle();
                 updateTileStyle();
                 mQSPanel.getHost().reloadAllTiles();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.DUAL_NOTCH_PILL_HIDE))) {
+                setDualNotchOverlay();
             }
+
             update();
         }
 
@@ -2356,12 +2364,26 @@ public class StatusBar extends SystemUI implements DemoMode,
             setHeadsUpBlacklist();
             handleCutout(null);
             setMediaHeadsup();
+            setDualNotchOverlay();
         }
     }
 
     private void setMediaHeadsup() {
         if (mMediaManager != null) {
             mMediaManager.setMediaHeadsup();
+        }
+    }
+    private void setDualNotchOverlay() {
+        boolean hideNotch = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.DUAL_NOTCH_PILL_HIDE, 0, UserHandle.USER_CURRENT) == 1;
+        if (mDisplayCutoutHidden != displayCutoutHidden){
+            mDisplayCutoutHidden = displayCutoutHidden;
+            try {
+                mOverlayManager.setEnabled("org.lineageos.overlay.notch.nofill",
+                            mHideNotch, mLockscreenUserManager.getCurrentUserId());
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed to handle dual notch overlay", e);
+            }
         }
     }
 
