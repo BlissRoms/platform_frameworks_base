@@ -6399,6 +6399,12 @@ public final class Settings {
                 BOOLEAN_VALIDATOR;
 
         /**
+         * Control how to handle the display cutout
+         * @hide
+         */
+        public static final String DUAL_NOTCH_PILL_HIDE = "dual_notch_pill_hide";
+
+        /**
          * @hide
          */
         public static final String START_SCREEN_STATE_SERVICE = "start_screen_state_service";
