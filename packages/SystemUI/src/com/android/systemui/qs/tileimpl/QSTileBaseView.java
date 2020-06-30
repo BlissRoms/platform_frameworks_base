@@ -110,12 +110,18 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
                 Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
         boolean setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
                     Settings.System.QS_PANEL_BG_USE_NEW_TINT, 0, UserHandle.USER_CURRENT) == 1;
-        if (setQsUseNewTint) {
+        boolean qsTileStyle = Settings.System.getIntForUser(context.getContentResolver(),
+                    Settings.System.QS_TILE_STYLE, 0, UserHandle.USER_CURRENT) == 0;
+        if (!qsTileStyle) {
             mColorActive = mColorActiveAlpha;
-            mColorDisabled = context.getResources().getColor(R.color.qs_tile_background_color_disabled);
         } else {
-            mColorDisabled = Utils.getDisabled(context,
-                    Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
+            if (setQsUseNewTint) {
+                mColorActive = mColorActiveAlpha;
+                mColorDisabled = context.getResources().getColor(R.color.qs_tile_background_color_disabled);
+            } else {
+                mColorDisabled = Utils.getDisabled(context,
+                        Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
+            }
         }
         mColorInactive = Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
 
