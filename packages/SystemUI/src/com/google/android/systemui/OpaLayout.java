@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
-import com.android.systemui.assist.AssistManager;
 import com.android.systemui.recents.OverviewProxyService;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.statusbar.phone.ButtonInterface;
@@ -149,7 +148,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         mAnimatedViews.add(mWhiteCutout);
         mAnimatedViews.add(mHalo);
         mOverviewProxyService = (OverviewProxyService) Dependency.get(OverviewProxyService.class);
-        setOpaEnabled(OpaUtils.shouldEnable(getContext()));
+        setOpaEnabled(true);
     }
 
     @Override
