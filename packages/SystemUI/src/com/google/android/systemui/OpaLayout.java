@@ -33,7 +33,6 @@ import android.widget.ImageView;
 import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
-import com.android.systemui.assist.AssistManager;
 import com.android.systemui.recents.OverviewProxyService;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.statusbar.phone.ButtonInterface;
@@ -187,7 +186,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
             mSettingsObserver = new SettingsObserver(new Handler());
         }
         mSettingsObserver.observe();
-        setOpaEnabled(OpaUtils.shouldEnable(getContext()));
+        setOpaEnabled(true);
     }
 
     @Override
