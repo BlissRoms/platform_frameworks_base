@@ -161,4 +161,7 @@
         to communicate pocket state to the pocket judge kernel driver. -->
     <string name="config_pocketBridgeSysfsInpocket"></string>
 
+    <!-- Vowifi -->
+    <bool name="config_hasVowifi">true</bool>
+
 </resources>
