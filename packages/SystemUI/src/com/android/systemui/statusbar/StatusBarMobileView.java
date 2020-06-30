@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,15 +37,13 @@ import android.widget.LinearLayout;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.settingslib.graph.SignalDrawable;
-import com.android.systemui.Dependency;
 import com.android.systemui.DualToneHandler;
 import com.android.systemui.R;
 import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.MobileIconState;
-import com.android.systemui.tuner.TunerService;
 
 public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
-        StatusIconDisplayable, TunerService.Tunable {
+        StatusIconDisplayable {
     private static final String TAG = "StatusBarMobileView";
 
     /// Used to show etc dots
@@ -59,18 +56,13 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
     private View mInoutContainer;
     private ImageView mIn;
     private ImageView mOut;
-    private ImageView mMobile, mMobileType, mMobileRoaming, mMobileImsImageView;
+    private ImageView mMobile, mMobileType, mMobileRoaming;
     private View mMobileRoamingSpace;
     private int mVisibleState = -1;
     private DualToneHandler mDualToneHandler;
     private View mMobileSignalType;
     private boolean mOldStyleType;
     private ImageView mMobileTypeSmall;
-
-    private static final String VOLTE_ICON_STYLE =
-            "system:" + Settings.System.VOLTE_ICON_STYLE;
-
-    private int mVoLTEicon;
 
     public static StatusBarMobileView fromContext(Context context, String slot) {
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -121,8 +113,7 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mIn = findViewById(R.id.mobile_in);
         mOut = findViewById(R.id.mobile_out);
         mInoutContainer = findViewById(R.id.inout_container);
-        mMobileImsImageView = findViewById(R.id.ims_hd);
-        mMobileImsImageView.setImageResource(R.drawable.ic_volte1);
+
         mMobileSignalType = findViewById(R.id.mobile_signal_type);
         mMobileTypeSmall = findViewById(R.id.mobile_type_small);
 
@@ -130,8 +121,6 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mMobile.setImageDrawable(mMobileDrawable);
 
         initDotView();
-
-        Dependency.get(TunerService.class).addTunable(this, VOLTE_ICON_STYLE);
     }
 
     private void initDotView() {
@@ -201,7 +190,6 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mOut.setVisibility(mState.activityOut ? View.VISIBLE : View.GONE);
         mInoutContainer.setVisibility((mState.activityIn || mState.activityOut)
                 ? View.VISIBLE : View.GONE);
-        mMobileImsImageView.setVisibility(mState.mobileIms ? View.VISIBLE : View.GONE);
     }
 
     private void setMobileSignalWidth(boolean small) {
@@ -264,7 +252,6 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mOut.setVisibility(state.activityOut ? View.VISIBLE : View.GONE);
         mInoutContainer.setVisibility((state.activityIn || state.activityOut)
                 ? View.VISIBLE : View.GONE);
-        mMobileImsImageView.setVisibility(state.mobileIms ? View.VISIBLE : View.GONE);
 
         needsLayout |= state.roaming != mState.roaming
                 || state.activityIn != mState.activityIn
@@ -274,54 +261,6 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mState = state;
         mOldStyleType = oldStyleType;
         return needsLayout;
-    }
-
-    private void updateVoLTEicon() {
-        switch (mVoLTEicon) {
-            case 0:
-            case 1:
-            default:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte1);
-                break;
-            case 2:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte2);
-                break;
-            case 3:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte3);
-                break;
-            case 4:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte4);
-                break;
-            case 5:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte5);
-                break;
-            case 6:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte6);
-                break;
-            case 7:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte7);
-                break;
-            case 8:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte8);
-                break;
-            case 9:
-                mMobileImsImageView.setImageResource(R.drawable.ic_volte9);
-                break;
-
-        }
-    }
-
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        switch (key) {
-            case VOLTE_ICON_STYLE:
-                mVoLTEicon =
-                    TunerService.parseInteger(newValue, 0);
-                updateVoLTEicon();
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -335,7 +274,6 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mMobileType.setImageTintList(color);
         mMobileTypeSmall.setImageTintList(color);
         mMobileRoaming.setImageTintList(color);
-        mMobileImsImageView.setImageTintList(color);
         mDotView.setDecorColor(tint);
         mDotView.setIconColor(tint, false);
     }
@@ -361,7 +299,6 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mOut.setImageTintList(list);
         mMobileType.setImageTintList(list);
         mMobileRoaming.setImageTintList(list);
-        mMobileImsImageView.setImageTintList(list);
         mMobileTypeSmall.setImageTintList(list);
         mDotView.setDecorColor(color);
     }

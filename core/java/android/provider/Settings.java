@@ -4588,12 +4588,6 @@ public final class Settings {
         public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
 
         /**
-         * Whether to display VoLTE icon when VoLTE present
-         * @hide
-         */
-        public static final String VOLTE_ICON_STYLE = "volte_icon_style";
-
-        /**
          * Whether to display roaming indicator for roaming signal connection
          * @hide
          */

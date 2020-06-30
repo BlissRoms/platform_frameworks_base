@@ -42,13 +42,11 @@ import com.android.internal.telephony.cdma.EriInfo;
 import com.android.settingslib.Utils;
 import com.android.settingslib.graph.SignalDrawable;
 import com.android.settingslib.net.SignalStrengthUtil;
-import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.NetworkController.IconState;
 import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl.Config;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl.SubscriptionDefaults;
-import com.android.systemui.tuner.TunerService;
 
 import java.io.PrintWriter;
 import java.util.BitSet;
@@ -93,13 +91,10 @@ public class MobileSignalController extends SignalController<
     // Some specific carriers have 5GE network which is special LTE CA network.
     private static final int NETWORK_TYPE_LTE_CA_5GE = TelephonyManager.MAX_NETWORK_TYPE + 1;
 
-    private boolean mVoLTEicon;
     private boolean mRoamingIconAllowed;
     private boolean mShow4gForLte;
     private boolean mDataDisabledIcon;
 
-    public static final String VOLTE_ICON_STYLE =
-            "system:" + Settings.System.VOLTE_ICON_STYLE;
     public static final String ROAMING_INDICATOR_ICON =
             "system:" + Settings.System.ROAMING_INDICATOR_ICON;
     public static final String SHOW_FOURG_ICON =
@@ -156,7 +151,6 @@ public class MobileSignalController extends SignalController<
             }
         };
 
-        Dependency.get(TunerService.class).addTunable(this, VOLTE_ICON_STYLE);
         Dependency.get(TunerService.class).addTunable(this, ROAMING_INDICATOR_ICON);
         Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
         Dependency.get(TunerService.class).addTunable(this, DATA_DISABLED_ICON);
@@ -166,11 +160,6 @@ public class MobileSignalController extends SignalController<
     @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
-            case VOLTE_ICON_STYLE:
-                     mVoLTEicon =
-                        TunerService.parseIntegerSwitch(newValue, false);
-                     updateTelephony();
-                break;
             case ROAMING_INDICATOR_ICON:
                      mRoamingIconAllowed =
                         TunerService.parseIntegerSwitch(newValue, true);
@@ -410,7 +399,7 @@ public class MobileSignalController extends SignalController<
         callback.setMobileDataIndicators(statusIcon, qsIcon, typeIcon, qsTypeIcon,
                 activityIn, activityOut, dataContentDescription, dataContentDescriptionHtml,
                 description, icons.mIsWide, mSubscriptionInfo.getSubscriptionId(),
-                mCurrentState.roaming, mCurrentState.mobileIms);
+                mCurrentState.roaming);
     }
 
     @Override
@@ -600,9 +589,6 @@ public class MobileSignalController extends SignalController<
                 && !TextUtils.isEmpty(mServiceState.getDataOperatorAlphaShort())) {
             mCurrentState.networkNameData = mServiceState.getDataOperatorAlphaShort();
         }
-
-        mCurrentState.mobileIms = mVoLTEicon &&
-                mPhone.isImsRegistered(mSubscriptionInfo.getSubscriptionId());
 
         notifyListenersIfNecessary();
     }
@@ -833,7 +819,6 @@ public class MobileSignalController extends SignalController<
         boolean isDefault;
         boolean userSetup;
         boolean roaming;
-        boolean mobileIms;
         boolean defaultDataOff;  // Tracks the on/off state of the defaultDataSubscription
 
         @Override
@@ -850,7 +835,6 @@ public class MobileSignalController extends SignalController<
             carrierNetworkChangeMode = state.carrierNetworkChangeMode;
             userSetup = state.userSetup;
             roaming = state.roaming;
-            mobileIms = state.mobileIms;
             defaultDataOff = state.defaultDataOff;
         }
 
@@ -863,7 +847,6 @@ public class MobileSignalController extends SignalController<
             builder.append("networkNameData=").append(networkNameData).append(',');
             builder.append("dataConnected=").append(dataConnected).append(',');
             builder.append("roaming=").append(roaming).append(',');
-            builder.append("mobileIms=").append(mobileIms).append(',');
             builder.append("isDefault=").append(isDefault).append(',');
             builder.append("isEmergency=").append(isEmergency).append(',');
             builder.append("airplaneMode=").append(airplaneMode).append(',');
@@ -886,7 +869,6 @@ public class MobileSignalController extends SignalController<
                     && ((MobileState) o).userSetup == userSetup
                     && ((MobileState) o).isDefault == isDefault
                     && ((MobileState) o).roaming == roaming
-                    && ((MobileState) o).mobileIms == mobileIms
                     && ((MobileState) o).defaultDataOff == defaultDataOff;
         }
     }

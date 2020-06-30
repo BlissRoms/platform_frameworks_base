@@ -72,7 +72,7 @@ public interface NetworkController extends CallbackController<SignalCallback>, D
                 int qsType, boolean activityIn, boolean activityOut,
                 CharSequence typeContentDescription,
                 CharSequence typeContentDescriptionHtml, CharSequence description,
-                boolean isWide, int subId, boolean roaming, boolean isMobileIms) {
+                boolean isWide, int subId, boolean roaming) {
         }
 
         default void setSubs(List<SubscriptionInfo> subs) {}
