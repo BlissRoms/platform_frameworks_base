@@ -133,7 +133,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
 
     private ImageView mMinBrightness;
     private ImageView mMaxBrightness;
-    private int mBrightnessSlider;
+    private int mBrightnessSlider = 1;
     private int animStyle, animDuration, interpolatorType;
 
     private final Vibrator mVibrator;
