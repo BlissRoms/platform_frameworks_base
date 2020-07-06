@@ -26,12 +26,6 @@
     <color name="screenshot_partial_capture_background">@*android:color/accent_device_default_light</color>
     <color name="screenshot_partial_cancel_background">#a0000000</color>
 
-    <!-- Color for the Assistant invocation lights -->
-    <color name="edge_light_blue">#4185f4</color>
-    <color name="edge_light_green">#3aa853</color>
-    <color name="edge_light_red">#ea4234</color>
-    <color name="edge_light_yellow">#fbbc06</color>
-
     <!-- QS Details -->
     <color name="qs_detail_toolbar_background">@*android:color/secondary_material_settings_light</color>
     <color name="qs_detail_background">@color/qs_detail_transition</color>
