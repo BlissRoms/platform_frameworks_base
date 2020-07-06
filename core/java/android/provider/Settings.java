@@ -5547,12 +5547,6 @@ public final class Settings {
         public static final String VIBRATE_ON_DISCONNECT = "vibrate_on_disconnect";
 
         /**
-         * Force expanded notifications on all apps that support it.
-         * @hide
-         */
-        public static final String FORCE_EXPANDED_NOTIFICATIONS = "force_expanded_notifications";
-
-        /**
          * Whether to use partial screenshot when using volume keys
          * @hide
          */
