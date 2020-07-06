@@ -26,6 +26,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Icon;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.MathUtils;
 import android.util.Property;
@@ -259,7 +261,7 @@ public class NotificationIconContainer extends AlphaOptimizedFrameLayout {
         mIconSize = size;
     }
 
-    private void updateState() {
+    public void updateState() {
         resetViewStates();
         calculateIconXTranslations();
         applyIconStates();
@@ -800,8 +802,15 @@ public class NotificationIconContainer extends AlphaOptimizedFrameLayout {
                     }
                 }
                 icon.setVisibleState(visibleState, animationsAllowed);
-                icon.setIconColor(mInNotificationIconShelf ? mThemedTextColorPrimary : iconColor,
-                        needsCannedAnimation && animationsAllowed);
+                boolean newIconStyle = Settings.System.getIntForUser(getContext().getContentResolver(),
+                            Settings.System.STATUSBAR_COLORED_ICONS, 0, UserHandle.USER_CURRENT) == 1;
+                if (icon.getStatusBarIcon().pkg.contains("systemui") || !newIconStyle) {
+                    icon.setIconColor(mInNotificationIconShelf ? mThemedTextColorPrimary : iconColor,
+                            needsCannedAnimation && animationsAllowed);
+                } else {
+                    icon.setIconColor(StatusBarIconView.NO_COLOR,
+                            needsCannedAnimation && animationsAllowed);
+                }
                 if (animate) {
                     animateTo(icon, animationProperties);
                 } else {
@@ -820,7 +829,14 @@ public class NotificationIconContainer extends AlphaOptimizedFrameLayout {
         public void initFrom(View view) {
             super.initFrom(view);
             if (view instanceof StatusBarIconView) {
-                iconColor = ((StatusBarIconView) view).getStaticDrawableColor();
+                StatusBarIconView icon = (StatusBarIconView) view;
+                boolean newIconStyle = Settings.System.getIntForUser(getContext().getContentResolver(),
+                            Settings.System.STATUSBAR_COLORED_ICONS, 0, UserHandle.USER_CURRENT) == 1;
+                if (icon.getStatusBarIcon().pkg.contains("systemui") || !newIconStyle) {
+                    iconColor = ((StatusBarIconView) view).getStaticDrawableColor();
+                } else {
+                    iconColor = StatusBarIconView.NO_COLOR;
+                }
             }
         }
     }
