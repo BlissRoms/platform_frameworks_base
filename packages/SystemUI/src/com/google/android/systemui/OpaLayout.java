@@ -68,8 +68,6 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     private boolean mIsPressed;
     private boolean mIsVertical;
     private View mLeft;
-    private boolean mOpaEnabled;
-    private boolean mOpaEnabledNeedsUpdate;
     private OverviewProxyService mOverviewProxyService;
     private View mRed;
     private Resources mResources;
@@ -103,12 +101,6 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
            resolver.registerContentObserver(Settings.System.getUriFor(
                   Settings.System.PIXEL_NAV_ANIMATION),
                   false, this, UserHandle.USER_CURRENT);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-           super.onChange(selfChange, uri);
-           setOpaEnabled(true);
         }
     }
 
@@ -186,7 +178,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
             mSettingsObserver = new SettingsObserver(new Handler());
         }
         mSettingsObserver.observe();
-        setOpaEnabled(true);
+        updateOpaLayout();
     }
 
     @Override
@@ -213,7 +205,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent motionEvent) {
-        if (mOpaEnabled && ValueAnimator.areAnimatorsEnabled()) {
+        if (ValueAnimator.areAnimatorsEnabled()) {
             int action = motionEvent.getAction();
             if (action != 0) {
                 if (action != 1) {
@@ -301,13 +293,6 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         mOverviewProxyService.addCallback(mOverviewProxyListener);
-        mOpaEnabledNeedsUpdate = true;
-        post(new Runnable() {
-            @Override
-            public final void run() {
-                getOpaEnabled();
-            }
-        });
     }
 
     @Override
@@ -624,35 +609,15 @@ public class OpaLayout extends FrameLayout implements ButtonInterface {
         return arraySet;
     }
 
-
-    public boolean getOpaEnabled() {
-        if (mOpaEnabledNeedsUpdate) {
-            ((AssistManagerGoogle) Dependency.get(AssistManager.class)).dispatchOpaEnabledState();
-        }
-        return mOpaEnabled;
-    }
-
-    public void setOpaEnabled(boolean z) {
-        final boolean opaToggle = Settings.System.getIntForUser(this.getContext().getContentResolver(),
-            Settings.System.PIXEL_NAV_ANIMATION, 1, UserHandle.USER_CURRENT) == 1;
-        mOpaEnabled = z && opaToggle;
-        mOpaEnabledNeedsUpdate = false;
-        updateOpaLayout();
-    }
-
     private void updateOpaLayout() {
         boolean shouldShowSwipeUpUI = mOverviewProxyService.shouldShowSwipeUpUI();
-        ImageView.ScaleType scaleType = ImageView.ScaleType.FIT_CENTER;
-        boolean showHalo = mOpaEnabled && !shouldShowSwipeUpUI;
-        mHalo.setVisibility(showHalo ? View.VISIBLE : View.INVISIBLE);
+        mHalo.setVisibility(!shouldShowSwipeUpUI ? View.VISIBLE : View.INVISIBLE);
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mHalo.getLayoutParams();
-        if (showHalo || shouldShowSwipeUpUI) {
-            scaleType = ImageView.ScaleType.CENTER;
-        }
         layoutParams.width = mHomeDiameter;
         layoutParams.height = mHomeDiameter;
         mWhite.setLayoutParams(layoutParams);
         mWhiteCutout.setLayoutParams(layoutParams);
+        ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER;
         mWhite.setScaleType(scaleType);
         mWhiteCutout.setScaleType(scaleType);
     }
