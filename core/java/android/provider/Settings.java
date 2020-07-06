@@ -6602,6 +6602,11 @@ public final class Settings {
         private static final Validator FORCE_FULLSCREEN_CUTOUT_APPS_VALIDATOR = ANY_STRING_VALIDATOR;
 
         /**
+         * @hide
+         */
+        public static final String QS_HEADER_BACKGROUND = "qs_header_background";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
