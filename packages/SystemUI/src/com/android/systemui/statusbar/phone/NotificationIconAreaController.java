@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Trace;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -18,6 +20,7 @@ import androidx.collection.ArrayMap;
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.util.ContrastColorUtil;
 import com.android.settingslib.Utils;
+import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.animation.Interpolators;
 import com.android.systemui.dagger.SysUISingleton;
@@ -40,6 +43,7 @@ import com.android.systemui.statusbar.notification.collection.ListEntry;
 import com.android.systemui.statusbar.notification.collection.NotificationEntry;
 import com.android.systemui.statusbar.notification.stack.AnimationProperties;
 import com.android.systemui.statusbar.window.StatusBarWindowController;
+import com.android.systemui.tuner.TunerService;
 import com.android.wm.shell.bubbles.Bubbles;
 
 import java.util.ArrayList;
@@ -58,7 +62,11 @@ public class NotificationIconAreaController implements
         DarkReceiver,
         StatusBarStateController.StateListener,
         NotificationWakeUpCoordinator.WakeUpListener,
+        TunerService.Tunable,
         DemoMode {
+
+    public static final String STATUSBAR_COLORED_ICONS =
+            "system:" + Settings.System.STATUSBAR_COLORED_ICONS;
 
     public static final String HIGH_PRIORITY = "high_priority";
     private static final long AOD_ICONS_APPEAR_DURATION = 200;
@@ -94,6 +102,8 @@ public class NotificationIconAreaController implements
     private int mAodIconTint;
     private boolean mAodIconsVisible;
     private boolean mShowLowPriority = true;
+
+    private boolean mNewIconStyle = false;
 
     @VisibleForTesting
     final NotificationListener.NotificationSettingsListener mSettingsListener =
@@ -138,6 +148,25 @@ public class NotificationIconAreaController implements
         initializeNotificationAreaViews(context);
         reloadAodColor();
         darkIconDispatcher.addDarkReceiver(this);
+
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, STATUSBAR_COLORED_ICONS);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case STATUSBAR_COLORED_ICONS:
+                boolean newIconStyle =
+                    TunerService.parseIntegerSwitch(newValue, false);
+                if (mNewIconStyle != newIconStyle) {
+                    mNewIconStyle = newIconStyle;
+                    updateNotificationIcons();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     protected View inflateIconArea(LayoutInflater inflater) {
@@ -447,6 +476,8 @@ public class NotificationIconAreaController implements
                 }
                 hostLayout.addView(v, i, params);
             }
+            v.setIconStyle(mNewIconStyle);
+            v.updateDrawable();
         }
 
         hostLayout.setChangingViewPositions(true);
@@ -463,6 +494,7 @@ public class NotificationIconAreaController implements
         }
         hostLayout.setChangingViewPositions(false);
         hostLayout.setReplacingIcons(null);
+        hostLayout.updateState();
     }
 
     /**
@@ -488,8 +520,13 @@ public class NotificationIconAreaController implements
         if (colorize) {
             color = DarkIconDispatcher.getTint(mTintAreas, v, tint);
         }
-        v.setStaticDrawableColor(color);
-        v.setDecorColor(tint);
+        if (v.getStatusBarIcon().pkg.contains("systemui") || !mNewIconStyle) {
+            v.setStaticDrawableColor(color);
+            v.setDecorColor(tint);
+        } else {
+            v.setStaticDrawableColor(StatusBarIconView.NO_COLOR);
+            v.setDecorColor(Color.WHITE);
+        }
     }
 
     public void showIconIsolated(StatusBarIconView icon, boolean animated) {
