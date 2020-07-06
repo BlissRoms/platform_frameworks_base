@@ -6593,6 +6593,11 @@ public final class Settings {
         public static final String STOCK_STATUSBAR_IN_HIDE = "stock_statusbar_in_hide";
 
         /**
+         * @hide
+         */
+        public static final String QS_HEADER_BACKGROUND = "qs_header_background";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
