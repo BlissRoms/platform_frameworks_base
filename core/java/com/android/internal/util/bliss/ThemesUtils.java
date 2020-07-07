@@ -39,6 +39,7 @@ public class ThemesUtils {
 		    "com.android.systemui.qstile.cosmos", // 17
 		    "com.android.systemui.qstile.squircle", // 18
 		    "com.android.systemui.qstile.teardrop", // 19
+		    "com.android.systemui.qstile.deletround", //20
     };
 
 }
