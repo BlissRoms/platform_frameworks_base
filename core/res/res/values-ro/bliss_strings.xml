@@ -56,4 +56,6 @@
     <string name="gaming_mode_disabled_toast">Mod pentru jocuri oprit</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Înregistrare Ecran</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Apăsați și țineți apăsat butonul de pornire pentru a debloca</string>
 </resources>

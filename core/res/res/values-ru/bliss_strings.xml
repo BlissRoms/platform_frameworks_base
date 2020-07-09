@@ -57,4 +57,6 @@
     <string name="gaming_mode_disabled_toast">Игровой режим выключен</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Запись экрана</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Нажмите и удерживайте кнопку питания для разблокировки</string>
 </resources>

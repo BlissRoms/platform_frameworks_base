@@ -55,4 +55,6 @@
     <string name="gaming_mode_disabled_toast">Herný režim vypnutý</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Nahrávanie obrazovky</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Stlačte a podržte tlačidlo napájania pre odomknutie</string>
 </resources>

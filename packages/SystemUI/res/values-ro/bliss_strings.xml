@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • Încărcare Rapidă (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> până la finalizare)</string>
+    <string name="keyguard_plugged_in_dash_charging"><xliff:g id="percentage">%s</xliff:g> • Încărcare Warp</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a warp charger. Should match keyguard_plugged_in_warp_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_warp_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • Încărcare Super-Rapidă (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> până la finalizare)</string>
+    <string name="keyguard_plugged_in_warp_charging"> • Încărcare super-rapidă</string>
+    <!-- Name of the nfc status bar icon. -->
+    <string name="status_bar_nfc">NFC</string>
+    <!-- Accessibility label for nfc icon (not shown on screen) [CHAR LIMIT=NONE] -->
+    <string name="accessibility_status_bar_nfc">Nfc</string>
+    <!-- CPUInfo tile -->
+    <string name="quick_settings_cpuinfo_label">Informații CPU</string>
+    <string name="accessibility_quick_settings_cpuinfo_off">Informații CPU oprite</string>
+    <string name="accessibility_quick_settings_cpuinfo_on">Informații CPU pornite</string>
+    <!-- ADB QS Tile -->
+    <string name="quick_settings_adb_label">ADB</string>
+    <!-- Screenshot Delete Toast -->
+    <string name="delete_screenshot_toast">Captură de ecran ştearsă</string>
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_off">Oprit</string>
+    <string name="quick_settings_screenshot_label">Captură de ecran</string>
+    <string name="quick_settings_region_screenshot_label">Captură de ecran parțială</string>
+    <string name="quick_settings_long_screenshot_label">Captură ecran lungă</string>
+    <!-- Sound Search tile -->
+    <string name="quick_settings_sound_search">Căutare cu voce</string>
+    <string name="quick_settings_sound_search_no_app">Ne pare rău, dar nu funcționează dacă nu aveți o aplicație pentru identificare muzică.</string>
+    <!-- AOD QS tile -->
+    <string name="quick_settings_aod_label">AOD</string>
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Setari de sunet</string>
+    <string name="quick_settings_sound_mute">Dezactivează sunet</string>
+    <string name="quick_settings_sound_ring">Sonerie</string>
+    <string name="quick_settings_sound_vibrate">Vibreaza</string>
+    <!-- Music tile -->
+    <string name="quick_settings_music_label">Muzică</string>
+    <string name="quick_settings_music_play">Redă</string>
+    <string name="quick_settings_music_pause">Pauză</string>
+    <!-- Compass QS Tile -->
+    <string name="quick_settings_compass_label">Busola</string>
+    <string name="quick_settings_compass_value"><xliff:g id="degrees">%1$.0f</xliff:g>\u00b0<xliff:g id="direction">%2$s</xliff:g></string>
+    <string name="quick_settings_compass_init">Inițializare\u2026</string>
+    <string name="accessibility_quick_settings_compass_off">Busolă oprită</string>
+    <string name="accessibility_quick_settings_compass_on">Busolă pornită</string>
+    <string name="accessibility_quick_settings_compass_changed_off">Busola oprită</string>
+    <string name="accessibility_quick_settings_compass_changed_on">Busola a fost pornita</string>
+    <string name="quick_settings_compass_N">N</string>
+    <string name="quick_settings_compass_NE">NE</string>
+    <string name="quick_settings_compass_E">E</string>
+    <string name="quick_settings_compass_SE">SE</string>
+    <string name="quick_settings_compass_S">S</string>
+    <string name="quick_settings_compass_SW">SV</string>
+    <string name="quick_settings_compass_W">V</string>
+    <string name="quick_settings_compass_NW">NV</string>
+    <!-- SleepScreen QS Tile -->
+    <string name="quick_settings_sleepscreen_label">Adormire Ecran</string>
+    <!-- VPN QS tile -->
+    <string name="quick_settings_vpn_label">Serviciu VPN</string>
+    <string name="quick_settings_vpn_connect_dialog_title">Conectați-vă la</string>
+    <string name="vpn_credentials_hint">Introduceți datele pentru conectare la <xliff:g id="name">%s</xliff:g></string>
+    <string name="vpn_credentials_username">Nume de utilizator</string>
+    <string name="vpn_credentials_password">Parolă</string>
+    <string name="vpn_credentials_dialog_connect">Conectaţi</string>
+    <!-- Hint for custom lockscreen shortcuts -->
+    <string name="custom_swipe_hint">Glisați din pictogramă pentru <xliff:g name="target">%s</xliff:g></string>
+    <!-- Screen record -->
+    <string name="screenrecord_dialog_title">Începe înregistrarea?</string>
+    <string name="screenrecord_dialog_summary">În timpul înregistrării, sistemul Android poate captura orice informație sensibilă care este vizibilă pe ecran sau redată pe dispozitivul dvs. Aceasta include parole, informații despre plată, fotografii, mesaje și mesaje audio.</string>
+    <string name="screenrecord_dialog_start">Start</string>
+    <string name="screenrecord_dialog_cancel">Anulează</string>
+    <string name="screenrecord_audio_recording_title">Sursa audio</string>
+    <string name="screenrecord_audio_recording_internal">Intern</string>
+    <string name="screenrecord_audio_recording_microphone">Microfon</string>
+    <string name="screenrecord_audio_recording_off">Dezactivat</string>
+    <string name="screenrecord_taps_title">Se afișează atingerile pe ecran</string>
+    <string name="screenrecord_stopdot_title">Afișare stop punct</string>
+    <string name="screenrecord_video_bitrate_title">Rată de biți video</string>
+    <!-- Power menu item for taking a screenshot [CHAR LIMIT=20]-->
+    <string name="global_action_screenshot_cust">Captură ecran</string>
+    <!--Screenrecord Tile-->
+    <string name="screenrecorder_title_tile">Înregistrare Ecran</string>
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Notificarile sunt adormite pentru 1 minut.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%s </xliff:g> - Atenționările sunt blocate timp de <xliff:g id="number">%d </xliff:g> minute.</string>
+    <!-- Kill button in notification guts -->
+    <string name="force_stop_dlg_title">Opriți forțat?</string>
+    <string name="force_stop_dlg_text">Dacă forțați oprirea unei aplicații, aceasta se poate comporta necorespunzător.</string>
+    <string name="dlg_ok">@android:string/ok</string>
+    <string name="dlg_cancel">@android:string/anulează</string>
+    <string name="guts_force_close_app">Opriţi aplicația</string>
+    <!-- Reboot/Recovery/PowerOff QS tile -->
+    <string name="quick_settings_reboot_label">Repornire</string>
+    <string name="quick_settings_reboot_recovery_label">Recuperare</string>
+    <string name="quick_settings_poweroff_label">Opriți alimentarea</string>
+    <!-- Gaming mode -->
+    <string name="gaming_mode_not_enabled">Modul pentru jocuri este dezactivat în setări</string>
+    <string name="quick_settings_gaming_mode_label">Mod pentru jocuri</string>
+    <!-- Content description of the Gaming mode tile in quick settings when disabled (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_gaming_mode_disabled">Mod pentru jocuri oprit.</string>
+    <!-- Content description of the Gaming mode tile in quick settings when enabled (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_gaming_mode_enabled">Mod pentru jocuri pornit.</string>
+    <!-- Name of the camera status bar icon. -->
+    <string name="status_bar_camera">Aparat de fotografiat</string>
+    <!-- Name of the location status bar icon. -->
+    <string name="status_bar_location">Locatie</string>
+    <!-- Name of the microphone status bar icon. -->
+    <string name="status_bar_microphone">Microfon</string>
+    <!-- Omnijaws Weather -->
+    <string name="omnijaws_service_error">Eroare</string>
+    <string name="omnijaws_service_unkown">Fară informatii vreme</string>
+    <string name="omnijaws_service_error_long">Eroare la încărcarea datelor meteo</string>
+    <string name="omnijaws_service_disabled">Serviciul este dezactivat</string>
+    <string name="omnijaws_detail_header">Vremea</string>
+    <string name="omnijaws_label_default">Vremea</string>
+    <string name="omnijaws_current_text">Acum (Automatic Translation)</string>
+    <string name="omnijaws_package_not_available">OmniJaws nu este disponibil</string>
+    <string name="omnijaws_service_last_update">Ultima actualizare:</string>
+    <string name="tuner_show_drag_handle">Arată tragere</string>
+    <!-- DataSwitch Tile -->
+    <string name="qs_data_switch_label">Comutare cartelă de date</string>
+    <string name="qs_data_switch_changed_1">Utilizare SIM 1 pentru date mobile</string>
+    <string name="qs_data_switch_changed_2">Utilizare SIM 2 pentru date mobile</string>
+    <!-- Restart SystemUI via Advanced Power Menu -->
+    <string name="global_action_restart_systemui">Interfața sistem</string>
+    <!-- Weather string format in expanded statusbar header -->
+    <string name="status_bar_weather_format"><xliff:g id="temp">%1$s </xliff:g></string>
+    <!-- accessibility label for button to open running apps prefscreen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_running_services">Arată Servicii care rulează.</string>
+    <!-- Spidey Analog clock -->
+    <!-- Spectrum Analog clock -->
+    <!-- Dot Analog clock -->
+    <!-- Sneeky Analog clock -->
+    <!-- Bliss Analog clock -->
+    <!-- Custom num Analog clock -->
+    <!-- Immersive mode Tile -->
+    <string name="quick_settings_immersive_tile">Mod 3D</string>
+    <string name="quick_settings_immersive_tile_off">Mod ecran complet oprit</string>
+    <string name="quick_settings_immersive_tile_statusbar">Bara de stare imersivă</string>
+    <string name="quick_settings_immersive_tile_navbar">Bară de navigare imersivă</string>
+    <string name="quick_settings_immersive_tile_full">Mod ecran complet</string>
+    <!-- Mono Tile-->
+    <string name="quick_settings_monotoggle_tile">Mod audio</string>
+    <string name="quick_settings_monotoggle_tile_mono">Audio mono</string>
+    <string name="quick_settings_monotoggle_tile_stereo">Stereo audio</string>
+    <string name="tuner_show_secure_title">Arată footer de securitate</string>
+    <!-- Screen Stabilization -->
+    <string name="quick_settings_stabilization_label">Stabilizare ecran</string>
+    <string name="quick_settings_stabilization_off">Stabilizare dezactivată</string>
+    <string name="quick_settings_stabilization_on">Stabilizarea este activată</string>
+    <string name="low_label">Scăzută</string>
+    <string name="high_label">Înalt</string>
+    <string name="stabilization_velocity_friction">Fricțiuni de velocitate</string>
+    <string name="stabilization_velocity_amplitude">Amplitudine Velocitate</string>
+    <string name="stabilization_position_friction">Fricțiune poziție</string>
+    <!-- Language toggle tile -->
+    <string name="quick_settings_locale_label">Limba</string>
+    <string name="quick_settings_locale_more_locales_toast">Vă rugăm să configuraţi mai multe limbi pentru a activa funcția de comutare</string>
+    <!-- FPS Info tile -->
+    <string name="quick_settings_fpsinfo_label">Info FPS</string>
+    <string name="accessibility_quick_settings_fpsinfo_off">Informații FPS oprite</string>
+    <string name="accessibility_quick_settings_fpsinfo_on">Informații FPS pornite</string>
+    <!-- Alerting notification header label -->
+    <string name="notification_section_header_alerting">Notificări de avertizare</string>
+    <!-- PowerShare QS tile -->
+    <string name="quick_settings_powershare_label">Wireless PowerShare</string>
+    <string name="quick_settings_powershare_off_powersave_label">Wireless PowerShare oprit\nEconomisire baterie</string>
+    <string name="quick_settings_powershare_off_low_battery_label">Wireless PowerShare oprit\nBaterie prea mică</string>
+    <string name="quick_settings_powershare_enabled_label">Wireless PowerShare este activat</string>
+    <!-- Daily data usage -->
+    <string name="daily_data_usage_title">Utilizare azi</string>
+    <!-- Animations QS Tile -->
+    <string name="quick_settings_animation_label">Dezactivare animații</string>
+    <string name="accessibility_quick_settings_animations_on">Animații Activate</string>
+    <string name="accessibility_quick_settings_animations_off">Animații dezactivate</string>
+    <!-- HW Keys Tile -->
+    <string name="quick_settings_hw_keys_label">Taste fizice</string>
+    <!-- Status bar network traffic monitor strings -->
+    <string name="kilobitspersecond_short">kb/s</string>
+    <string name="megabitspersecond_short">Mb/s</string>
+    <string name="gigabitspersecond_short">Gb/s</string>
+    <string name="kilobytespersecond_short">kB/s</string>
+    <string name="megabytespersecond_short">MB/s</string>
+    <string name="gigabytespersecond_short">GB/s</string>
+</resources>
