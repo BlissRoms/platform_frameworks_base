@@ -29,6 +29,7 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
     protected int mCellMarginVertical;
     protected int mSidePadding;
     protected int mRows = 1;
+    private final boolean mLessRows;
 
     protected final ArrayList<TileRecord> mRecords = new ArrayList<>();
     private int mCellMarginTop;
@@ -41,7 +42,13 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
 
     public TileLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        // find what the hell is z
+        boolean z = true;
         setFocusableInTouchMode(true);
+        if (Settings.System.getInt(context.getContentResolver(), "qs_less_rows", 0) == 0 && !Utils.useQsMediaPlayer(context)) {
+            z = false;
+        }
+        mLessRows = z;
         updateResources();
     }
 
@@ -113,6 +120,10 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
 
         if (rows < 1) {
             rows = 1;
+        }
+
+        if (mLessRows) {
+            mMaxAllowedRows = Math.max(1, max2 - 1);
         }
 
         if (Settings.System.getIntForUser(resolver,

@@ -53,10 +53,14 @@ public class QuickQSPanel extends QSPanel {
     public static final int NUM_QUICK_TILES_DEFAULT = 6;
     private static final String TAG = "QuickQSPanel";
 
+    private boolean mHasMediaPlayer;
     private boolean mDisabledByPolicy;
     private static int mDefaultMaxTiles;
     private int mMaxTiles;
+    private QuickQSMediaPlayer mMediaPlayer;
+    private QSPanel.QSTileLayout mMediaTileLayout;
     protected QSPanel mFullPanel;
+    private boolean mUsingMediaPlayer;
 
     @Inject
     public QuickQSPanel(@Named(VIEW_CONTEXT) Context context, AttributeSet attrs,
