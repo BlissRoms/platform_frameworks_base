@@ -595,6 +595,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         if (mQsDisabled) {
             lp.height = topMargin;
+        } else if (!com.android.systemui.util.Utils.useQsMediaPlayer(mContext) || !mHeaderQsPanel.hasMediaPlayer()) {
+            lp.height = Math.max(getMinimumHeight(), resources.getDimensionPixelSize(17105427));
         } else {
             int qsHeight = resources.getDimensionPixelSize(
                     com.android.internal.R.dimen.quick_qs_total_height);
