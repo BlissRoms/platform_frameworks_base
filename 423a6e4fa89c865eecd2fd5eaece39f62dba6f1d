@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f12625a4_b8a8ef73",
+        "filename": "core/java/com/android/internal/policy/DecorView.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2198,
+      "author": {
+        "id": 1000020
+      },
+      "writtenOn": "2020-07-11T13:13:22Z",
+      "side": 1,
+      "message": "can u get rid of these comments from all files ? 😊",
+      "revId": "423a6e4fa89c865eecd2fd5eaece39f62dba6f1d",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30",
+      "unresolved": true
+    }
+  ]
+}
