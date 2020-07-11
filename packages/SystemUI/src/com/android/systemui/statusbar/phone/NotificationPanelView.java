@@ -3526,7 +3526,10 @@ public class NotificationPanelView extends PanelView implements
                         + " pulseReason = " + pulseReason + " ambientLightsTimeout = " + ambientLightsTimeout);
             }
             if (mPulsing) {
-                showAodContent(true);
+                if (mBarState == StatusBarState.KEYGUARD
+                    || mBarState == StatusBarState.SHADE_LOCKED) {
+                    showAodContent(true);
+                }
                 if (activeNotif && pulseReasonNotification) {
                     // show the bars if we have to
                     if (pulseLights) {
