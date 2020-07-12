@@ -88,6 +88,8 @@ public class BlissUtils {
         "com.android.system.switch.narrow", // 2
         "com.android.system.switch.contained", // 3
         "com.android.system.switch.telegram", // 4
+        "com.android.system.switch.md2", // 5
+        "com.android.system.switch.retro", // 6
     };
 
     private static final String[] QS_TILE_THEMES = {
