@@ -571,9 +571,22 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         headerPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_status_icons);
 
         if (mIsQuickQsBrightnessEnabled) {
+            RelativeLayout.LayoutParams lpQuickQsBrightness = (RelativeLayout.LayoutParams)
+                    mQuickQsBrightness.getLayoutParams();
+            lpQuickQsBrightness.setMargins(
+                    resources.getDimensionPixelSize(R.dimen.notification_side_paddings)
+                            - resources.getDimensionPixelSize(R.dimen.status_bar_padding_start),
+                    0, resources.getDimensionPixelSize(R.dimen.notification_side_paddings)
+                            - resources.getDimensionPixelSize(R.dimen.status_bar_padding_end),
+                    0);
+
             if (mBrightnessSlider == 3) {
                 headerPanel.addRule(RelativeLayout.BELOW, R.id.quick_qs_brightness_bar);
+                lpQuickQsBrightness.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+            } else {
+                lpQuickQsBrightness.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             }
+            mQuickQsBrightness.setLayoutParams(lpQuickQsBrightness);
 
             if (mIsQsAutoBrightnessEnabled && resources.getBoolean(
                     com.android.internal.R.bool.config_automatic_brightness_available)) {
@@ -772,18 +785,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
         mSpace.setLayoutParams(lp);
         setChipVisibility(mPrivacyChip.getVisibility() == View.VISIBLE);
-        // Offset container padding to align with QS brightness bar.
-        final int sp = getResources().getDimensionPixelSize(R.dimen.notification_side_paddings);
-        RelativeLayout.LayoutParams lpQuickQsBrightness = (RelativeLayout.LayoutParams)
-                mQuickQsBrightness.getLayoutParams();
-        lpQuickQsBrightness.setMargins(sp - mPaddingLeft, 0, sp - mPaddingRight, 0);
-        lpQuickQsBrightness.addRule(RelativeLayout.BELOW, R.id.header_text_container);
-        if (mBrightnessSlider == 4) {
-            lpQuickQsBrightness.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        } else {
-            lpQuickQsBrightness.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-        }
-        mQuickQsBrightness.setLayoutParams(lpQuickQsBrightness);
         return super.onApplyWindowInsets(insets);
     }
 
