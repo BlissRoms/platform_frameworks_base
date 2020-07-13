@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2020 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="540dp"
+    android:height="540dp"
+    android:viewportWidth="540"
+    android:viewportHeight="540">
+  <path
+      android:pathData="M0,0L0,540L540,540L540,0L0,0z"
+      android:fillColor="#000000"
+      android:strokeColor="#00000000"/>
+  <path
+      android:pathData="M266.148,43.028C262.119,45.404 263,51.04 263,55L263,88C263,124.253 261.7,160.774 263.019,197C263.145,200.479 264.487,203.582 264.871,207C265.604,213.53 265,220.432 265,227L265,265C265.008,269.075 265.441,276.868 271.853,274.377C276.439,272.595 275,264.84 275,261L275,222C275,217.064 274.578,211.909 275.129,207C275.552,203.227 276.931,199.859 276.995,196C277.625,158.357 277,120.649 277,83C277,71.742 278.614,59.119 276.852,48.005C276.067,43.053 270.63,40.385 266.148,43.028z"
+      android:fillColor="#ffffff"
+      android:strokeColor="#00000000"/>
+</vector>
