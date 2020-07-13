@@ -30,8 +30,8 @@
 
     <dimen name="binary_clock_width">90dp</dimen>
     <dimen name="binary_clock_height">90dp</dimen>
-    <dimen name="analog_clock_width">100dp</dimen>
-    <dimen name="analog_clock_height">100dp</dimen>
+    <dimen name="analog_clock_width">200dp</dimen>
+    <dimen name="analog_clock_height">200dp</dimen>
     <dimen name="digital_clock_two_line_spacing">-20dp</dimen>
     <dimen name="clock_bottom_margin">8dp</dimen>
 
