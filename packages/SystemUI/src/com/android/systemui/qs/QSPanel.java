@@ -456,6 +456,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
         if (mCustomizePanel != null) {
             mCustomizePanel.updateResources();
         }
+        restartQSPanel();
     }
 
     @Override
