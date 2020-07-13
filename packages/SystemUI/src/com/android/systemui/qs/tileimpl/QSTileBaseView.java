@@ -110,8 +110,6 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
         int bgSize = context.getResources().getDimensionPixelSize(R.dimen.qs_tile_background_size);
 
         mColorInactive = Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
-        mColorDisabled = Utils.getDisabled(context,
-                Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
         setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
                     Settings.System.QS_PANEL_BG_USE_NEW_TINT, 1, UserHandle.USER_CURRENT);
         useFWbg = Settings.System.getIntForUser(context.getContentResolver(),
@@ -202,8 +200,11 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
                 mColorActive = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
                 mColorActiveAlpha = adjustAlpha(mColorActive, 0.2f);
                 mColorActive = mColorActiveAlpha;
+                mColorDisabled = context.getResources().getColor(R.color.qs_tile_background_color_disabled);
             } else {
                 mColorActive = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
+                mColorDisabled = Utils.getDisabled(context,
+                        Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
             }
         } else {
             if (setQsUseNewTint == 3 && useFWbg) {
