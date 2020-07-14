@@ -158,6 +158,7 @@ public final class ClockManager {
         addBuiltinClock(() -> new MNMLBoxClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new MNMLMinimalClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OneplusClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new OneplusNumbersClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OronosClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new SfunyClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new SneekyClockController(res, layoutInflater, colorExtractor));
