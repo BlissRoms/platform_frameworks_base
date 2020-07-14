@@ -192,6 +192,9 @@
     <!-- Oneplus Numbers clock -->
     <string name="clock_title_oneplus_numbers" translatable="false">OnePlus Numbers</string>
 
+    <!-- Oneplus Analog clock -->
+    <string name="clock_title_oneplus_minimal" translatable="false">OnePlus Minimal</string>
+
     <!-- Immersive mode Tile -->
     <string name="quick_settings_immersive_tile">Immersive mode</string>
     <string name="quick_settings_immersive_tile_off">Immersive off</string>
