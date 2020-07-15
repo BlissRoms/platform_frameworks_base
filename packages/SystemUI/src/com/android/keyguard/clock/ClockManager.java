@@ -157,6 +157,7 @@ public final class ClockManager {
         addBuiltinClock(() -> new DotClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new MNMLBoxClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new MNMLMinimalClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new OPAnalogClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OneplusNumbersClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OPMinimalClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OPRomanClockController(res, layoutInflater, colorExtractor));
