@@ -113,4 +113,7 @@
 
     <!-- Oneplus Analog clock -->
     <string name="clock_title_oneplus_analog" translatable="false">OnePlus Analog</string>
+
+    <!-- Oneplus Analog clock -->
+    <string name="clock_title_minimalism" translatable="false">Minimalism</string>
 </resources>
