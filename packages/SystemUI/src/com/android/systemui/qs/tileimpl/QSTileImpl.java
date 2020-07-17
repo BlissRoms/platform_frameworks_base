@@ -439,6 +439,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
         boolean useInvertedQsIconColor = context.getResources().getBoolean(R.bool.config_useInvertedQsIconColor);
         int primaryColor = Utils.getColorAttrDefaultColor(context, android.R.attr.colorPrimary);
         int secondaryColor = Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
+        int accentColor = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
         int defaultColor = ColorUtils.genRandomQsColor();
 
         boolean setQsFromWall = Settings.System.getIntForUser(context.getContentResolver(),
@@ -464,27 +465,25 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorPrimary);
             case Tile.STATE_ACTIVE:
                 if (setQsFromResources) {
-                    if (setQsUseNewTint == 1)
-                        return ColorUtils.genRandomAccentColor(isThemeDark(context));
-                    else if (setQsUseNewTint == 2)
-                        return Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
-                    else
-                       if (qsTileStyle == 0 && setQsUseNewTint == 0)
-                           return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
-                       else
-                           return useInvertedQsIconColor ? Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary) :
-                                  Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
-                } else {
-                    if (setQsFromResources) {
-                         if (setQsFromAccent) {
-                            return context.getResources().getColor(R.color.accent_device_default_light);
-                         } else {
-                             if (setQsFromWall)
-                                return qsBackGroundColorWall;
-                             else
-                                return qsBackGroundColor;
-                         }
+                    switch (setQsUseNewTint) {
+                        case 0: // Accent and Gradient
+                          return useInvertedQsIconColor ? primaryColor : accentColor;
+                        case 1: // Random Accent
+                          return ColorUtils.genRandomAccentColor(isThemeDark(context));
+                        case 2: // Accent Color
+                          return useInvertedQsIconColor ? primaryColor : accentColor;
+                        case 3: // QS Disco
+                          return useInvertedQsIconColor ? primaryColor : accentColor;
                     }
+                } else {
+                     if (setQsFromAccent) {
+                        return context.getResources().getColor(R.color.accent_device_default_light);
+                     } else {
+                         if (setQsFromWall)
+                            return qsBackGroundColorWall;
+                         else
+                            return qsBackGroundColor;
+                     }
                 }
             default:
                 Log.e("QSTile", "Invalid state " + state);
