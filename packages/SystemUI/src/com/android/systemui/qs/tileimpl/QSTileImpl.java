@@ -463,27 +463,27 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorPrimary);
             case Tile.STATE_ACTIVE:
                 if (setQsFromResources) {
-                    if (setQsUseNewTint == 1)
-                        return ColorUtils.genRandomAccentColor(isThemeDark(context));
-                    else if (setQsUseNewTint == 2)
-                        return Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
-                    else
-                       if (qsTileStyle == 0 && setQsUseNewTint == 0)
-                           return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
-                       else
-                           return useInvertedQsIconColor ? Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary) :
-                                  Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
-                } else {
-                    if (setQsFromResources) {
-                         if (setQsFromAccent) {
-                            return context.getResources().getColor(R.color.accent_device_default_light);
-                         } else {
-                             if (setQsFromWall)
-                                return qsBackGroundColorWall;
-                             else
-                                return qsBackGroundColor;
-                         }
+                    switch (setQsUseNewTint) {
+                        case 0:
+                          return useInvertedQsIconColor ? Utils.getColorAttrDefaultColor(context, android.R.attr.colorPrimary) :
+                                 Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
+                        case 1:
+                          return ColorUtils.genRandomAccentColor(isThemeDark(context));
+                        case 2:
+                          return useInvertedQsIconColor ? Utils.getColorAttrDefaultColor(context, android.R.attr.colorPrimary) :
+                                 Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
+                        case 3:
+                          return Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
                     }
+                } else {
+                     if (setQsFromAccent) {
+                        return context.getResources().getColor(R.color.accent_device_default_light);
+                     } else {
+                         if (setQsFromWall)
+                            return qsBackGroundColorWall;
+                         else
+                            return qsBackGroundColor;
+                     }
                 }
             default:
                 Log.e("QSTile", "Invalid state " + state);
