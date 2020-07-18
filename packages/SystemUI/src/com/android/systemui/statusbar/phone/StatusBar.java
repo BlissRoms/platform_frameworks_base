@@ -248,7 +248,6 @@ import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow
 import com.android.systemui.statusbar.notification.row.NotificationGutsManager;
 import com.android.systemui.statusbar.notification.stack.NotificationListContainer;
 import com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayout;
-import com.android.systemui.statusbar.phone.BarTransitions.BarBackgroundDrawable;
 import com.android.systemui.statusbar.phone.Ticker;
 import com.android.systemui.statusbar.phone.TickerView;
 import com.android.systemui.statusbar.phone.UnlockMethodCache.OnUnlockMethodChangedListener;
@@ -1061,7 +1060,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                     if (mHeadsUpManager.hasPinnedHeadsUp()) {
                         mNotificationPanel.notifyBarPanelExpansionChanged();
                     }
-                    handleCutout(null);
                     mStatusBarView.setBouncerShowing(mBouncerShowing);
                     if (oldStatusBarView != null) {
                         float fraction = oldStatusBarView.getExpansionFraction();
@@ -2071,24 +2069,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         updateTheme();
     }
 
-    private void setCutoutOverlay(boolean enable) {
-        try {
-            mOverlayManager.setEnabled("com.android.overlay.hidecutout",
-                        enable, mLockscreenUserManager.getCurrentUserId());
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to handle cutout overlay", e);
-        }
-    }
-
-    private void setStatusBarStockOverlay(boolean enable) {
-        try {
-            mOverlayManager.setEnabled("com.android.overlay.statusbarstock",
-                        enable, mLockscreenUserManager.getCurrentUserId());
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed to handle statusbar height overlay", e);
-        }
-    }
-
     @Nullable
     public View getAmbientIndicationContainer() {
         return mAmbientIndicationContainer;
@@ -2271,9 +2251,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_BLACKLIST_VALUES), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DISPLAY_CUTOUT_MODE),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STOCK_STATUSBAR_IN_HIDE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -2354,7 +2331,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             setLockScreenMediaBlurLevel();
             setHeadsUpStoplist();
             setHeadsUpBlacklist();
-            handleCutout(null);
             setMediaHeadsup();
         }
     }
@@ -3730,7 +3706,6 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         mViewHierarchyManager.updateRowStates();
         mScreenPinningRequest.onConfigurationChanged();
-        handleCutout(newConfig);
 
         if (blurperformed) {
             mNotificationPanel.setPanelAlpha(0, false);
@@ -4905,32 +4880,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     private void setHeadsUpBlacklist() {
         if (mPresenter != null)
             mPresenter.setHeadsUpBlacklist();
-    }
-
-    private void setBlackStatusBar(boolean enable) {
-        if (mStatusBarWindow == null || mStatusBarWindow.getBarTransitions() == null) return;
-        if (enable) {
-            mStatusBarWindow.getBarTransitions().getBackground().setColorOverride(new Integer(0xFF000000));
-        } else {
-            mStatusBarWindow.getBarTransitions().getBackground().setColorOverride(null);
-        }
-    }
-
-    private void handleCutout(Configuration newConfig) {
-        boolean immerseMode;
-        if (newConfig == null || newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            immerseMode = Settings.System.getIntForUser(mContext.getContentResolver(),
-                        Settings.System.DISPLAY_CUTOUT_MODE, 0, UserHandle.USER_CURRENT) == 1;
-        } else {
-            immerseMode = false;
-        }
-        final boolean hideCutoutMode = Settings.System.getIntForUser(mContext.getContentResolver(),
-                        Settings.System.DISPLAY_CUTOUT_MODE, 0, UserHandle.USER_CURRENT) == 2;
-        final boolean statusBarStock = Settings.System.getIntForUser(mContext.getContentResolver(),
-                        Settings.System.STOCK_STATUSBAR_IN_HIDE, 1, UserHandle.USER_CURRENT) == 1;
-        setBlackStatusBar(immerseMode);
-        setCutoutOverlay(hideCutoutMode);
-        setStatusBarStockOverlay(hideCutoutMode && statusBarStock);
     }
 
     public int getWakefulnessState() {
