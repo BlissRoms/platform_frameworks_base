@@ -179,7 +179,6 @@ public class BarTransitions {
         private int mGradientAlphaStart;
         private int mColorStart;
         private Rect mFrame;
-        private Integer mColorOverride;
 
 
         public BarBackgroundDrawable(Context context, int gradientResourceId) {
@@ -238,12 +237,6 @@ public class BarTransitions {
             mGradient.setBounds(bounds);
         }
 
-        public void setColorOverride(Integer color) {
-            if (mColorOverride == color) return;
-            mColorOverride = color;
-            invalidateSelf();
-        }
-
         public void applyModeBackground(int oldMode, int newMode, boolean animate) {
             if (mMode == newMode) return;
             mMode = newMode;
@@ -284,9 +277,6 @@ public class BarTransitions {
             } else {
                 targetColor = mOpaque;
             }
-
-            if (mColorOverride != null)
-                targetColor = mColorOverride;
 
             if (!mAnimating) {
                 mColor = targetColor;
