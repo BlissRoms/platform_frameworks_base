@@ -274,6 +274,7 @@ import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.InjectionInflationController;
+import com.android.systemui.util.leak.RotationUtils;
 import com.android.systemui.volume.VolumeComponent;
 
 import lineageos.providers.LineageSettings;
@@ -3716,7 +3717,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         updateResources();
         updateDisplaySize(); // populates mDisplayMetrics
 
-        mPortrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
+        mPortrait = RotationUtils.getExactRotation(mContext) == RotationUtils.ROTATION_NONE;
 
         mViewHierarchyManager.updateRowStates();
         mScreenPinningRequest.onConfigurationChanged();
