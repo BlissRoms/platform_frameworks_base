@@ -467,7 +467,11 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 if (setQsFromResources) {
                     switch (setQsUseNewTint) {
                         case 0: // Accent and Gradient
-                          return useInvertedQsIconColor ? primaryColor : accentColor;
+                          if (qsTileStyle == 0) {
+                              return secondaryColor;
+                          } else {
+                              return useInvertedQsIconColor ? primaryColor : accentColor;
+                          }
                         case 1: // Random Accent
                           return ColorUtils.genRandomAccentColor(isThemeDark(context));
                         case 2: // Accent Color
