@@ -89,9 +89,6 @@
     <string name="vpn_credentials_password">Password</string>
     <string name="vpn_credentials_dialog_connect">Connect</string>
 
-    <!-- Hint for custom lockscreen shortcuts -->
-    <string name="custom_swipe_hint">Swipe from icon for <xliff:g name="target">%s</xliff:g></string>
-
     <!-- Screen record -->
     <string name="screenrecord_dialog_title">Start recording?</string>
     <string name="screenrecord_dialog_summary">While recording, Android system can capture any sensitive information that\'s visible on your screen or played on your device. This includes passwords, payment info, photos, messages, and audio.</string>
