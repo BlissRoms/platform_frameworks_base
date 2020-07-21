@@ -96,7 +96,6 @@ import android.media.AudioAttributes;
 import android.media.MediaMetadata;
 import android.metrics.LogMaker;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -4668,22 +4667,19 @@ public class StatusBar extends SystemUI implements DemoMode,
         mKeyguardIndicationController.hideTransientIndicationDelayed(HINT_RESET_DELAY_MS);
     }
 
-    public void onCameraHintStarted(CharSequence hint) {
+    public void onCameraHintStarted() {
         mFalsingManager.onCameraHintStarted();
-        hint = (TextUtils.isEmpty(hint) ? mContext.getString(R.string.camera_hint) : hint);
-        mKeyguardIndicationController.showTransientIndication(hint);
+        mKeyguardIndicationController.showTransientIndication(R.string.camera_hint);
     }
 
-    public void onVoiceAssistHintStarted(CharSequence hint) {
+    public void onVoiceAssistHintStarted() {
         mFalsingManager.onLeftAffordanceHintStarted();
-        hint = (TextUtils.isEmpty(hint) ? mContext.getString(R.string.voice_hint) : hint);
-        mKeyguardIndicationController.showTransientIndication(hint);
+        mKeyguardIndicationController.showTransientIndication(R.string.voice_hint);
     }
 
-    public void onPhoneHintStarted(CharSequence hint) {
+    public void onPhoneHintStarted() {
         mFalsingManager.onLeftAffordanceHintStarted();
-        hint = (TextUtils.isEmpty(hint) ? mContext.getString(R.string.phone_hint) : hint);
-        mKeyguardIndicationController.showTransientIndication(hint);
+        mKeyguardIndicationController.showTransientIndication(R.string.phone_hint);
     }
 
     public void onTrackingStopped(boolean expand) {
