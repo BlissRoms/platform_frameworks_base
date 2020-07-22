@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • Dash Şarj Oluyor (tam dolmasına <xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> kaldı)</string>
+    <string name="keyguard_plugged_in_dash_charging"><xliff:g id="percentage">%s</xliff:g> • Dash Şarj Oluyor</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a warp charger. Should match keyguard_plugged_in_warp_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_warp_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • Warp Şarj Oluyor (tam dolmasına <xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> kaldı)</string>
+    <string name="keyguard_plugged_in_warp_charging"> • Warp Şarj Oluyor</string>
+    <!-- Name of the nfc status bar icon. -->
+    <string name="status_bar_nfc">NFC</string>
+    <!-- Accessibility label for nfc icon (not shown on screen) [CHAR LIMIT=NONE] -->
+    <string name="accessibility_status_bar_nfc">Nfc</string>
+    <!-- CPUInfo tile -->
+    <string name="quick_settings_cpuinfo_label">İşlemci Bilgisi</string>
+    <string name="accessibility_quick_settings_cpuinfo_off">İşlemci Bilgisi kapalı</string>
+    <string name="accessibility_quick_settings_cpuinfo_on">İşlemci Bilgisi açık</string>
+    <!-- ADB QS Tile -->
+    <string name="quick_settings_adb_label">ADB</string>
+    <!-- Screenshot Delete Toast -->
+    <string name="delete_screenshot_toast">Ekran görüntüsü silindi</string>
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_off">KAPALI</string>
+    <string name="quick_settings_screenshot_label">Ekran görüntüsü</string>
+    <string name="quick_settings_region_screenshot_label">Kısmi ekran görüntüsü</string>
+    <string name="quick_settings_long_screenshot_label">Uzun ekran görüntüsü</string>
+    <!-- Sound Search tile -->
+    <string name="quick_settings_sound_search">Sesli arama</string>
+    <string name="quick_settings_sound_search_no_app">Üzgünüz, ancak bir Sesli arama uygulamanız yoksa bu çalışmaz.</string>
+    <!-- AOD QS tile -->
+    <string name="quick_settings_aod_label">AOD</string>
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Ses</string>
+    <string name="quick_settings_sound_mute">Sessiz</string>
+    <string name="quick_settings_sound_ring">Zil Sesi</string>
+    <string name="quick_settings_sound_vibrate">Titreşim</string>
+    <!-- Music tile -->
+    <string name="quick_settings_music_label">Müzik</string>
+    <string name="quick_settings_music_play">Oynat</string>
+    <string name="quick_settings_music_pause">Duraklat</string>
+    <!-- Compass QS Tile -->
+    <string name="quick_settings_compass_label">Pusula</string>
+    <string name="quick_settings_compass_value"><xliff:g id="degrees">%1$.0f</xliff:g>\u00b0 <xliff:g id="direction">%2$s</xliff:g></string>
+    <string name="quick_settings_compass_init">Başlatılıyor\u2026</string>
+    <string name="accessibility_quick_settings_compass_off">Pusula kapalı</string>
+    <string name="accessibility_quick_settings_compass_on">Pusula açık</string>
+    <string name="accessibility_quick_settings_compass_changed_off">Pusula kapatıldı</string>
+    <string name="accessibility_quick_settings_compass_changed_on">Pusula açıldı</string>
+    <string name="quick_settings_compass_N">K</string>
+    <string name="quick_settings_compass_NE">KD</string>
+    <string name="quick_settings_compass_E">D</string>
+    <string name="quick_settings_compass_SE">GD</string>
+    <string name="quick_settings_compass_S">G</string>
+    <string name="quick_settings_compass_SW">GB</string>
+    <string name="quick_settings_compass_W">B</string>
+    <string name="quick_settings_compass_NW">KB</string>
+    <!-- SleepScreen QS Tile -->
+    <string name="quick_settings_sleepscreen_label">Ekranı kapat</string>
+    <!-- VPN QS tile -->
+    <string name="quick_settings_vpn_label">VPN</string>
+    <string name="quick_settings_vpn_connect_dialog_title">Bağlan\u2026</string>
+    <string name="vpn_credentials_hint">Lütfen <xliff:g id="name">%s</xliff:g> bağlanmak için kimlik bilgilerinizi girin</string>
+    <string name="vpn_credentials_username">Kullanıcı adı</string>
+    <string name="vpn_credentials_password">Şifre</string>
+    <string name="vpn_credentials_dialog_connect">Bağlan</string>
+    <!-- Hint for custom lockscreen shortcuts -->
+    <string name="custom_swipe_hint"><xliff:g name="target">%s</xliff:g> için simgeden kaydır</string>
+    <!-- Screen record -->
+    <string name="screenrecord_dialog_title">Kayda başlansın mı?</string>
+    <string name="screenrecord_dialog_summary">Kayıt sırasında Android sistemi, ekranınızda görünen veya cihazınızda oynatılan tüm hassas bilgileri yakalayabilir.  Buna şifreler, ödeme bilgileri, fotoğraflar, mesajlar ve ses dahildir.</string>
+    <string name="screenrecord_dialog_start">Başlat</string>
+    <string name="screenrecord_dialog_cancel">İptal</string>
+    <string name="screenrecord_audio_recording_title">Ses kaynağı</string>
+    <string name="screenrecord_audio_recording_internal">Dahili</string>
+    <string name="screenrecord_audio_recording_microphone">Mikrofon</string>
+    <string name="screenrecord_audio_recording_off">Devre dışı</string>
+    <string name="screenrecord_taps_title">Ekrana dokunmaları göster</string>
+    <string name="screenrecord_stopdot_title">Durdurma butonunu göster</string>
+    <string name="screenrecord_video_bitrate_title">Video bit hızı</string>
+    <!-- Power menu item for taking a screenshot [CHAR LIMIT=20]-->
+    <string name="global_action_screenshot_cust">Ekran görüntüsü</string>
+    <!--Screenrecord Tile-->
+    <string name="screenrecorder_title_tile">Ekran kaydı</string>
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Göz atma bildirimi 1 dakika kadar erteleniyor.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%s</xliff:g> - Göz atma bildirimleri <xliff:g id="number">%d</xliff:g> dakika erteleniyor.</string>
+    <!-- Kill button in notification guts -->
+    <string name="force_stop_dlg_title">Zorla durdurulsun mu?</string>
+    <string name="force_stop_dlg_text">Uygulamayı durdurmaya zorlarsanız, bir hata meydana gelebilir.</string>
+    <string name="dlg_ok">@android:string/ok</string>
+    <string name="dlg_cancel">@android:string/cancel</string>
+    <string name="guts_force_close_app">Uygulamayı kapat</string>
+    <!-- Reboot/Recovery/PowerOff QS tile -->
+    <string name="quick_settings_reboot_label">Yeniden başlat</string>
+    <string name="quick_settings_reboot_recovery_label">Kurtarma</string>
+    <string name="quick_settings_poweroff_label">Kapat</string>
+    <!-- Gaming mode -->
+    <string name="gaming_mode_not_enabled">Oyun modu ayarlardan devre dışı bırakıldı</string>
+    <string name="quick_settings_gaming_mode_label">Oyun modu</string>
+    <!-- Content description of the Gaming mode tile in quick settings when disabled (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_gaming_mode_disabled">Oyun modu kapatıldı.</string>
+    <!-- Content description of the Gaming mode tile in quick settings when enabled (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_gaming_mode_enabled">Oyun modu açıldı.</string>
+    <!-- Name of the camera status bar icon. -->
+    <string name="status_bar_camera">Kamera</string>
+    <!-- Name of the location status bar icon. -->
+    <string name="status_bar_location">Konum</string>
+    <!-- Name of the microphone status bar icon. -->
+    <string name="status_bar_microphone">Mikrofon</string>
+    <!-- Omnijaws Weather -->
+    <string name="omnijaws_service_error">Hata</string>
+    <string name="omnijaws_service_unkown">Hava durumu verisi yok</string>
+    <string name="omnijaws_service_error_long">Hava durumu verisi yüklenemedi</string>
+    <string name="omnijaws_service_disabled">Servis devre dışı</string>
+    <string name="omnijaws_detail_header">Hava Durumu</string>
+    <string name="omnijaws_label_default">Hava Durumu</string>
+    <string name="omnijaws_current_text">Şimdi</string>
+    <string name="omnijaws_package_not_available">OmniJaws mevcut değil</string>
+    <string name="omnijaws_service_last_update">Son güncelleme:</string>
+    <string name="tuner_show_drag_handle">Sürüklerken tutamacı göster</string>
+    <!-- DataSwitch Tile -->
+    <string name="qs_data_switch_label">Veri kartını değiştir</string>
+    <string name="qs_data_switch_changed_1">Mobil veri için SIM 1 kullanılıyor</string>
+    <string name="qs_data_switch_changed_2">Mobil veri için SIM 2 kullanılıyor</string>
+    <!-- Restart SystemUI via Advanced Power Menu -->
+    <string name="global_action_restart_systemui">Sistem Arayüzü</string>
+    <!-- Weather string format in expanded statusbar header -->
+    <string name="status_bar_weather_format"><xliff:g id="temp">%1$s</xliff:g></string>
+    <!-- accessibility label for button to open running apps prefscreen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_running_services">Çalışan Hizmetler ekranını aç.</string>
+    <!-- Spidey Analog clock -->
+    <!-- Spectrum Analog clock -->
+    <!-- Dot Analog clock -->
+    <!-- Sneeky Analog clock -->
+    <!-- Bliss Analog clock -->
+    <!-- Custom num Analog clock -->
+    <!-- Immersive mode Tile -->
+    <string name="quick_settings_immersive_tile">Tam ekran modu</string>
+    <string name="quick_settings_immersive_tile_off">Tam ekran kapalı</string>
+    <string name="quick_settings_immersive_tile_statusbar">Tam ekran durum çubuğu</string>
+    <string name="quick_settings_immersive_tile_navbar">Tam ekran gezinme çubuğu</string>
+    <string name="quick_settings_immersive_tile_full">Tam ekran</string>
+    <!-- Mono Tile-->
+    <string name="quick_settings_monotoggle_tile">Ses modu</string>
+    <string name="quick_settings_monotoggle_tile_mono">Mono ses</string>
+    <string name="quick_settings_monotoggle_tile_stereo">Stereo ses</string>
+    <string name="tuner_show_secure_title">Güvenlik altbilgisini göster</string>
+    <!-- Screen Stabilization -->
+    <string name="quick_settings_stabilization_label">Ekran Sabitleme</string>
+    <string name="quick_settings_stabilization_off">Sabitleme kapatıldı</string>
+    <string name="quick_settings_stabilization_on">Sabitleme açıldı</string>
+    <string name="low_label">Düşük</string>
+    <string name="high_label">Yüksek</string>
+    <string name="stabilization_velocity_friction">Sürtünme Hızı</string>
+    <string name="stabilization_velocity_amplitude">Hız Genliği</string>
+    <string name="stabilization_position_friction">Sürtünme Pozisyonu</string>
+    <!-- Language toggle tile -->
+    <string name="quick_settings_locale_label">Dil</string>
+    <string name="quick_settings_locale_more_locales_toast">Geçiş işlevselliğinin etkin olması için lütfen birden fazla dil ekleyin</string>
+    <!-- FPS Info tile -->
+    <string name="quick_settings_fpsinfo_label">FPS bilgisi</string>
+    <string name="accessibility_quick_settings_fpsinfo_off">FPS bilgisi kapalı</string>
+    <string name="accessibility_quick_settings_fpsinfo_on">FPS bilgisi açık</string>
+    <!-- Alerting notification header label -->
+    <string name="notification_section_header_alerting">Sesli bildirimler</string>
+    <!-- PowerShare QS tile -->
+    <string name="quick_settings_powershare_label">Kablosuz Güç Paylaşımı</string>
+    <string name="quick_settings_powershare_off_powersave_label">Kablosuz Güç Paylaşımı kapalı\nPil tasarrufu</string>
+    <string name="quick_settings_powershare_off_low_battery_label">Kablosuz Güç Paylaşımı\nPil seviyesi çok düşük</string>
+    <string name="quick_settings_powershare_enabled_label">Kablosuz Güç Paylaşımı etkin</string>
+    <!-- Daily data usage -->
+    <string name="daily_data_usage_title">Bugünkü kullanım</string>
+    <!-- Animations QS Tile -->
+    <string name="quick_settings_animation_label">Animasyonları Devre Dışı Bırak</string>
+    <string name="accessibility_quick_settings_animations_on">Animasyonlar Açık</string>
+    <string name="accessibility_quick_settings_animations_off">Animasyonlar Kapalı</string>
+    <!-- HW Keys Tile -->
+    <string name="quick_settings_hw_keys_label">Donanım tuşları</string>
+    <!-- Status bar network traffic monitor strings -->
+    <string name="kilobitspersecond_short">kb/s</string>
+    <string name="megabitspersecond_short">Mb/s</string>
+    <string name="gigabitspersecond_short">Gb/s</string>
+    <string name="kilobytespersecond_short">kB/s</string>
+    <string name="megabytespersecond_short">MB/s</string>
+    <string name="gigabytespersecond_short">GB/s</string>
+</resources>
