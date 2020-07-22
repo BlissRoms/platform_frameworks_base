@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="date_long_title_today">Hoje é %s</string>
+    <!-- Minutes displayed in words on the typographic clock face. [CHAR LIMIT=20] -->
+    <string-array name="type_clock_minutes_alt">
+        <item>\u2019 em ponto\u2019</item>
+        <item>O\u2019Um</item>
+        <item>\u2019Dois</item>
+        <item>O\u2019Três</item>
+        <item>O\u2019Quatro</item>
+        <item>O\u2019Cinco</item>
+        <item>O\u2019seis</item>
+        <item>O\u2019sete</item>
+        <item>O\u2019oito</item>
+        <item>O\u2019Nove</item>
+        <item>Dez</item>
+        <item>Onze</item>
+        <item>Doze</item>
+        <item>Treze</item>
+        <item>Quatorze</item>
+        <item>Quinze</item>
+        <item>Dezesseis</item>
+        <item>Dezessete</item>
+        <item>Dezoito</item>
+        <item>Nineteen</item>
+        <item>Vinte</item>
+        <item>Vinte e um</item>
+        <item>Vinte e duas</item>
+        <item>Vinte e três</item>
+        <item>Vinte e quatro</item>
+        <item>Vinte e cinco</item>
+        <item>Vinte e seis</item>
+        <item>Vinte e sete</item>
+        <item>Vinte e oito</item>
+        <item>Vinte e nove</item>
+        <item>Trinta</item>
+        <item>Trinta e uma</item>
+        <item>Trinta e duas</item>
+        <item>Trinta e três</item>
+        <item>Trinta e quatro</item>
+        <item>Trinta e cinco</item>
+        <item>Trinta e seis</item>
+        <item>Trinta e sete</item>
+        <item>Trinta e oito</item>
+        <item>Trinta e nove</item>
+        <item>Quarenta</item>
+        <item>Quarenta e um</item>
+        <item>Quarenta e dois</item>
+        <item>Quarenta e três</item>
+        <item>Quarenta e quatro</item>
+        <item>Quarenta e cinco</item>
+        <item>Quarenta e seis</item>
+        <item>Quarenta e sete</item>
+        <item>Quarenta e oito</item>
+        <item>Quarenta e nove</item>
+        <item>Cinquenta</item>
+        <item>Cinquenta
+e um</item>
+        <item>Cinquenta e duas</item>
+        <item>Cinquenta
+e três</item>
+        <item>Cinquenta e quatro</item>
+        <item>Cinquenta
+e cinco</item>
+        <item>Cinquenta e seis</item>
+        <item>Cinquenta e sete</item>
+        <item>Cinquenta e oito</item>
+        <item>Cinquenta e nove</item>
+    </string-array>
+</resources>
