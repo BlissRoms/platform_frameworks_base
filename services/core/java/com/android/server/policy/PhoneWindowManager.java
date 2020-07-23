@@ -1984,6 +1984,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case SCREENSHOT:
                 takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN);
                 break;
+            case SCREENSHOT_PARTIAL:
+                takeScreenshot(TAKE_SCREENSHOT_SELECTED_REGION);
+                break;
+            case SCREENSHOT_LONG:
+                BlissUtils.takeScreenshot(3);
+                break;
             case VOLUME_PANEL:
                 BlissUtils.toggleVolumePanel(mContext);
                 break;
