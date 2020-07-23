@@ -1982,7 +1982,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 BlissUtils.toggleCameraFlash();
                 break;
             case SCREENSHOT:
-                takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN);
+                BlissUtils.takeScreenshot(1);
+                break;
+            case SCREENSHOT_PARTIAL:
+                BlissUtils.takeScreenshot(2);
+                break;
+            case SCREENSHOT_LONG:
+                BlissUtils.takeScreenshot(3);
                 break;
             case VOLUME_PANEL:
                 BlissUtils.toggleVolumePanel(mContext);
