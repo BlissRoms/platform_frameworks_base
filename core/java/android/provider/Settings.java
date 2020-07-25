@@ -6292,6 +6292,12 @@ public final class Settings {
         public static final String SCREENRECORD_AUDIO_SOURCE = "screenrecord_audio_source";
 
         /**
+         * Show ringer icon in volume panel
+         * @hide
+         */
+        public static final String SHOW_RINGER_VOLUME_PANEL = "show_ringer_volume_panel";
+
+        /**
          * Show data usage in QS header
          * @hide
          */
