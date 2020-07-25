@@ -1520,6 +1520,10 @@ public class VolumeDialogImpl implements VolumeDialog,
     }
 
     protected void updateRingerH() {
+        updateRingerH(false);
+    }
+
+    private void updateRingerH(boolean ringerChanged) {
         if (mState != null) {
             final StreamState ss = mState.states.get(AudioManager.STREAM_RING);
             if (ss == null) {
@@ -1537,14 +1541,18 @@ public class VolumeDialogImpl implements VolumeDialog,
                     addAccessibilityDescription(mRingerIcon, RINGER_MODE_VIBRATE,
                             mContext.getString(R.string.volume_ringer_hint_mute));
                     mRingerIcon.setTag(Events.ICON_STATE_VIBRATE);
-                    pinNotifAndRingerToMin();
+                    if (ringerChanged) {
+                        pinNotifAndRingerToMin();
+                    }
                     break;
                 case AudioManager.RINGER_MODE_SILENT:
                     mRingerIcon.setImageResource(R.drawable.ic_volume_ringer_mute);
                     mRingerIcon.setTag(Events.ICON_STATE_MUTE);
                     addAccessibilityDescription(mRingerIcon, RINGER_MODE_SILENT,
                             mContext.getString(R.string.volume_ringer_hint_unmute));
-                    pinNotifAndRingerToMin();
+                    if (ringerChanged) {
+                        pinNotifAndRingerToMin();
+                    }
                     break;
                 case AudioManager.RINGER_MODE_NORMAL:
                 default:
@@ -1554,7 +1562,9 @@ public class VolumeDialogImpl implements VolumeDialog,
                         addAccessibilityDescription(mRingerIcon, RINGER_MODE_NORMAL,
                                 mContext.getString(R.string.volume_ringer_hint_unmute));
                         mRingerIcon.setTag(Events.ICON_STATE_MUTE);
-                        pinNotifAndRingerToMin();
+                        if (ringerChanged) {
+                            pinNotifAndRingerToMin();
+                        }
                     } else {
                         mRingerIcon.setImageResource(R.drawable.ic_volume_ringer);
                         if (mController.hasVibrator()) {
@@ -1565,14 +1575,6 @@ public class VolumeDialogImpl implements VolumeDialog,
                                     mContext.getString(R.string.volume_ringer_hint_mute));
                         }
                         mRingerIcon.setTag(Events.ICON_STATE_UNMUTE);
-                        final VolumeRow ringer = findRow(STREAM_RING);
-                        final VolumeRow notif = findRow(STREAM_NOTIFICATION);
-                        if (ringer != null) {
-                            Util.setText(ringer.header, Utils.formatPercentage(ss.level, ss.levelMax));
-                        }
-                        if (notif != null) {
-                            Util.setText(notif.header, Utils.formatPercentage(notif.ss.level, notif.ss.levelMax));
-                        }
                     }
                     break;
             }
@@ -1583,21 +1585,17 @@ public class VolumeDialogImpl implements VolumeDialog,
         final VolumeRow ringer = findRow(STREAM_RING);
         final VolumeRow notif = findRow(STREAM_NOTIFICATION);
 
-        if (ringer != null && ringer.ss.muted) {
+        if (ringer != null) {
             final int ringerLevel = ringer.ss.levelMin * 100;
             if (ringer.slider.getProgress() != ringerLevel) {
-                ringer.slider.setProgress(ringerLevel, true);
-            } else {
                 ringer.slider.setProgress(ringerLevel);
             }
             Util.setText(ringer.header, Utils.formatPercentage(ringer.ss.levelMin,
                     ringer.ss.levelMax));
         }
-        if (notif != null && notif.ss.muted) {
+        if (notif != null) {
             final int notifLevel = notif.ss.levelMin * 100;
             if (notif.slider.getProgress() != notifLevel) {
-                notif.slider.setProgress(notifLevel, true);
-            } else {
                 notif.slider.setProgress(notifLevel);
             }
             Util.setText(notif.header, Utils.formatPercentage(notif.ss.levelMin,
@@ -1677,6 +1675,12 @@ public class VolumeDialogImpl implements VolumeDialog,
             mController.vibrate(VibrationEffect.get(VibrationEffect.EFFECT_HEAVY_CLICK));
         }
 
+        boolean ringerChanged = false;
+        if (mState != null && state != null
+                && mState.ringerModeInternal != state.ringerModeInternal) {
+            ringerChanged = true;
+        }
+
         mState = state;
         mDynamic.clear();
         // add any new dynamic rows
@@ -1705,7 +1709,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         for (VolumeRow row : mRows) {
             updateVolumeRowH(row);
         }
-        updateRingerH();
+        updateRingerH(ringerChanged);
         mWindow.setTitle(composeWindowTitle());
     }
 
