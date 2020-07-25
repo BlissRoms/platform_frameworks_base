@@ -77,4 +77,7 @@ public class ThemesUtils {
 
     public static final String NAVBAR_COLOR_OPRD = "com.gnonymous.gvisualmod.pgm_oprd";
 
+    public static final String[] STOCK = {
+            "com.android.theme.stock.system",
+    };
 }
