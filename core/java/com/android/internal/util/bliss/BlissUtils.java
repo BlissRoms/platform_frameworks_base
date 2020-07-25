@@ -769,6 +769,30 @@ public class BlissUtils {
         }
     }
 
+    public static void enableSystemTheme(IOverlayManager om, int userId, String[] overlays) {
+        for (int i = 0; i < overlays.length; i++) {
+            String background = overlays[i];
+            try {
+                om.setEnabled(background,
+                        true, userId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change qs tile icon", e);
+            }
+        }
+    }
+
+    public static void disableSystemTheme(IOverlayManager om, int userId, String[] overlays) {
+        for (int i = 0; i < overlays.length; i++) {
+            String background = overlays[i];
+            try {
+                om.setEnabled(background,
+                        false, userId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change qs tile icon", e);
+            }
+        }
+    }
+
     public static int getThemeAccentColor (final Context context) {
         final TypedValue value = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.colorAccent, value, true);

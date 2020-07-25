@@ -6548,6 +6548,11 @@ public final class Settings {
         public static final String QS_TILE_STYLE = "qs_tile_style";
 
         /**
+         * @hide
+         */
+        public static final String SYSTEM_THEME = "system_theme";
+
+        /**
          * Whether to display VoLTE icon when VoLTE present
          * @hide
          */
