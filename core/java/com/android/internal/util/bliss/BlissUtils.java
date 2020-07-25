@@ -568,4 +568,27 @@ public class BlissUtils {
             }
         }
     }
+
+    public static void enableSystemTheme(IOverlayManager om, int userId, String[] overlays) {
+        for (int i = 0; i < overlays.length; i++) {
+            String background = overlays[i];
+            try {
+                om.setEnabled(background,
+                        true, userId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Cannot enable  System Theme", e);
+            }
+        }
+    }
+    public static void disableSystemTheme(IOverlayManager om, int userId, String[] overlays) {
+        for (int i = 0; i < overlays.length; i++) {
+            String background = overlays[i];
+            try {
+                om.setEnabled(background,
+                        false, userId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Cannot disable System Theme", e);
+            }
+        }
+    }
 }

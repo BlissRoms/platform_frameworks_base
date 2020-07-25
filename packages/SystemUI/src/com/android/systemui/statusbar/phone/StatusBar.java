@@ -2128,6 +2128,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_TILE_STYLE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SYSTEM_THEME),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2149,6 +2152,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                 stockTileStyle();
                 updateTileStyle();
                 mQSPanel.getHost().reloadAllTiles();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.SYSTEM_THEME))) {
+                updateSystemTheme();
             }
             update();
         }
@@ -2168,6 +2173,62 @@ public class StatusBar extends SystemUI implements DemoMode,
             ((QuickStatusBarHeader) mQSBarHeader).setBatteryPercentMode();
         }
     }
+
+    public void updateSystemTheme() {
+          int mSystemTheme = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SYSTEM_THEME, 0, UserHandle.USER_CURRENT);
+               switchThemes(mSystemTheme);
+    }
+
+
+    public void switchThemes(int theme) {
+        switch (theme) {
+            case 0:
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.SOLARIZED_DARK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.PITCH_BLACK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.DARK_GREY);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.XTENDED_CLEAR);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.XTENDED_CLEAR);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.MATERIAL_OCEAN);
+                updateTheme();
+           break;
+           case 1:
+                BlissUtils.enableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.SOLARIZED_DARK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.PITCH_BLACK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.DARK_GREY);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.XTENDED_CLEAR);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.MATERIAL_OCEAN);
+           break;
+           case 2:
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.SOLARIZED_DARK);
+                BlissUtils.enableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.PITCH_BLACK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.DARK_GREY);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.XTENDED_CLEAR);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.MATERIAL_OCEAN);
+           break;
+          case 3:
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.SOLARIZED_DARK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.PITCH_BLACK);
+                BlissUtils.enableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.DARK_GREY);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.XTENDED_CLEAR);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.MATERIAL_OCEAN);
+           break;
+           case 4:
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.SOLARIZED_DARK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.PITCH_BLACK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.DARK_GREY);
+                BlissUtils.enableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.XTENDED_CLEAR);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.MATERIAL_OCEAN);
+           break;
+           case 5:
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.SOLARIZED_DARK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.PITCH_BLACK);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.DARK_GREY);
+                BlissUtils.disableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.XTENDED_CLEAR);
+                BlissUtils.enableSystemTheme(mOverlayManager, UserHandle.USER_CURRENT, ThemesUtils.MATERIAL_OCEAN);
+           break;
+          }
+     }
 
     private void setLockScreenMediaBlurLevel() {
         if (mMediaManager != null) {
