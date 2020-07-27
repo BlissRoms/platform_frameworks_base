@@ -4944,6 +4944,12 @@ public final class Settings {
         public static final String KEYBOARD_ROTATION_TIMEOUT = "keyboard_rotation_timeout";
 
         /**
+         * Lottie animation behind keyguard clock view
+         * @hide
+         */
+        public static final String KEYGUARD_CLOCK_FLOW = "keyguard_clock_flow";
+
+        /**
          * Forces formal text input.  1 to replace emoticon key with enter key.
          * @hide
          */
