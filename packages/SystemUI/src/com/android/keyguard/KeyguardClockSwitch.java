@@ -31,6 +31,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextClock;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.colorextraction.ColorExtractor;
@@ -68,6 +70,8 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
             "system:" + Settings.System.LOCKSCREEN_CLOCK_COLOR;
     private static final String LOCKSCREEN_CLOCK_TYPE =
             "system:" + Settings.System.LOCKSCREEN_CLOCK_TYPE;
+    private static final String KEYGUARD_CLOCK_ANIMATION =
+            "system:" + Settings.System.KEYGUARD_CLOCK_ANIMATION;
     /**
      * Animation fraction when text is transitioned to/from bold.
      */
@@ -100,6 +104,12 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
      * Optional/alternative clock injected via plugin.
      */
     private ClockPlugin mClockPlugin;
+
+    /**
+     * A lottie animation behind the clock view
+     */
+    private LottieAnimationView mClockAnim;
+    private int mClockAnimationType = 0;
 
     /**
      * Default clock.
@@ -227,6 +237,7 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mClockAnim = (LottieAnimationView) findViewById(R.id.clock_flow);
         mClockView = findViewById(R.id.default_clock_view);
         mClockViewBold = findViewById(R.id.default_clock_view_bold);
         mSmallClockFrame = findViewById(R.id.clock_view);
@@ -244,6 +255,7 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
         final TunerService tunerService = Dependency.get(TunerService.class);
         tunerService.addTunable(this, LOCKSCREEN_CLOCK_COLOR);
         tunerService.addTunable(this, LOCKSCREEN_CLOCK_TYPE);
+        tunerService.addTunable(this, KEYGUARD_CLOCK_ANIMATION);
     }
 
     @Override
@@ -279,9 +291,11 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
             if (mShowingHeader) {
                 mClockView.setVisibility(View.GONE);
                 mClockViewBold.setVisibility(View.VISIBLE);
+                mClockAnim.setVisibility(View.GONE);
             } else {
                 mClockView.setVisibility(View.VISIBLE);
                 mClockViewBold.setVisibility(View.INVISIBLE);
+                mClockAnim.setVisibility(View.VISIBLE);
             }
             mKeyguardStatusArea.setVisibility(View.VISIBLE);
             return;
@@ -297,6 +311,7 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
                             ViewGroup.LayoutParams.WRAP_CONTENT));
                 mClockView.setVisibility(View.GONE);
                 mClockViewBold.setVisibility(View.GONE);
+                mClockAnim.setVisibility(View.GONE);
             }
             if (bigClockView != null && mBigClockContainer != null) {
                 mBigClockContainer.addView(bigClockView);
@@ -305,6 +320,7 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
         } else {
             mClockView.setVisibility(View.GONE);
             mClockViewBold.setVisibility(View.GONE);
+            mClockAnim.setVisibility(View.GONE);
 
             if (bigClockView != null ) {
                 mSmallClockFrame.addView(bigClockView, -1,
@@ -537,8 +553,40 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
                         TunerService.parseInteger(newValue, 0);
                 updateColors();
                 break;
+            case KEYGUARD_CLOCK_ANIMATION:
+                mClockAnimationType =
+                        TunerService.parseInteger(newValue, 1);
+                if (mClockView != null) {
+                    updateFlowAnimation();
+                    updateVisibility();
+                }
+                break;
             default:
                 break;
+        }
+    }
+
+    private void updateFlowAnimation() {
+        switch (mClockAnimationType) {
+            default:
+            case 1:
+                mClockAnim.setFileName("floral.json");
+                break;
+            case 2:
+                mClockAnim.setFileName("wavy.json");
+                break;
+            case 3:
+                mClockAnim.setFileName("circle.json");
+                break;
+        }
+    }
+
+    private void updateVisibility() {
+        if (mClockAnimationType > 0) {
+            mClockAnim.setVisibility(View.VISIBLE);
+            mClockAnim.playAnimation();
+        } else {
+            mClockAnim.setVisibility(View.GONE);
         }
     }
 
