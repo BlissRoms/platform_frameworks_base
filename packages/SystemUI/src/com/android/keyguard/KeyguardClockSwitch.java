@@ -9,6 +9,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.os.Build;
+import android.provider.Settings;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionListenerAdapter;
@@ -25,18 +26,23 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextClock;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.colorextraction.ColorExtractor;
 import com.android.internal.colorextraction.ColorExtractor.OnColorsChangedListener;
 import com.android.keyguard.clock.ClockManager;
 import com.android.keyguard.KeyguardSliceView;
+import com.android.settingslib.Utils;
+import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
 import com.android.systemui.plugins.ClockPlugin;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.StatusBarState;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.wakelock.KeepAwakeAnimationListener;
 
 import java.io.FileDescriptor;
@@ -50,9 +56,15 @@ import javax.inject.Named;
 /**
  * Switch to show plugin clock when plugin is connected, otherwise it will show default clock.
  */
-public class KeyguardClockSwitch extends RelativeLayout {
+public class KeyguardClockSwitch extends RelativeLayout implements TunerService.Tunable{
 
     private static final String TAG = "KeyguardClockSwitch";
+
+    /**
+     * Clock animation
+     */
+    private static final String KEYGUARD_CLOCK_ANIMATION =
+            "system:" + Settings.System.KEYGUARD_CLOCK_ANIMATION;
 
     /**
      * Animation fraction when text is transitioned to/from bold.
@@ -86,6 +98,12 @@ public class KeyguardClockSwitch extends RelativeLayout {
      * Optional/alternative clock injected via plugin.
      */
     private ClockPlugin mClockPlugin;
+
+    /**
+     * A lottie animation behind the clock view
+     */
+    private LottieAnimationView mClockAnim;
+    private int mClockAnimationType = 0;
 
     /**
      * Default clock.
@@ -201,6 +219,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mClockViewBold = findViewById(R.id.default_clock_view_bold);
         mSmallClockFrame = findViewById(R.id.clock_view);
         mKeyguardStatusArea = findViewById(R.id.keyguard_status_area);
+        mClockAnim = (LottieAnimationView) findViewById(R.id.clock_flow);
     }
 
     @Override
@@ -210,6 +229,8 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mStatusBarStateController.addCallback(mStateListener);
         mSysuiColorExtractor.addOnColorsChangedListener(mColorsListener);
         updateColors();
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, KEYGUARD_CLOCK_ANIMATION);
     }
 
     @Override
@@ -244,9 +265,11 @@ public class KeyguardClockSwitch extends RelativeLayout {
             if (mShowingHeader) {
                 mClockView.setVisibility(View.GONE);
                 mClockViewBold.setVisibility(View.VISIBLE);
+                mClockAnim.setVisibility(View.GONE);
             } else {
                 mClockView.setVisibility(View.VISIBLE);
                 mClockViewBold.setVisibility(View.INVISIBLE);
+                mClockAnim.setVisibility(View.VISIBLE);
             }
             mKeyguardStatusArea.setVisibility(View.VISIBLE);
             return;
@@ -264,6 +287,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
                             ViewGroup.LayoutParams.WRAP_CONTENT));
                 mClockView.setVisibility(View.GONE);
                 mClockViewBold.setVisibility(View.GONE);
+                mClockAnim.setVisibility(View.GONE);
             }
             if (bigClockView != null && mBigClockContainer != null) {
                 mBigClockContainer.addView(bigClockView);
@@ -272,6 +296,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
         } else {
             mClockView.setVisibility(View.GONE);
             mClockViewBold.setVisibility(View.GONE);
+            mClockAnim.setVisibility(View.GONE);
 
             if (bigClockView != null ) {
                 mSmallClockFrame.addView(bigClockView, -1,
@@ -466,6 +491,46 @@ public class KeyguardClockSwitch extends RelativeLayout {
             } else if (mBigClockContainer.getVisibility() == INVISIBLE) {
                 mBigClockContainer.setVisibility(VISIBLE);
             }
+        }
+    }
+    
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case KEYGUARD_CLOCK_ANIMATION:
+                mClockAnimationType =
+                        TunerService.parseInteger(newValue, 1);
+                if (mClockView != null) {
+                    updateFlowAnimation();
+                    updateVisibility();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
+    private void updateFlowAnimation() {
+        switch (mClockAnimationType) {
+            default:
+            case 1:
+                mClockAnim.setFileName("floral.json");
+                break;
+            case 2:
+                mClockAnim.setFileName("wavy.json");
+                break;
+            case 3:
+                mClockAnim.setFileName("circle.json");
+                break;
+        }
+    }
+
+    private void updateVisibility() {
+        if (mClockAnimationType > 0) {
+            mClockAnim.setVisibility(View.VISIBLE);
+            mClockAnim.playAnimation();
+        } else {
+            mClockAnim.setVisibility(View.GONE);
         }
     }
 
