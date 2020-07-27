@@ -4801,6 +4801,13 @@ public final class Settings {
          */
         public static final String MULTI_AUDIO_FOCUS_ENABLED = "multi_audio_focus_enabled";
 
+
+        /**
+         * Lottie animation behind keyguard clock view
+         * @hide
+         */
+        public static final String KEYGUARD_CLOCK_ANIMATION = "keyguard_clock_animation";
+
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
