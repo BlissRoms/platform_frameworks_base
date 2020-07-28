@@ -237,7 +237,6 @@ public class KeyguardSliceProvider extends SliceProvider implements
             if (needsMediaLocked()) {
                 addMediaLocked(builder);
             }
-            addWeather(builder);
             builder.addRow(new RowBuilder(mDateUri).setTitle(mLastText));
             addNextAlarmLocked(builder);
             addZenModeLocked(builder);
@@ -316,19 +315,6 @@ public class KeyguardSliceProvider extends SliceProvider implements
      */
     protected boolean isDndOn() {
         return mZenModeController.getZen() != Settings.Global.ZEN_MODE_OFF;
-    }
-
-    public void addWeather(ListBuilder builder) {
-        if (!mWeatherClient.isOmniJawsEnabled()) return;
-        if (!mWeatherEnabled || !mShowWeatherSlice || mWeatherInfo == null || mPackageInfo == null) {
-            return;
-        }
-        String temperatureText = mWeatherInfo.temp + " " + mWeatherInfo.tempUnits;
-        Icon conditionIcon = Icon.createWithResource(mPackageInfo.packageName, mPackageInfo.resourceID);
-        RowBuilder weatherRowBuilder = new RowBuilder(mWeatherUri)
-                .setTitle(temperatureText)
-                .addEndItem(IconCompat.createFromIcon(conditionIcon), ListBuilder.ICON_IMAGE);
-        builder.addRow(weatherRowBuilder);
     }
 
     @Override
