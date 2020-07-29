@@ -4140,7 +4140,8 @@ public class StatusBar extends SystemUI implements DemoMode,
         updateScrimController();
         mLockscreenLockIconController.onBiometricAuthModeChanged(
                 mBiometricUnlockController.isWakeAndUnlock(),
-                mBiometricUnlockController.isBiometricUnlock());
+                mBiometricUnlockController.isBiometricUnlock(),
+                mBiometricUnlockController.getBiometricType());
     }
 
     @VisibleForTesting
