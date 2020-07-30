@@ -198,8 +198,10 @@ public class QSIconViewImpl extends QSIconView {
                 float fraction = animation.getAnimatedFraction();
                 int alpha = (int) (fromAlpha + (toAlpha - fromAlpha) * fraction);
                 int channel = (int) (fromChannel + (toChannel - fromChannel) * fraction);
+                boolean useAccentColor = mContext.getResources().getBoolean(R.bool.config_useAccentColor);
 
-                if (setQsUseNewTint == 0 || setQsUseNewTint == 3) {
+                if ((setQsUseNewTint == 0 || setQsUseNewTint == 3)
+                     && !useAccentColor) {
                     setTint(iv, Color.argb(alpha, channel, channel, channel));
                 } else {
                     setTint(iv, toColor);
