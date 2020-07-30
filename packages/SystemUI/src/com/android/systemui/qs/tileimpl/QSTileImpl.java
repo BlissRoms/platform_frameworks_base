@@ -437,6 +437,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
 
     public static int getColorForState(Context context, int state) {
         boolean useInvertedQsIconColor = context.getResources().getBoolean(R.bool.config_useInvertedQsIconColor);
+        boolean useAccentColor = context.getResources().getBoolean(R.bool.config_useAccentColor);
         int primaryColor = Utils.getColorAttrDefaultColor(context, android.R.attr.colorPrimary);
         int secondaryColor = Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
         int accentColor = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
@@ -462,7 +463,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
             case Tile.STATE_UNAVAILABLE:
                 return Utils.getDisabled(context, secondaryColor);
             case Tile.STATE_INACTIVE:
-                return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorPrimary);
+                return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
             case Tile.STATE_ACTIVE:
                 if (setQsFromResources) {
                     switch (setQsUseNewTint) {
@@ -475,7 +476,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                         case 1: // Random Accent
                           return ColorUtils.genRandomAccentColor(isThemeDark(context));
                         case 2: // Accent Color
-                          return useInvertedQsIconColor ? primaryColor : accentColor;
+                          return useInvertedQsIconColor ? (useAccentColor ? primaryColor : accentColor) : accentColor;
                         case 3: // QS Disco
                           return useInvertedQsIconColor ? primaryColor : accentColor;
                     }
