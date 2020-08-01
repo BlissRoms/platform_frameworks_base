@@ -552,7 +552,7 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
         }
 
         boolean showEmergencyAffordance = Settings.Global.getInt(mContext.getContentResolver(),
-                Settings.Global.POWER_MENU_EMERGENCY_AFFORDANCE, 1) != 0;
+                Settings.Global.POWER_MENU_EMERGENCY_AFFORDANCE, 0) != 0;
 
         if (showEmergencyAffordance && mEmergencyAffordanceManager.needsEmergencyAffordance() && !mIsRestartMenu) {
             mItems.add(new EmergencyAffordanceAction());
