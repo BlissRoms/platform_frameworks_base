@@ -48,6 +48,8 @@ import androidx.palette.graphics.Palette;
 import com.android.settingslib.Utils;
 import com.android.systemui.R;
 
+import java.util.Random;
+
 public class NotificationLightsView extends RelativeLayout {
     private static final boolean DEBUG = false;
     private static final String TAG = "NotificationLightsView";
@@ -111,6 +113,9 @@ public class NotificationLightsView extends RelativeLayout {
                 break;
             case 3: // Custom
                 color = customColor;
+                break;
+            case 4:
+                color = getRandomColor();
                 break;
             default: // White
                 color = 0xFFFFFFFF;
@@ -191,5 +196,10 @@ public class NotificationLightsView extends RelativeLayout {
         });
         if (DEBUG) Log.d(TAG, "start");
         mLightAnimator.start();
+    }
+
+    public int getRandomColor(){
+    Random rnd = new Random();
+       return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
     }
 }
