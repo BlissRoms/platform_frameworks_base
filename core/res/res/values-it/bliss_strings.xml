@@ -55,4 +55,6 @@
     <string name="gaming_mode_disabled_toast">Modalità Gaming disattivata</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Registra Schermo</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Tieni premuto il tasto di accensione per sbloccare</string>
 </resources>

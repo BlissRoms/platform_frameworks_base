@@ -56,4 +56,6 @@
     <string name="gaming_mode_disabled_toast">Ігровий режим вимкнено</string>
     <!-- Screen recorder -->
     <string name="global_action_screenrecord">Запис екрану</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Натисніть та утримуйте кнопку живлення, щоб розблокувати</string>
 </resources>
