@@ -51,6 +51,18 @@ public class ColorUtils {
         return com.android.internal.graphics.ColorUtils.HSLToColor(hsl);
     }
 
+    private static int genRandomClockAccentColor(Random r) {
+        float hsl[] = new float[3];
+        hsl[0] = r.nextInt(360);
+        hsl[1] = 0.5f + (r.nextFloat() * 0.5f);
+        hsl[2] = 0.3f + (r.nextFloat() * 0.125f);
+        return com.android.internal.graphics.ColorUtils.HSLToColor(hsl);
+    }
+
+    public static int genRandomClockAccentColor() {
+        return genRandomClockAccentColor(new Random());
+    }
+
     public static int genRandomAccentColor(boolean isThemeDark, long seed) {
         return genRandomAccentColor(isThemeDark, new Random(seed));
     }
