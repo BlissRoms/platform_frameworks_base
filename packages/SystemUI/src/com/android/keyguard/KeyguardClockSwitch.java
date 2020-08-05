@@ -156,6 +156,7 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
     private int mClockColor = 0xFFFFFFFF;
     private int mColorType = 0;
     private int mAccentColor;
+    private int mRandomAccentColor;
 
     /**
      * Track the state of the status bar to know when to hide the big_clock_container.
@@ -195,6 +196,7 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
         mClockManager = clockManager;
 
         mAccentColor = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
+        mRandomAccentColor = ColorUtils.genRandomClockAccentColor();
 
         mClockTransition = new ClockVisibilityTransition().setCutoff(
                 1 - TO_BOLD_TRANSITION_FRACTION);
@@ -489,6 +491,8 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
             setTextColor(mClockColor);
         } else if (mColorType == 1) {
             setTextColor(mAccentColor);
+        } else if (mColorType == 2) {
+            setTextColor(mRandomAccentColor);
         }
     }
 
