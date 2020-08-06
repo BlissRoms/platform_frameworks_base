@@ -449,7 +449,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
         boolean setQsFromAccent = Settings.System.getIntForUser(context.getContentResolver(),
                     Settings.System.QS_PANEL_BG_USE_ACCENT, 1, UserHandle.USER_CURRENT) == 1;
         int setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
-                    Settings.System.QS_PANEL_BG_USE_NEW_TINT, 1, UserHandle.USER_CURRENT);
+                    Settings.System.QS_PANEL_BG_USE_NEW_TINT, 0, UserHandle.USER_CURRENT);
 
         int qsBackGroundColor = ColorUtils.getValidQsColor(System.getIntForUser(context.getContentResolver(),
                 System.QS_PANEL_BG_COLOR, defaultColor, UserHandle.USER_CURRENT));
