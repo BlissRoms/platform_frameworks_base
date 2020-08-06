@@ -73,8 +73,6 @@ public class QSTileView extends QSTileBaseView {
         createLabel();
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-        boolean setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.QS_PANEL_BG_USE_NEW_TINT, 0, UserHandle.USER_CURRENT) == 1;
         mColorLabelDefault = Utils.getColorAttr(getContext(), android.R.attr.textColorPrimary);
         mColorLabelActive = Utils.getColorAttr(getContext(), android.R.attr.colorAccent);
         mColorLabelGradient = getResources().getColor(com.android.internal.R.color.gradient_end);
