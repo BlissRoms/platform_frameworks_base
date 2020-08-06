@@ -526,9 +526,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     private boolean mBrightnessChanged;
     private boolean mJustPeeked;
 
-    //Lockscreen Notifications
-    private int mMaxKeyguardNotifConfig;
-
     // status bar notification ticker
     public int mTickerEnabled;
     public Ticker mTicker;
@@ -2232,9 +2229,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                     Settings.System.PULSE_ON_NEW_TRACKS),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                          Settings.System.LOCKSCREEN_MAX_NOTIF_CONFIG),
-                          false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
 	            Settings.System.QS_PANEL_BG_USE_WALL),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -2349,7 +2343,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             setUseLessBoringHeadsUp();
             setQsRowsColumns();
             setPulseOnNewTracks();
-            setMaxKeyguardNotifConfig();
             updateQSPanel();
             setHideArrowForBackGesture();
             setLockScreenMediaBlurLevel();
@@ -5958,12 +5951,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                 Settings.System.LESS_BORING_HEADS_UP, 0,
                 UserHandle.USER_CURRENT) == 1;
         mNotificationInterruptionStateProvider.setUseLessBoringHeadsUp(lessBoringHeadsUp);
-    }
-
-    private void setMaxKeyguardNotifConfig() {
-        mMaxKeyguardNotifConfig = Settings.System.getIntForUser(mContext.getContentResolver(),
-                 Settings.System.LOCKSCREEN_MAX_NOTIF_CONFIG, 3, UserHandle.USER_CURRENT);
-        mPresenter.setMaxAllowedNotifUser(mMaxKeyguardNotifConfig);
     }
 
     private void setBlackStatusBar(boolean enable) {

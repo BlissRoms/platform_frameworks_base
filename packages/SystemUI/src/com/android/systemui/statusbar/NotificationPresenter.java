@@ -63,11 +63,6 @@ public interface NotificationPresenter extends ExpandableNotificationRow.OnExpan
     int getMaxNotificationsWhileLocked(boolean recompute);
 
     /**
-     * Updates the total number of notifications allowed on lockscreen
-     */
-    void setMaxAllowedNotifUser(int maxAllowedNotifUser);
-
-    /**
      * Called when the row states are updated by {@link NotificationViewHierarchyManager}.
      */
     void onUpdateRowStates();

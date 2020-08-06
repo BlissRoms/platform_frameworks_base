@@ -5607,23 +5607,6 @@ public final class Settings {
                 new SettingsValidators.InclusiveIntegerRangeValidator(0, 3);
 
         /**
-         * enable custom lockscreen max notifications config
-         * @hide
-         */
-        public static final String LOCK_SCREEN_CUSTOM_NOTIF = "lock_screen_custom_notif";
-        /** @hide */
-        private static final Validator LOCK_SCREEN_CUSTOM_NOTIF_VALIDATOR = BOOLEAN_VALIDATOR;
-
-        /**
-         * custom lockscreen max notification config
-         * @hide
-         */
-        public static final String LOCKSCREEN_MAX_NOTIF_CONFIG = "lockscreen_max_notif_config";
-        /** @hide */
-        private static final Validator LOCKSCREEN_MAX_NOTIF_CONFIG_VALIDATOR =
-                new SettingsValidators.InclusiveIntegerRangeValidator(1, 3);
-
-        /**
          * Whether to enable charge battery warning
          * @hide
          */
@@ -6778,8 +6761,6 @@ public final class Settings {
             OMNI_PULSE_BRIGHTNESS,
             OMNI_DOZE_BRIGHTNESS,
             FLASHLIGHT_ON_CALL,
-            LOCK_SCREEN_CUSTOM_NOTIF,
-            LOCKSCREEN_MAX_NOTIF_CONFIG,
             SENSOR_BLOCK,
             LOCKSCREEN_WEATHER_SHOW_TEMP,
             LOCKSCREEN_WEATHER_SHOW_CITY,
@@ -6994,8 +6975,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_PULSE_BRIGHTNESS);
             PRIVATE_SETTINGS.add(OMNI_DOZE_BRIGHTNESS);
             PRIVATE_SETTINGS.add(FLASHLIGHT_ON_CALL);
-            PRIVATE_SETTINGS.add(LOCK_SCREEN_CUSTOM_NOTIF);
-            PRIVATE_SETTINGS.add(LOCKSCREEN_MAX_NOTIF_CONFIG);
             PRIVATE_SETTINGS.add(SENSOR_BLOCK);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_TEMP);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_CITY);
@@ -7182,8 +7161,6 @@ public final class Settings {
             VALIDATORS.put(OMNI_PULSE_BRIGHTNESS, OMNI_PULSE_BRIGHTNESS_VALIDATOR);
             VALIDATORS.put(OMNI_DOZE_BRIGHTNESS, OMNI_DOZE_BRIGHTNESS_VALIDATOR);
             VALIDATORS.put(FLASHLIGHT_ON_CALL, FLASHLIGHT_ON_CALL_VALIDATOR);
-            VALIDATORS.put(LOCK_SCREEN_CUSTOM_NOTIF, LOCK_SCREEN_CUSTOM_NOTIF_VALIDATOR);
-            VALIDATORS.put(LOCKSCREEN_MAX_NOTIF_CONFIG, LOCKSCREEN_MAX_NOTIF_CONFIG_VALIDATOR);
             VALIDATORS.put(SENSOR_BLOCK, SENSOR_BLOCK_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_TEMP, LOCKSCREEN_WEATHER_SHOW_TEMP_VALIDATOR);
             VALIDATORS.put(LOCKSCREEN_WEATHER_SHOW_CITY, LOCKSCREEN_WEATHER_SHOW_CITY_VALIDATOR);
