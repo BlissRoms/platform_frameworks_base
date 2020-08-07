@@ -6368,6 +6368,12 @@ public final class Settings {
         public static final String QS_DATAUSAGE = "qs_datausage";
 
         /**
+         * toggle QS data usage location
+         * @hide
+         */
+        public static final String QS_DATAUSAGE_LOCATION = "qs_datausage_location";
+
+        /**
          * @hide
          */
         public static final String AMBIENT_LIGHT_REPEAT_COUNT = "ambient_light_repeat_count";
