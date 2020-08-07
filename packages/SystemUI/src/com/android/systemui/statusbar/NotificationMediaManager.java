@@ -535,6 +535,14 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
         return mNowPlayingTrack;
     }
 
+    public boolean getPlaybackStateIsEqual(@PlaybackState.State int state) {
+      if (mMediaController != null) {
+        return state == mMediaController.getPlaybackState().getState();
+      } else {
+        return false;
+      }
+    }
+
     @Override
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.print("    mMediaSessionManager=");
@@ -940,7 +948,55 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
          * @see PlaybackState.State
          */
         void onMetadataOrStateChanged(MediaMetadata metadata, @PlaybackState.State int state);
-        
+
         default void setMediaNotificationColor(boolean colorizedMedia, int color) {};
+    }
+
+    public void skipTrackNext() {
+        if (mMediaSessionManager != null) {
+            final List<MediaController> sessions
+                    = mMediaSessionManager.getActiveSessionsForUser(
+                    null, UserHandle.USER_ALL);
+            for (MediaController aController : sessions) {
+                if (PlaybackState.STATE_PLAYING ==
+                        getMediaControllerPlaybackState(aController)) {
+                    aController.getTransportControls().skipToNext();
+                    break;
+                }
+            }
+        }
+    }
+
+    public void skipTrackPrevious() {
+        if (mMediaSessionManager != null) {
+            final List<MediaController> sessions
+                    = mMediaSessionManager.getActiveSessionsForUser(
+                    null, UserHandle.USER_ALL);
+            for (MediaController aController : sessions) {
+                if (PlaybackState.STATE_PLAYING ==
+                        getMediaControllerPlaybackState(aController)) {
+                    aController.getTransportControls().skipToPrevious();
+                    break;
+                }
+            }
+        }
+    }
+
+    public void playPauseTrack() {
+        if (mMediaSessionManager != null) {
+            final List<MediaController> sessions
+                    = mMediaSessionManager.getActiveSessionsForUser(
+                    null, UserHandle.USER_ALL);
+            for (MediaController aController : sessions) {
+                if (PlaybackState.STATE_PLAYING ==
+                        getMediaControllerPlaybackState(aController)) {
+                    aController.getTransportControls().pause();
+                    break;
+                } else {
+                    aController.getTransportControls().play();
+                    break;
+                }
+            }
+        }
     }
 }
