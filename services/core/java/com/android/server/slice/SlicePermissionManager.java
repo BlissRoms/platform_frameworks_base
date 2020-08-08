@@ -130,7 +130,7 @@ public class SlicePermissionManager implements DirtyTracker {
         }
         SliceClientPermissions client = getClient(pkgUser);
         client.clear();
-        mHandler.obtainMessage(H.MSG_REMOVE, pkgUser).sendToTarget();
+        mHandler.obtainMessage(H.MSG_REMOVE, pkgUser);
     }
 
     public String[] getAllPackagesGranted(String pkg) {
