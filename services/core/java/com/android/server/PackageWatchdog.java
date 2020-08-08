@@ -148,10 +148,6 @@ public class PackageWatchdog {
     @GuardedBy("mLock")
     private long mUptimeAtLastStateSync;
 
-    private final Runnable mSyncRequests = this::syncRequests;
-    private final Runnable mSyncStateWithScheduledReason = this::syncStateWithScheduledReason;
-    private final Runnable mSaveToFile = this::saveToFile;
-
     private PackageWatchdog(Context context) {
         // Needs to be constructed inline
         this(context, new AtomicFile(
@@ -371,7 +367,7 @@ public class PackageWatchdog {
             // Must only run synchronous tasks as this runs on the ShutdownThread and no other
             // thread is guaranteed to run during shutdown.
             if (!mAllObservers.isEmpty()) {
-                mLongTaskHandler.removeCallbacks(mSaveToFile);
+                mLongTaskHandler.removeCallbacks(this::saveToFileAsync);
                 pruneObserversLocked();
                 saveToFile();
                 Slog.i(TAG, "Last write to update package durations");
@@ -446,8 +442,8 @@ public class PackageWatchdog {
      * Serializes and syncs health check requests with the {@link ExplicitHealthCheckController}.
      */
     private void syncRequestsAsync() {
-        mShortTaskHandler.removeCallbacks(mSyncRequests);
-        mShortTaskHandler.post(mSyncRequests);
+        mShortTaskHandler.removeCallbacks(this::syncRequests);
+        mShortTaskHandler.post(this::syncRequests);
     }
 
     /**
@@ -591,14 +587,14 @@ public class PackageWatchdog {
     @GuardedBy("mLock")
     private void scheduleNextSyncStateLocked() {
         long durationMs = getNextStateSyncMillisLocked();
-        mShortTaskHandler.removeCallbacks(mSyncStateWithScheduledReason);
+        mShortTaskHandler.removeCallbacks(this::syncStateWithScheduledReason);
         if (durationMs == Long.MAX_VALUE) {
             Slog.i(TAG, "Cancelling state sync, nothing to sync");
             mUptimeAtLastStateSync = 0;
         } else {
             Slog.i(TAG, "Scheduling next state sync in " + durationMs + "ms");
             mUptimeAtLastStateSync = SystemClock.uptimeMillis();
-            mShortTaskHandler.postDelayed(mSyncStateWithScheduledReason, durationMs);
+            mShortTaskHandler.postDelayed(this::syncStateWithScheduledReason, durationMs);
         }
     }
 
@@ -825,8 +821,8 @@ public class PackageWatchdog {
     }
 
     private void saveToFileAsync() {
-        if (!mLongTaskHandler.hasCallbacks(mSaveToFile)) {
-            mLongTaskHandler.post(mSaveToFile);
+        if (!mLongTaskHandler.hasCallbacks(this::saveToFile)) {
+            mLongTaskHandler.post(this::saveToFile);
         }
     }
 
