@@ -175,10 +175,7 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
             }
 
             int scrimOpacity = -1;
-            if (mLightSensor == null) {
-                // No light sensor, scrims are always transparent.
-                scrimOpacity = 0;
-            } else if (brightnessReady) {
+            if (brightnessReady) {
                 // Only unblank scrim once brightness is ready.
                 scrimOpacity = computeScrimOpacity(sensorValue);
             }
