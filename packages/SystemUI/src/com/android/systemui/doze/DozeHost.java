@@ -48,7 +48,7 @@ public interface DozeHost {
      * @param x Touch X, or -1 if sensor doesn't support touch location.
      * @param y Touch Y, or -1 if sensor doesn't support touch location.
      */
-    void onSlpiTap(float x, float y, int pulseReason);
+    void onSlpiTap(float x, float y);
 
     /**
      * Artificially dim down the the display by changing scrim opacities.
@@ -88,7 +88,7 @@ public interface DozeHost {
          */
         default void onPowerSaveChanged(boolean active) {}
 
-        default void wakeUpFromDoubleTap(int pulseReason) {}
+        default void wakeUpFromDoubleTap() {}
     }
 
     interface PulseCallback {

@@ -5366,12 +5366,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         @Override
-        public void onSlpiTap(float screenX, float screenY, int pulseReason) {
+        public void onSlpiTap(float screenX, float screenY) {
             if (isDoubleTapOnMusicTicker(screenX, screenY)) {
                 handleSystemKey(KeyEvent.KEYCODE_MEDIA_NEXT);
             } else {
                 for (Callback callback : mCallbacks) {
-                    callback.wakeUpFromDoubleTap(pulseReason);
+                    callback.wakeUpFromDoubleTap();
                 }
             }
         }
