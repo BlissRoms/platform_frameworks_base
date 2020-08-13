@@ -46,7 +46,7 @@
         android:paddingStart="@dimen/status_bar_left_clock_starting_padding"
         android:paddingEnd="@dimen/status_bar_left_clock_end_padding"
         android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+        android:textAppearance="@style/TextAppearance.StatusBar.QSClock"
         systemui:showDark="false" />
 
         <LinearLayout

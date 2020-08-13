@@ -476,7 +476,9 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     }
 
     private void updateClockStyle() {
-        setTextSize(mClockSize);
+        if (!mQsHeader) {
+            setTextSize(mClockSize);
+        }
         if (mClockColor == 0xFFFFFFFF) {
             setTextColor(mNonAdaptedColor);
         } else {

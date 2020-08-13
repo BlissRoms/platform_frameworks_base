@@ -146,4 +146,7 @@
 
     <!-- Padding on the end of the quick statusbar (not top-most statusbar) -->
     <dimen name="qs_header_end_padding">@dimen/status_bar_padding_end</dimen>
+
+    <!-- QS Clock-->
+    <dimen name="qs_clock_size">24sp</dimen>
 </resources>
