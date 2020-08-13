@@ -211,8 +211,10 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     private boolean mClockAutoHide;
     private int mHideDuration = HIDE_DURATION, mShowDuration = SHOW_DURATION;
     private boolean mQsHeader;
+    private boolean mQsClockStyle;
     private int mClockColor = 0xffffffff;
     private int mClockSize = 14;
+    private int mQsClockSize = 24;
 
     public static final String STATUS_BAR_CLOCK_SECONDS =
             "system:" + Settings.System.STATUS_BAR_CLOCK_SECONDS;
@@ -238,6 +240,8 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
             "system:" + Settings.System.STATUS_BAR_CLOCK_COLOR;
     public static final String STATUS_BAR_CLOCK_FONT_STYLE =
             "system:" + Settings.System.STATUS_BAR_CLOCK_FONT_STYLE;
+    public static final String QS_CLOCK_STYLE =
+            "system:" + Settings.System.QS_CLOCK_STYLE;
 
     /**
      * Whether we should use colors that adapt based on wallpaper/the scrim behind quick settings
@@ -345,7 +349,8 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
                     STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION,
                     STATUS_BAR_CLOCK_SIZE,
                     STATUS_BAR_CLOCK_COLOR,
-                    STATUS_BAR_CLOCK_FONT_STYLE);
+                    STATUS_BAR_CLOCK_FONT_STYLE,
+                    QS_CLOCK_STYLE);
             SysUiServiceProvider.getComponent(getContext(), CommandQueue.class).addCallback(this);
             if (mShowDark) {
                 Dependency.get(DarkIconDispatcher.class).addDarkReceiver(this);
@@ -476,7 +481,15 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     }
 
     private void updateClockStyle() {
-        setTextSize(mClockSize);
+        if (!mQsClockStyle) {
+            if (mQsHeader) {
+                setTextSize(mQsClockSize);
+            } else {
+                setTextSize(mClockSize);
+            }
+        } else {
+            setTextSize(mClockSize);
+        }
         if (mClockColor == 0xFFFFFFFF) {
             setTextColor(mNonAdaptedColor);
         } else {
@@ -543,6 +556,10 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
             case STATUS_BAR_CLOCK_FONT_STYLE:
                 mClockFontStyle =
                         TunerService.parseInteger(newValue, 36);
+                break;
+            case QS_CLOCK_STYLE:
+                mQsClockStyle =
+                        TunerService.parseIntegerSwitch(newValue, false);
                 break;
             default:
                 break;

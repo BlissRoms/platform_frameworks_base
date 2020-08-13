@@ -4888,6 +4888,12 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCK_FONT_STYLE = "status_bar_clock_font_style";
 
         /**
+         * QS Clock style
+         * @hide
+         */
+        public static final String QS_CLOCK_STYLE = "qs_clock_style";
+
+        /**
          * @hide
          */
         public static final String STATUSBAR_BATTERY_BAR_THICKNESS =
