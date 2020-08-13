@@ -38,6 +38,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.util.DisplayUtils;
 import android.util.Pair;
@@ -1101,6 +1102,11 @@ public final class DisplayCutout {
         final float physicalPixelDisplaySizeRatio = DisplayUtils.getPhysicalPixelDisplaySizeRatio(
                 physicalDisplayWidth, physicalDisplayHeight, displayWidth, displayHeight);
 
+        int disableRoundedCorner =
+            SystemProperties.getInt("vendor.display.disable_rounded_corner", 0);
+        if (disableRoundedCorner == 1) {
+            return NULL_PAIR;
+        }
         synchronized (CACHE_LOCK) {
             if (spec.equals(sCachedSpec) && sCachedDisplayWidth == displayWidth
                     && sCachedDisplayHeight == displayHeight
