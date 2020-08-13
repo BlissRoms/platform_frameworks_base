@@ -6635,11 +6635,6 @@ public final class Settings {
         private static final Validator FORCE_FULLSCREEN_CUTOUT_APPS_VALIDATOR = ANY_STRING_VALIDATOR;
 
         /**
-         * @hide
-         */
-        public static final String QS_HEADER_BACKGROUND = "qs_header_background";
-
-        /**
          * Toggle for clipboard access toast.
          * @hide
          */
