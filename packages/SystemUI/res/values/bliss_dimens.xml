@@ -149,4 +149,8 @@
 
     <!-- QS Clock-->
     <dimen name="qs_clock_size">24sp</dimen>
+
+    <!-- brightness slider padding -->
+    <dimen name="brightness_slider_padding_top">7dp</dimen>
+    <dimen name="brightness_slider_padding_bottom">15dp</dimen>
 </resources>
