@@ -443,6 +443,9 @@ public class MobileSignalController extends SignalController<
                     case 5:
                         resId = R.drawable.ic_vowifi_emui;
                         break;
+                    case 6:
+                        resId = R.drawable.ic_vowifi_oneplus_compact;
+                        break;
                 }
             }
         } else if (mImsManager != null && mConfig.showVolteIcon && mVoLTEicon > 0 && isVolteAvailable()) {
@@ -481,6 +484,8 @@ public class MobileSignalController extends SignalController<
                 case 11:
                     resId = R.drawable.ic_volte10;
                     break;
+                case 12:
+                    resId = R.drawable.ic_volte11; //Oneplus Compact
             }
         }
         return resId;
@@ -928,6 +933,9 @@ public class MobileSignalController extends SignalController<
                 // EMUI (Huawei P10)
                 case 5:
                     return TelephonyIcons.VOWIFI_EMUI;
+               // Oneplus Compact
+                case 6:
+                    return TelephonyIcons.VOWIFI_ONEPLUS_COMPACT;
             }
         } else {
             return null;
