@@ -482,7 +482,7 @@ public class BatteryMeterView extends LinearLayout implements
                 addView(mBatteryPercentView,
                         new ViewGroup.LayoutParams(
                                 LayoutParams.WRAP_CONTENT,
-                                LayoutParams.MATCH_PARENT));
+                                LayoutParams.WRAP_CONTENT));
             }
             updatePercentText();
             if (mBatteryStyle == BATTERY_STYLE_HIDDEN) {
