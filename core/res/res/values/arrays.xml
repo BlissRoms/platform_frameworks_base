@@ -209,8 +209,4 @@
          be set by OEMs for devices which use eUICCs. -->
     <integer-array name="non_removable_euicc_slots"></integer-array>
 
-    <string-array translatable="false" name="config_notifyClipboardPackages">
-        <item>com.android.chrome</item>
-    </string-array>
-
 </resources>
