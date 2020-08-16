@@ -27,7 +27,6 @@ import android.os.ServiceManager.ServiceNotFoundException;
 
 import com.android.internal.util.Preconditions;
 
-import java.util.Arrays;
 import java.util.ArrayList;
 
 /**
@@ -131,21 +130,12 @@ public class ClipboardManager extends android.text.ClipboardManager {
      *
      * @see #setPrimaryClip(ClipData)
      */
-    public @Nullable ClipData getPrimaryClip(boolean notify) {
+    public @Nullable ClipData getPrimaryClip() {
         try {
-            if (notify) mService.displayToast(mContext.getOpPackageName());
             return mService.getPrimaryClip(mContext.getOpPackageName(), mContext.getUserId());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
-    }
-
-    /** Overloaded copy */
-    public @Nullable ClipData getPrimaryClip() {
-        boolean notify = false;
-        String[] clipboardPkgs = mContext.getResources().getStringArray(com.android.internal.R.array.config_notifyClipboardPackages);
-        if (Arrays.asList(clipboardPkgs).contains(mContext.getOpPackageName())) notify = true;
-        return getPrimaryClip(notify);
     }
 
     /**
