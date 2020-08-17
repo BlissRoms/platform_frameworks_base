@@ -130,7 +130,7 @@ public class QSTileView extends QSTileBaseView {
     protected void handleStateChanged(QSTile.State state) {
         super.handleStateChanged(state);
         setQsLabelUseNewTint = Settings.System.getIntForUser(getContext().getContentResolver(),
-                    Settings.System.QS_LABEL_USE_NEW_TINT, 1, UserHandle.USER_CURRENT);
+                    Settings.System.QS_LABEL_USE_NEW_TINT, 0, UserHandle.USER_CURRENT);
         useFWbg = Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.QS_PANEL_BG_USE_FW, 1, UserHandle.USER_CURRENT) == 1;
         if (!Objects.equals(mLabel.getText(), state.label) || mState != state.state) {
