@@ -40,6 +40,12 @@ public class ThemesUtils {
 		    "com.android.systemui.qstile.squircle", // 18
 		    "com.android.systemui.qstile.teardrop", // 19
 		    "com.android.systemui.qstile.deletround", //20
+		    "com.android.systemui.qstile.hexagon", // 21
+		    "com.android.systemui.qstile.diamond", // 22
+		    "com.android.systemui.qstile.star", // 23
+		    "com.android.systemui.qstile.gear", // 24
+		    "com.android.systemui.qstile.badge", // 25
+		    "com.android.systemui.qstile.badgetwo", // 26
     };
 
 }
