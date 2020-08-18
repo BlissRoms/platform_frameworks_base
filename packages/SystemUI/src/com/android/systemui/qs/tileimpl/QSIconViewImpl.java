@@ -27,6 +27,7 @@ import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.Animatable2.AnimationCallback;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.provider.Settings.System;
 import android.view.View;
 import android.widget.ImageView;
@@ -198,10 +199,12 @@ public class QSIconViewImpl extends QSIconView {
                 float fraction = animation.getAnimatedFraction();
                 int alpha = (int) (fromAlpha + (toAlpha - fromAlpha) * fraction);
                 int channel = (int) (fromChannel + (toChannel - fromChannel) * fraction);
+                int qsTileStyle = Settings.System.getIntForUser(getContext().getContentResolver(),
+                                Settings.System.QS_TILE_STYLE, 0, UserHandle.USER_CURRENT);
                 boolean useAccentColor = mContext.getResources().getBoolean(R.bool.config_useAccentColor);
 
                 if ((setQsUseNewTint == 0 || setQsUseNewTint == 3)
-                     && !useAccentColor) {
+                      || qsTileStyle == 0 || !useAccentColor) {
                     setTint(iv, Color.argb(alpha, channel, channel, channel));
                 } else {
                     setTint(iv, toColor);
