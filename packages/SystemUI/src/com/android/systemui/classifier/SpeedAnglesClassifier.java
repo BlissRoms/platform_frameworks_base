@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class SpeedAnglesClassifier extends StrokeClassifier {
     public static final boolean VERBOSE = SystemProperties.getBoolean("debug.falsing_log.spd_ang",
-            Build.IS_ENG);
+            Build.IS_DEBUGGABLE);
     public static final String TAG = "SPD_ANG";
 
     private HashMap<Stroke, Data> mStrokeMap = new HashMap<>();
