@@ -63,7 +63,7 @@ import java.util.Date;
 
 import org.omnirom.omni.OmniJawsClient;
 
-public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.OmniJawsObserver {
+public class CurrentWeatherView extends LinearLayout implements OmniJawsClient.OmniJawsObserver {
 
     static final String TAG = "SystemUI:CurrentWeatherView";
     static final boolean DEBUG = false;
