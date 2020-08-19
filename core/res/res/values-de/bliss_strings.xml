@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Button that copies the url to the log of a crashed application -->
+    <string name="aerr_copy">URL des Absturzberichts kopieren</string>
+    <string name="url_copy_success">URL erfolgreich kopiert</string>
+    <string name="url_copy_failed">Beim Upload des Protokolls zu dogbin ist ein Fehler aufgetreten</string>
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_fakePackageSignature">Paketsignatur vortäuschen</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_fakePackageSignature">Erlaubt der App vorzugeben, eine andere App zu sein. Schädliche Anwendungen können dies ausnutzen, um auf private Appdaten zuzugreifen. Erteilen Sie diese Berechtigung nur mit Vorsicht!</string>
+    <!-- Title of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgrouplab_fake_package_signature">Paketsignatur vortäuschen</string>
+    <!-- Description of a category of application permissions, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permgroupdesc_fake_package_signature">Erlauben, die Paketsignatur vorzutäuschen</string>
+    <!-- Message shown to the user when the apps requests permission from this group. If ever possible this should stay below 80 characters (assuming the parameters takes 20 characters). Don't abbreviate until the message reaches 120 characters though. [CHAR LIMIT=120] -->
+    <string name="permgrouprequest_fake_package_signature">&lt;b&gt;<xliff:g id="app_name" example="Gmail">%1$s</xliff:g>&lt;/b&gt; erlauben, die Paketsignatur vorzutäuschen?</string>
+    <!-- AOKP custom system animations -->
+    <string name="animation_fade">Ausblenden</string>
+    <string name="animation_slide_right">Von rechts einblenden</string>
+    <string name="animation_slide_left">Von links einblenden</string>
+    <string name="animation_slide_right_no_fade">Von rechts hereingleiten (ohne Ausblenden)</string>
+    <string name="animation_slide_left_no_fade">Von links einblenden (ohne Ausblenden)</string>
+    <string name="animation_slide_up">Von unten einblenden</string>
+    <string name="animation_slide_down">Von oben einblenden</string>
+    <string name="animation_default">Standard</string>
+    <string name="animation_translucent">Durchscheinend</string>
+    <string name="animation_grow_shrink">Hereinwachsen (Oben)</string>
+    <string name="animation_grow_shrink_center">Hereinwachsen (Mitte)</string>
+    <string name="animation_grow_shrink_bottom">Hereinwachsen (Unten)</string>
+    <string name="animation_grow_shrink_left">Hereinwachsen (links)</string>
+    <string name="animation_grow_shrink_right">Hereinwachsen (Rechts)</string>
+    <string name="animation_random">Zufällig</string>
+    <string name="action_null">Leer</string>
+    <string name="animation_ethans">Äthans</string>
+    <!-- Vendor mismatch fingerprint warning [CHAR LIMIT=NONE] -->
+    <string name="system_error_vendorprint">Dein Anbieter-Image stimmt nicht mit dem System überein. Bitte flashe das <xliff:g id="string">%s</xliff:g> Anbieter-Image für dein Gerät</string>
+    <!-- Alert slider proc nodes paths. -->
+    <!-- Gaming mode -->
+    <string name="notification_channel_gaming">Spielmodus</string>
+    <string name="gaming_mode_notification_title">Spielmodus aktiviert</string>
+    <string name="gaming_mode_notification_content">Zum Ausschalten des Spielmodus tippen</string>
+    <string name="gaming_mode_enabled_toast">Spielmodus ist eingeschaltet</string>
+    <string name="gaming_mode_disabled_toast">Spielmodus ist ausgeschaltet</string>
+    <!-- Screen recorder -->
+    <string name="global_action_screenrecord">Bildschirmaufnahme</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Zum Entsperren Power-Taste drücken und halten</string>
+</resources>
