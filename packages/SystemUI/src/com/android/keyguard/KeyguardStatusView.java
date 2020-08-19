@@ -1879,10 +1879,18 @@ public class KeyguardStatusView extends GridLayout implements
         mOmniStyle = Settings.System.getIntForUser(resolver,
                 Settings.System.LOCKSCREEN_WEATHER_STYLE, 0,
                 UserHandle.USER_CURRENT) == 0;
+            String currentClock = Settings.Secure.getString(
+                resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+            boolean mCustomClockSelection = currentClock == null ? false : currentClock.contains("TypeClockController");
 
         if (mWeatherView != null) {
             if (mShowWeather && mOmniStyle) {
                 mWeatherView.setVisibility(View.VISIBLE);
+                if (mCustomClockSelection) {
+                    mWeatherView.setGravity(Gravity.START);
+                } else {
+                    mWeatherView.setGravity(Gravity.CENTER);
+                }
                 mWeatherView.enableUpdates();
             }
             if (!mShowWeather || !mOmniStyle) {

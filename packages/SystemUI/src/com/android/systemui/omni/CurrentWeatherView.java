@@ -42,6 +42,7 @@ import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -79,6 +80,7 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
     private int mRightTextColor;
     private int mLeftTextColor;
     private int mCurrentImageColor;
+    private LinearLayout mCurrent;
 
     public CurrentWeatherView(Context context) {
         this(context, null);
@@ -122,6 +124,7 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mCurrent = (LinearLayout) findViewById(R.id.current);
         mCurrentImage  = (ImageView) findViewById(R.id.current_image);
         mLeftText = (TextView) findViewById(R.id.left_text);
         mRightText = (TextView) findViewById(R.id.right_text);
@@ -175,6 +178,10 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
 
     private int getTintColor() {
         return Utils.getColorAttrDefaultColor(mContext, R.attr.wallpaperTextColor);
+    }
+
+    public void setGravity(int gravity) {
+        mCurrent.setGravity(gravity);
     }
 
     private void setErrorView() {
