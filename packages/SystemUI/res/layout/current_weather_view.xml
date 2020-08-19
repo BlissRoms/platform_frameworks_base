@@ -20,15 +20,13 @@
 <com.android.systemui.omni.CurrentWeatherView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:systemui="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/current"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
         android:orientation="horizontal"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp" >
@@ -38,7 +36,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?attr/wallpaperTextColor"
-            android:gravity="center"
             android:ellipsize="end"
             android:singleLine="true"
             android:paddingEnd="8dp"
@@ -55,7 +52,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?attr/wallpaperTextColor"
-            android:gravity="center"
             android:singleLine="true"
             android:paddingStart="8dp"
             style="@style/TextAppearance.Keyguard" />

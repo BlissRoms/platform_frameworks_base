@@ -38,6 +38,7 @@ import android.util.Slog;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -453,6 +454,16 @@ public class KeyguardStatusView extends GridLayout implements
             mOwnerInfo.setTextColor(mOwnerInfoColor);
         }
         if (mWeatherView != null) {
+            final ContentResolver resolver = mContext.getContentResolver();
+            String currentClock = Settings.Secure.getString(
+                resolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+            boolean mCustomClockSelection = currentClock == null ? false : currentClock.contains("TypeClockController");
+            //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mWeatherView.getLayoutParams();
+            if (mCustomClockSelection) {
+                mWeatherView.setGravity(Gravity.START);
+            } else {
+                mWeatherView.setGravity(Gravity.CENTER);
+            }
             mWeatherView.onDensityOrFontScaleChanged();
         }
         if (mKeyguardSlice != null) {
