@@ -158,6 +158,11 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
     private int mAccentColor;
 
     /**
+     * Omni Weather
+     */
+    private CurrentWeatherView mWeatherView;
+
+    /**
      * Track the state of the status bar to know when to hide the big_clock_container.
      */
     private int mStatusBarState;
@@ -224,6 +229,7 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mWeatherView = (CurrentWeatherView) findViewById(R.id.weather_container);
         mClockView = findViewById(R.id.default_clock_view);
         mClockViewBold = findViewById(R.id.default_clock_view_bold);
         mSmallClockFrame = findViewById(R.id.clock_view);
@@ -546,22 +552,32 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
             default:
                 mKeyguardStatusArea.setRowGravity(Gravity.START);
                 mKeyguardStatusArea.setRowPadding(updateTextClockPadding() - 29, 0, 0, 0);
+                mWeatherView.setGravity(Gravity.START);
+                mWeatherView.setPadding(updateTextClockPadding() - 29, 0, 0, 0);
                 break;
             case 1:
                 mKeyguardStatusArea.setRowGravity(Gravity.CENTER);
                 mKeyguardStatusArea.setRowPadding(0, 0, 0, 0);
+                mWeatherView.setGravity(Gravity.CENTER);
+                mWeatherView.setPadding(0, 0, 0, 0);
                 break;
             case 2:
                 mKeyguardStatusArea.setRowGravity(Gravity.END);
                 mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding() - 29, 0);
+                mWeatherView.setGravity(Gravity.END)
+                mWeatherView.setPadding(0, 0, updateTextClockPadding() - 29, 0);
                 break;
             case 3:
                 mKeyguardStatusArea.setRowGravity(Gravity.END);
                 mKeyguardStatusArea.setRowPadding(0, 0, updateTextClockPadding() - 29, 0);
+                mWeatherView.setGravity(Gravity.END);
+                mWeatherView.setPadding(0, 0, updateTextClockPadding() - 29, 0);
                 break;
             case 4:
                 mKeyguardStatusArea.setRowGravity(Gravity.START);
                 mKeyguardStatusArea.setRowPadding(updateTextClockPadding() - 29, 0, 0, 0);
+                mWeatherView.setGravity(Gravity.START);
+                mWeatherView.setPadding(updateTextClockPadding() - 29, 0, 0, 0);
                 break;
         }
     }
@@ -577,6 +593,15 @@ public class KeyguardClockSwitch extends RelativeLayout implements TunerService.
         mKeyguardStatusArea.setRowPadding(mIsTypeClock ? mContext.getResources()
                 .getDimensionPixelSize(R.dimen.keyguard_status_area_typeclock_padding) : 0, 0, 0,
                 0);
+        if (mIsTypeClock) {
+            mWeatherView.setGravity(Gravity.START);
+            mWeatherView.setPadding(mContext.getResources()
+                .getDimensionPixelSize(R.dimen.keyguard_status_area_typeclock_padding) : 0, 0, 0,
+                0);
+        } else {
+            mWeatherView.setGravity(Gravity.CENTER);
+            mWeatherView.setPadding(0, 0, 0, 0);
+        }
     }
 
     /**
