@@ -150,6 +150,15 @@
     <!-- brightness slider padding -->
     <dimen name="brightness_slider_padding_top">5dp</dimen>
     <dimen name="brightness_slider_padding_bottom">15dp</dimen>
+    <dimen name="qs_brightness_slider_margin_left">20dp</dimen>
+    <dimen name="qs_brightness_slider_margin_right">35dp</dimen>
+    <dimen name="qs_brightness_slider_left">25dp</dimen>
+    <dimen name="qs_brightness_slider_right">30dp</dimen>
+    <dimen name="qs_brightness_button_margin_left">32dp</dimen>
+    <dimen name="qs_brightness_button_margin_right">50dp</dimen>
+    <dimen name="qs_brightness_icon_margin_right">10dp</dimen>
+
+    <!-- volume dialog slider padding -->
     <dimen name="volume_dialog_slider_margin_top">-12.5dp</dimen>
     <dimen name="volume_dialog_slider_margin_bottom">-12.5dp</dimen>
     <dimen name="volume_dialog_aosp_spacer">4dp</dimen>

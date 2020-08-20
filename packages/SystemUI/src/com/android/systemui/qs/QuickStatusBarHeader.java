@@ -597,6 +597,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                     com.android.internal.R.bool.config_automatic_brightness_available)) {
                ImageView brightnessIcon = (ImageView) mQuickQsBrightness.findViewById(R.id.brightness_icon);
                brightnessIcon.setVisibility(View.VISIBLE);
+
             } else {
                ImageView brightnessIcon = (ImageView) mQuickQsBrightness.findViewById(R.id.brightness_icon);
                brightnessIcon.setVisibility(View.GONE);
@@ -831,8 +832,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         lpQuickQsBrightness.addRule(RelativeLayout.BELOW, R.id.header_text_container);
         if (mBrightnessSlider == 4) {
             lpQuickQsBrightness.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            lpQuickQsBrightness.setMargins(sp - mPaddingLeft,
-                    getResources().getDimensionPixelSize(R.dimen.brightness_slider_padding_bottom), sp - mPaddingRight, 0);
+            lpQuickQsBrightness.setMargins(mIsQsAutoBrightnessEnabled ?
+                    mContext.getResources().getDimensionPixelSize(R.dimen.qs_brightness_slider_margin_left) : sp - mPaddingLeft,
+                    getResources().getDimensionPixelSize(R.dimen.brightness_slider_padding_bottom), mIsQsAutoBrightnessEnabled ?
+                    mContext.getResources().getDimensionPixelSize(R.dimen.qs_brightness_slider_margin_right) : sp - mPaddingRight, 0);
         } else {
             lpQuickQsBrightness.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
             lpQuickQsBrightness.setMargins(sp - mPaddingLeft,
