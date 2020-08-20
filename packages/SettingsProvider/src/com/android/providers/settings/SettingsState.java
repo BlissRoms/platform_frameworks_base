@@ -270,7 +270,7 @@ final class SettingsState {
             mPackageToMemoryUsage = null;
         }
 
-        mHistoricalOperations = Build.IS_ENG
+        mHistoricalOperations = Build.IS_DEBUGGABLE
                 ? new ArrayList<>(HISTORICAL_OPERATION_COUNT) : null;
 
         synchronized (mLock) {

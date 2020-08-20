@@ -15,7 +15,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_extra" translatable="false">
-        aod,animations,compass,adb,cpuinfo,dataswitch,fpsinfo,gaming,hw_keys,immersive,locale,mono,music,powershare,reboot,screenrecord,screenshot,screenstabilization,sleepscreen,sound,soundsearch,vpn,weather
+        aod,animations,compass,adb,cpuinfo,dataswitch,fpsinfo,gaming,hw_keys,immersive,locale,mono,music,powershare,reboot,screenrecord,screenshot,screenstabilization,sleepscreen,smartpixels,sound,soundsearch,vpn,weather
     </string>
 
     <!-- Burn in protection -->
