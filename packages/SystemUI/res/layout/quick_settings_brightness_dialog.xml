@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:systemui="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
@@ -22,32 +22,34 @@
     android:paddingRight="20dp"
     style="@style/BrightnessDialogContainer">
 
-    <ImageButton
-        android:id="@+id/brightness_left"
-        android:layout_marginEnd="6.0dip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_brightness_left"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@null" />
-
     <com.android.systemui.settings.ToggleSliderView
         android:id="@+id/brightness_slider"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_vertical|start"
         android:layout_weight="1"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="10dp"
         android:contentDescription="@string/accessibility_brightness"
         android:importantForAccessibility="no"
         systemui:text="@string/status_bar_settings_auto_brightness_label" />
 
     <ImageButton
-        android:id="@+id/brightness_right"
-        android:layout_marginStart="6.0dip"
+        android:id="@+id/brightness_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginLeft="22dp"
+        android:src="@drawable/ic_brightness_left"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@null" />
+
+    <ImageButton
+        android:id="@+id/brightness_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginRight="22dp"
         android:src="@drawable/ic_brightness_right"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@null" />
@@ -56,10 +58,11 @@
         android:id="@+id/brightness_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginRight="-2dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_qs_brightness_auto_off"
         android:contentDescription="@null"
         android:layout_marginStart="20.0dip" />
 
-</LinearLayout>
+</FrameLayout>
