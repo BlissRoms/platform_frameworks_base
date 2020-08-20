@@ -54,6 +54,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
@@ -106,6 +107,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
     protected final Context mContext;
     protected final ArrayList<TileRecord> mRecords = new ArrayList<>();
     protected final View mBrightnessView;
+    protected final View mSlider;
     protected final ImageView mAutoBrightnessView;
     private final H mHandler = new H();
     private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
@@ -161,6 +163,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_dialog, this, false);
         addView(mBrightnessView);
+
+        mSlider = mBrightnessView.findViewById(R.id.brightness_slider);
 
         mBrightnessPlaceholder = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_placeholder, this, false);
@@ -250,7 +254,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
                 addView((View) mTileLayout);
                 break;
             case 4:
-                addView(mBrightnessPlaceholder);
                 addView((View) mTileLayout);
                 addView(mBrightnessView);
                 break;
@@ -457,6 +460,18 @@ public class QSPanel extends LinearLayout implements Tunable, Callback,
         }
         if (mCustomizePanel != null) {
             mCustomizePanel.updateResources();
+        }
+        RelativeLayout.LayoutParams slider = (RelativeLayout.LayoutParams) mSlider.getLayoutParams();
+        slider.setMargins(0, 0,
+            isAutoBrightnessEnabled() ? mContext.getResources().getDimensionPixelSize(R.dimen.qs_brightness_slider_margin_right) : 0, 0);
+        mSlider.setLayoutParams(slider);
+    }
+
+    private boolean isAutoBrightnessEnabled() {
+        if (mAutoBrightnessView.getVisibility() == VISIBLE) {
+            return true;
+        } else {
+            return false;
         }
     }
 
