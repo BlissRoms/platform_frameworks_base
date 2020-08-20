@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.FrameLayout;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -53,12 +54,14 @@ public class BrightnessDialog extends Activity implements Tunable {
     private ImageView mMaxBrightness;
     private ImageView mAdaptiveBrightness;
     private boolean mAutoBrightnessEnabled;
+    private ToggleSliderView mSlider;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Context mContext = this;
+        mContext = this;
 
         final ContentResolver resolver = mContext.getContentResolver();
 
@@ -74,9 +77,9 @@ public class BrightnessDialog extends Activity implements Tunable {
         setContentView(mBrightnessView);
 
         mAdaptiveBrightness = findViewById(R.id.brightness_icon);
-        final ToggleSliderView slider = findViewById(R.id.brightness_slider);
+        mSlider = findViewById(R.id.brightness_slider);
 
-        mBrightnessController = new BrightnessController(this, mAdaptiveBrightness, slider);
+        mBrightnessController = new BrightnessController(this, mAdaptiveBrightness, mSlider);
 
         mMinBrightness = mBrightnessView.findViewById(R.id.brightness_left);
         mMinBrightness.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +187,7 @@ public class BrightnessDialog extends Activity implements Tunable {
 
     private void updateAutoBrightnessVisibility() {
         mAdaptiveBrightness.setVisibility(mAutoBrightnessEnabled ? View.VISIBLE : View.GONE);
+
     }
 
     private void updateViewVisibilityForTuningValue(View view, @Nullable String newValue) {
