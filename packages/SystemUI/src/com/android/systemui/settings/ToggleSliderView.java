@@ -62,6 +62,8 @@ public class ToggleSliderView extends RelativeLayout implements ToggleSlider {
 
         mSlider = findViewById(R.id.slider);
         mSlider.setOnSeekBarChangeListener(mSeekListener);
+        // Hide the thumb *TO-DO* add a toggle
+        mSlider.getThumb().mutate().setAlpha(0);
 
         mLabel = findViewById(R.id.label);
         mLabel.setText(a.getString(R.styleable.ToggleSliderView_text));
