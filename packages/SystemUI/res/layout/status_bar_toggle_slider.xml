@@ -41,6 +41,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:thumb="@drawable/ic_brightness_thumb"
+         android:thumbTint="@color/transparent"
         android:progressDrawable="@drawable/brightness_progress_drawable"
         android:splitTrack="false"
         />
