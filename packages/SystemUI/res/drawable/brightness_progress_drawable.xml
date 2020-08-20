@@ -20,7 +20,7 @@
                android:tint="@*android:color/config_progress_background_tint">
             <size android:height="@dimen/seek_bar_height" />
             <solid android:color="@color/white_disabled" />
-            <corners android:radius="@dimen/seek_bar_corner_radius" />
+            <corners android:radius="?android:attr/dialogCornerRadius"/>
         </shape>
     </item>
     <item android:id="@android:id/progress"
@@ -32,7 +32,7 @@
                     android:startColor="@*android:color/gradient_start"
                     android:endColor="@*android:color/gradient_end"
                     android:angle="45" />
-                <corners android:radius="@dimen/seek_bar_corner_radius" />
+                <corners android:radius="?android:attr/dialogCornerRadius" />
             </shape>
         </scale>
     </item>
