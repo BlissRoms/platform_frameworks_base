@@ -349,6 +349,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mQsbDataUsageLayout = findViewById(R.id.qsb_daily_data_usage_layout);
         mQsbDataUsageImage = findViewById(R.id.qsb_daily_data_usage_icon);
         mQsbDataUsageView = findViewById(R.id.qsb_data_sim_usage);
+        if (mDataUsageView != null)
+            mDataUsageView.setOnClickListener(this);
+        if (mQsbDataUsageView != null)
+            mQsbDataUsageView.setOnClickListener(this);
 
         // Tint for the battery icons are handled in setupHost()
         mBatteryRemainingIcon = findViewById(R.id.batteryRemainingIcon);
@@ -928,6 +932,12 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 Settings.System.putIntForUser(resolver,
                         Settings.System.SCREEN_BRIGHTNESS, math, UserHandle.USER_CURRENT);
             }
+        } else if (v == mDataUsageView) {
+            mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
+                    Settings.Panel.ACTION_MOBILE_DATA), 0);
+        } else if (v == mQsbDataUsageView) {
+            mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
+                    Settings.Panel.ACTION_MOBILE_DATA), 0);
         }
     }
 
