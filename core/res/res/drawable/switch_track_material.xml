@@ -22,7 +22,7 @@
             android:endColor="@color/gradient_end"
             android:angle="45"/>
             <corners android:radius="25dp" />
-            <size android:height="21dp" android:width="25dp" />
+            <size android:height="50dp" android:width="45dp" />
         </shape>
     </item>
     <item android:state_checked="false">
@@ -30,7 +30,7 @@
             android:tint="?attr/colorProgressBackgroundNormal">
             <solid android:color="@color/white_disabled_material" />
             <corners android:radius="25dp" />
-            <size android:height="21dp" android:width="25dp" />
+            <size android:height="50dp" android:width="45dp" />
         </shape>
     </item>
 </selector>
