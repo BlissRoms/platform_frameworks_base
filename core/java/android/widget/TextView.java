@@ -12669,7 +12669,7 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
      */
     private void paste(int min, int max, boolean withFormatting) {
         ClipboardManager clipboard = getClipboardManagerForUser();
-        ClipData clip = clipboard.getPrimaryClip(true);
+        ClipData clip = clipboard.getPrimaryClip();
         if (clip != null) {
             boolean didFirst = false;
             for (int i = 0; i < clip.getItemCount(); i++) {

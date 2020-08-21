@@ -68,4 +68,8 @@
 
     <!-- Pocket Lock --> 
     <string name="pocket_lock_message_long_press">Press and hold power button to unlock</string> 
+
+    <!-- Clipboard access toast -->
+    <string name="app_clipboard_access_denied">%1$s was denied access to the clipboard</string>
+    <string name="app_clipboard_access_granted">%1$s was granted access to the clipboard</string>
 </resources>

@@ -4888,6 +4888,12 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCK_FONT_STYLE = "status_bar_clock_font_style";
 
         /**
+         * QS Clock style
+         * @hide
+         */
+        public static final String QS_CLOCK_STYLE = "qs_clock_style";
+
+        /**
          * @hide
          */
         public static final String STATUSBAR_BATTERY_BAR_THICKNESS =
@@ -5143,6 +5149,14 @@ public final class Settings {
          * @hide
          */
         public static final String QS_BATTERY_STYLE = "qs_battery_style";
+
+        /**
+         * QS battery location
+         * 0: QS Panel
+         * 1: Quick Statusbar
+         * @hide
+         */
+        public static final String QS_BATTERY_LOCATION = "qs_battery_location";
 
         /**
          * QS battery %
@@ -6368,6 +6382,12 @@ public final class Settings {
         public static final String QS_DATAUSAGE = "qs_datausage";
 
         /**
+         * toggle QS data usage location
+         * @hide
+         */
+        public static final String QS_DATAUSAGE_LOCATION = "qs_datausage_location";
+
+        /**
          * @hide
          */
         public static final String AMBIENT_LIGHT_REPEAT_COUNT = "ambient_light_repeat_count";
@@ -6623,11 +6643,6 @@ public final class Settings {
         private static final Validator FORCE_FULLSCREEN_CUTOUT_APPS_VALIDATOR = ANY_STRING_VALIDATOR;
 
         /**
-         * @hide
-         */
-        public static final String QS_HEADER_BACKGROUND = "qs_header_background";
-
-        /**
          * Toggle for clipboard access toast.
          * @hide
          */
@@ -6693,6 +6708,17 @@ public final class Settings {
          * @hide
          */
         public static final String LOCK_SCREEN_WEATHER_ICON_COLOR = "lock_screen_weather_icon_color";
+
+        /**
+         * @hide
+         */
+        public static final String QS_HEADER_STYLE = "qs_header_style";
+
+        /**
+         * Clipboard access info
+         * @hide
+         */
+        public static final String CLIPBOARD_TOAST_INFO = "clipboard_toast_info";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -7064,6 +7090,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(FORCE_FULLSCREEN_CUTOUT_APPS);
             PRIVATE_SETTINGS.add(LOCKSCREEN_WEATHER_SHOW_IMAGE);
             PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_HEIGHT);
+            PRIVATE_SETTINGS.add(QS_HEADER_STYLE);
         }
 
         /**

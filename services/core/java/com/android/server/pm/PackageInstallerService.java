@@ -26,6 +26,7 @@ import android.app.AppOpsManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PackageDeleteObserver;
+import android.app.PackageInstallObserver;
 import android.app.admin.DevicePolicyEventLogger;
 import android.app.admin.DevicePolicyManagerInternal;
 import android.content.Context;
@@ -506,7 +507,7 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
             }
         }
 
-        if (Build.IS_ENG || isDowngradeAllowedForCaller(callingUid)) {
+        if (Build.IS_DEBUGGABLE || isDowngradeAllowedForCaller(callingUid)) {
             params.installFlags |= PackageManager.INSTALL_ALLOW_DOWNGRADE;
         } else {
             params.installFlags &= ~PackageManager.INSTALL_ALLOW_DOWNGRADE;
@@ -997,56 +998,73 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
         }
     }
 
-    static void sendOnUserActionRequired(Context context, IntentSender target, int sessionId,
-            Intent intent) {
-        final Intent fillIn = new Intent();
-        fillIn.putExtra(PackageInstaller.EXTRA_SESSION_ID, sessionId);
-        fillIn.putExtra(PackageInstaller.EXTRA_STATUS,
-                PackageInstaller.STATUS_PENDING_USER_ACTION);
-        fillIn.putExtra(Intent.EXTRA_INTENT, intent);
-        try {
-            target.sendIntent(context, 0, fillIn, null, null);
-        } catch (SendIntentException ignored) {
-        }
-    }
+    static class PackageInstallObserverAdapter extends PackageInstallObserver {
+        private final Context mContext;
+        private final IntentSender mTarget;
+        private final int mSessionId;
+        private final boolean mShowNotification;
+        private final int mUserId;
 
-    static void sendOnPackageInstalled(Context context, IntentSender target, int sessionId,
-            boolean showNotification, int userId, String basePackageName, int returnCode,
-            String msg, Bundle extras) {
-        if (PackageManager.INSTALL_SUCCEEDED == returnCode && showNotification) {
-            boolean update = (extras != null) && extras.getBoolean(Intent.EXTRA_REPLACING);
-            Notification notification = buildSuccessNotification(context,
-                    context.getResources()
-                            .getString(update ? R.string.package_updated_device_owner :
-                                    R.string.package_installed_device_owner),
-                    basePackageName,
-                    userId);
-            if (notification != null) {
-                NotificationManager notificationManager = (NotificationManager)
-                        context.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(basePackageName,
-                        SystemMessage.NOTE_PACKAGE_STATE,
-                        notification);
+        public PackageInstallObserverAdapter(Context context, IntentSender target, int sessionId,
+                boolean showNotification, int userId) {
+            mContext = context;
+            mTarget = target;
+            mSessionId = sessionId;
+            mShowNotification = showNotification;
+            mUserId = userId;
+        }
+
+        @Override
+        public void onUserActionRequired(Intent intent) {
+            final Intent fillIn = new Intent();
+            fillIn.putExtra(PackageInstaller.EXTRA_SESSION_ID, mSessionId);
+            fillIn.putExtra(PackageInstaller.EXTRA_STATUS,
+                    PackageInstaller.STATUS_PENDING_USER_ACTION);
+            fillIn.putExtra(Intent.EXTRA_INTENT, intent);
+            try {
+                mTarget.sendIntent(mContext, 0, fillIn, null, null);
+            } catch (SendIntentException ignored) {
             }
         }
-        final Intent fillIn = new Intent();
-        fillIn.putExtra(PackageInstaller.EXTRA_PACKAGE_NAME, basePackageName);
-        fillIn.putExtra(PackageInstaller.EXTRA_SESSION_ID, sessionId);
-        fillIn.putExtra(PackageInstaller.EXTRA_STATUS,
-                PackageManager.installStatusToPublicStatus(returnCode));
-        fillIn.putExtra(PackageInstaller.EXTRA_STATUS_MESSAGE,
-                PackageManager.installStatusToString(returnCode, msg));
-        fillIn.putExtra(PackageInstaller.EXTRA_LEGACY_STATUS, returnCode);
-        if (extras != null) {
-            final String existing = extras.getString(
-                    PackageManager.EXTRA_FAILURE_EXISTING_PACKAGE);
-            if (!TextUtils.isEmpty(existing)) {
-                fillIn.putExtra(PackageInstaller.EXTRA_OTHER_PACKAGE_NAME, existing);
+
+        @Override
+        public void onPackageInstalled(String basePackageName, int returnCode, String msg,
+                Bundle extras) {
+            if (PackageManager.INSTALL_SUCCEEDED == returnCode && mShowNotification) {
+                boolean update = (extras != null) && extras.getBoolean(Intent.EXTRA_REPLACING);
+                Notification notification = buildSuccessNotification(mContext,
+                        mContext.getResources()
+                                .getString(update ? R.string.package_updated_device_owner :
+                                        R.string.package_installed_device_owner),
+                        basePackageName,
+                        mUserId);
+                if (notification != null) {
+                    NotificationManager notificationManager = (NotificationManager)
+                            mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(basePackageName,
+                            SystemMessage.NOTE_PACKAGE_STATE,
+                            notification);
+                }
             }
-        }
-        try {
-            target.sendIntent(context, 0, fillIn, null, null);
-        } catch (SendIntentException ignored) {
+            final Intent fillIn = new Intent();
+            fillIn.putExtra(PackageInstaller.EXTRA_PACKAGE_NAME, basePackageName);
+            fillIn.putExtra(PackageInstaller.EXTRA_SESSION_ID, mSessionId);
+            fillIn.putExtra(PackageInstaller.EXTRA_STATUS,
+                    PackageManager.installStatusToPublicStatus(returnCode));
+            fillIn.putExtra(PackageInstaller.EXTRA_STATUS_MESSAGE,
+                    PackageManager.installStatusToString(returnCode, msg));
+            fillIn.putExtra(PackageInstaller.EXTRA_LEGACY_STATUS, returnCode);
+            if (extras != null) {
+                final String existing = extras.getString(
+                        PackageManager.EXTRA_FAILURE_EXISTING_PACKAGE);
+                if (!TextUtils.isEmpty(existing)) {
+                    fillIn.putExtra(PackageInstaller.EXTRA_OTHER_PACKAGE_NAME, existing);
+                }
+            }
+            try {
+                mTarget.sendIntent(mContext, 0, fillIn, null, null);
+            } catch (SendIntentException ignored) {
+            }
         }
     }
 

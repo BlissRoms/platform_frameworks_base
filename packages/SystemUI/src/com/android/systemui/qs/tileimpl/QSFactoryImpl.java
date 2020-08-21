@@ -64,6 +64,7 @@ import com.android.systemui.qs.tiles.ProfilesTile;
 import com.android.systemui.qs.tiles.ReadingModeTile;
 import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
+import com.android.systemui.qs.tiles.SmartPixelsTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
@@ -141,6 +142,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<FPSInfoTile> mFPSInfoTileProvider;
     private final Provider<AnimationsTile> mAnimationsTileProvider;
     private final Provider<HWKeysTile> mHWKeysTileProvider;
+    private final Provider<SmartPixelsTile> mSmartPixelsTileProvider;
 
     private QSTileHost mHost;
 
@@ -195,7 +197,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<LocaleTile> localeTileProvider,
             Provider<FPSInfoTile> fpsInfoTileProvider,
             Provider<AnimationsTile> animationsTileProvider,
-            Provider<HWKeysTile> HWKeysTileProvider) {
+            Provider<HWKeysTile> HWKeysTileProvider,
+            Provider<SmartPixelsTile> smartPixelsTileProvider) {
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
         mCellularTileProvider = cellularTileProvider;
@@ -247,6 +250,7 @@ public class QSFactoryImpl implements QSFactory {
         mFPSInfoTileProvider = fpsInfoTileProvider;
         mAnimationsTileProvider = animationsTileProvider;
         mHWKeysTileProvider = HWKeysTileProvider;
+        mSmartPixelsTileProvider = smartPixelsTileProvider;
     }
 
     public void setHost(QSTileHost host) {
@@ -367,6 +371,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mAnimationsTileProvider.get();
             case "hw_keys":
                 return mHWKeysTileProvider.get();
+            case "smartpixels":
+                return mSmartPixelsTileProvider.get();
         }
 
         // Intent tiles.
@@ -374,7 +380,7 @@ public class QSFactoryImpl implements QSFactory {
         if (tileSpec.startsWith(CustomTile.PREFIX)) return CustomTile.create(mHost, tileSpec);
 
         // Debug tiles.
-        if (Build.IS_ENG) {
+        if (Build.IS_DEBUGGABLE) {
             if (tileSpec.equals(GarbageMonitor.MemoryTile.TILE_SPEC)) {
                 return mMemoryTileProvider.get();
             }

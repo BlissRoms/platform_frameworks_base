@@ -67,14 +67,14 @@ import javax.inject.Singleton;
 @Singleton
 public class GarbageMonitor implements Dumpable {
     private static final boolean LEAK_REPORTING_ENABLED =
-            Build.IS_ENG
+            Build.IS_DEBUGGABLE
                     && SystemProperties.getBoolean("debug.enable_leak_reporting", false);
     private static final String FORCE_ENABLE_LEAK_REPORTING = "sysui_force_enable_leak_reporting";
 
-    private static final boolean HEAP_TRACKING_ENABLED = Build.IS_ENG;
+    private static final boolean HEAP_TRACKING_ENABLED = Build.IS_DEBUGGABLE;
 
     // whether to use ActivityManager.setHeapLimit
-    private static final boolean ENABLE_AM_HEAP_LIMIT = Build.IS_ENG;
+    private static final boolean ENABLE_AM_HEAP_LIMIT = Build.IS_DEBUGGABLE;
     // heap limit value, in KB (overrides R.integer.watch_heap_limit)
     private static final String SETTINGS_KEY_AM_HEAP_LIMIT = "systemui_am_heap_limit";
 

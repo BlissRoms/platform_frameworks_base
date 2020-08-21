@@ -28,6 +28,27 @@
     android:focusable="true"
     android:theme="@style/QSHeaderTheme">
 
+    <com.android.systemui.bliss.statusbarweather.QsHeaderWeather
+        android:id="@+id/weather_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:maxLines="1"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical|start"
+        android:textAppearance="@style/TextAppearance.QS.Status"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        systemui:showDark="false" />
+
+    <com.android.systemui.bliss.statusbarweather.QsHeaderWeatherImage
+        android:id="@+id/weather_image"
+        android:layout_width="22dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical|start"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp" />
+
     <com.android.systemui.statusbar.policy.DateView
         android:id="@+id/date"
         android:layout_width="wrap_content"

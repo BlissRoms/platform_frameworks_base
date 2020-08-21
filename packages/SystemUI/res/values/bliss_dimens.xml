@@ -149,4 +149,9 @@
 
     <!-- Smartspace -->
     <dimen name="smartspace_icon_shadow">1dp</dimen>
+
+    <!-- brightness slider padding -->
+    <dimen name="brightness_slider_padding_top">5dp</dimen>
+    <dimen name="brightness_slider_padding_bottom">15dp</dimen>
+
 </resources>

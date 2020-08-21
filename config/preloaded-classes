@@ -5584,6 +5584,8 @@ dalvik.system.CloseGuard$DefaultReporter
 dalvik.system.CloseGuard$Reporter
 dalvik.system.CloseGuard$Tracker
 dalvik.system.CloseGuard
+dalvik.system.DalvikLogHandler
+dalvik.system.DalvikLogging
 dalvik.system.DelegateLastClassLoader
 dalvik.system.DexClassLoader
 dalvik.system.DexFile$1

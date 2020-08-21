@@ -136,7 +136,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private boolean mListening;
     private boolean mQsDisabled;
 
-    private QSCarrierGroup mCarrierGroup;
     protected QuickQSPanel mHeaderQsPanel;
     protected QSTileHost mHost;
     private TintedIconManager mIconManager;
@@ -165,6 +164,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private OngoingPrivacyChip mPrivacyChip;
     private Space mSpace;
     private BatteryMeterView mBatteryRemainingIcon;
+    private BatteryMeterView mBatteryIcon;
     private boolean mPermissionsHubEnabled;
 
     // Data Usage
@@ -172,6 +172,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private ImageView mDataUsageImage;
     private DataUsageView mDataUsageView;
     private int mDataUsageEnabled;
+    private int mDataUsageLocation;
+    private View mQsbDataUsageLayout;
+    private ImageView mQsbDataUsageImage;
+    private DataUsageView mQsbDataUsageView;
 
     private boolean mLandscape;
     private boolean mHeaderImageEnabled;
@@ -215,12 +219,16 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             "system:" + Settings.System.OMNI_STATUS_BAR_CUSTOM_HEADER;
     public static final String QS_BATTERY_STYLE =
             "system:" + Settings.System.QS_BATTERY_STYLE;
+    public static final String QS_BATTERY_LOCATION =
+            "system:" + Settings.System.QS_BATTERY_LOCATION;
     public static final String QS_SYSTEM_INFO =
             "system:" + Settings.System.QS_SYSTEM_INFO;
     public static final String STATUS_BAR_CUSTOM_HEADER_HEIGHT =
             "system:" + Settings.System.STATUS_BAR_CUSTOM_HEADER_HEIGHT;
     public static final String QS_DATAUSAGE =
             "system:" + Settings.System.QS_DATAUSAGE;
+    public static final String QS_DATAUSAGE_LOCATION =
+            "system:" + Settings.System.QS_DATAUSAGE_LOCATION;
 
     private final BroadcastReceiver mRingerReceiver = new BroadcastReceiver() {
         @Override
@@ -309,7 +317,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mRingerContainer.setOnClickListener(this::onClick);
         mPrivacyChip = findViewById(R.id.privacy_chip);
         mPrivacyChip.setOnClickListener(this::onClick);
-        mCarrierGroup = findViewById(R.id.carrier_group);
 
         mSystemInfoLayout = findViewById(R.id.system_info_layout);
         mSystemInfoIcon = findViewById(R.id.system_info_icon);
@@ -339,11 +346,16 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mDataUsageLayout = findViewById(R.id.daily_data_usage_layout);
         mDataUsageImage = findViewById(R.id.daily_data_usage_icon);
         mDataUsageView = findViewById(R.id.data_sim_usage);
+        mQsbDataUsageLayout = findViewById(R.id.qsb_daily_data_usage_layout);
+        mQsbDataUsageImage = findViewById(R.id.qsb_daily_data_usage_icon);
+        mQsbDataUsageView = findViewById(R.id.qsb_data_sim_usage);
 
         // Tint for the battery icons are handled in setupHost()
         mBatteryRemainingIcon = findViewById(R.id.batteryRemainingIcon);
+        mBatteryIcon = findViewById(R.id.batteryIcon);
         // Don't need to worry about tuner settings for this icon
         mBatteryRemainingIcon.setIgnoreTunerUpdates(true);
+        mBatteryIcon.setIgnoreTunerUpdates(true);
         mBatteryRemainingIcon.setOnClickListener(this);
         mRingerModeTextView.setSelected(true);
         mNextAlarmTextView.setSelected(true);
@@ -367,7 +379,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 QSFooterImpl.QS_SHOW_DRAG_HANDLE,
                 QS_BATTERY_STYLE,
                 QS_DATAUSAGE,
+                QS_DATAUSAGE_LOCATION,
                 QS_SYSTEM_INFO,
+                QS_BATTERY_LOCATION,
                 QS_SHOW_BRIGHTNESS_SLIDER,
                 QS_SHOW_AUTO_BRIGHTNESS,
                 QSPanel.QS_SHOW_BRIGHTNESS_BUTTONS);
@@ -646,21 +660,54 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         if (mDataUsageEnabled != 0) {
             if (!BlissUtils.isWifiOnly(mContext)) {
                 if (BlissUtils.isConnected(mContext)) {
-                    mDataUsageLayout.setVisibility(View.VISIBLE);
-                    mDataUsageImage.setVisibility(View.VISIBLE);
-                    mDataUsageView.setVisibility(View.VISIBLE);
+                    updateDataUsageVisibility(true);
                 } else {
-                    mDataUsageView.setVisibility(View.GONE);
-                    mDataUsageImage.setVisibility(View.GONE);
-                    mDataUsageLayout.setVisibility(View.GONE);
+                    updateDataUsageVisibility(false);
                 }
             }
         } else {
-            mDataUsageView.setVisibility(View.GONE);
-            mDataUsageImage.setVisibility(View.GONE);
-            mDataUsageLayout.setVisibility(View.GONE);
+            updateDataUsageVisibility(false);
         }
-     }
+    }
+
+    private void updateDataUsageVisibility(boolean isVisible) {
+        if (isVisible) {
+            if (mDataUsageLocation == 0) {
+                qsDataUsage(true);
+                qsHeaderDataUsage(false);
+            } else {
+                qsDataUsage(false);
+                qsHeaderDataUsage(true);
+            }
+        } else {
+            qsDataUsage(false);
+            qsHeaderDataUsage(false);
+        }
+    }
+
+    private void qsDataUsage(boolean isVisible) {
+        if (isVisible) {
+            mDataUsageLayout.setVisibility(View.VISIBLE);
+            mDataUsageImage.setVisibility(View.VISIBLE);
+            mDataUsageView.setVisibility(View.VISIBLE);
+        } else {
+            mDataUsageLayout.setVisibility(View.GONE);
+            mDataUsageImage.setVisibility(View.GONE);
+            mDataUsageView.setVisibility(View.GONE);
+        }
+    }
+
+    private void qsHeaderDataUsage(boolean isVisible) {
+        if (isVisible) {
+            mQsbDataUsageLayout.setVisibility(View.VISIBLE);
+            mQsbDataUsageImage.setVisibility(View.VISIBLE);
+            mQsbDataUsageView.setVisibility(View.VISIBLE);
+        } else {
+            mQsbDataUsageLayout.setVisibility(View.GONE);
+            mQsbDataUsageImage.setVisibility(View.GONE);
+            mQsbDataUsageView.setVisibility(View.GONE);
+        }
+    }
 
     private void updateStatusIconAlphaAnimator() {
         mStatusIconsAlphaAnimator = new TouchAnimator.Builder()
@@ -777,12 +824,15 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         final int sp = getResources().getDimensionPixelSize(R.dimen.notification_side_paddings);
         RelativeLayout.LayoutParams lpQuickQsBrightness = (RelativeLayout.LayoutParams)
                 mQuickQsBrightness.getLayoutParams();
-        lpQuickQsBrightness.setMargins(sp - mPaddingLeft, 0, sp - mPaddingRight, 0);
         lpQuickQsBrightness.addRule(RelativeLayout.BELOW, R.id.header_text_container);
         if (mBrightnessSlider == 4) {
             lpQuickQsBrightness.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lpQuickQsBrightness.setMargins(sp - mPaddingLeft,
+                    getResources().getDimensionPixelSize(R.dimen.brightness_slider_padding_bottom), sp - mPaddingRight, 0);
         } else {
             lpQuickQsBrightness.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+            lpQuickQsBrightness.setMargins(sp - mPaddingLeft,
+                    0, sp - mPaddingRight, getResources().getDimensionPixelSize(R.dimen.brightness_slider_padding_top));
         }
         mQuickQsBrightness.setLayoutParams(lpQuickQsBrightness);
         return super.onApplyWindowInsets(insets);
@@ -802,7 +852,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
         mHeaderQsPanel.setListening(listening);
         mListening = listening;
-        mCarrierGroup.setListening(mListening);
 
         if (listening) {
             mZenController.addCallback(this);
@@ -919,6 +968,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         float intensity = getColorIntensity(colorForeground);
         int fillColor = mDualToneHandler.getSingleColor(intensity);
         mBatteryRemainingIcon.onDarkChanged(tintArea, intensity, fillColor);
+        mBatteryIcon.setColorsFromContext(mHost.getContext());
+        mBatteryIcon.onDarkChanged(tintArea, intensity, fillColor);
 
         if(mSystemInfoText != null &&  mSystemInfoIcon != null) {
             updateSystemInfoText();
@@ -967,9 +1018,13 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             style = mQSBatteryStyle;
         }
         mBatteryRemainingIcon.mBatteryStyle = style;
+        mBatteryIcon.mBatteryStyle = style;
         mBatteryRemainingIcon.updateBatteryStyle();
         mBatteryRemainingIcon.updatePercentView();
         mBatteryRemainingIcon.updateVisibility();
+        mBatteryIcon.updateBatteryStyle();
+        mBatteryIcon.updatePercentView();
+        mBatteryIcon.updateVisibility();
     }
 
     @Override
@@ -983,14 +1038,22 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             case QS_SHOW_BATTERY_PERCENT:
                 mBatteryRemainingIcon.mShowBatteryPercent =
                         TunerService.parseInteger(newValue, 2);
+                mBatteryIcon.mShowBatteryPercent =
+                        TunerService.parseInteger(newValue, 2);
                 mBatteryRemainingIcon.updatePercentView();
                 mBatteryRemainingIcon.updateVisibility();
+                mBatteryIcon.updatePercentView();
+                mBatteryIcon.updateVisibility();
                 break;
             case QS_SHOW_BATTERY_ESTIMATE:
                 mBatteryRemainingIcon.mShowBatteryEstimate =
                         TunerService.parseInteger(newValue, 0);
+                mBatteryIcon.mShowBatteryEstimate =
+                        TunerService.parseInteger(newValue, 0);
                 mBatteryRemainingIcon.updatePercentView();
                 mBatteryRemainingIcon.updateVisibility();
+                mBatteryIcon.updatePercentView();
+                mBatteryIcon.updateVisibility();
                 break;
             case STATUS_BAR_BATTERY_STYLE:
                 mStatusBarBatteryStyle =
@@ -1001,6 +1064,17 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 mQSBatteryStyle =
                         TunerService.parseInteger(newValue, -1);
                 updateBatteryStyle();
+                break;
+            case QS_BATTERY_LOCATION:
+                int location =
+                        TunerService.parseInteger(newValue, 0);
+                if (location == 0) {
+                    mBatteryIcon.setVisibility(View.GONE);
+                    mBatteryRemainingIcon.setVisibility(View.VISIBLE);
+                } else {
+                    mBatteryRemainingIcon.setVisibility(View.GONE);
+                    mBatteryIcon.setVisibility(View.VISIBLE);
+                }
                 break;
             case OMNI_STATUS_BAR_CUSTOM_HEADER:
                 mHeaderImageEnabled =
@@ -1043,6 +1117,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             case QS_DATAUSAGE:
                 mDataUsageEnabled =
                         TunerService.parseInteger(newValue, 1);
+                updateResources();
+                break;
+            case QS_DATAUSAGE_LOCATION:
+                mDataUsageLocation =
+                        TunerService.parseInteger(newValue, 0);
                 updateResources();
                 break;
             default:

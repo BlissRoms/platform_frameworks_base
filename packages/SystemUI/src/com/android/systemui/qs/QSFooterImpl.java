@@ -73,6 +73,7 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
 
     private static final String TAG = "QSFooterImpl";
     public static final String QS_SHOW_DRAG_HANDLE = "qs_show_drag_handle";
+    public static final String QS_FOOTER_SHOW_SETTINGS = "qs_footer_show_settings";
 
     private final ActivityStarter mActivityStarter;
     private final UserInfoController mUserInfoController;
@@ -85,10 +86,13 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
     private boolean mQsDisabled;
     private QSPanel mQsPanel;
     private QuickQSPanel mQuickQSPanel;
+    private QSCarrierGroup mCarrierGroup;
 
     private boolean mExpanded;
 
     private boolean mListening;
+
+    private int mQsSettings;
 
     protected MultiUserSwitch mMultiUserSwitch;
     private ImageView mMultiUserAvatar;
@@ -111,6 +115,7 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             setBuildText();
+            updateResources();
         }
     };
 
@@ -156,6 +161,7 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
         mDragHandle = findViewById(R.id.qs_drag_handle_view);
         mActionsContainer = findViewById(R.id.qs_footer_actions_container);
         mEditContainer = findViewById(R.id.qs_footer_actions_edit_container);
+        mCarrierGroup = findViewById(R.id.carrier_group);
 
         // RenderThread is doing more harm than good when touching the header (to expand quick
         // settings), so disable it for this view
@@ -190,15 +196,7 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
     }
 
     private void updateAnimator(int width) {
-        int numTiles = mQuickQSPanel.getNumQuickTiles();
-        int size = mContext.getResources().getDimensionPixelSize(R.dimen.qs_quick_tile_size)
-                - mContext.getResources().getDimensionPixelSize(dimen.qs_quick_tile_padding);
-        int remaining = (width - numTiles * size) / (numTiles - 1);
-        int defSpace = mContext.getResources().getDimensionPixelOffset(R.dimen.default_gear_space);
-
         mSettingsCogAnimator = new Builder()
-                .addFloat(mSettingsContainer, "translationX",
-                        isLayoutRtl() ? (remaining - defSpace) : -(remaining - defSpace), 0)
                 .addFloat(mSettingsButton, "rotation", -120, 0)
                 .build();
 
@@ -209,6 +207,7 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         updateResources();
+        updateEverything();
     }
 
     @Override
@@ -227,13 +226,25 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
 
     @Nullable
     private TouchAnimator createFooterAnimator() {
-        return new TouchAnimator.Builder()
-                .addFloat(mActionsContainer, "alpha", 1, 1) // contains mRunningServicesButton
-                .addFloat(mEditContainer, "alpha", 0, 1)
-                .addFloat(mDragHandle, "alpha", 1, 0, 0)
-                .addFloat(mPageIndicator, "alpha", 0, 1)
-                .setStartDelay(0.15f)
-                .build();
+        if (isQsSettingsEnabled()) {
+            return new TouchAnimator.Builder()
+                    .addFloat(mActionsContainer, "alpha", 1, 1) // contains mRunningServicesButton
+                    .addFloat(mEditContainer, "alpha", 0, 1)
+                    .addFloat(mCarrierGroup, "alpha", 1, 0, 0)
+                    .addFloat(mDragHandle, "alpha", 1, 0, 0)
+                    .addFloat(mPageIndicator, "alpha", 0, 1)
+                    .setStartDelay(0.15f)
+                    .build();
+        } else {
+            return new TouchAnimator.Builder()
+                    .addFloat(mActionsContainer, "alpha", 0, 1) // contains mRunningServicesButton
+                    .addFloat(mEditContainer, "alpha", 0, 1)
+                    .addFloat(mCarrierGroup, "alpha", 1, 0, 0)
+                    .addFloat(mDragHandle, "alpha", 1, 0, 0)
+                    .addFloat(mPageIndicator, "alpha", 0, 1)
+                    .setStartDelay(0.15f)
+                    .build();
+        }
     }
 
     @Override
@@ -271,6 +282,9 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
                 mBlissSettingsObserver, UserHandle.USER_ALL);
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.BLISS_FOOTER_TEXT_STRING), false,
+                mBlissSettingsObserver, UserHandle.USER_ALL);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.QS_FOOTER_SHOW_SETTINGS), false,
                 mBlissSettingsObserver, UserHandle.USER_ALL);
 
         final TunerService tunerService = Dependency.get(TunerService.class);
@@ -345,12 +359,13 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
         mSettingsContainer.findViewById(R.id.tuner_icon).setVisibility(
                 TunerService.isTunerEnabled(mContext) ? View.VISIBLE : View.INVISIBLE);
         final boolean isDemo = UserManager.isDeviceInDemoMode(mContext);
-        mSettingsContainer.setVisibility(!isSettingsEnabled() || mQsDisabled ? View.GONE : View.VISIBLE);
-        mSettingsButton.setVisibility(isSettingsEnabled() ? (isDemo || !mExpanded ? View.VISIBLE : View.VISIBLE) : View.GONE);
+        mSettingsContainer.setVisibility(isSettingsDisabled() || mQsDisabled ? View.GONE : View.VISIBLE);
+        mSettingsButton.setVisibility(isSettingsDisabled() ? View.GONE : (isDemo || !mExpanded ? View.VISIBLE : View.VISIBLE));
         mRunningServicesButton.setVisibility(isServicesEnabled() ? (isDemo || !mExpanded ? View.INVISIBLE : View.VISIBLE) : View.GONE);
         mMultiUserSwitch.setVisibility(isUserEnabled() ? (showUserSwitcher() ? View.VISIBLE : View.INVISIBLE) : View.GONE);
         mEditContainer.setVisibility(isDemo || !mExpanded ? View.INVISIBLE : View.VISIBLE);
         mEdit.setVisibility(isEditEnabled() ? View.VISIBLE : View.GONE);
+        mCarrierGroup.setVisibility(!mExpanded ? View.VISIBLE : View.GONE);
     }
 
     private boolean showUserSwitcher() {
@@ -363,6 +378,7 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
         } else {
             mUserInfoController.removeCallback(this);
         }
+        mCarrierGroup.setListening(mListening);
     }
 
     @Override
@@ -375,9 +391,14 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
         }
     }
 
-    public boolean isSettingsEnabled() {
+    public boolean isSettingsDisabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
-            Settings.System.QS_FOOTER_SHOW_SETTINGS, 1) == 1;
+            Settings.System.QS_FOOTER_SHOW_SETTINGS, 1) == 0;
+    }
+
+    public boolean isQsSettingsEnabled() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.QS_FOOTER_SHOW_SETTINGS, 1) == 2;
     }
 
     public boolean isServicesEnabled() {

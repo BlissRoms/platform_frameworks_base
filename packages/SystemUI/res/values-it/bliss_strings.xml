@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2018 The BlissRoms Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • Ricarica Dash (<xliff:g id="charging_time_left" example="4 ore e 2 minuti">%s</xliff:g> fino al completamento della carica)</string>
+    <string name="keyguard_plugged_in_dash_charging"><xliff:g id="percentage">%s</xliff:g> • Ricarica Dash</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a warp charger. Should match keyguard_plugged_in_warp_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_warp_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • Ricarica Warp (<xliff:g id="charging_time_left" example="4 ore e 2 minuti">%s</xliff:g> fino al completamento della carica)</string>
+    <string name="keyguard_plugged_in_warp_charging"> • Ricarica Warp</string>
+    <!-- Name of the nfc status bar icon. -->
+    <string name="status_bar_nfc">NFC</string>
+    <!-- Accessibility label for nfc icon (not shown on screen) [CHAR LIMIT=NONE] -->
+    <string name="accessibility_status_bar_nfc">Nfc</string>
+    <!-- CPUInfo tile -->
+    <string name="quick_settings_cpuinfo_label">Info CPU</string>
+    <string name="accessibility_quick_settings_cpuinfo_off">Info CPU disattivate</string>
+    <string name="accessibility_quick_settings_cpuinfo_on">Info CPU attive</string>
+    <!-- ADB QS Tile -->
+    <string name="quick_settings_adb_label">ADB,</string>
+    <!-- Screenshot Delete Toast -->
+    <string name="delete_screenshot_toast">Screenshot eliminato</string>
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_off">Spento</string>
+    <string name="quick_settings_screenshot_label">Screenshot</string>
+    <string name="quick_settings_region_screenshot_label">Screenshot parziale</string>
+    <string name="quick_settings_long_screenshot_label">Screenshot esteso</string>
+    <!-- Sound Search tile -->
+    <string name="quick_settings_sound_search">Cerca suono</string>
+    <string name="quick_settings_sound_search_no_app">Spiacenti, ma questo non funziona se non hai un\'app di ricerca audio.</string>
+    <!-- AOD QS tile -->
+    <string name="quick_settings_aod_label">AOD</string>
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Suono</string>
+    <string name="quick_settings_sound_mute">Muto</string>
+    <string name="quick_settings_sound_ring">Suoneria</string>
+    <string name="quick_settings_sound_vibrate">Vibrazione</string>
+    <!-- Music tile -->
+    <string name="quick_settings_music_label">Musica</string>
+    <string name="quick_settings_music_play">Riproduci</string>
+    <string name="quick_settings_music_pause">Metti in pausa</string>
+    <!-- Compass QS Tile -->
+    <string name="quick_settings_compass_label">Bussola</string>
+    <string name="quick_settings_compass_value"><xliff:g id="gradi">%1$.0f</xliff:g>\u00b0 <xliff:g id="direzione">%2$s</xliff:g></string>
+    <string name="quick_settings_compass_init">Inizializzazione\u2026</string>
+    <string name="accessibility_quick_settings_compass_off">Bussola disattivata</string>
+    <string name="accessibility_quick_settings_compass_on">Bussola attivata</string>
+    <string name="accessibility_quick_settings_compass_changed_off">Bussola disattivata</string>
+    <string name="accessibility_quick_settings_compass_changed_on">Bussola disattivata</string>
+    <string name="quick_settings_compass_N">N</string>
+    <string name="quick_settings_compass_NE">NE</string>
+    <string name="quick_settings_compass_E">E</string>
+    <string name="quick_settings_compass_SE">SE</string>
+    <string name="quick_settings_compass_S">S</string>
+    <string name="quick_settings_compass_SW">SO</string>
+    <string name="quick_settings_compass_W">O</string>
+    <string name="quick_settings_compass_NW">NO</string>
+    <!-- SleepScreen QS Tile -->
+    <string name="quick_settings_sleepscreen_label">Spegni schermo</string>
+    <!-- VPN QS tile -->
+    <string name="quick_settings_vpn_label">VPN</string>
+    <string name="quick_settings_vpn_connect_dialog_title">Connetti a\u2026</string>
+    <string name="vpn_credentials_hint">Inserisci le tue credenziali per connetterti a <xliff:g id="name">%s</xliff:g></string>
+    <string name="vpn_credentials_username">Nome Utente</string>
+    <string name="vpn_credentials_password">Password</string>
+    <string name="vpn_credentials_dialog_connect">Connetti</string>
+    <!-- Screen record -->
+    <string name="screenrecord_dialog_title">Avviare la registrazione?</string>
+    <string name="screenrecord_dialog_summary">Durante la registrazione, il sistema Android può registrare ogni informazione sensibile mostrata o riprodotta sul tuo dispositivo. Questo include password, informazioni di pagamento, foto, messaggi e audio.</string>
+    <string name="screenrecord_dialog_start">Avvia</string>
+    <string name="screenrecord_dialog_cancel">Annulla</string>
+    <string name="screenrecord_audio_recording_title">Sorgente audio</string>
+    <string name="screenrecord_audio_recording_internal">Interno</string>
+    <string name="screenrecord_audio_recording_microphone">Microfono</string>
+    <string name="screenrecord_audio_recording_off">Disabilitato</string>
+    <string name="screenrecord_taps_title">Mostra tocchi sullo schermo</string>
+    <string name="screenrecord_stopdot_title">Mostra pulsante stop</string>
+    <string name="screenrecord_video_bitrate_title">Bitrate video</string>
+    <!-- Power menu item for taking a screenshot [CHAR LIMIT=20]-->
+    <string name="global_action_screenshot_cust">Screenshot</string>
+    <!--Screenrecord Tile-->
+    <string name="screenrecorder_title_tile">Registratore schermo</string>
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Le notifiche a comparsa sono sospese per 1 minuto.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%s</xliff:g> - Le notifiche saranno posticipate per <xliff:g id="number">%d</xliff:g> minuti.</string>
+    <!-- Kill button in notification guts -->
+    <string name="force_stop_dlg_title">Forzare l\'interruzione?</string>
+    <string name="force_stop_dlg_text">Se forzi l\'interruzione di un\'app, tale app potrebbe funzionare in modo anomalo.</string>
+    <string name="dlg_ok">\@android: string/ok</string>
+    <string name="dlg_cancel">@android:string/cancel</string>
+    <string name="guts_force_close_app">Chiudi app</string>
+    <!-- Reboot/Recovery/PowerOff QS tile -->
+    <string name="quick_settings_reboot_label">Riavvia</string>
+    <string name="quick_settings_reboot_recovery_label">Riavvia in recovery</string>
+    <string name="quick_settings_poweroff_label">Spegni</string>
+    <!-- Gaming mode -->
+    <string name="gaming_mode_not_enabled">La modalità gaming è disattivata nelle impostazioni</string>
+    <string name="quick_settings_gaming_mode_label">Modalità Gaming</string>
+    <!-- Content description of the Gaming mode tile in quick settings when disabled (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_gaming_mode_disabled">Modalità Gaming disattivata.</string>
+    <!-- Content description of the Gaming mode tile in quick settings when enabled (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_gaming_mode_enabled">Modalità Gaming attivata.</string>
+    <!-- Name of the camera status bar icon. -->
+    <string name="status_bar_camera">Fotocamera</string>
+    <!-- Name of the location status bar icon. -->
+    <string name="status_bar_location">Posizione</string>
+    <!-- Name of the microphone status bar icon. -->
+    <string name="status_bar_microphone">Microfono</string>
+    <!-- Omnijaws Weather -->
+    <string name="omnijaws_service_error">Errore</string>
+    <string name="omnijaws_service_unkown">Dati meteo non disponibili</string>
+    <string name="omnijaws_service_error_long">Errore durante il caricamento dei dati meteo</string>
+    <string name="omnijaws_service_disabled">Servizio disabilitato</string>
+    <string name="omnijaws_detail_header">Meteo</string>
+    <string name="omnijaws_label_default">Meteo</string>
+    <string name="omnijaws_current_text">Ora</string>
+    <string name="omnijaws_package_not_available">OmniJaws non disponibile</string>
+    <string name="omnijaws_service_last_update">Ultimo aggiornamento:</string>
+    <string name="tuner_show_drag_handle">Show drag handle</string>
+    <!-- DataSwitch Tile -->
+    <string name="qs_data_switch_label">Switcha scheda dati</string>
+    <string name="qs_data_switch_changed_1">Utilizza SIM 1 per dati mobili</string>
+    <string name="qs_data_switch_changed_2">Utilizza SIM 2 per dati mobili</string>
+    <!-- Restart SystemUI via Advanced Power Menu -->
+    <string name="global_action_restart_systemui">SystemUI</string>
+    <!-- Weather string format in expanded statusbar header -->
+    <string name="status_bar_weather_format"><xliff:g id="temp">%1$s</xliff:g></string>
+    <!-- accessibility label for button to open running apps prefscreen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_running_services">Apri la schermata dei servizi in esecuzione.</string>
+    <!-- Spidey Analog clock -->
+    <!-- Spectrum Analog clock -->
+    <!-- Dot Analog clock -->
+    <!-- Sneeky Analog clock -->
+    <!-- Bliss Analog clock -->
+    <!-- Custom num Analog clock -->
+    <!-- Oneplus Numbers clock -->
+    <!-- Oneplus Analog clock -->
+    <!-- Oneplus Analog clock -->
+    <!-- Oneplus Analog clock -->
+    <!-- Oneplus Analog clock -->
+    <!-- Immersive mode Tile -->
+    <string name="quick_settings_immersive_tile">Modalità a schermo intero</string>
+    <string name="quick_settings_immersive_tile_off">Schermo intero disabilitato</string>
+    <string name="quick_settings_immersive_tile_statusbar">Barra di stato a schermo intero</string>
+    <string name="quick_settings_immersive_tile_navbar">Barra di navigazione a schermo intero</string>
+    <string name="quick_settings_immersive_tile_full">Modalità immersiva totale</string>
+    <!-- Mono Tile-->
+    <string name="quick_settings_monotoggle_tile">Modalità audio</string>
+    <string name="quick_settings_monotoggle_tile_mono">Audio in formato mono</string>
+    <string name="quick_settings_monotoggle_tile_stereo">Audio in formato stereo</string>
+    <string name="tuner_show_secure_title">Mostra informativa di sicurezza</string>
+    <!-- Screen Stabilization -->
+    <string name="quick_settings_stabilization_label">Stabilizzazione schermo</string>
+    <string name="quick_settings_stabilization_off">La stabilizzazione è disattivata</string>
+    <string name="quick_settings_stabilization_on">La stabilizzazione è attivata</string>
+    <string name="low_label">Basso</string>
+    <string name="high_label">Alto</string>
+    <string name="stabilization_velocity_friction">Velocità di movimento</string>
+    <string name="stabilization_velocity_amplitude">Ampiezza della velocità</string>
+    <string name="stabilization_position_friction">Posizione Di Attrito</string>
+    <!-- Language toggle tile -->
+    <string name="quick_settings_locale_label">Lingue</string>
+    <string name="quick_settings_locale_more_locales_toast">Configura più lingue per abilitare la funzionalità del toggle</string>
+    <!-- FPS Info tile -->
+    <string name="quick_settings_fpsinfo_label">Info FPS</string>
+    <string name="accessibility_quick_settings_fpsinfo_off">Info FPS disattivate</string>
+    <string name="accessibility_quick_settings_fpsinfo_on">Info FPS attivate</string>
+    <!-- Alerting notification header label -->
+    <string name="notification_section_header_alerting">Notifiche di avviso</string>
+    <!-- PowerShare QS tile -->
+    <string name="quick_settings_powershare_label">Condivisione batteria</string>
+    <string name="quick_settings_powershare_off_powersave_label">Condivisione batteria non attiva\nRisparmio energetico</string>
+    <string name="quick_settings_powershare_off_low_battery_label">Condivisione batteria non attiva\nBatteria quasi scarica</string>
+    <string name="quick_settings_powershare_enabled_label">Condivisione batteria attiva</string>
+    <!-- Daily data usage -->
+    <string name="daily_data_usage_title">Utilizzo di oggi</string>
+    <!-- Animations QS Tile -->
+    <string name="quick_settings_animation_label">Disabilita Animazioni</string>
+    <string name="accessibility_quick_settings_animations_on">Animazioni Attive</string>
+    <string name="accessibility_quick_settings_animations_off">Animazioni Spente</string>
+    <!-- HW Keys Tile -->
+    <string name="quick_settings_hw_keys_label">Tasti fisici</string>
+    <!-- Status bar network traffic monitor strings -->
+    <string name="kilobitspersecond_short">kb/s</string>
+    <string name="megabitspersecond_short">Mb/s</string>
+    <string name="gigabitspersecond_short">Gb/s</string>
+    <string name="kilobytespersecond_short">kb/s</string>
+    <string name="megabytespersecond_short">MB/s</string>
+    <string name="gigabytespersecond_short">GB/s</string>
+    <!-- Text to use when the number in a notification info is too large
+         (greater than status_bar_notification_info_maxnum, defined in
+         values/config.xml) and must be truncated.
+         [CHAR LIMIT=4] -->
+    <string name="lockscreen_default">Predefinito</string>
+    <string name="lockscreen_hidden">Nessuna</string>
+    <!-- Shows when people have clicked on the custom lockscreen shortcut [CHAR LIMIT=60] -->
+    <string name="custom_hint">Scorri sull\'icona per avviare</string>
+    <string name="tuner_keyguard_show_assistant_handle_title">Mostra assistente handles</string>
+    <string name="tuner_keyguard_show_assistant_handle_summary">Mostra assistente handles sui bordi dello schermo</string>
+</resources>
