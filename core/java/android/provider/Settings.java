@@ -5750,6 +5750,13 @@ public final class Settings {
         public static final String QS_FOOTER_SHOW_USER = "qs_footer_show_user";
 
         /**
+         * Show Carrier group in QS Footer.
+         *
+         * @hide
+         */
+        public static final String QS_FOOTER_SHOW_CARRIER = "qs_footer_show_carrier";
+
+        /**
          * Whether footer text shows #BLISS
          * @hide
          */
