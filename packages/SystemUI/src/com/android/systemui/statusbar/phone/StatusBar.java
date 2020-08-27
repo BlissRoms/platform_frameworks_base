@@ -225,7 +225,6 @@ import com.android.systemui.statusbar.ScrimView;
 import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.statusbar.VibratorHelper;
-import com.android.systemui.statusbar.VisualizerView;
 import com.android.systemui.statusbar.info.DataUsageView;
 import com.android.systemui.statusbar.notification.ActivityLaunchAnimator;
 import com.android.systemui.statusbar.notification.BypassHeadsUpNotifier;
@@ -624,15 +623,10 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected boolean mDozing;
     private boolean mDozingRequested;
 
-    // LS visualizer on Ambient Display
-    private boolean mAmbientVisualizer;
-
     protected NotificationMediaManager mMediaManager;
     protected NotificationLockscreenUserManager mLockscreenUserManager;
     protected NotificationRemoteInputManager mRemoteInputManager;
     private boolean mWallpaperSupported;
-
-    private VisualizerView mVisualizerView;
 
     private boolean mWallpaperSupportsAmbientMode;
     private final BroadcastReceiver mWallpaperChangedReceiver = new BroadcastReceiver() {
@@ -1182,8 +1176,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         BackDropView backdrop = mStatusBarWindow.findViewById(R.id.backdrop);
         mMediaManager.setup(backdrop, backdrop.findViewById(R.id.backdrop_front),
                 backdrop.findViewById(R.id.backdrop_back), mScrimController, mLockscreenWallpaper);
-
-        mVisualizerView = (VisualizerView) mStatusBarWindow.findViewById(R.id.visualizerview);
 
         // Other icons
         mVolumeComponent = getComponent(VolumeComponent.class);
@@ -2208,9 +2200,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                     Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.Secure.AMBIENT_VISUALIZER_ENABLED),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LESS_BORING_HEADS_UP),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -2296,9 +2285,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (uri.equals(Settings.Secure.getUriFor(
                     Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS))) {
                 setFpToDismissNotifications();
-            } else if (uri.equals(Settings.Secure.getUriFor(
-                    Settings.Secure.AMBIENT_VISUALIZER_ENABLED))) {
-                setAmbientVis();
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_ROWS_PORTRAIT)) ||
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_ROWS_LANDSCAPE)) ||
                     uri.equals(Settings.System.getUriFor(Settings.System.QS_COLUMNS_PORTRAIT)) ||
@@ -2351,7 +2337,6 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         public void update() {
             setFpToDismissNotifications();
-            setAmbientVis();
             setUseLessBoringHeadsUp();
             setQsRowsColumns();
             setPulseOnNewTracks();
@@ -2463,12 +2448,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     private void setFpToDismissNotifications() {
         mFpDismissNotifications = Settings.Secure.getIntForUser(mContext.getContentResolver(),
                 Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS, 1,
-                UserHandle.USER_CURRENT) == 1;
-    }
-
-    private void setAmbientVis() {
-        mAmbientVisualizer = Settings.Secure.getIntForUser(
-                mContext.getContentResolver(), Settings.Secure.AMBIENT_VISUALIZER_ENABLED, 0,
                 UserHandle.USER_CURRENT) == 1;
     }
 
@@ -4488,7 +4467,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                 || (mDozing && mDozeServiceHost.shouldAnimateScreenOff() && sleepingFromKeyguard);
 
         mNotificationPanel.setDozing(mDozing, animate, mWakeUpTouchLocation);
-        mVisualizerView.setDozing(mDozing);
         updateQsExpansionEnabled();
         Trace.endSection();
     }
@@ -4668,7 +4646,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         checkBarModes();
         updateScrimController();
         mPresenter.updateMediaMetaData(false, mState != StatusBarState.KEYGUARD);
-        mVisualizerView.setStatusBarState(newState);
         updateKeyguardState();
         Trace.endSection();
     }
@@ -4706,9 +4683,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         mStatusBarStateController.setIsDozing(dozing);
-        if (mAmbientVisualizer && mDozing) {
-            mVisualizerView.setVisible(true);
-        }
     }
 
     private void updateKeyguardState() {
@@ -4962,7 +4936,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         @Override
         public void onScreenTurnedOn() {
             mScrimController.onScreenTurnedOn();
-            mVisualizerView.setVisible(true);
         }
 
         @Override
@@ -4970,7 +4943,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             updateDozing();
             mFalsingManager.onScreenOff();
             mScrimController.onScreenTurnedOff();
-            mVisualizerView.setVisible(false);
             updateIsKeyguard();
         }
     };
@@ -5162,10 +5134,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             mScrimController.transitionTo(ScrimState.UNLOCKED, mUnlockScrimCallback);
         }
         Trace.endSection();
-    }
-
-    public VisualizerView getVisualizer() {
-        return mVisualizerView;
     }
 
     public boolean isKeyguardShowing() {
