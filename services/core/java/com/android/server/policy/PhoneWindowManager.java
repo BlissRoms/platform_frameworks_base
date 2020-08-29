@@ -2700,7 +2700,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mContext.getResources().getInteger(
                             com.android.internal.R.integer.config_veryLongPressOnPowerBehavior));
             mVolButtonScreenshotType = Settings.System.getIntForUser(resolver,
-                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
+                    Settings.System.SCREENSHOT_TYPE, 2, UserHandle.USER_CURRENT);
         }
         if (updateRotation) {
             updateRotation(true);
