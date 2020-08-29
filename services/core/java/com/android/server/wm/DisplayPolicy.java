@@ -3757,7 +3757,7 @@ public class DisplayPolicy {
 
     private String getScreenShotType() {
         final int fullShot = Settings.System.getIntForUser(mContext.getContentResolver(),
-              Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
+              Settings.System.SCREENSHOT_TYPE, 2, UserHandle.USER_CURRENT);
         final int defaultShot = Settings.System.getIntForUser(mContext.getContentResolver(),
               Settings.System.SCREENSHOT_DEFAULT_MODE, 0, UserHandle.USER_CURRENT);
         String normal = "com.android.systemui";
