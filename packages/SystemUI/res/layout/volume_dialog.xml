@@ -166,6 +166,7 @@
                 android:layout_height="@dimen/volume_dialog_button_height"
                 android:background="@drawable/ripple_drawable_20dp"
                 android:rotation="90" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -222,4 +223,24 @@
                 android:layout="@layout/volume_tool_tip_view" />
         </LinearLayout>
     </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/volume_media_card_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/volume_dialog_spacer"
+            android:background="@drawable/rounded_volume_background"
+            android:elevation="@dimen/volume_dialog_elevation"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/volume_media_card"
+                android:layout_width="@dimen/custom_volume_media_card_height"
+                android:layout_height="@dimen/custom_volume_media_card_height"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/volume_dialog_spacer"
+                android:layout_marginStart="2dp" />
+
+        </LinearLayout>
+
 </LinearLayout>

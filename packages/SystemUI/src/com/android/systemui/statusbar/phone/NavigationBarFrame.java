@@ -20,6 +20,7 @@ import android.annotation.AttrRes;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -27,10 +28,13 @@ import android.widget.FrameLayout;
 import com.android.systemui.Dependency;
 import com.android.systemui.statusbar.policy.DeadZone;
 import com.android.systemui.statusbar.policy.PulseController;
+import com.android.systemui.tuner.TunerService;
 
 public class NavigationBarFrame extends FrameLayout {
 
     private DeadZone mDeadZone = null;
+
+    private boolean mAttached;
 
     public NavigationBarFrame(@NonNull Context context) {
         super(context);
@@ -61,13 +65,17 @@ public class NavigationBarFrame extends FrameLayout {
 
     @Override
     public void onAttachedToWindow() {
-        Dependency.get(PulseController.class).attachPulseTo(this);
+        mAttached = true;
         super.onAttachedToWindow();
     }
 
     @Override
     public void onDetachedFromWindow() {
-        Dependency.get(PulseController.class).detachPulseFrom(this);
+        mAttached = false;
         super.onDetachedFromWindow();
+    }
+
+    public boolean isAttached() {
+        return mAttached;
     }
 }

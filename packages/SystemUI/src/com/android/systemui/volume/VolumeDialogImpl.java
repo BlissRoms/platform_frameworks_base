@@ -103,6 +103,7 @@ import com.android.systemui.plugins.VolumeDialog;
 import com.android.systemui.plugins.VolumeDialogController;
 import com.android.systemui.plugins.VolumeDialogController.State;
 import com.android.systemui.plugins.VolumeDialogController.StreamState;
+import com.android.systemui.statusbar.NotificationMediaManager;
 import com.android.systemui.statusbar.phone.ExpandableIndicator;
 import com.android.systemui.statusbar.policy.AccessibilityManagerWrapper;
 import com.android.systemui.statusbar.policy.ConfigurationController;
@@ -110,6 +111,7 @@ import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.tuner.TunerService;
 
 import lineageos.providers.LineageSettings;
+import com.android.systemui.bliss.Music;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -145,6 +147,8 @@ public class VolumeDialogImpl implements VolumeDialog,
             "system:" + Settings.System.AUDIO_PANEL_VIEW_BT_SCO;
     public static final String AUDIO_PANEL_VIEW_TIMEOUT =
             "system:" + Settings.System.AUDIO_PANEL_VIEW_TIMEOUT;
+    public static final String RINGER_VOLUME_PANEL =
+            "system:" + Settings.System.SHOW_RINGER_VOLUME_PANEL;
 
     static final int DIALOG_TIMEOUT_MILLIS = 3000;
     static final int DIALOG_SAFETYWARNING_TIMEOUT_MILLIS = 5000;
@@ -210,6 +214,8 @@ public class VolumeDialogImpl implements VolumeDialog,
 
     // Volume panel placement left or right
     private boolean mVolumePanelOnLeft;
+    private Music mMusicText;
+    private NotificationMediaManager mMediaManager;
 
     private boolean mHasAlertSlider;
     private boolean mMediaShowing;
@@ -219,6 +225,8 @@ public class VolumeDialogImpl implements VolumeDialog,
     private boolean mVoiceShowing;
     private boolean mBTSCOShowing;
     private int mTimeOutDesired, mTimeOut;
+    private boolean mShowRinger;
+
     private boolean mDarkMode;
     private boolean mVibrateOnSlider;
 
@@ -239,6 +247,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         mActivityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         mAccessibilityMgr = Dependency.get(AccessibilityManagerWrapper.class);
         mDeviceProvisionedController = Dependency.get(DeviceProvisionedController.class);
+        mMediaManager = Dependency.get(NotificationMediaManager.class);
         mShowActiveStreamOnly = showActiveStreamOnly();
         mHasSeenODICaptionsTooltip =
                 Prefs.getBoolean(context, Prefs.Key.HAS_SEEN_ODI_CAPTIONS_TOOLTIP, false);
@@ -251,7 +260,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         tunerService.addTunable(this, AUDIO_PANEL_VIEW_VOICE);
         tunerService.addTunable(this, AUDIO_PANEL_VIEW_BT_SCO);
         tunerService.addTunable(this, AUDIO_PANEL_VIEW_TIMEOUT);
-
+        tunerService.addTunable(this, RINGER_VOLUME_PANEL);
         mHasAlertSlider = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_hasAlertSlider);
         mVibrateOnSlider = mContext.getResources().getBoolean(R.bool.config_vibrateOnIconAnimation);
@@ -301,12 +310,18 @@ public class VolumeDialogImpl implements VolumeDialog,
         Dependency.get(ConfigurationController.class).addCallback(this);
     }
 
+    public void initDependencies(NotificationMediaManager mediaManager) {
+        mMediaManager = mediaManager;
+    }
+
     @Override
     public void destroy() {
         mController.removeCallback(mControllerCallbackH);
         mHandler.removeCallbacksAndMessages(null);
         Dependency.get(ConfigurationController.class).removeCallback(this);
-        mLocalMediaManager.unregisterCallback(this);
+        if (mLocalMediaManager != null) {
+            mLocalMediaManager.unregisterCallback(this);
+        }
     }
 
     private void initDialog() {
@@ -334,6 +349,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         mWindow.setType(WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY);
         mWindow.setWindowAnimations(com.android.internal.R.style.Animation_Toast);
         final WindowManager.LayoutParams lp = mWindow.getAttributes();
+
         lp.format = PixelFormat.TRANSLUCENT;
         lp.setTitle(VolumeDialogImpl.class.getSimpleName());
         lp.gravity = panelGravity | Gravity.CENTER_VERTICAL;
@@ -342,9 +358,17 @@ public class VolumeDialogImpl implements VolumeDialog,
         mWindow.setAttributes(lp);
 
         mDialog.setContentView(R.layout.volume_dialog);
+        mMusicText = mDialog.findViewById(R.id.music_main);
+        if (mMediaManager == null) {
+            mMediaManager = Dependency.get(NotificationMediaManager.class);
+        } else {
+            mMusicText.initDependencies(mMediaManager, mContext);
+        }
         mDialogView = mDialog.findViewById(R.id.volume_dialog);
         mDialogView.setLayoutDirection(
                 mVolumePanelOnLeft ? View.LAYOUT_DIRECTION_LTR : View.LAYOUT_DIRECTION_RTL);
+        mMusicText.setLayoutDirection(
+                mVolumePanelOnLeft ? View.LAYOUT_DIRECTION_LTR : View.LAYOUT_DIRECTION_LTR);
         mDialogView.setAlpha(0);
         mDialog.setCanceledOnTouchOutside(true);
         mDialog.setOnShowListener(dialog -> {
@@ -367,6 +391,17 @@ public class VolumeDialogImpl implements VolumeDialog,
                         }
                     })
                     .start();
+            if (!isLandscape()) {
+                mMusicText.setTranslationX((mMusicText.getWidth() / 2.0f)*(mVolumePanelOnLeft ? -1 : 1));
+            }
+            mMusicText.setAlpha(0);
+            mMusicText.animate()
+                    .alpha(1)
+                    .translationX(0)
+                    .setDuration(DIALOG_SHOW_ANIMATION_DURATION)
+                    .setInterpolator(new SystemUIInterpolators.LogDecelerateInterpolator())
+                    .start();
+            mMusicText.update();
             if (mLocalMediaManager != null) {
                 mLocalMediaManager.startScan();
             }
@@ -388,7 +423,7 @@ public class VolumeDialogImpl implements VolumeDialog,
             // Apply ringer layout gravity based on panel left/right setting
             // Layout type is different between landscape/portrait.
             setLayoutGravity(mRinger.getLayoutParams(), panelGravity);
-            Util.setVisOrGone(mRinger, !mHasAlertSlider);
+            Util.setVisOrGone(mRinger, mShowRinger);
         }
 
         mODICaptionsView = mDialog.findViewById(R.id.odi_captions);
@@ -533,6 +568,13 @@ public class VolumeDialogImpl implements VolumeDialog,
                     triggerChange = true;
                 }
                 break;
+            case RINGER_VOLUME_PANEL:
+                boolean ShowRinger = TunerService.parseIntegerSwitch(newValue, true);
+                if (mShowRinger != ShowRinger) {
+                    mShowRinger = ShowRinger;
+                    triggerChange = true;
+                }
+                break;
             default:
                 break;
         }
@@ -544,6 +586,10 @@ public class VolumeDialogImpl implements VolumeDialog,
 
     private boolean isAudioPanelOnLeftSide() {
         return mContext.getResources().getBoolean(R.bool.config_audioPanelOnLeftSide);
+    }
+
+    public void initText (NotificationMediaManager mediaManager) {
+        mMediaManager = mediaManager;
     }
 
     protected ViewGroup getDialogView() {
@@ -1363,6 +1409,12 @@ public class VolumeDialogImpl implements VolumeDialog,
         }
         mDialogView.setTranslationX(0);
         mDialogView.setAlpha(1);
+        mMusicText.setTranslationX(0);
+        mMusicText.setAlpha(1);
+        ViewPropertyAnimator musicAnimator = mMusicText.animate()
+                .alpha(0)
+                .setDuration(DIALOG_HIDE_ANIMATION_DURATION)
+                .setInterpolator(new SystemUIInterpolators.LogAccelerateInterpolator());
         ViewPropertyAnimator animator = mDialogView.animate()
                 .alpha(0)
                 .setDuration(DIALOG_HIDE_ANIMATION_DURATION)
@@ -1378,7 +1430,11 @@ public class VolumeDialogImpl implements VolumeDialog,
             animator.translationX(
                     (mDialogView.getWidth() / 2.0f) * (!mVolumePanelOnLeft ? 1 : -1));
         }
+        if (!isLandscape()) {
+            musicAnimator.translationX((mMusicText.getWidth() / 2.0f) * (mVolumePanelOnLeft ? -1 : 1));
+        }
         animator.start();
+        musicAnimator.start();
         checkODICaptionsTooltip(true);
         mController.notifyVisible(false);
         synchronized (mSafetyWarningLock) {

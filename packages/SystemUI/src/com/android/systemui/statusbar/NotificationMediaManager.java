@@ -73,7 +73,6 @@ import com.android.systemui.statusbar.phone.ShadeController;
 import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.statusbar.phone.StatusBarWindowController;
 import com.android.systemui.statusbar.policy.KeyguardMonitor;
-import com.android.systemui.statusbar.VisualizerView;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.tuner.TunerService;
 
@@ -536,6 +535,18 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
         return mNowPlayingTrack;
     }
 
+    public boolean getPlaybackStateIsEqual(@PlaybackState.State int state) {
+      if (mMediaController != null) {
+          if (mMediaController.getPlaybackState() != null) {
+             return state == mMediaController.getPlaybackState().getState();
+          } else {
+             return false;
+          }
+      } else {
+        return false;
+      }
+    }
+
     @Override
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.print("    mMediaSessionManager=");
@@ -613,14 +624,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                     break;
                 }
             }
-
-            if (mStatusBar != null && mStatusBar.getVisualizer() != null) {
-                mStatusBar.getVisualizer().setPlaying(true);
-            }
         } else {
-            if (mStatusBar != null && mStatusBar.getVisualizer() != null) {
-                mStatusBar.getVisualizer().setPlaying(false);
-            }
             if (mStatusBar != null) {
                 mStatusBar.resetTrackInfo();
             }
@@ -744,15 +748,6 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
         mColorExtractor.setHasMediaArtwork(hasMediaArtwork);
         if (mScrimController != null) {
             mScrimController.setHasBackdrop(hasArtwork);
-        }
-
-        if (mStatusBar != null && mStatusBar.getVisualizer() != null) {
-            if (hasMediaArtwork && (artworkDrawable instanceof BitmapDrawable)) {
-                // always use current backdrop to color eq
-                mStatusBar.getVisualizer().setBitmap(((BitmapDrawable)artworkDrawable).getBitmap());
-            } else if (lockDrawable != null) {
-                mStatusBar.getVisualizer().setBitmap(((BitmapDrawable)lockDrawable).getBitmap());
-            }
         }
 
         if ((hasArtwork || DEBUG_MEDIA_FAKE_ARTWORK)
@@ -957,7 +952,55 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
          * @see PlaybackState.State
          */
         void onMetadataOrStateChanged(MediaMetadata metadata, @PlaybackState.State int state);
-        
+
         default void setMediaNotificationColor(boolean colorizedMedia, int color) {};
+    }
+
+    public void skipTrackNext() {
+        if (mMediaSessionManager != null) {
+            final List<MediaController> sessions
+                    = mMediaSessionManager.getActiveSessionsForUser(
+                    null, UserHandle.USER_ALL);
+            for (MediaController aController : sessions) {
+                if (PlaybackState.STATE_PLAYING ==
+                        getMediaControllerPlaybackState(aController)) {
+                    aController.getTransportControls().skipToNext();
+                    break;
+                }
+            }
+        }
+    }
+
+    public void skipTrackPrevious() {
+        if (mMediaSessionManager != null) {
+            final List<MediaController> sessions
+                    = mMediaSessionManager.getActiveSessionsForUser(
+                    null, UserHandle.USER_ALL);
+            for (MediaController aController : sessions) {
+                if (PlaybackState.STATE_PLAYING ==
+                        getMediaControllerPlaybackState(aController)) {
+                    aController.getTransportControls().skipToPrevious();
+                    break;
+                }
+            }
+        }
+    }
+
+    public void playPauseTrack() {
+        if (mMediaSessionManager != null) {
+            final List<MediaController> sessions
+                    = mMediaSessionManager.getActiveSessionsForUser(
+                    null, UserHandle.USER_ALL);
+            for (MediaController aController : sessions) {
+                if (PlaybackState.STATE_PLAYING ==
+                        getMediaControllerPlaybackState(aController)) {
+                    aController.getTransportControls().pause();
+                    break;
+                } else {
+                    aController.getTransportControls().play();
+                    break;
+                }
+            }
+        }
     }
 }

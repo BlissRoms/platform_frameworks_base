@@ -170,4 +170,10 @@
     <!-- Whether or not we should show vendor mismatch message -->
     <bool name="config_show_vendor_mismatch_message">false</bool>
 
+    <!-- Defines custom OEM sensor for pocket detection. -->
+    <string name="config_pocketJudgeVendorSensorName"></string>
+
+    <!-- Default fod pressed icon -->
+    <integer name="config_pressed_fod_icon">0</integer>
+
 </resources>

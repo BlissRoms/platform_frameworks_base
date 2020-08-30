@@ -214,6 +214,9 @@
   <!-- Pocket bridge -->
   <java-symbol type="string" name="config_pocketBridgeSysfsInpocket" />
 
+  <!-- Pocket Service -->
+  <java-symbol type="string" name="config_pocketJudgeVendorSensorName" />
+
   <!-- Vowifi -->
   <java-symbol type="bool" name="config_hasVowifi" />
 
@@ -234,5 +237,8 @@
 
     <!-- Whether or not we should show vendor mismatch message -->
     <java-symbol type="bool" name="config_show_vendor_mismatch_message" />
+
+    <!-- Default fod pressed icon -->
+    <java-symbol type="integer" name="config_pressed_fod_icon" />
 
 </resources>

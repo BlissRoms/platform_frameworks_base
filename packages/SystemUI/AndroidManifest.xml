@@ -275,6 +275,7 @@
     <!-- DataSwitch tile -->
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
 
+    <protected-broadcast android:name="com.android.systemui.action.PLUGIN_CHANGED" />
     <protected-broadcast android:name="com.android.systemui.doze.pulse" />
 
     <!-- Kill app from slim recents -->
@@ -738,5 +739,13 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".statusbar.phone.VolumePluginManager">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_INSTALL" />
+                <action android:name="android.intent.action.PACKAGE_CHANGED" />
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
