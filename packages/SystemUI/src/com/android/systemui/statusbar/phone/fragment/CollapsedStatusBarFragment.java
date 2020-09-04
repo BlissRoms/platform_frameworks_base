@@ -940,6 +940,30 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             case 32:
                 logo = getContext().getDrawable(R.drawable.ic_guitar_electric);
                 break;
+            case 33:
+                logo = getContext().getDrawable(R.drawable.ic_emoticon);
+                break;
+            case 34:
+                logo = getContext().getDrawable(R.drawable.ic_emoticon_neutral);
+                break;
+            case 35:
+                logo = getContext().getDrawable(R.drawable.ic_emoticon_happy);
+                break;
+            case 36:
+                logo = getContext().getDrawable(R.drawable.ic_emoticon_sad);
+                break;
+            case 37:
+                logo = getContext().getDrawable(R.drawable.ic_emoticon_tongue);
+                break;
+            case 38:
+                logo = getContext().getDrawable(R.drawable.ic_emoticon_dead);
+                break;
+            case 39:
+                logo = getContext().getDrawable(R.drawable.ic_emoticon_cool);
+                break;
+            case 40:
+                logo = getContext().getDrawable(R.drawable.ic_emoticon_devil);
+                break;
                 // Default (Bliss Main)
             case 0:
             default:
