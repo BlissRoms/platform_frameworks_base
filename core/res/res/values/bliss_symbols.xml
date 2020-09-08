@@ -241,4 +241,6 @@
     <!-- Default fod pressed icon -->
     <java-symbol type="integer" name="config_pressed_fod_icon" />
 
+    <!-- Whether device uses linear screen brightness slider -->
+    <java-symbol type="bool" name="config_linearBrightnessSlider" />
 </resources>
