@@ -176,4 +176,7 @@
     <!-- Default fod pressed icon -->
     <integer name="config_pressed_fod_icon">0</integer>
 
+    <!-- Whether device uses linear screen brightness slider -->
+    <bool name="config_linearBrightnessSlider">false</bool>
+
 </resources>
