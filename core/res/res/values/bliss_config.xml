@@ -23,4 +23,7 @@
     <string-array name="config_deviceKeyHandlerClasses" translatable="false">
     </string-array>
 
+    <!-- Vendor platform signatures -->
+     <string-array name="config_vendorPlatformSignatures">
+     </string-array>
 </resources>
