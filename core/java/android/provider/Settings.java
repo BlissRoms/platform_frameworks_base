@@ -11266,7 +11266,6 @@ public final class Settings {
         @SystemApi
         public static final int VOLUME_HUSH_MUTE_NO_MEDIA = 3;
         /** @hide */
-        @SystemApi
         public static final int VOLUME_HUSH_CYCLE = 4;
 
         /**
