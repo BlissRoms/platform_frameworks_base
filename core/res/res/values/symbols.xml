@@ -4050,4 +4050,11 @@
   <java-symbol type="array" name="config_notificationMsgPkgsAllowedAsConvos" />
 
   <java-symbol type="array" name="config_keep_warming_services" />
+
+  <!-- Whether to show a custom view for FOD -->
+  <java-symbol type="bool" name="config_needCustomFODView" />
+
+  <!-- Whether device has VOOC charging support -->
+  <java-symbol type="bool" name="config_hasVoocCharger" />
+
 </resources>
