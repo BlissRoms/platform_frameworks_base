@@ -16460,6 +16460,12 @@ public final class Settings {
                 "key_chord_power_volume_up";
 
         /**
+         * Google Hybrid Battery Warnings
+         * @hide
+         */
+        public static final String HYBRID_SYSUI_BATTERY_WARNING_FLAGS = "hybrid_sysui_battery_warning_flags";
+
+        /**
          * Keyguard should be on the left hand side of the screen, for wide screen layouts.
          *
          * @hide
