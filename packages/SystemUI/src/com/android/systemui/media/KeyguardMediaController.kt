@@ -58,7 +58,7 @@ class KeyguardMediaController @Inject constructor(
         // First let's set the desired state that we want for this host
         mediaHost.addVisibilityChangeListener { updateVisibility() }
         mediaHost.expansion = 0.0f
-        mediaHost.showsOnlyActiveMedia = true
+        mediaHost.showsOnlyActiveMedia = false
         mediaHost.falsingProtectionNeeded = true
 
         // Let's now initialize this view, which also creates the host view for us.

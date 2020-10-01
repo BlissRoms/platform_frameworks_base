@@ -107,7 +107,7 @@ public class QuickQSPanel extends QSPanel {
     @Override
     protected void initMediaHostState() {
         mMediaHost.setExpansion(0.0f);
-        mMediaHost.setShowsOnlyActiveMedia(true);
+        mMediaHost.setShowsOnlyActiveMedia(false);
         mMediaHost.init(MediaHierarchyManager.LOCATION_QQS);
     }
 
