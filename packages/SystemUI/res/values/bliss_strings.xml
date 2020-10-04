@@ -25,4 +25,6 @@
     <string name="smartspace_icu_date_pattern">EEEMMMd</string>
     <string name="smartspace_role_desc">View</string>
 
+    <!-- Statusbar Icons -->
+    <string name="status_bar_nfc">NFC</string>
 </resources>
