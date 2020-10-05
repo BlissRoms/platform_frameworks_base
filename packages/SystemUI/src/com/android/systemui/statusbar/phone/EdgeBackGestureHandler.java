@@ -214,6 +214,9 @@ public class EdgeBackGestureHandler extends CurrentUserTracker implements Displa
     private static final int MAX_LOGGED_PREDICTIONS = 10;
     private ArrayDeque<String> mPredictionLog = new ArrayDeque<>();
 
+    private float mEdgeHeightLeft;
+    private float mEdgeHeightRight;
+
     private final GestureNavigationSettingsObserver mGestureNavigationSettingsObserver;
 
     private final NavigationEdgeBackPlugin.BackCallback mBackCallback =
@@ -288,6 +291,9 @@ public class EdgeBackGestureHandler extends CurrentUserTracker implements Displa
         mEdgeWidthRight = mGestureNavigationSettingsObserver.getRightSensitivity(res);
         mIsBackGestureAllowed =
                 !mGestureNavigationSettingsObserver.areNavigationButtonForcedVisible();
+
+        mEdgeHeightLeft = mDisplaySize.y / mGestureNavigationSettingsObserver.getLeftHeight();
+        mEdgeHeightRight = mDisplaySize.y / mGestureNavigationSettingsObserver.getRightHeight();
 
         final DisplayMetrics dm = res.getDisplayMetrics();
         final float defaultGestureHeight = res.getDimension(
@@ -547,6 +553,13 @@ public class EdgeBackGestureHandler extends CurrentUserTracker implements Displa
         if (y >= (mDisplaySize.y - mBottomGestureHeight)) {
             return false;
         }
+
+        // Disallow if gesture height is mmore than allowed
+        if ((mIsOnLeftEdge && y < (mDisplaySize.y - mBottomGestureHeight - (int) mEdgeHeightLeft)) ||
+                 (!mIsOnLeftEdge && y < (mDisplaySize.y - mBottomGestureHeight - (int) mEdgeHeightRight))) {
+            return false;
+        }
+
         // If the point is way too far (twice the margin), it is
         // not interesting to us for logging purposes, nor we
         // should process it.  Simply return false and keep
