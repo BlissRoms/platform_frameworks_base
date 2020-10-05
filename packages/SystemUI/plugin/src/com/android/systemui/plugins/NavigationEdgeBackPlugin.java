@@ -36,6 +36,9 @@ public interface NavigationEdgeBackPlugin extends Plugin {
     /** Specifies if the UI should be rendered on the left side of the screen. */
     void setIsLeftPanel(boolean isLeftPanel);
 
+    /** Specifies if the haptic feedback is enabled for back gesture. */
+    void setEdgeHapticEnabled(boolean edgeHapticEnabled);
+
     /** Sets the insets for the gesture handling area. */
     void setInsets(int leftInset, int rightInset);
 
