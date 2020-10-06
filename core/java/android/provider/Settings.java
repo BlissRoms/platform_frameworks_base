@@ -5787,6 +5787,12 @@ public final class Settings {
          */
         public static final String SWITCH_STYLE = "switch_style";
 
+        /**
+         * Whether to show the lyric on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_SHOW_LYRIC = "status_bar_show_lyric";
+
 	/**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
