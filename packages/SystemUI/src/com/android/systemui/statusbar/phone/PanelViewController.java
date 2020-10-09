@@ -1134,6 +1134,7 @@ public abstract class PanelViewController {
 
     public void setIsLaunchAnimationRunning(boolean running) {
         mIsLaunchAnimationRunning = running;
+        mStatusBar.updateDismissAllVisibility(false);
     }
 
     public void collapseWithDuration(int animationDuration) {
