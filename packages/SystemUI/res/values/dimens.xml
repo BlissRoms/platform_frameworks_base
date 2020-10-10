@@ -1378,4 +1378,10 @@
     <dimen name="config_rounded_mask_size">@*android:dimen/rounded_corner_radius</dimen>
     <dimen name="config_rounded_mask_size_top">@*android:dimen/rounded_corner_radius_top</dimen>
     <dimen name="config_rounded_mask_size_bottom">@*android:dimen/rounded_corner_radius_bottom</dimen>
+
+    <dimen name="dock_logo_min_size">48dp</dimen>
+    <dimen name="dock_top_logo_margin">12dp</dimen>
+    <dimen name="dock_top_logo_padding">8dp</dimen>
+    <dimen name="ambient_indication_icon_size">20dp</dimen>
+
 </resources>
