@@ -59,8 +59,8 @@ import java.util.Arrays;
 @RunWithLooper(setAsMainLooper = true)
 public final class ClockManagerTest extends SysuiTestCase {
 
-    private static final String BUBBLE_CLOCK = BubbleClockController.class.getName();
-    private static final Class<?> BUBBLE_CLOCK_CLASS = BubbleClockController.class;
+    private static final String ANALOG_CLOCK = AnalogClockController.class.getName();
+    private static final Class<?> ANALOG_CLOCK_CLASS = AnalogClockController.class;
     private static final int MAIN_USER_ID = 0;
     private static final int SECONDARY_USER_ID = 11;
     private static final Uri SETTINGS_URI = null;
@@ -95,7 +95,7 @@ public final class ClockManagerTest extends SysuiTestCase {
                 mMockPluginManager, mMockColorExtractor, mMockContentResolver,
                 mMockCurrentUserObserable, mMockSettingsWrapper, mFakeDockManager);
 
-        mClockManager.addBuiltinClock(() -> new BubbleClockController(
+        mClockManager.addBuiltinClock(() -> new AnalogClockController(
                 getContext().getResources(), inflater, mMockColorExtractor));
         mClockManager.addOnClockChangedListener(mMockListener1);
         mClockManager.addOnClockChangedListener(mMockListener2);
@@ -135,39 +135,39 @@ public final class ClockManagerTest extends SysuiTestCase {
 
     @Test
     public void getCurrentClock_customClock() {
-        // GIVEN that settings is set to the bubble clock face
-        when(mMockSettingsWrapper.getLockScreenCustomClockFace(anyInt())).thenReturn(BUBBLE_CLOCK);
+        // GIVEN that settings is set to the analog clock face
+        when(mMockSettingsWrapper.getLockScreenCustomClockFace(anyInt())).thenReturn(ANALOG_CLOCK);
         // WHEN settings change event is fired
         mContentObserver.onChange(false, Arrays.asList(SETTINGS_URI), 0, MAIN_USER_ID);
-        // THEN the plugin is the bubble clock face.
-        assertThat(mClockManager.getCurrentClock()).isInstanceOf(BUBBLE_CLOCK_CLASS);
+        // THEN the plugin is the analog clock face.
+        assertThat(mClockManager.getCurrentClock()).isInstanceOf(ANALOG_CLOCK_CLASS);
     }
 
     @Test
     public void onClockChanged_customClock() {
-        // GIVEN that settings is set to the bubble clock face
-        when(mMockSettingsWrapper.getLockScreenCustomClockFace(anyInt())).thenReturn(BUBBLE_CLOCK);
+        // GIVEN that settings is set to the analog clock face
+        when(mMockSettingsWrapper.getLockScreenCustomClockFace(anyInt())).thenReturn(ANALOG_CLOCK);
         // WHEN settings change event is fired
         mContentObserver.onChange(false, Arrays.asList(SETTINGS_URI), 0, MAIN_USER_ID);
-        // THEN the plugin is the bubble clock face.
+        // THEN the plugin is the analog clock face.
         ArgumentCaptor<ClockPlugin> captor = ArgumentCaptor.forClass(ClockPlugin.class);
         verify(mMockListener1).onClockChanged(captor.capture());
-        assertThat(captor.getValue()).isInstanceOf(BUBBLE_CLOCK_CLASS);
+        assertThat(captor.getValue()).isInstanceOf(ANALOG_CLOCK_CLASS);
     }
 
     @Test
     public void onClockChanged_uniqueInstances() {
-        // GIVEN that settings is set to the bubble clock face
-        when(mMockSettingsWrapper.getLockScreenCustomClockFace(anyInt())).thenReturn(BUBBLE_CLOCK);
+        // GIVEN that settings is set to the analog clock face
+        when(mMockSettingsWrapper.getLockScreenCustomClockFace(anyInt())).thenReturn(ANALOG_CLOCK);
         // WHEN settings change event is fired
         mContentObserver.onChange(false, Arrays.asList(SETTINGS_URI), 0, MAIN_USER_ID);
-        // THEN the listeners receive separate instances of the Bubble clock plugin.
+        // THEN the listeners receive separate instances of the analog clock plugin.
         ArgumentCaptor<ClockPlugin> captor1 = ArgumentCaptor.forClass(ClockPlugin.class);
         ArgumentCaptor<ClockPlugin> captor2 = ArgumentCaptor.forClass(ClockPlugin.class);
         verify(mMockListener1).onClockChanged(captor1.capture());
         verify(mMockListener2).onClockChanged(captor2.capture());
-        assertThat(captor1.getValue()).isInstanceOf(BUBBLE_CLOCK_CLASS);
-        assertThat(captor2.getValue()).isInstanceOf(BUBBLE_CLOCK_CLASS);
+        assertThat(captor1.getValue()).isInstanceOf(ANALOG_CLOCK_CLASS);
+        assertThat(captor2.getValue()).isInstanceOf(ANALOG_CLOCK_CLASS);
         assertThat(captor1.getValue()).isNotSameAs(captor2.getValue());
     }
 
@@ -192,12 +192,12 @@ public final class ClockManagerTest extends SysuiTestCase {
 
     @Test
     public void getCurrentClock_dockedCustomClock() {
-        // GIVEN settings is set to the bubble clock face
-        when(mMockSettingsWrapper.getDockedClockFace(anyInt())).thenReturn(BUBBLE_CLOCK);
+        // GIVEN settings is set to the analog clock face
+        when(mMockSettingsWrapper.getDockedClockFace(anyInt())).thenReturn(ANALOG_CLOCK);
         // WHEN dock event fires
         mFakeDockManager.setDockEvent(DockManager.STATE_DOCKED);
-        // THEN the plugin is the bubble clock face.
-        assertThat(mClockManager.getCurrentClock()).isInstanceOf(BUBBLE_CLOCK_CLASS);
+        // THEN the plugin is the analog clock face.
+        assertThat(mClockManager.getCurrentClock()).isInstanceOf(ANALOG_CLOCK_CLASS);
     }
 
     @Test
@@ -213,13 +213,13 @@ public final class ClockManagerTest extends SysuiTestCase {
     @Test
     public void getCurrentClock_badDockedSettingsFallback() {
         // GIVEN settings contains a value that doesn't correspond to an available clock face, but
-        // locked screen settings is set to bubble clock.
+        // locked screen settings is set to analog clock.
         when(mMockSettingsWrapper.getDockedClockFace(anyInt())).thenReturn("bad value");
-        when(mMockSettingsWrapper.getLockScreenCustomClockFace(anyInt())).thenReturn(BUBBLE_CLOCK);
+        when(mMockSettingsWrapper.getLockScreenCustomClockFace(anyInt())).thenReturn(ANALOG_CLOCK);
         // WHEN dock event is fired
         mFakeDockManager.setDockEvent(DockManager.STATE_DOCKED);
-        // THEN the plugin is the bubble clock face.
-        assertThat(mClockManager.getCurrentClock()).isInstanceOf(BUBBLE_CLOCK_CLASS);
+        // THEN the plugin is the analog clock face.
+        assertThat(mClockManager.getCurrentClock()).isInstanceOf(ANALOG_CLOCK_CLASS);
     }
 
     @Test
@@ -232,24 +232,24 @@ public final class ClockManagerTest extends SysuiTestCase {
 
     @Test
     public void onUserChanged_customClock() {
-        // GIVEN that a second user has selected the bubble clock face
+        // GIVEN that a second user has selected the analog clock face
         when(mMockSettingsWrapper.getLockScreenCustomClockFace(SECONDARY_USER_ID)).thenReturn(
-                BUBBLE_CLOCK);
+                ANALOG_CLOCK);
         // WHEN the user changes
         mCurrentUser.setValue(SECONDARY_USER_ID);
-        // THEN the plugin is the bubble clock face.
-        assertThat(mClockManager.getCurrentClock()).isInstanceOf(BUBBLE_CLOCK_CLASS);
+        // THEN the plugin is the analog clock face.
+        assertThat(mClockManager.getCurrentClock()).isInstanceOf(ANALOG_CLOCK_CLASS);
     }
 
     @Test
     public void onUserChanged_docked() {
         // GIVEN device is docked
         mFakeDockManager.setDockEvent(DockManager.STATE_DOCKED);
-        // AND the second user as selected the bubble clock for the dock
-        when(mMockSettingsWrapper.getDockedClockFace(SECONDARY_USER_ID)).thenReturn(BUBBLE_CLOCK);
+        // AND the second user as selected the analog clock for the dock
+        when(mMockSettingsWrapper.getDockedClockFace(SECONDARY_USER_ID)).thenReturn(ANALOG_CLOCK);
         // WHEN the user changes
         mCurrentUser.setValue(SECONDARY_USER_ID);
-        // THEN the plugin is the bubble clock face.
-        assertThat(mClockManager.getCurrentClock()).isInstanceOf(BUBBLE_CLOCK_CLASS);
+        // THEN the plugin is the analog clock face.
+        assertThat(mClockManager.getCurrentClock()).isInstanceOf(ANALOG_CLOCK_CLASS);
     }
 }
