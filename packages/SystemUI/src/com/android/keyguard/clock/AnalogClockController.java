@@ -70,7 +70,7 @@ public class AnalogClockController implements ClockPlugin {
     private final ClockPalette mPalette = new ClockPalette();
 
     /**
-     * Create a BubbleClockController instance.
+     * Create a AnalogClockController instance.
      *
      * @param res Resources contains title and thumbnail.
      * @param inflater Inflater used to inflate custom clock views.
