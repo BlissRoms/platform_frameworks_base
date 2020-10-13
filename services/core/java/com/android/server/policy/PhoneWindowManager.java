@@ -635,6 +635,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private boolean mLockNowPending = false;
 
+    private int mScreenshotType;
+
     private final List<DeviceKeyHandler> mDeviceKeyHandlers = new ArrayList<>();
 
     private int mTorchActionMode;
@@ -823,6 +825,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DOZE_TRIGGER_DOUBLETAP), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SCREENSHOT_TYPE), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -1288,7 +1293,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private void interceptScreenshotChord() {
         mHandler.removeCallbacks(mScreenshotRunnable);
-        mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
+        if (mScreenshotType == 1) {
+            mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_SELECTED_REGION);
+        } else {
+            mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
+        }
         mScreenshotRunnable.setScreenshotSource(SCREENSHOT_KEY_CHORD);
         mHandler.postDelayed(mScreenshotRunnable, getScreenshotChordLongPressDelay());
     }
@@ -1774,8 +1783,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mSwipeToScreenshot = new SwipeToScreenshotListener(context, new SwipeToScreenshotListener.Callbacks() {
             @Override
             public void onSwipeThreeFinger() {
-                mHandler.post(mScreenshotRunnable);
-            }
+                    if (mScreenshotType == 1) {
+                        mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_SELECTED_REGION);
+                    } else {
+                        mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
+                    }
+                    mHandler.postDelayed(mScreenshotRunnable, getScreenshotChordLongPressDelay());
+                }
         });
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
         // only for hwkey devices
@@ -2296,6 +2310,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             boolean threeFingerGesture = Settings.System.getIntForUser(resolver,
                     Settings.System.THREE_FINGER_GESTURE, 0, UserHandle.USER_CURRENT) == 1;
             enableSwipeThreeFingerGesture(threeFingerGesture);
+
+            // Screenshot type
+            mScreenshotType = Settings.System.getIntForUser(resolver,
+                    Settings.System.SCREENSHOT_TYPE, 0, UserHandle.USER_CURRENT);
+
             // volume rocker wake
             mVolumeRockerWake = Settings.System.getIntForUser(resolver,
                     Settings.System.VOLUME_ROCKER_WAKE, 0, UserHandle.USER_CURRENT) != 0;
