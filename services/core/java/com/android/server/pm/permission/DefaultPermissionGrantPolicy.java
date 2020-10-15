@@ -779,6 +779,11 @@ public final class DefaultPermissionGrantPolicy {
             }
         }
 
+        // OmniJaws
+        grantPermissionsToSystemPackage(pm, "org.omnirom.omnijaws", userId, ALWAYS_LOCATION_PERMISSIONS);
+        grantSystemFixedPermissionsToSystemPackage(pm, "org.omnirom.omnijaws", userId,
+                        ALWAYS_LOCATION_PERMISSIONS);
+
         // Music
         Intent musicIntent = new Intent(Intent.ACTION_VIEW)
                 .addCategory(Intent.CATEGORY_DEFAULT)
