@@ -245,10 +245,15 @@ public class PowerGroup {
     }
 
     boolean dozeLocked(long eventTime, int uid, int reason) {
-        if (eventTime < getLastWakeTimeLocked() || !isInteractive(mWakefulness)) {
+        if (eventTime < getLastWakeTimeLocked()) {
             return false;
         }
-
+        // dont check current state
+        if (PowerManager.GO_TO_SLEEP_FLAG_FORCE == 0) {
+            if (!isInteractive(mWakefulness)) {
+                 return false;
+            }
+        }
         Trace.traceBegin(Trace.TRACE_TAG_POWER, "powerOffDisplay");
         try {
             reason = Math.min(PowerManager.GO_TO_SLEEP_REASON_MAX,
