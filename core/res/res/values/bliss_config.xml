@@ -110,4 +110,8 @@
 
   <!-- Name of a font family to use as regular font. For theming purpose. -->
   <string name="config_regularFontFamily" translatable="false">sans-serif-regular</string>
+
+  <!-- Default value for Ambient Pulse light color -->
+  <integer name="config_ambientNotificationDefaultColor">0xFF3980FF</integer>
+
 </resources>
