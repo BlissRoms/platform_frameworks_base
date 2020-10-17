@@ -31,6 +31,7 @@
     <dimen name="analog_clock_width">90dp</dimen>
     <dimen name="analog_clock_height">90dp</dimen>
     <dimen name="date_padding">8dp</dimen>
+    <dimen name="clock_bottom_margin">8dp</dimen>
 
     <!-- Padding added to keyguard status area when Type clock is in use -->
     <dimen name="keyguard_status_area_typeclock_padding">32dp</dimen>
