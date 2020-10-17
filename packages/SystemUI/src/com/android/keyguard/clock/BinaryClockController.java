@@ -106,18 +106,13 @@ public class BinaryClockController implements ClockPlugin {
 
     @Override
     public Bitmap getPreview(int width, int height) {
-        // Use the big clock view for the preview
-        View view = getBigClockView();
-
-        // Initialize state of plugin before generating preview.
-        setDarkAmount(1f);
-        setTextColor(Color.WHITE);
-        ColorExtractor.GradientColors colors = mColorExtractor.getColors(
-                WallpaperManager.FLAG_LOCK);
-        setColorPalette(colors.supportsDarkText(), colors.getColorPalette());
-        onTimeTick();
-
-        return mRenderer.createPreview(view, width, height);
+        View previewClock = mLayoutInflater.inflate(R.layout.binary_clock_preview, null);
+        BinaryClock binaryClock = previewClock.findViewById(R.id.binary_clock);
+        binaryClock.setDark(true);
+        binaryClock.onTimeChanged();
+        TextClock textDate = previewClock.findViewById(R.id.date);
+        textDate.setTextColor(Color.WHITE);
+        return mRenderer.createPreview(previewClock, width, height);
     }
 
     @Override
