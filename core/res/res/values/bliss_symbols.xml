@@ -49,9 +49,6 @@
     <!-- Whether to allow process with media UID to access CameraServiceProxy -->
     <java-symbol type="bool" name="config_allowMediaUidForCameraServiceProxy" />
 
-    <!-- Whether to show a custom view for FOD -->
-    <java-symbol type="bool" name="config_needCustomFODView" />
-
     <!-- Whether notify fingerprint client of successful cancelled authentication -->
     <java-symbol type="bool" name="config_notifyClientOnFingerprintCancelSuccess" />
 
@@ -120,6 +117,9 @@
 
   <!-- Enable face auth only when swiping security view -->
   <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
+
+    <!-- Whether to show a custom view for FOD -->
+    <java-symbol type="bool" name="config_needCustomFODView" />
 
    <!-- Default fod pressed icon -->
    <java-symbol type="integer" name="config_fod_pressed_color" />

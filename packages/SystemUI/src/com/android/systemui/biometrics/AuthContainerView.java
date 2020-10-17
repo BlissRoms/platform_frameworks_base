@@ -44,7 +44,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.internal.util.custom.FodUtils;
+import com.android.internal.util.bliss.FodUtils;
 import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
