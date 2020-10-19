@@ -1,0 +1,31 @@
+<com.oneplus.networkspeed.NetworkSpeedView 
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingEnd="@dimen/network_speed_padding_end">
+    <Space 
+        android:layout_width="0px"
+        android:layout_height="1.5dp"/>
+    <TextView 
+        android:textSize="9dp"
+        android:id="@+id/speed_word_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="Origin-bold"/>
+    <TextView 
+        android:textSize="5.65dp"
+        android:id="@+id/speed_word_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-2.7dp"
+        android:fontFamily="Origin-black"/>
+    <Space 
+        android:layout_width="0px"
+        android:layout_height="2.5dp"/>
+</com.oneplus.networkspeed.NetworkSpeedView>

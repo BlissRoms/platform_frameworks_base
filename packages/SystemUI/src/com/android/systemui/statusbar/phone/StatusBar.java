@@ -123,6 +123,7 @@ import com.android.internal.logging.UiEventLoggerImpl;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.statusbar.RegisterStatusBarResult;
+import com.android.internal.util.bliss.BlissUtils;
 import com.android.internal.view.AppearanceRegion;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -223,6 +224,7 @@ import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.volume.VolumeComponent;
+import com.oneplus.networkspeed.NetworkSpeedController;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -412,6 +414,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private final int[] mAbsPos = new int[2];
 
+    NetworkSpeedController mNetworkSpeedController;
     private final NotificationGutsManager mGutsManager;
     private final NotificationLogger mNotificationLogger;
     private final NotificationViewHierarchyManager mViewHierarchyManager;
@@ -705,6 +708,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             DozeScrimController dozeScrimController,
             VolumeComponent volumeComponent,
             CommandQueue commandQueue,
+            NetworkSpeedController networkSpeedController,
             Optional<Recents> recentsOptional,
             Provider<StatusBarComponent.Builder> statusBarComponentBuilder,
             PluginManager pluginManager,
@@ -774,6 +778,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mAssistManagerLazy = assistManagerLazy;
         mFlashlightController = flashlightController;
         mConfigurationController = configurationController;
+        mNetworkSpeedController = networkSpeedController;
         mNotificationShadeWindowController = notificationShadeWindowController;
         mLockscreenLockIconController = lockscreenLockIconController;
         mDozeServiceHost = dozeServiceHost;
@@ -1501,6 +1506,10 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     public int getStatusBarHeight() {
         return mStatusBarWindowController.getStatusBarHeight();
+    }
+
+    private NetworkController getNetworkController() {
+        return (NetworkController) BlissUtils.getValue(StatusBar.class, this, "mNetworkController");
     }
 
     protected boolean toggleSplitScreenMode(int metricsDockAction, int metricsUndockAction) {

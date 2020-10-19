@@ -32,11 +32,13 @@ public class StatusBarIconHolder {
     public static final int TYPE_ICON = 0;
     public static final int TYPE_WIFI = 1;
     public static final int TYPE_MOBILE = 2;
+    public static final int TYPE_OTHER = 3;
 
     private StatusBarIcon mIcon;
     private WifiIconState mWifiState;
     private MobileIconState mMobileState;
     private int mType = TYPE_ICON;
+    private int mResourceId;
     private int mTag = 0;
     private boolean mVisible = true;
 
@@ -68,6 +70,18 @@ public class StatusBarIconHolder {
         holder.mType = TYPE_MOBILE;
         holder.mTag = state.subId;
         return holder;
+    }
+
+    public static StatusBarIconHolder fromOPCustView(int resId, boolean visible) {
+        StatusBarIconHolder statusBarIconHolder = new StatusBarIconHolder();
+        statusBarIconHolder.mType = TYPE_OTHER;
+        statusBarIconHolder.mResourceId = resId;
+        statusBarIconHolder.mVisible = visible;
+        return statusBarIconHolder;
+    }
+
+    public int getResourceId() {
+        return mResourceId;
     }
 
     public int getType() {
@@ -105,6 +119,8 @@ public class StatusBarIconHolder {
                 return mWifiState.visible;
             case TYPE_MOBILE:
                 return mMobileState.visible;
+            case TYPE_OTHER:
+                return true;
 
             default: return true;
         }
@@ -126,6 +142,10 @@ public class StatusBarIconHolder {
 
             case TYPE_MOBILE:
                 mMobileState.visible = visible;
+                break;
+
+            case TYPE_OTHER:
+                mVisible = visible;
                 break;
         }
     }
