@@ -223,6 +223,16 @@ public class StatusBarIconControllerImpl extends StatusBarIconList implements Tu
         mIconGroups.forEach(l -> l.onIconExternal(viewIndex, height));
     }
 
+    public void setOPCustView(String slot, int index, boolean visibility) {
+        int slotIndex = getSlotIndex(slot);
+        StatusBarIconHolder icon = getIcon(slotIndex, 0);
+        if (icon == null) {
+            setIcon(slotIndex, StatusBarIconHolder.fromOPCustView(index, visibility));
+        } else {
+            handleSet(slotIndex, icon);
+        }
+    }
+
     //TODO: remove this (used in command queue and for 3rd party tiles?)
     @Override
     public void setIcon(String slot, StatusBarIcon icon) {
