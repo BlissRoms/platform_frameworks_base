@@ -48,6 +48,7 @@ import com.android.systemui.statusbar.StatusIconDisplayable;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.MobileIconState;
 import com.android.systemui.statusbar.phone.StatusBarSignalPolicy.WifiIconState;
 import com.android.systemui.util.Utils.DisableStateTracker;
+import com.oneplus.networkspeed.StatusBarOPCustView;
 
 import java.util.List;
 
@@ -75,6 +76,8 @@ public interface StatusBarIconController {
      * @param accessibilityLiveRegion live region mode for the icon
      */
     void setIconAccessibilityLiveRegion(String slot, int accessibilityLiveRegion);
+
+    void setOPCustView(String slot, int index, boolean blocked);
 
     /**
      * If you don't know what to pass for `tag`, either remove all icons for slot, or use
@@ -298,8 +301,21 @@ public interface StatusBarIconController {
             return view;
         }
 
+        protected StatusBarOPCustView addText(int index, String str, int index2, boolean blocked) {
+            StatusBarOPCustView onCreateStatusBarText = onCreateStatusBarText(str, index2);
+            onCreateStatusBarText.applyVisible(blocked);
+            this.mGroup.addView(onCreateStatusBarText, index, onCreateLayoutParams());
+            return onCreateStatusBarText;
+        }
+
         private StatusBarIconView onCreateStatusBarIconView(String slot, boolean blocked) {
             return new StatusBarIconView(mContext, slot, null, blocked);
+        }
+
+        private StatusBarOPCustView onCreateStatusBarText(String slot, int index) {
+            StatusBarOPCustView fromResId = StatusBarOPCustView.fromResId(mContext, index);
+            fromResId.setSlot(slot);
+            return fromResId;
         }
 
         private StatusBarWifiView onCreateStatusBarWifiView(String slot) {
@@ -392,6 +408,13 @@ public interface StatusBarIconController {
 
             if (mIsInDemoMode) {
                 mDemoStatusIcons.updateMobileState(state);
+            }
+        }
+
+        public void onSetTextVisible(int viewIndex, boolean z) {
+            StatusBarOPCustView statusBarOPCustView = (StatusBarOPCustView) mGroup.getChildAt(viewIndex);
+            if (statusBarOPCustView != null) {
+                statusBarOPCustView.applyVisible(z);
             }
         }
 

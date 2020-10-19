@@ -125,6 +125,7 @@ import com.android.systemui.util.sensors.AsyncSensorManager;
 import com.android.systemui.wm.DisplayController;
 import com.android.systemui.wm.DisplayImeController;
 import com.android.systemui.wm.SystemWindows;
+import com.oneplus.networkspeed.NetworkSpeedController;
 
 import java.util.function.Consumer;
 
@@ -322,6 +323,7 @@ public class Dependency {
     @Inject Lazy<RecordingController> mRecordingController;
     @Inject Lazy<ProtoTracer> mProtoTracer;
     @Inject Lazy<Divider> mDivider;
+    @Inject Lazy<NetworkSpeedController> mOpNetworkSpeedController;
 
     @Inject
     public Dependency() {
@@ -518,6 +520,7 @@ public class Dependency {
 
         mProviders.put(RecordingController.class, mRecordingController::get);
         mProviders.put(Divider.class, mDivider::get);
+        mProviders.put(NetworkSpeedController.class, mOpNetworkSpeedController::get);
 
         sDependency = this;
     }
