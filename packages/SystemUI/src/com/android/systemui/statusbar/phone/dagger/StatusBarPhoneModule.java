@@ -99,6 +99,7 @@ import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.volume.VolumeComponent;
+import com.oneplus.networkspeed.NetworkSpeedController;
 
 import java.util.Optional;
 import java.util.concurrent.Executor;
@@ -151,6 +152,7 @@ public interface StatusBarPhoneModule {
             NotificationRemoteInputManager remoteInputManager,
             UserSwitcherController userSwitcherController,
             NetworkController networkController,
+            NetworkSpeedController networkSpeedController,
             BatteryController batteryController,
             SysuiColorExtractor colorExtractor,
             ScreenLifecycle screenLifecycle,
@@ -231,6 +233,7 @@ public interface StatusBarPhoneModule {
                 remoteInputManager,
                 userSwitcherController,
                 networkController,
+                networkSpeedController,
                 batteryController,
                 colorExtractor,
                 screenLifecycle,

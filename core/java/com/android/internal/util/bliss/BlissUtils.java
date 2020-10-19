@@ -37,6 +37,10 @@ import android.view.WindowManagerGlobal;
 import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
 
+import android.util.Log;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
 public class BlissUtils {
@@ -168,6 +172,25 @@ public class BlissUtils {
             wm.sendCustomAction(new Intent(full? INTENT_SCREENSHOT : INTENT_REGION_SCREENSHOT));
         } catch (RemoteException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void notifyStatusBarIconsDark(boolean dark) {
+    }
+
+    public static Object getValue(Class cls, Object obj, String str) {
+        try {
+            Field declaredField = cls.getDeclaredField(str);
+            declaredField.setAccessible(true);
+            try {
+                return declaredField.get(obj);
+            } catch (IllegalAccessException unused) {
+                Log.e("OpReflectionUtils", "getValue IllegalAccess " + cls + " field " + str);
+                return null;
+            }
+        } catch (NoSuchFieldException unused2) {
+            Log.e("OpReflectionUtils", "getValue NoSuchField " + cls + " field " + str);
+            return null;
         }
     }
 }

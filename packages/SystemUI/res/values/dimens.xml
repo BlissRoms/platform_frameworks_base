@@ -1384,4 +1384,6 @@
     <dimen name="dock_top_logo_padding">8dp</dimen>
     <dimen name="ambient_indication_icon_size">20dp</dimen>
 
+    <dimen name="network_speed_padding_end">4dp</dimen>
+
 </resources>
