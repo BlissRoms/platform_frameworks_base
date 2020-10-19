@@ -28,4 +28,5 @@
     <integer name="config_udfps_hbm_type">1</integer>
 
     <string name="status_deep_sleep">(Deep sleep: %1$d%2$s)</string>
+
 </resources>
