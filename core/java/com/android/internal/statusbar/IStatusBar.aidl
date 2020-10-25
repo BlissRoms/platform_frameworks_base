@@ -347,4 +347,7 @@ oneway interface IStatusBar
     void showMediaOutputSwitcher(String packageName);
 
     void toggleCameraFlash();
+
+    void screenPinningStateChanged(boolean enabled);
+    void leftInLandscapeChanged(boolean isLeft);
 }
