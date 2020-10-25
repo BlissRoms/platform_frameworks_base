@@ -241,4 +241,7 @@ oneway interface IStatusBar
     void hideInDisplayFingerprintView();
 
     void triggerElmyraAction(String action);
+
+    void screenPinningStateChanged(boolean enabled);
+    void leftInLandscapeChanged(boolean isLeft);
 }
