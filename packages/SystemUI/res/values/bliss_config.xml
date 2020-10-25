@@ -51,4 +51,16 @@
 
     <!-- Max visible system icons -->
     <integer name="config_maxVisibleStatusIconContainer">7</integer>
+
+    <!-- Default bar fill
+         User can define this in settings
+         Here for reference-->
+    <color name="config_pulseFillColor">#92ffffff</color>
+
+    <!-- DbFuzz adds it's value in pixels to the magnitude
+         It is recommended to set this value so that it is
+         less than config_pulsePathEffect_1, measured in pixels
+         This allows for the first block in PathEffect to fade -->
+    <integer name="config_pulseDbFuzz">2</integer>
+
 </resources>
