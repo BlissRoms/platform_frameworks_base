@@ -388,4 +388,7 @@ oneway interface IStatusBar
     void enterDesktop(int displayId);
 
     void toggleCameraFlash();
+
+    void screenPinningStateChanged(boolean enabled);
+    void leftInLandscapeChanged(boolean isLeft);
 }
