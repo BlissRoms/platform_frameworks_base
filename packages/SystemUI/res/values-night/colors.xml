@@ -113,4 +113,7 @@
 
     <color name="qs_tile_oos">#222222</color>
     <color name="qs_tile_icon_oos">#98a098</color>
+
+    <!-- controls -->
+    <color name="control_default_background">#19ffffff</color> <!-- 10% white -->
 </resources>
