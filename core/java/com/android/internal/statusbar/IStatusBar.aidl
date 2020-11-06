@@ -338,4 +338,6 @@ oneway interface IStatusBar
      * @param leftOrTop indicates where the stage split is.
      */
     void enterStageSplitFromRunningApp(boolean leftOrTop);
+
+    void toggleCameraFlash();
 }
