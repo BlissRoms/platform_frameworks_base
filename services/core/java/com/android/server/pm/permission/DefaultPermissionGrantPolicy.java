@@ -869,6 +869,11 @@ public final class DefaultPermissionGrantPolicy {
         grantSystemFixedPermissionsToSystemPackage(pm, "com.android.sharedstoragebackup", userId,
                 STORAGE_PERMISSIONS);
 
+        // Flipendo
+        grantSystemFixedPermissionsToSystemPackage(pm,
+                getDefaultProviderAuthorityPackage("com.google.android.flipendo", userId),
+                userId, SUSPEND_APP_PERMISSIONS);
+
         // System Captions Service
         String systemCaptionsServicePackageName =
                 mContext.getPackageManager().getSystemCaptionsServicePackageName();
