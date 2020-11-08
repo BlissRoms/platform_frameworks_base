@@ -158,6 +158,7 @@ import com.android.systemui.dagger.qualifiers.UiBackground;
 import com.android.systemui.fragments.ExtensionFragmentListener;
 import com.android.systemui.fragments.FragmentHostManager;
 import com.android.systemui.keyguard.DismissCallbackRegistry;
+import com.android.systemui.keyguard.KeyguardSliceProvider;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.keyguard.ScreenLifecycle;
 import com.android.systemui.keyguard.WakefulnessLifecycle;
@@ -1967,6 +1968,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_MEDIA_BLUR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.PULSE_ON_NEW_TRACKS),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -1974,17 +1978,29 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_MEDIA_BLUR))) {
                 setLockScreenMediaBlurLevel();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.PULSE_ON_NEW_TRACKS))) {
+                setPulseOnNewTracks();
             }
         }
 
         public void update() {
             setLockScreenMediaBlurLevel();
+            setPulseOnNewTracks();
         }
     }
 
     private void setLockScreenMediaBlurLevel() {
         if (mMediaManager != null) {
             mMediaManager.setLockScreenMediaBlurLevel();
+        }
+    }
+
+    private void setPulseOnNewTracks() {
+        if (KeyguardSliceProvider.getAttachedInstance() != null) {
+            KeyguardSliceProvider.getAttachedInstance().setPulseOnNewTracks(Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.PULSE_ON_NEW_TRACKS, 1,
+                    UserHandle.USER_CURRENT) == 1);
         }
     }
 
