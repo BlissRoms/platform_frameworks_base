@@ -70,4 +70,5 @@
   <java-symbol type="string" name="reboot_message" />
 
   <java-symbol type="array" name="custom_config_globalActionsList" />
+  <java-symbol type="bool" name="config_has_Soli" />
 </resources>
