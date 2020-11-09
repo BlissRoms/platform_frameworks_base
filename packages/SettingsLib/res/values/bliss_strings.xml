@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Description for the screen zoom level that makes interface elements smaller. [CHAR LIMIT=24] -->
     <string name="screen_zoom_summary_smaller">Smaller</string>
@@ -21,5 +21,11 @@
     <string name="screen_zoom_summary_smallest">Smallest</string>
 
     <string name="status_deep_sleep">(Deep sleep: %1$d%2$s)</string>
+
+    <!-- Label for estimated remaining duration of TurboPower battery charging -->
+    <string name="power_remaining_turbo_charging_duration_only">Turbo charging (<xliff:g id="time">%1$s</xliff:g> left until full)</string>
+
+    <!-- Battery use screen. Battery status shown in chart label when charging from a TurboPower source.  -->
+    <string name="battery_info_status_turbo_charging">Turbo charging</string>
 
 </resources>
