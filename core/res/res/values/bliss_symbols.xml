@@ -295,6 +295,4 @@
     <java-symbol type="array" name="config_displayModeMappings" />
     <java-symbol type="bool" name="config_defaultAntiFlicker" />
 
-    <!-- Ambient notification light color -->
-    <java-symbol type="integer" name="config_ambientNotificationDefaultColor" />
 </resources>
