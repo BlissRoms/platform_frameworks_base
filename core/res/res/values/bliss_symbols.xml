@@ -71,4 +71,5 @@
 
   <java-symbol type="array" name="custom_config_globalActionsList" />
   <java-symbol type="bool" name="config_has_Soli" />
+  <java-symbol type="bool" name="config_has_weird_dt_sensor" />
 </resources>
