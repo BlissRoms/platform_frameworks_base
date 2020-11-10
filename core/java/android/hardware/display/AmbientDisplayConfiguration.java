@@ -78,7 +78,8 @@ public class AmbientDisplayConfiguration {
                 || tapGestureEnabled(user)
                 || doubleTapGestureEnabled(user)
                 || quickPickupSensorEnabled(user)
-                || screenOffUdfpsEnabled(user);
+                || screenOffUdfpsEnabled(user)
+                || alwaysOnAmbientLightEnabled(user);
     }
 
     /** @hide */
@@ -353,7 +354,7 @@ public class AmbientDisplayConfiguration {
         final boolean ambientLightsEnabled = boolSettingSystem(Settings.System.AOD_NOTIFICATION_PULSE, user, 0);
         if (ambientLightsEnabled) {
             boolean ambientLightsActivated = boolSettingSystem(Settings.System.AOD_NOTIFICATION_PULSE_ACTIVATED, user, 0);
-            return ambientLightsActivated && !accessibilityInversionEnabled(user) && alwaysOnAvailable();
+            return ambientLightsActivated && alwaysOnEnabled(user);
         }
         return false;
     }
