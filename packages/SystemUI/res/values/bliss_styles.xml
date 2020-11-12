@@ -29,4 +29,10 @@
         <item name="android:textColor">@*android:color/accent_device_default_light</item>
         <item name="android:textAllCaps">false</item>
     </style>
+
+    <style name="TextAppearance.Notifications.reTicker" parent="@*android:style/TextAppearance.StatusBar.Icon">
+        <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">@*android:string/config_bodyFontFamily</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
 </resources>

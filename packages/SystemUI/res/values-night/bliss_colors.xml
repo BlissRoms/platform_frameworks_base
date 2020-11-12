@@ -22,4 +22,6 @@
     <color name="dismiss_all_background_color_ripple">#555555</color>
     <color name="dismiss_all_icon_color">@*android:color/accent_device_default_dark</color>
 
+    <color name="qs_bg_primary">#90000000</color>
+
 </resources>

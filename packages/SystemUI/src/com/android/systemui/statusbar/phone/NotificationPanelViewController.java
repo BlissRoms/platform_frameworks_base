@@ -38,6 +38,7 @@ import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -60,13 +61,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.InternalInsetsInfo;
+import android.view.ViewTreeObserver.OnComputeInternalInsetsListener;
 import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.content.Context;
 import android.view.GestureDetector;
+import android.app.PendingIntent;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.logging.MetricsLogger;
@@ -81,6 +87,8 @@ import com.android.systemui.DejankUtils;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.classifier.Classifier;
+import com.android.systemui.BlissSystemUIUtils;
+import com.android.systemui.RetickerAnimations;
 import com.android.systemui.dagger.qualifiers.DisplayId;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.fragments.FragmentHostManager;
@@ -349,6 +357,8 @@ public class NotificationPanelViewController extends PanelViewController {
 
     private boolean mShowEmptyShadeView;
 
+    private String[] mAppExceptions;
+
     private boolean mQsScrimEnabled = true;
     private boolean mQsTouchAboveFalsingThreshold;
     private int mQsFalsingThreshold;
@@ -483,6 +493,11 @@ public class NotificationPanelViewController extends PanelViewController {
 
     private boolean mAnimatingQS;
     private int mOldLayoutDirection;
+
+    /*Reticker*/
+    private LinearLayout mReTickerComeback;
+    private ImageView mReTickerComebackIcon;
+    private TextView mReTickerContentTV;
 
     private View.AccessibilityDelegate mAccessibilityDelegate = new View.AccessibilityDelegate() {
         @Override
@@ -649,6 +664,9 @@ public class NotificationPanelViewController extends PanelViewController {
         mKeyguardBottomArea = mView.findViewById(R.id.keyguard_bottom_area);
         mLastOrientation = mResources.getConfiguration().orientation;
 
+        mReTickerComeback = mView.findViewById(R.id.ticker_comeback);
+        mReTickerComebackIcon = mView.findViewById(R.id.ticker_comeback_icon);
+        mReTickerContentTV = mView.findViewById(R.id.ticker_content);
         initBottomArea();
 
         mWakeUpCoordinator.setStackScroller(mNotificationStackScroller);
@@ -1802,6 +1820,7 @@ public class NotificationPanelViewController extends PanelViewController {
         mQs.setQsExpansion(qsExpansionFraction, getHeaderTranslation());
         mMediaHierarchyManager.setQsExpansion(qsExpansionFraction);
         mNotificationStackScroller.setQsExpansionFraction(qsExpansionFraction);
+        reTickerViewVisibility();
     }
 
     private String determineAccessibilityPaneTitle() {
@@ -3907,4 +3926,104 @@ public class NotificationPanelViewController extends PanelViewController {
     public void updateDoubleTapToSleep(boolean doubleTapToSleepEnabled) {
         mDoubleTapToSleepEnabled = doubleTapToSleepEnabled;
     }
+
+    /* Descendant reTicker */
+
+    public void reTickerView(boolean visibility) {
+        if (!BlissSystemUIUtils.settingStatusBoolean("reticker_status", mView.getContext())) return;
+        if (visibility && mReTickerComeback.getVisibility() == View.VISIBLE) {
+            reTickerDismissal();
+        }
+        String reTickerContent = "";
+        boolean debug = true;
+        if (visibility && getExpandedFraction() != 1) {
+            mNotificationStackScroller.setVisibility(GONE);
+            ExpandableNotificationRow row = mHeadsUpManager.getTopEntry().getRow();
+            String pkgname = row.getEntry().getSbn().getPackageName();
+            Drawable icon = null;
+            try {
+                if (pkgname.contains("systemui")) {
+                    icon = mView.getContext().getDrawable(row.getEntry().getSbn().getNotification().icon);
+                } else {
+                    icon = mView.getContext().getPackageManager().getApplicationIcon(pkgname);
+                }
+            } catch (android.content.pm.PackageManager.NameNotFoundException e) {
+            }
+            if (row.getEntry().getSbn().getNotification().extras.getString("android.text") != null) {
+                reTickerContent = row.getEntry().getSbn().getNotification().extras.getString("android.text");
+            }
+            String reTickerAppName = row.getEntry().getSbn().getNotification().extras.getString("android.title");
+            PendingIntent reTickerIntent = row.getEntry().getSbn().getNotification().contentIntent;
+            String mergedContentText = reTickerAppName + " " + reTickerContent;
+            mReTickerComebackIcon.setImageDrawable(icon);
+            if (BlissSystemUIUtils.settingStatusBoolean("reticker_colored", mView.getContext())) {
+                int col;
+                col = row.getEntry().getSbn().getNotification().color;
+                mAppExceptions = mView.getContext().getResources().getStringArray(R.array.app_exceptions);
+                //check if we need to override the color
+                for (int i=0; i < mAppExceptions.length; i++) {
+                    if (mAppExceptions[i].contains(pkgname)) {
+                        col = Color.parseColor(mAppExceptions[i+=1]);
+                    }
+                }
+                Drawable dw = mView.getContext().getDrawable(R.drawable.reticker_background);
+                dw.setTint(col);
+                mReTickerComeback.setBackground(dw);
+            }
+            mReTickerContentTV.setText(mergedContentText);
+            mReTickerContentTV.setSelected(true);
+            RetickerAnimations.doBounceAnimationIn(mReTickerComeback);
+            mReTickerComeback.setOnClickListener(v -> {
+                try {
+                    if (reTickerIntent != null)
+                        reTickerIntent.send();
+                } catch (PendingIntent.CanceledException e) {
+                }
+                if (reTickerIntent != null) {
+                    RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
+                    reTickerViewVisibility();
+                }
+            });
+        } else {
+            reTickerDismissal();
+        }
+    }
+
+    private void reTickerViewVisibility() {
+        if (!BlissSystemUIUtils.settingStatusBoolean("reticker_status", mView.getContext())) {
+            reTickerDismissal();
+            return;
+        }
+        mNotificationStackScroller.setVisibility(getExpandedFraction() == 0 ? View.GONE : View.VISIBLE);
+        if (getExpandedFraction() > 0) mReTickerComeback.setVisibility(View.GONE);
+        if (mReTickerComeback.getVisibility() == View.VISIBLE) {
+            mReTickerComeback.getViewTreeObserver().addOnComputeInternalInsetsListener(mInsetsListener);
+        } else {
+            mReTickerComeback.getViewTreeObserver().removeOnComputeInternalInsetsListener(mInsetsListener);
+        }
+    }
+
+    public void reTickerViewUpdate() {
+        if (BlissSystemUIUtils.settingStatusBoolean("reticker_status", mView.getContext())) return;
+        if (mReTickerComeback != null) mReTickerComeback.setBackground(mView.getContext().getDrawable(R.drawable.reticker_background));
+        if (mReTickerContentTV != null) mReTickerContentTV.setTextAppearance(mView.getContext(), R.style.TextAppearance_Notifications_reTicker);
+    }
+
+    public void reTickerDismissal() {
+        RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
+        mReTickerComeback.getViewTreeObserver().removeOnComputeInternalInsetsListener(mInsetsListener);
+    }
+
+    private final OnComputeInternalInsetsListener mInsetsListener = internalInsetsInfo -> {
+        internalInsetsInfo.touchableRegion.setEmpty();
+        internalInsetsInfo.setTouchableInsets(InternalInsetsInfo.TOUCHABLE_INSETS_REGION);
+        int[] mainLocation = new int[2];
+        mReTickerComeback.getLocationOnScreen(mainLocation);
+        internalInsetsInfo.touchableRegion.set(new Region(
+            mainLocation[0],
+            mainLocation[1],
+            mainLocation[0] + mReTickerComeback.getWidth(),
+            mainLocation[1] + mReTickerComeback.getHeight()
+        ));
+    };
 }
