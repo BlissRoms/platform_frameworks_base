@@ -227,6 +227,16 @@ public class BlissUtils {
                 } catch (RemoteException e) {}
             }
         }
+
+        // Clear notifications
+        public static void startAssist() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.startAssist(new Bundle());
+                } catch (RemoteException e) {}
+            }
+        }
     }
 
     public static void clearAllNotifications() {
@@ -239,6 +249,10 @@ public class BlissUtils {
 
     public static void toggleNotifications() {
         FireActions.toggleNotifications();
+    }
+
+    public static void startAssist() {
+        FireActions.startAssist();
     }
 
     public static boolean isPackageEnabled(String packageName, PackageManager pm) {

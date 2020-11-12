@@ -160,4 +160,7 @@ interface IStatusBarService
      */
     void showInDisplayFingerprintView();
     void hideInDisplayFingerprintView();
+
+    void startAssist(in Bundle args);
+
 }
