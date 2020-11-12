@@ -3,6 +3,9 @@
      Copyright (C) 2014-2022 BlissRoms Project
      SPDX-License-Identifier: Apache-2.0
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- reTicker -->
+    <color name="reticker_background_color">@android:color/system_neutral1_50</color>
 
 </resources>
