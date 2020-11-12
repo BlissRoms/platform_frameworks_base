@@ -140,4 +140,7 @@
 
     <!-- These are system packages exempted from privacy indicator -->
     <java-symbol type="array" name="config_indicatorExemptedPackageNames" />
+
+   <!-- Aerr -->
+   <java-symbol type="id" name="aerr_disable" />
 </resources>
