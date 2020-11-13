@@ -33,6 +33,8 @@ import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;
 
+import com.android.internal.util.bliss.BlissUtils;
+
 import java.util.List;
 
 public final class LineageButtons {
@@ -206,6 +208,76 @@ public final class LineageButtons {
             mVolBtnMusicControls = Settings.System.getIntForUser(
                     resolver, Settings.System.VOLUME_BUTTON_MUSIC_CONTROL, 1,
                     UserHandle.USER_CURRENT) == 1;
+        }
+    }
+
+    // Elmyra app actions
+    public void performTriggeredAction(String action, Context context, boolean interactive) {
+        switch(action) {
+            case "flashlight":
+                BlissUtils.toggleCameraFlash(false);
+                break;
+            case "assist":
+                BlissUtils.startAssist();
+                break;
+            case "screenshot":
+                // already disabled when screen is OFF by Elmyra app
+                BlissUtils.takeScreenshot(true/*full*/);
+                break;
+            case "partialscreenshot":
+                // already disabled when screen is OFF by Elmyra app
+                BlissUtils.takeScreenshot(false/*full*/);
+                break;
+            case "camera":
+                if (!interactive) {
+                    BlissUtils.switchScreenOff(context);
+                }
+                BlissUtils.launchCamera(context);
+                break;
+            case "mute":
+                BlissUtils.triggerHushMute(context);
+                break;
+            case "screen":
+                if (interactive) {
+                    BlissUtils.switchScreenOff(context);
+                } else {
+                    BlissUtils.switchScreenOn(context);
+                }
+                break;
+            case "skiptrack":
+                skipTrack();
+                break;
+            case "previoustrack":
+                previousTrack();
+                break;
+            case "voicesearch":
+                BlissUtils.launchVoiceSearch(context);
+                break;
+            case "volumepanel":
+                // already disabled when screen is OFF by Elmyra app
+                BlissUtils.toggleVolumePanel(context);
+                break;
+            case "powermenu":
+                // already disabled when screen is OFF by Elmyra app
+                BlissUtils.showPowerMenu();
+                break;
+            case "toggleqspanel":
+                // already disabled when screen is OFF by Elmyra app
+                BlissUtils.toggleQsPanel();
+                break;
+            case "togglenotificationspanel":
+                // already disabled when screen is OFF by Elmyra app
+                BlissUtils.toggleNotifications();
+                break;
+            case "clearallnotifications":
+                // already disabled when screen is OFF by Elmyra app
+                BlissUtils.clearAllNotifications();
+                break;
+            case "toggleringermodes":
+                BlissUtils.toggleRingerModes(context);
+                break;
+            default:
+                break;
         }
     }
 }

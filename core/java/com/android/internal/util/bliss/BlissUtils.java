@@ -170,8 +170,8 @@ public class BlissUtils {
         return ctx.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
 
-    public static void toggleCameraFlash() {
-        FireActions.toggleCameraFlash();
+    public static void toggleCameraFlash(boolean proximityCheck) {
+        FireActions.toggleCameraFlash(proximityCheck);
     }
 
     private static final class FireActions {
@@ -187,11 +187,11 @@ public class BlissUtils {
             }
         }
 
-        public static void toggleCameraFlash() {
+        public static void toggleCameraFlash(boolean proximityCheck) {
             IStatusBarService service = getStatusBarService();
             if (service != null) {
                 try {
-                    service.toggleCameraFlash();
+                    service.toggleCameraFlash(proximityCheck);
                 } catch (RemoteException e) {
                     // do nothing.
                 }

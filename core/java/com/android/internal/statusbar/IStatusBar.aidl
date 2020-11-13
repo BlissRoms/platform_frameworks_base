@@ -232,11 +232,13 @@ oneway interface IStatusBar
     /**
      * Toggle Camera Flash
      */
-    void toggleCameraFlash();
+    void toggleCameraFlash(boolean proximityCheck);
 
     /**
      *  Used to show or hide in display fingerprint view.
      */
     void showInDisplayFingerprintView();
     void hideInDisplayFingerprintView();
+
+    void triggerElmyraAction(String action);
 }

@@ -153,7 +153,7 @@ interface IStatusBarService
     /**
      * Toggle Camera Flash
      */
-    void toggleCameraFlash();
+    void toggleCameraFlash(boolean proximityCheck);
 
     /**
      * Used to show or hide in display fingerprint view.
@@ -162,5 +162,5 @@ interface IStatusBarService
     void hideInDisplayFingerprintView();
 
     void startAssist(in Bundle args);
-
+    void triggerElmyraAction(String action);
 }
