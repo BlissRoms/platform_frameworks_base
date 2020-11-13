@@ -24,6 +24,8 @@ import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_M
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.LayoutTransition;
+import android.animation.LayoutTransition.TransitionListener;
 import android.animation.ValueAnimator;
 import android.annotation.Nullable;
 import android.annotation.SuppressLint;
@@ -83,6 +85,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.internal.logging.UiEventLogger;
+import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dagger.qualifiers.UiBackground;
@@ -200,6 +203,7 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
     private final DisplayMetrics mDisplayMetrics;
 
     private View mScreenshotLayout;
+    private LinearLayout mScreenshotButtonsLayout;
     private ScreenshotSelectorView mScreenshotSelectorView;
     private ImageView mScreenshotAnimatedView;
     private ImageView mScreenshotPreview;
@@ -208,6 +212,8 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
     private HorizontalScrollView mActionsContainer;
     private LinearLayout mActionsView;
     private ImageView mBackgroundProtection;
+    private View mCaptureButton;
+    private View mCancelButton;
     private FrameLayout mDismissButton;
 
     private Bitmap mScreenBitmap;
@@ -405,6 +411,18 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
         }
     }
 
+    void setBlockedGesturalNavigation(boolean blocked) {
+        IStatusBarService service = IStatusBarService.Stub.asInterface(
+                ServiceManager.getService(Context.STATUS_BAR_SERVICE));
+        if (service != null) {
+            try {
+                service.setBlockedGesturalNavigation(blocked);
+            } catch (RemoteException e) {
+                // end of the world
+            }
+        }
+    }
+
     /**
      * Displays a screenshot selector
      */
@@ -418,37 +436,49 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
         dismissScreenshot("new screenshot requested", true);
         mOnCompleteRunnable = onComplete;
 
+        setBlockedGesturalNavigation(true);
         mWindowManager.addView(mScreenshotLayout, mWindowLayoutParams);
-        mScreenshotSelectorView.setOnTouchListener((v, event) -> {
-            ScreenshotSelectorView view = (ScreenshotSelectorView) v;
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    view.startSelection((int) event.getX(), (int) event.getY());
-                    return true;
-                case MotionEvent.ACTION_MOVE:
-                    view.updateSelection((int) event.getX(), (int) event.getY());
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    view.setVisibility(View.GONE);
-                    mWindowManager.removeView(mScreenshotLayout);
-                    final Rect rect = view.getSelectionRect();
-                    if (rect != null) {
-                        if (rect.width() != 0 && rect.height() != 0) {
-                            // Need mScreenshotLayout to handle it after the view disappears
-                            mScreenshotLayout.post(() -> takeScreenshotInternal(finisher, rect));
-                        }
-                    }
-
-                    view.stopSelection();
-                    return true;
+        mScreenshotSelectorView.setSelectionListener((rect, firstSelection) -> {
+            if (firstSelection) {
+                mScreenshotLayout.post(() -> mCaptureButton.setVisibility(View.VISIBLE));
             }
+        });
+        mCancelButton.setOnClickListener(v -> {
+            mScreenshotLayout.post(() -> {
+                finisher.accept(null);
+                hideScreenshotSelector();
+            });
+        });
+        mCaptureButton.setOnClickListener(v -> {
+            final Rect rect = mScreenshotSelectorView.getSelectionRect();
+            LayoutTransition layoutTransition = mScreenshotButtonsLayout.getLayoutTransition();
+            layoutTransition.addTransitionListener(new TransitionListener() {
+                @Override
+                public void startTransition(LayoutTransition transition, ViewGroup container,
+                        View view, int transitionType) {
+                }
 
-            return false;
+                @Override
+                public void endTransition(LayoutTransition transition, ViewGroup container,
+                        View view, int transitionType) {
+                    takeScreenshotInternal(finisher, adjustedRect);
+                    transition.removeTransitionListener(this);
+                }
+            });
+            mScreenshotLayout.post(() -> hideScreenshotSelector());
         });
         mScreenshotLayout.post(() -> {
             mScreenshotSelectorView.setVisibility(View.VISIBLE);
             mScreenshotSelectorView.requestFocus();
         });
+    }
+
+    void hideScreenshotSelector() {
+        mWindowManager.removeView(mScreenshotLayout);
+        mScreenshotSelectorView.stopSelection();
+        mScreenshotSelectorView.setVisibility(View.GONE);
+        mCaptureButton.setVisibility(View.GONE);
+        setBlockedGesturalNavigation(false);
     }
 
     /**
@@ -556,6 +586,7 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
 
         // Inflate the screenshot layout
         mScreenshotLayout = LayoutInflater.from(mContext).inflate(R.layout.global_screenshot, null);
+        mScreenshotButtonsLayout = mScreenshotLayout.findViewById(R.id.global_screenshot_buttons);
         // TODO(159460485): Remove this when focus is handled properly in the system
         mScreenshotLayout.setOnTouchListener((v, event) -> {
             if (event.getActionMasked() == MotionEvent.ACTION_OUTSIDE) {
@@ -613,6 +644,8 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
         mActionsView = mScreenshotLayout.findViewById(R.id.global_screenshot_actions);
         mBackgroundProtection = mScreenshotLayout.findViewById(
                 R.id.global_screenshot_actions_background);
+        mCaptureButton = mScreenshotLayout.findViewById(R.id.global_screenshot_selector_capture);
+        mCancelButton = mScreenshotLayout.findViewById(R.id.global_screenshot_selector_cancel);
         mDismissButton = mScreenshotLayout.findViewById(R.id.global_screenshot_dismiss_button);
         mDismissButton.setOnClickListener(view -> {
             mUiEventLogger.log(ScreenshotEvent.SCREENSHOT_EXPLICIT_DISMISSAL);

@@ -183,4 +183,8 @@
 
     <!-- QS header info separator -->
     <string name="qs_header_info_separator" translatable="false">\u0020\u0020•\u0020\u0020</string>
+
+    <!-- Partial screenshot -->
+    <string name="global_screenshot_selector_capture_description">Capture partial screenshot</string>
+    <string name="global_screenshot_selector_cancel_description">Cancel partial screenshot</string>
 </resources>
