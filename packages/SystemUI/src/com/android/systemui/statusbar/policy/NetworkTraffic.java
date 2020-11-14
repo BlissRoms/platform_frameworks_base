@@ -28,6 +28,7 @@ import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
@@ -68,12 +69,13 @@ public class NetworkTraffic extends TextView {
         decimalFormat.setMaximumFractionDigits(1);
     }
 
-    private boolean mIsEnabled;
+    private int mIsEnabled;
     private boolean mAttached;
     private long totalRxBytes;
     private long totalTxBytes;
     private long lastUpdateTime;
     private int txtSize;
+    private String mTxtFont;
     private int txtImgPadding;
     private int mTrafficType;
     private boolean mShowArrow;
@@ -125,11 +127,18 @@ public class NetworkTraffic extends TextView {
                 // Update view if there's anything new to show
                 if (!output.contentEquals(getText())) {
                     setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                    setTypeface(Typeface.create(mTxtFont, Typeface.NORMAL));
                     setText(output);
                 }
-                setVisibility(View.VISIBLE);
-				updateTextSize();
+                if (netTrafficEnabled()) {
+                    setVisibility(View.VISIBLE);
+                    mTrafficVisible = true;
+                }
             }
+            updateVisibility();
+            updateTextSize();
+            if (mShowArrow)
+                updateTrafficDrawable();
 
             // Post delayed message to refresh in ~1000ms
             totalRxBytes = newTotalRxBytes;
@@ -223,6 +232,7 @@ public class NetworkTraffic extends TextView {
     public NetworkTraffic(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         final Resources resources = getResources();
+        mTxtFont = resources.getString(com.android.internal.R.string.config_headlineFontFamilyMedium);
         txtImgPadding = resources.getDimensionPixelSize(R.dimen.net_traffic_txt_img_padding);
         mTintColor = resources.getColor(android.R.color.white);
         Handler mHandler = new Handler();
@@ -282,7 +292,7 @@ public class NetworkTraffic extends TextView {
 
     private void updateSettings() {
  	    updateTextSize();
-        if (mIsEnabled) {
+        if (mIsEnabled == 2) {
             if (mAttached) {
                 totalRxBytes = TrafficStats.getTotalRxBytes();
                 lastUpdateTime = SystemClock.elapsedRealtime();
@@ -300,7 +310,7 @@ public class NetworkTraffic extends TextView {
         ContentResolver resolver = mContext.getContentResolver();
         mIsEnabled = Settings.System.getIntForUser(resolver,
                 Settings.System.NETWORK_TRAFFIC_STATE, 0,
-                UserHandle.USER_CURRENT) == 1;
+                UserHandle.USER_CURRENT);
         mTrafficType = Settings.System.getIntForUser(resolver,
                 Settings.System.NETWORK_TRAFFIC_TYPE, 0,
                 UserHandle.USER_CURRENT);
@@ -320,7 +330,7 @@ public class NetworkTraffic extends TextView {
 
     private void updateTrafficDrawable() {
         int intTrafficDrawable;
-        if (mIsEnabled && mShowArrow) {
+        if ((mIsEnabled == 2) && mShowArrow) {
               if (mTrafficType == UP) {
             intTrafficDrawable = R.drawable.stat_sys_network_traffic_up;
           } else if (mTrafficType == DOWN) {
@@ -346,20 +356,43 @@ public class NetworkTraffic extends TextView {
         int txtSize;
 
         mNetTrafSize = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.NETWORK_TRAFFIC_FONT_SIZE, 21);
+                Settings.System.NETWORK_TRAFFIC_FONT_SIZE, 42);
 
         if (mTrafficType == BOTH) {
             txtSize = getResources().getDimensionPixelSize(R.dimen.net_traffic_multi_text_size);
         } else {
             txtSize = mNetTrafSize;
         }
+        setTypeface(Typeface.create(mTxtFont, Typeface.NORMAL));
         setTextSize(TypedValue.COMPLEX_UNIT_PX, (float)txtSize);
+    }
+
+    private void updateVisibility() {
+        switch (mIsEnabled) {
+            case 0: // Network traffic disabled
+                setText("");
+                setVisibility(View.GONE);
+                break;
+            case 1: // Network traffic in statusbar
+                setText("");
+                setVisibility(View.GONE);
+                break;
+            case 2: // Network traffic in expanded statusbar
+                setVisibility(View.VISIBLE);
+                break;
+	    }
+	}
+
+    private boolean netTrafficEnabled() {
+        return Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.NETWORK_TRAFFIC_STATE, 0, UserHandle.USER_CURRENT) == 2;
     }
 
     public void onDensityOrFontScaleChanged() {
         final Resources resources = getResources();
         txtImgPadding = resources.getDimensionPixelSize(R.dimen.net_traffic_txt_img_padding);
         setCompoundDrawablePadding(txtImgPadding);
+        setTypeface(Typeface.create(mTxtFont, Typeface.NORMAL));
 	    updateTextSize();
     }
 }
