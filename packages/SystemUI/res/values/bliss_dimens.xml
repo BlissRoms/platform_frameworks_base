@@ -32,4 +32,7 @@
 
     <!-- QQS Brightness slider -->
     <dimen name="quick_qs_brightness_margin_top">24dp</dimen>
+
+    <dimen name="screenrecord_dot_size">48dp</dimen>
+
 </resources>
