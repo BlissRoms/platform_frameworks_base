@@ -81,4 +81,7 @@
     <dimen name="horizontal_max_shift">3.0dp</dimen>
     <dimen name="vertical_max_shift">1.0dp</dimen>
 
+    <!-- Screen record -->
+    <dimen name="screenrecord_dot_size">48dp</dimen>
+
 </resources>
