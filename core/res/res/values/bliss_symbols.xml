@@ -5,4 +5,17 @@
 -->
 <resources>
 
+    <java-symbol type="array" name="config_launcherComponents" />
+ 
+    <java-symbol type="array" name="config_launcherPackages" />
+ 
+    <!-- Whitelist of package names to bypass foreground service type validation -->
+    <java-symbol type="array" name="config_fgsTypeValidationBypassPackages"/>
+ 
+    <!-- Whitelist of package names to bypass alarm manager validation -->
+    <java-symbol type="array" name="config_alarmManagerValidationBypassPackages"/>
+
+    <!-- Whitelist of package names to bypass broadcast reciever validation -->
+    <java-symbol type="array" name="config_broadcaseReceiverValidationBypassPackages"/>
+
 </resources>
