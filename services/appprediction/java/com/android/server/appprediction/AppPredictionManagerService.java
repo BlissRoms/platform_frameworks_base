@@ -187,6 +187,7 @@ public class AppPredictionManagerService extends
 
             Context ctx = getContext();
             if (!(ctx.checkCallingPermission(PACKAGE_USAGE_STATS) == PERMISSION_GRANTED
+                    || com.android.internal.util.bliss.PixelPropsUtils.isSystemLauncher(Binder.getCallingUid())
                     || mServiceNameResolver.isTemporary(userId)
                     || mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid())
                     || Binder.getCallingUid() == Process.SYSTEM_UID)) {

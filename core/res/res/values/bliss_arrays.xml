@@ -4,5 +4,22 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
+    <string-array name="config_launcherComponents">
+        <item>com.google.android.apps.nexuslauncher/com.android.quickstep.RecentsActivity</item>
+        <item>com.android.launcher3/com.android.quickstep.RecentsActivity</item>
+    </string-array>
+    
+    <string-array name="config_launcherPackages">
+        <item>com.google.android.apps.nexuslauncher</item>
+        <item>com.android.launcher3</item>
+    </string-array>
 
+    <!-- Whitelist of package names to bypass foreground service type validation -->
+    <string-array name="config_fgsTypeValidationBypassPackages" translatable="false"/>
+
+    <!-- Whitelist of package names to bypass alarm manager validation -->
+    <string-array name="config_alarmManagerValidationBypassPackages" translatable="false"/>
+
+    <!-- Whitelist of package names to bypass broadcast reciever validation -->
+    <string-array name="config_broadcaseReceiverValidationBypassPackages" translatable="false"/>
 </resources>

@@ -3047,7 +3047,8 @@ class AppWidgetServiceImpl extends IAppWidgetService.Stub implements WidgetBacku
             long memoryUsage;
             if ((UserHandle.getAppId(Binder.getCallingUid()) != Process.SYSTEM_UID) &&
                     (widget.views != null) &&
-                    ((memoryUsage = widget.views.estimateMemoryUsage()) > mMaxWidgetBitmapMemory)) {
+                    ((memoryUsage = widget.views.estimateMemoryUsage()) > mMaxWidgetBitmapMemory)
+                    && !com.android.internal.util.bliss.PixelPropsUtils.isSystemLauncher(Binder.getCallingUid())) {
                 widget.views = null;
                 throw new IllegalArgumentException("RemoteViews for widget update exceeds"
                         + " maximum bitmap memory usage (used: " + memoryUsage
