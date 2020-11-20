@@ -137,4 +137,7 @@
        Used to decide if we show pulse settings -->
     <bool name="config_ledCanPulse">true</bool>
 
+  <!-- Does the device support battery LED? -->
+  <bool name="config_intrusiveBatteryLed">false</bool>
+
 </resources>
