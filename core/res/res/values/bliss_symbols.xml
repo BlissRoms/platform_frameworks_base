@@ -87,4 +87,5 @@
   <!-- Battery LED -->
   <java-symbol type="bool" name="config_multiColorBatteryLed" />
   <java-symbol type="bool" name="config_ledCanPulse" />
+  <java-symbol type="bool" name="config_intrusiveBatteryLed" />
 </resources>
