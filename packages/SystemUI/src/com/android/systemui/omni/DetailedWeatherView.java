@@ -205,7 +205,7 @@ public class DetailedWeatherView extends FrameLayout {
 
         Drawable d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(0).conditionCode);
         d = overlay(mContext.getResources(), d, weatherData.forecasts.get(0).low, weatherData.forecasts.get(0).high,
-                weatherData.tempUnits);
+                weatherData.tempUnits, mWeatherClient.isMonochromeIcon());
         mForecastImage0.setImageDrawable(d);
         mForecastText0.setText(dayShort);
 
@@ -214,7 +214,7 @@ public class DetailedWeatherView extends FrameLayout {
 
         d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(1).conditionCode);
         d = overlay(mContext.getResources(), d, weatherData.forecasts.get(1).low, weatherData.forecasts.get(1).high,
-                weatherData.tempUnits);
+                weatherData.tempUnits, mWeatherClient.isMonochromeIcon());
         mForecastImage1.setImageDrawable(d);
         mForecastText1.setText(dayShort);
 
@@ -223,7 +223,7 @@ public class DetailedWeatherView extends FrameLayout {
 
         d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(2).conditionCode);
         d = overlay(mContext.getResources(), d, weatherData.forecasts.get(2).low, weatherData.forecasts.get(2).high,
-                weatherData.tempUnits);
+                weatherData.tempUnits, mWeatherClient.isMonochromeIcon());
         mForecastImage2.setImageDrawable(d);
         mForecastText2.setText(dayShort);
 
@@ -232,7 +232,7 @@ public class DetailedWeatherView extends FrameLayout {
 
         d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(3).conditionCode);
         d = overlay(mContext.getResources(), d, weatherData.forecasts.get(3).low, weatherData.forecasts.get(3).high,
-                weatherData.tempUnits);
+                weatherData.tempUnits, mWeatherClient.isMonochromeIcon());
         mForecastImage3.setImageDrawable(d);
         mForecastText3.setText(dayShort);
 
@@ -241,13 +241,13 @@ public class DetailedWeatherView extends FrameLayout {
 
         d = mWeatherClient.getWeatherConditionImage(weatherData.forecasts.get(4).conditionCode);
         d = overlay(mContext.getResources(), d, weatherData.forecasts.get(4).low, weatherData.forecasts.get(4).high,
-                weatherData.tempUnits);
+                weatherData.tempUnits, mWeatherClient.isMonochromeIcon());
         mForecastImage4.setImageDrawable(d);
         mForecastText4.setText(dayShort);
 
         if (mShowCurrent) {
             d = mWeatherClient.getWeatherConditionImage(weatherData.conditionCode);
-            d = overlay(mContext.getResources(), d, weatherData.temp, null, weatherData.tempUnits);
+            d = overlay(mContext.getResources(), d, weatherData.temp, null, weatherData.tempUnits, mWeatherClient.isMonochromeIcon());
             mCurrentImage.setImageDrawable(d);
             mCurrentText.setText(mContext.getResources().getText(R.string.omnijaws_current_text));
         }
@@ -257,8 +257,8 @@ public class DetailedWeatherView extends FrameLayout {
         }
     }
 
-    private Drawable overlay(Resources resources, Drawable image, String min, String max, String tempUnits) {
-        if (image instanceof VectorDrawable) {
+    private Drawable overlay(Resources resources, Drawable image, String min, String max, String tempUnits, boolean isMonochrome) {
+        if (image instanceof VectorDrawable && isMonochrome) {
             image = applyTint(image);
         }
         final Canvas canvas = new Canvas();

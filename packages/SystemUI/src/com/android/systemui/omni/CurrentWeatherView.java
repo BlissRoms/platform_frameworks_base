@@ -69,6 +69,7 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
     private int mTextColor;
     private float mDarkAmount;
     private boolean mUpdatesEnabled;
+    private boolean mTintableIconPack;
 
     public CurrentWeatherView(Context context) {
         this(context, null);
@@ -131,6 +132,7 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
             return;
         }
         Drawable d = mWeatherClient.getWeatherConditionImage(weatherData.conditionCode);
+        mTintableIconPack = mWeatherClient.isMonochromeIcon();
         d = d.mutate();
         updateTint(d);
         mCurrentImage.setImageDrawable(d);
@@ -207,6 +209,7 @@ public class CurrentWeatherView extends FrameLayout implements OmniJawsClient.Om
     }
 
     private void updateTint(Drawable d) {
+        if (!mTintableIconPack) return;
         if (mDarkAmount == 1) {
             mCurrentImage.setImageTintList(ColorStateList.valueOf(Color.WHITE));
         } else {
