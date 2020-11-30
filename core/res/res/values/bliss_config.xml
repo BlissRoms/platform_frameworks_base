@@ -112,4 +112,7 @@
     <!-- Name of a font family to use as regular font. For theming purpose. -->
     <string name="config_regularFontFamily" translatable="false">sans-serif-regular</string>
 
+    <!-- Default FOD pressed color -->
+    <integer name="config_fod_pressed_color">0</integer>
+
 </resources>
