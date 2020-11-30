@@ -436,11 +436,12 @@ public class BatteryMeterView extends LinearLayout implements
         final int showBatteryPercent = (mIsQsHeader) ?
                                     mShowBatteryPercentQS : mShowBatteryPercent;
         final boolean drawPercentInside = showBatteryPercent == 1 && !mCharging;
-        final boolean addPercentView = showBatteryPercent == 2
+        final boolean addPercentView = mBatteryStyle != BATTERY_STYLE_HIDDEN
+                                    && (showBatteryPercent == 2
                                     || (mBatteryPercentCharging && mCharging)
                                     || mBatteryStyle == BATTERY_STYLE_TEXT
                                     || mShowPercentMode == MODE_ON
-                                    || mShowBatteryEstimate != 0;
+                                    || mShowBatteryEstimate != 0);
 
             mThemedDrawable.setShowPercent(drawPercentInside);
             mCircleDrawable.setShowPercent(drawPercentInside);
@@ -486,9 +487,11 @@ public class BatteryMeterView extends LinearLayout implements
     }
 
     private void batteryPercentViewSetText(CharSequence text) {
-        CharSequence currentText = mBatteryPercentView.getText();
-        if (!currentText.toString().equals(text.toString())) {
-            mBatteryPercentView.setText(text);
+        if (mBatteryPercentView != null) {
+            CharSequence currentText = mBatteryPercentView.getText();
+            if (!currentText.toString().equals(text.toString())) {
+                mBatteryPercentView.setText(text);
+            }
         }
     }
 
