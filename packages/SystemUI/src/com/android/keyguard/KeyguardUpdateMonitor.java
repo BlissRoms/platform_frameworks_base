@@ -128,6 +128,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.android.internal.util.custom.faceunlock.FaceUnlockUtils;
+import com.android.internal.util.bliss.FodUtils;
 
 /**
  * Watches for updates that may be interesting to the keyguard, and provides
@@ -321,6 +322,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     };
 
     private final Handler mHandler;
+    private final boolean mHasFod;
 
     private final Observer<Integer> mRingerModeObserver = new Observer<Integer>() {
         @Override
@@ -1747,6 +1749,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
             }
         };
 
+        mHasFod = FodUtils.hasFodSupport(mContext);
+
         // Since device can't be un-provisioned, we only need to register a content observer
         // to update mDeviceProvisioned when we are...
         if (!mDeviceProvisioned) {
@@ -2138,14 +2142,18 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
             mFingerprintCancelSignal = new CancellationSignal();
 
             if (isEncryptedOrLockdown(userId)) {
-                mFpm.detectFingerprint(mFingerprintCancelSignal, mFingerprintDetectionCallback,
-                        userId);
+                if (mHasFod) {
+                    setFingerprintRunningState(BIOMETRIC_STATE_STOPPED);
+                } else {
+                    mFpm.detectFingerprint(mFingerprintCancelSignal, mFingerprintDetectionCallback,
+                            userId);
+                    setFingerprintRunningState(BIOMETRIC_STATE_RUNNING);
+                }
             } else {
                 mFpm.authenticate(null, mFingerprintCancelSignal, 0,
                         mFingerprintAuthenticationCallback, null, userId);
+                setFingerprintRunningState(BIOMETRIC_STATE_RUNNING);
             }
-
-            setFingerprintRunningState(BIOMETRIC_STATE_RUNNING);
         }
     }
 
