@@ -90,6 +90,7 @@ import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.volume.VolumeComponent;
 import com.google.android.systemui.LiveWallpaperScrimController;
 import com.google.android.systemui.NotificationLockscreenUserManagerGoogle;
+import com.android.systemui.biometrics.FODCircleViewImpl;
 
 import dagger.Lazy;
 
@@ -184,7 +185,8 @@ public class StatusBarGoogle extends StatusBar {
             DismissCallbackRegistry dismissCallbackRegistry,
             Lazy<NotificationShadeDepthController> notificationShadeDepthControllerLazy,
             StatusBarTouchableRegionManager statusBarTouchableRegionManager,
-            FlashlightController flashlightController) {
+            FlashlightController flashlightController,
+            FODCircleViewImpl fodCircleViewImpl) {
         super(context,
                 notificationsController,
                 lightBarController,
@@ -262,7 +264,8 @@ public class StatusBarGoogle extends StatusBar {
                 dismissCallbackRegistry,
                 notificationShadeDepthControllerLazy,
                 statusBarTouchableRegionManager,
-                flashlightController);
+                flashlightController,
+                fodCircleViewImpl);
     }
 
     @Override
