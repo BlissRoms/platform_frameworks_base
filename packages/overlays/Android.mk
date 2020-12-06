@@ -25,6 +25,8 @@ LOCAL_REQUIRED_MODULES := \
 	AccentColorGreenOverlay \
 	AccentColorPurpleOverlay \
 	AccentColorPaletteOverlay \
+	AccentColorRedOverlay \
+	AccentColorDeepRedOverlay \
 	AccentColorCarbonOverlay \
 	AccentColorSandOverlay \
 	AccentColorAmethystOverlay \
