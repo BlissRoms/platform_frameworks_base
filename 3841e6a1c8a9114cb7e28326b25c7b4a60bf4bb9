@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "38ffca28_51e2ca78",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2020-12-06T07:32:40Z",
+      "side": 1,
+      "message": "It seems this causes random reboots :/",
+      "revId": "3841e6a1c8a9114cb7e28326b25c7b4a60bf4bb9",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    }
+  ]
+}
