@@ -74,13 +74,16 @@ public class FODCircleView extends ImageView implements TunerService.Tunable {
     private final int mNavigationBarSize;
     private final boolean mHideFodCircleGoingToSleep;
     private final boolean mShouldBoostBrightness;
+    private final boolean mShouldEnableDimlayer;
     private final Paint mPaintFingerprintBackground = new Paint();
     private final LayoutParams mParams = new LayoutParams();
     private final LayoutParams mPressedParams = new LayoutParams();
     private final WindowManager mWindowManager;
 
-    private IFingerprintInscreen mFingerprintInscreenDaemon;
     private FODIconView mFODIcon;
+    private IFingerprintInscreen mFingerprintInscreenDaemon;
+    private vendor.lineage.biometrics.fingerprint.inscreen.V1_1.IFingerprintInscreen
+        mFingerprintInscreenDaemonV1_1;
 
     private int mColorBackground;
     private int mDreamingOffsetY;
@@ -280,6 +283,8 @@ public class FODCircleView extends ImageView implements TunerService.Tunable {
             mPositionX = daemon.getPositionX();
             mPositionY = daemon.getPositionY();
             mSize = daemon.getSize();
+            mShouldEnableDimlayer = mFingerprintInscreenDaemonV1_1 == null ||
+                    mFingerprintInscreenDaemonV1_1.shouldEnableDimlayer();
         } catch (RemoteException e) {
             throw new RuntimeException("Failed to retrieve FOD circle position or size");
         }
@@ -323,8 +328,7 @@ public class FODCircleView extends ImageView implements TunerService.Tunable {
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
                 WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH |
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED |
-                WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
         mParams.gravity = Gravity.TOP | Gravity.LEFT;
 
         mPressedParams.copyFrom(mParams);
@@ -334,9 +338,12 @@ public class FODCircleView extends ImageView implements TunerService.Tunable {
         mParams.setTitle("Fingerprint on display");
         mPressedParams.setTitle("Fingerprint on display.touched");
 
-        mParams.dimAmount = 0.0f;
+        if (!mShouldEnableDimlayer) {
+            mParams.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            mParams.dimAmount = 0.0f;
+        }
 
-        mPressedView = new ImageView(mContext)  {
+        mPressedView = new ImageView(context)  {
 
             @Override
             protected void onDraw(Canvas canvas) {
@@ -454,6 +461,9 @@ public class FODCircleView extends ImageView implements TunerService.Tunable {
                     mFingerprintInscreenDaemon.asBinder().linkToDeath((cookie) -> {
                         mFingerprintInscreenDaemon = null;
                     }, 0);
+                    mFingerprintInscreenDaemonV1_1 =
+                        vendor.lineage.biometrics.fingerprint.inscreen.V1_1.IFingerprintInscreen
+                                .castFrom(mFingerprintInscreenDaemon);
                 }
             } catch (NoSuchElementException | RemoteException e) {
                 // do nothing
