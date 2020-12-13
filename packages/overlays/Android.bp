@@ -28,7 +28,6 @@ phony {
         "DisplayCutoutEmulationHoleOverlay",
         "DisplayCutoutEmulationTallOverlay",
         "DisplayCutoutEmulationWaterfallOverlay",
-        "FontNotoSerifSourceOverlay",
         "NavigationBarMode3ButtonOverlay",
         "NavigationBarModeGesturalOverlay",
         "TransparentNavigationBarOverlay",
