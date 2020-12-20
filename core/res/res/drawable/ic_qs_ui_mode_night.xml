@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (C) 2019 The Android Open Source Project
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~      http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License
-  -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="24dp"
-        android:height="24dp"
-        android:viewportWidth="24.0"
-        android:viewportHeight="24.0">
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
     <path
-        android:fillColor="@android:color/white"
-        android:pathData="M12,22C17.52,22 22,17.52 22,12 22,6.48 17.52,2 12,2 6.48,2 2,6.48 2,12 2,17.52 6.48,22 12,22ZM12,3.915c3.889,0 8,4.005 8,8.085 0,4.08 -3.927,7.992 -7.928,7.992z"/>
+        android:fillColor="#000000"
+        android:fillType="nonZero"
+        android:pathData="M26.045 41.892V48h-4.09v-6.108h4.09zm12.053-6.687l4.319 4.32-2.893 2.892-4.319-4.32 2.893-2.892zm-28.196 0l2.893 2.893-4.32 4.319-2.892-2.893 4.32-4.319zM23.991 9c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15 0-8.284 6.716-15 15-15zm3.408 7c0.555 3.132-0.44 6.378-2.73 8.668-2.291 2.29-5.537 3.286-8.669 2.731 1.575 3.074 4.906 4.928 8.43 4.553 3.966-0.422 7.1-3.556 7.522-7.523 0.375-3.523-1.479-6.854-4.553-8.429zM48 21.955v4.09h-6.108v-4.09H48zm-41.892 0v4.09H0v-4.09h6.108zM39.524 5.583l2.893 2.893-4.32 4.319-2.892-2.893 4.32-4.319zm-31.048 0l4.319 4.32-2.893 2.892-4.319-4.32 2.893-2.892zM26.046 0v6.108h-4.091V0h4.09z"
+        android:strokeWidth="1" />
 </vector>

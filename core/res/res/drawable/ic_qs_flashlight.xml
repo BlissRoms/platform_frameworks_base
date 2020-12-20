@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2020 ProjectFluid
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24.0"
-    android:viewportHeight="24.0">
+    android:viewportWidth="24"
+    android:viewportHeight="24">
     <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M 20 11 L 23 11 L 23 13 L 20 13 L 20 11 Z M 1 11 L 4 11 L 4 13 L 1 13 L 1 11 Z M 13 1 L 13 4 L 11 4 L 11 1 L 13 1 Z M 4.92 3.5 L 7.05 5.64 L 5.63 7.05 L 3.5 4.93 L 4.92 3.5 Z M 16.95 5.63 L 19.07 3.5 L 20.5 4.93 L 18.37 7.05 L 16.95 5.63 Z M 12 6 C 13.591 6 15.117 6.632 16.243 7.757 C 17.368 8.883 18 10.409 18 12 C 18 14.22 16.79 16.16 15 17.2 L 15 19 C 15 19.265 14.895 19.52 14.707 19.707 C 14.52 19.895 14.265 20 14 20 L 10 20 C 9.735 20 9.48 19.895 9.293 19.707 C 9.105 19.52 9 19.265 9 19 L 9 17.2 C 7.21 16.16 6 14.22 6 12 C 6 10.409 6.632 8.883 7.757 7.757 C 8.883 6.632 10.409 6 12 6 Z M 14 21 L 14 22 C 14 22.265 13.895 22.52 13.707 22.707 C 13.52 22.895 13.265 23 13 23 L 11 23 C 10.735 23 10.48 22.895 10.293 22.707 C 10.105 22.52 10 22.265 10 22 L 10 21 L 14 21 Z M 11 18 L 13 18 L 13 15.87 C 14.73 15.43 16 13.86 16 12 C 16 10.939 15.579 9.922 14.828 9.172 C 14.078 8.421 13.061 8 12 8 C 10.939 8 9.922 8.421 9.172 9.172 C 8.421 9.922 8 10.939 8 12 C 8 13.86 9.27 15.43 11 15.87 L 11 18 Z"/>
+        android:fillColor="#000000"
+        android:fillType="evenOdd"
+        android:pathData="M11.1 0.45v4h1.8v-4h-1.8zm-6 6.1v2.943l0.004 0.043c0.184 1.918 1.109 3.69 2.576 4.938 0.027 0.023 0.048 0.052 0.064 0.084 0.014 0.032 0.022 0.066 0.024 0.1v6.988c0 0.504 0.2 0.987 0.557 1.343 0.356 0.357 0.84 0.557 1.343 0.557h4.691c0.504 0 0.987-0.2 1.344-0.556 0.356-0.357 0.556-0.84 0.556-1.344v-6.988c0.001-0.035 0.01-0.069 0.024-0.1 0.015-0.032 0.037-0.061 0.064-0.085 1.461-1.252 2.376-3.025 2.55-4.942l0.003-0.04V6.55H5.1zm1.8 2.855V8.35h10.2v1.058c-0.14 1.435-0.83 2.761-1.926 3.7l-0.005 0.004c-0.218 0.189-0.393 0.421-0.516 0.683-0.122 0.261-0.188 0.545-0.194 0.834v7.017c0 0.026-0.01 0.052-0.03 0.07-0.018 0.02-0.043 0.03-0.07 0.03H9.668c-0.027 0-0.052-0.01-0.07-0.03-0.02-0.018-0.03-0.044-0.03-0.07v-7.018c-0.006-0.288-0.072-0.572-0.194-0.833-0.123-0.261-0.298-0.494-0.516-0.683L8.85 13.106c-1.103-0.937-1.801-2.263-1.95-3.7zm1.358-3.999l-2-2.91 1.484-1.019 2 2.91-1.484 1.019zm8-3.929l-2 2.91 1.484 1.019 2-2.91-1.484-1.019z" />
 </vector>

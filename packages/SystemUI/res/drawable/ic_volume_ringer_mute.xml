@@ -1,32 +1,10 @@
-<!--
-     Copyright (C) 2017 The Android Open Source Project
-     Copyright (C) 2018 The LineageOS Project
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="24dp"
-    android:viewportHeight="24"
-    android:viewportWidth="24"
     android:width="24dp"
-    android:tint="?android:attr/colorControlNormal" >
-
+    android:height="24dp"
+    android:tint="?android:attr/colorControlNormal"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
     <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M 12 2 A 2 2 0 0 0 10 4 L 10 4.2890625 C 9.1859479 4.5302631 8.4511514 4.921464 7.8007812 5.4101562 L 9.3359375 6.7753906 A 5 5 0 0 1 12 6 A 5 5 0 0 1 17 11 L 17 13.607422 L 19 15.390625 L 19 11 C 19 7.9 16.97 5.1690625 14 4.2890625 L 14 4 A 2 2 0 0 0 12 2 z M 19.75 3.1894531 L 18.330078 4.609375 C 20.040078 6.299375 21 8.6 21 11 L 23 11 C 23 8.07 21.84 5.2494531 19.75 3.1894531 z M 3.3886719 4.1582031 C 1.847828 6.0925266 1 8.5044933 1 11 L 3 11 C 3 8.9954364 3.6774678 7.0659232 4.8945312 5.4980469 L 3.3886719 4.1582031 z M 6.3808594 6.8222656 C 5.5062882 8.0006482 5 9.4539991 5 11 L 5 17 L 3 19 L 3 20 L 21 20 L 21 19.853516 L 17 16.289062 L 17 18 L 7 18 L 7 11 A 5 5 0 0 1 7.8867188 8.1660156 L 6.3808594 6.8222656 z M 10 21 A 2 2 0 0 0 12 23 A 2 2 0 0 0 14 21 L 10 21 z" />
-
-    <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M 2.3183594,3.0820312 0.98828125,4.5761719 20.835938,22.265625 22.166016,20.773438 Z" />
-
+        android:fillColor="#000000"
+        android:pathData="M2.637 1.182L1.363 2.455l4.143 4.142C5.235 7.343 5.096 8.13 5.094 8.924v3.308c-0.016 0.517-0.178 1.02-0.467 1.45-0.288 0.43-0.692 0.77-1.165 0.981-0.285 0.147-0.524 0.37-0.69 0.645-0.166 0.275-0.253 0.59-0.251 0.91v0.303c0 0.466 0.186 0.913 0.515 1.243 0.33 0.33 0.776 0.515 1.242 0.515h3.878C8.12 18.49 8.1 18.704 8.1 18.918c0 1.034 0.41 2.027 1.142 2.758 0.731 0.731 1.724 1.142 2.758 1.142s2.027-0.41 2.758-1.142c0.732-0.731 1.142-1.724 1.142-2.758 0-0.214-0.02-0.428-0.056-0.639h1.344l4.175 4.176 1.273-1.273-20-20zM12 21.018c-0.557 0-1.09-0.222-1.484-0.616-0.394-0.394-0.615-0.927-0.616-1.484 0-0.218 0.036-0.434 0.11-0.639h3.98c0.074 0.205 0.11 0.421 0.11 0.639 0 0.557-0.222 1.09-0.616 1.484-0.393 0.394-0.927 0.615-1.484 0.616zM4.321 16.52l-0.035-0.258c0.767-0.363 1.418-0.932 1.879-1.644 0.46-0.713 0.713-1.54 0.73-2.387V8.924c0.004-0.286 0.033-0.57 0.086-0.852l8.418 8.419L4.32 16.52zM7.613 3.61c1.007-0.837 2.232-1.37 3.532-1.537 1.3-0.166 2.62 0.042 3.806 0.6 1.186 0.558 2.187 1.442 2.888 2.55 0.7 1.106 1.07 2.39 1.067 3.7v3.309c0.016 0.517 0.178 1.02 0.467 1.45 0.288 0.43 0.692 0.77 1.165 0.981 0.285 0.147 0.524 0.37 0.69 0.645 0.166 0.275 0.253 0.59 0.252 0.91v0.303c-0.002 0.268-0.066 0.532-0.187 0.771l-4.067-4.067c-0.078-0.325-0.119-0.659-0.12-0.993V8.924c-0.002-1.354-0.54-2.651-1.498-3.609C14.651 4.358 13.354 3.82 12 3.818c-1.126 0-2.22 0.379-3.106 1.074l-1.28-1.28z" />
 </vector>
