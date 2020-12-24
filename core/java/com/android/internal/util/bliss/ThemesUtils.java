@@ -16,6 +16,17 @@
 
 package com.android.internal.util.bliss;
 
+import static android.os.UserHandle.USER_SYSTEM;
+
+import android.app.UiModeManager;
+import android.content.Context;
+import android.content.om.IOverlayManager;
+import android.content.om.OverlayInfo;
+import android.os.RemoteException;
+import android.os.ServiceManager;
+import android.provider.Settings;
+import android.util.Log;
+
 public class ThemesUtils {
 
     public static final String[] QS_TILE_THEMES = {
@@ -46,6 +57,18 @@ public class ThemesUtils {
 		    "com.android.systemui.qstile.gear", // 24
 		    "com.android.systemui.qstile.badge", // 25
 		    "com.android.systemui.qstile.badgetwo", // 26
+    };
+
+    public static final String[] STATUSBAR_HEIGHT = {
+            "com.gnonymous.gvisualmod.sbh_m", // 1
+            "com.gnonymous.gvisualmod.sbh_l", // 2
+            "com.gnonymous.gvisualmod.sbh_xl", // 3
+    };
+
+    public static final String[] UI_RADIUS = {
+            "com.gnonymous.gvisualmod.urm_r", // 1
+            "com.gnonymous.gvisualmod.urm_m", // 2
+            "com.gnonymous.gvisualmod.urm_l", // 3
     };
 
 }
