@@ -19,8 +19,8 @@ package com.android.systemui.statusbar.policy;
 
 import android.widget.FrameLayout;
 
-import com.android.systemui.statusbar.NotificationMediaManager;
 import com.android.systemui.pulse.VisualizerView;
+import com.android.systemui.statusbar.NotificationMediaManager;
 import com.android.systemui.statusbar.phone.NavigationBarView;
 
 public interface PulseController extends NotificationMediaManager.MediaListener {

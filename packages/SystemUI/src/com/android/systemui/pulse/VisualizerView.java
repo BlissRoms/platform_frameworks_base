@@ -40,8 +40,8 @@ public class VisualizerView extends FrameLayout {
 
     @Override
     public void onAttachedToWindow() {
-        super.onAttachedToWindow();
         mAttached = true;
+        super.onAttachedToWindow();
     }
 
     @Override
