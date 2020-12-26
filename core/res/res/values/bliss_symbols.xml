@@ -120,4 +120,7 @@
 
   <!-- Enable face auth only when swiping security view -->
   <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
+
+   <!-- Default fod pressed icon -->
+   <java-symbol type="integer" name="config_fod_pressed_color" />
 </resources>
