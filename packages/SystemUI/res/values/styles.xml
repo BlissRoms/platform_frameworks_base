@@ -246,6 +246,12 @@
         <item name="android:textColor">@color/dark_mode_qs_icon_color_single_tone</item>
     </style>
 
+    <style name="TextAppearance.QSPanel.Date" parent="TextAppearance.QS.TileLabel.Secondary">
+        <item name="android:textSize">@dimen/qs_panel_date_size</item>
+        <item name="android:fontFamily">@*android:string/config_bodyFontFamily</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
     <style name="TextAppearance.DeviceManagementDialog">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
