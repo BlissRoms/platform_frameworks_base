@@ -112,8 +112,10 @@
     <string name="screenrecord_taps_label" msgid="1595690528298857649">"Berührungen des Bildschirms anzeigen"</string>
     <string name="screenrecord_stop_label" msgid="72699670052087989">"Anhalten"</string>
     <string name="screenrecord_share_label" msgid="5025590804030086930">"Teilen"</string>
+    <string name="screenrecord_delete_label" msgid="1376347010553987058">"Löschen"</string>
     <string name="screenrecord_save_title" msgid="1886652605520893850">"Bildschirmaufzeichnung gespeichert"</string>
     <string name="screenrecord_save_text" msgid="3008973099800840163">"Zum Ansehen tippen"</string>
+    <string name="screenrecord_delete_description" msgid="1604522770162810570">"Bildschirmaufzeichnung gelöscht"</string>
     <string name="screenrecord_delete_error" msgid="2870506119743013588">"Fehler beim Löschen der Bildschirmaufzeichnung"</string>
     <string name="screenrecord_start_error" msgid="2200660692479682368">"Fehler beim Start der Bildschirmaufzeichnung"</string>
     <string name="accessibility_back" msgid="6530104400086152611">"Zurück"</string>
