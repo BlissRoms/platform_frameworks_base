@@ -6,5 +6,10 @@
     android:viewportHeight="24">
     <path
         android:fillColor="@color/dismiss_all_icon_color"
-        android:pathData="M5,13h14v-2H5v2zm-2 4h14v-2H3v2zM7 7v2h14V7H7z" />
+        android:pathData="M 6.965 8.576 C 6.52 8.131 6.52 7.409 6.965 6.964 C 7.41 6.519 8.131 6.519 8.576 6.964 L 17.055 15.442 C 17.5 15.887 17.5 16.609 17.055 17.054 C 16.609 17.499 15.888 17.499 15.443 17.054 L 6.965 8.576 Z"
+        android:strokeWidth="1"/>
+    <path
+        android:fillColor="@color/dismiss_all_icon_color"
+        android:pathData="M 15.443 6.964 C 15.888 6.519 16.609 6.519 17.055 6.964 C 17.5 7.409 17.5 8.131 17.055 8.576 L 8.576 17.054 C 8.131 17.499 7.41 17.499 6.965 17.054 C 6.52 16.609 6.52 15.887 6.965 15.442 L 15.443 6.964 Z"
+        android:strokeWidth="1"/>
 </vector>
