@@ -5783,6 +5783,11 @@ public final class Settings {
         public static final String SCREENSHOT_COMPRESSION = "screenshot_compression";
 
         /**
+         * @hide
+         */
+        public static final String SWITCH_STYLE = "switch_style";
+
+	/**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
