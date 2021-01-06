@@ -216,5 +216,6 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.STATUS_BAR_BATTERY_STYLE, new InclusiveIntegerRangeValidator(0, 2));
         VALIDATORS.put(System.SHOW_BATTERY_PERCENT_INSIDE, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.LOCKSCREEN_BATTERY_INFO, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.LOCKSCREEN_BATTERY_INFO_TEMP_UNIT, BOOLEAN_VALIDATOR);
     }
 }
