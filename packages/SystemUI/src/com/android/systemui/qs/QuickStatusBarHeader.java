@@ -308,7 +308,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mMicCameraIndicatorsEnabled = mPrivacyItemController.getMicCameraAvailable();
 
         Dependency.get(TunerService.class).addTunable(this,
-                StatusBarIconController.ICON_BLACKLIST,
                 QS_SHOW_AUTO_BRIGHTNESS, QS_SHOW_BRIGHTNESS_SLIDER);
     }
 
@@ -836,9 +835,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         } else if (QS_SHOW_AUTO_BRIGHTNESS.equals(key)) {
             mIsQsAutoBrightnessEnabled = TunerService.parseIntegerSwitch(newValue, true);
             updateResources();
-        } else if (StatusBarIconController.ICON_BLACKLIST.equals(key)) {
-            mClockView.setClockVisibleByUser(!StatusBarIconController.getIconBlacklist(
-                    mContext, newValue).contains("clock"));
         }
     }
 }
