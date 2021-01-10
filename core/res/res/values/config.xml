@@ -5103,7 +5103,7 @@
     <item name="config_wallpaperMinScale" format="float" type="dimen">1</item>
 
     <!-- The max scale for the wallpaper when it's zoomed in -->
-    <item name="config_wallpaperMaxScale" format="float" type="dimen">1.10</item>
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">1</item>
 
     <!-- If true, the wallpaper will scale regardless of the value of shouldZoomOutWallpaper() -->
     <bool name="config_alwaysScaleWallpaper">false</bool>
