@@ -5922,6 +5922,18 @@ public final class Settings {
         public static final String QS_PANEL_BG_ALPHA = "qs_panel_bg_alpha";
 
         /**
+         * Whether to change the transparency of the qs status bar
+         * @hide
+         */
+        public static final String QS_SB_BG_ALPHA = "qs_sb_bg_alpha";
+
+        /**
+         * Whether to show gradient below status bar in qs panel
+         * @hide
+         */
+        public static final String QS_SB_BG_GRADIENT = "qs_sb_bg_gradient";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
