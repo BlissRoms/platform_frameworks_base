@@ -18,8 +18,8 @@
 <resources>
 
     <!-- Clear all notifications button -->
-    <color name="dismiss_all_background_color">#1a1a1a</color>
+    <color name="dismiss_all_background_color">@*android:color/primary_dark_device_default_settings</color>
     <color name="dismiss_all_background_color_ripple">#555555</color>
-    <color name="dismiss_all_icon_color">@android:color/white</color>
+    <color name="dismiss_all_icon_color">@*android:color/accent_device_default_dark</color>
 
 </resources>

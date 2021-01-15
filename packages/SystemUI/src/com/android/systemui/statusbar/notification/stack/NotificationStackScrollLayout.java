@@ -5836,7 +5836,7 @@ public class NotificationStackScrollLayout extends ViewGroup implements ScrollAd
             if (mStatusBar.getDismissAllButton() != null) {
                 mStatusBar.getDismissAllButton().setOnClickListener(v -> {
                     mMetricsLogger.action(MetricsEvent.ACTION_DISMISS_ALL_NOTES);
-                    clearNotifications(ROWS_ALL, true /* closeShade */);
+                    clearNotifications(ROWS_ALL, true /* closeShade */, false/*forceToLeft*/);
                 });
             }
         }
