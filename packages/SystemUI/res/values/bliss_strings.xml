@@ -142,4 +142,7 @@
 
     <!-- Running service button -->
     <string name="accessibility_quick_settings_running_services">Open Running Services screen.</string>
+
+    <!-- Now playing lockscreen music Ticker -->
+    <string name="ambientmusic_songinfo" formatted="false">%s by %s</string>
 </resources>
