@@ -315,9 +315,11 @@ public class BrightnessController implements ToggleSlider.Listener {
         mContext = context;
         mIcon = icon;
         mLevelIcon = levelIcon;
-        mIcon.setOnClickListener((View v) -> {
-            onClickAutomaticIcon();
-        });
+        if (mIcon != null) {
+            mIcon.setOnClickListener((View v) -> {
+                onClickAutomaticIcon();
+            });
+        }
         mSliderMax = GAMMA_SPACE_MAX;
         mControl = control;
         mControl.setMax(GAMMA_SPACE_MAX);
