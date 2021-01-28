@@ -73,4 +73,11 @@
     <dimen name="net_traffic_multi_text_size">8dp</dimen>
     <dimen name="net_traffic_txt_img_padding">2dp</dimen>
     <dimen name="net_traffic_single_text_size_x">14dp</dimen>
+
+    <!-- Margin on the left side of the center clock -->
+    <dimen name="status_bar_center_clock_padding_start">0dp</dimen>
+
+    <!-- Margin on the right side of the center clock -->
+    <dimen name="status_bar_center_clock_padding_end">0dp</dimen>
+
 </resources>
