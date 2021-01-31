@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.om.IOverlayManager;
 import android.content.om.OverlayManager;
+import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
 import android.database.ContentObserver;
 import android.net.Uri;
@@ -135,6 +136,9 @@ public class ThemeOverlayController extends SystemUI {
         mContext.getContentResolver().registerContentObserver(
                 Settings.Secure.getUriFor("accent_color"),
                 false, observer, UserHandle.USER_ALL);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.DISPLAY_CUTOUT_MODE),
+                false, observer, UserHandle.USER_ALL);
     }
 
     private void updateThemeOverlays() {
@@ -163,5 +167,12 @@ public class ThemeOverlayController extends SystemUI {
             }
         }
         mThemeManager.applyCurrentUserOverlays(categoryToPackage, userHandles);
+    }
+
+    private static String getDefaultHomeApp(Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.addCategory("android.intent.category.HOME");
+        return pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY).activityInfo.packageName;
     }
 }
