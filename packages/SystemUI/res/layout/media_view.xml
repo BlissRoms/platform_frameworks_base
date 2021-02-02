@@ -50,7 +50,7 @@
             android:fontFamily="@*android:string/config_bodyFontFamily"
             android:textColor="@color/media_primary_text"
             android:gravity="start"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/media_total_time"
@@ -60,7 +60,7 @@
             android:fontFamily="@*android:string/config_bodyFontFamily"
             android:textColor="@color/media_primary_text"
             android:gravity="end"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
     </FrameLayout>
 
     <!--  Actions must be ordered left-to-right even in RTL layout.  However, they appear in a chain
@@ -122,10 +122,10 @@
         android:background="@drawable/qs_media_light_source"
         android:orientation="horizontal"
         android:forceHasOverlappingRendering="false"
-        android:paddingStart="12dp"
-        android:paddingTop="6dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="6dp">
+        android:paddingStart="11dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="11dp"
+        android:paddingBottom="5dp">
 
         <ImageView
             android:id="@+id/media_seamless_image"
@@ -146,7 +146,7 @@
             android:text="@*android:string/ext_media_seamless_action"
             android:textColor="@color/media_primary_text"
             android:textDirection="locale"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <ImageView
@@ -182,7 +182,7 @@
         android:singleLine="true"
         android:fontFamily="@*android:string/config_headlineFontFamily"
         android:textDirection="locale"
-        android:textSize="14sp" />
+        android:textSize="12sp" />
 
     <!-- Song name -->
     <TextView
@@ -192,7 +192,7 @@
         android:fontFamily="@*android:string/config_headlineFontFamilyMedium"
         android:singleLine="true"
         android:textColor="@color/media_primary_text"
-        android:textSize="16sp" />
+        android:textSize="15sp" />
 
     <!-- Artist name -->
     <TextView

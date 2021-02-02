@@ -1296,9 +1296,9 @@
     <!-- Size of media cards in the QSPanel carousel -->
     <dimen name="qs_media_width">350dp</dimen>
     <dimen name="qs_media_padding">16dp</dimen>
-    <dimen name="qs_media_panel_outer_padding">10dp</dimen>
-    <dimen name="qs_media_album_size">52dp</dimen>
-    <dimen name="qs_media_icon_size">16dp</dimen>
+    <dimen name="qs_media_panel_outer_padding">12dp</dimen>
+    <dimen name="qs_media_album_size">47dp</dimen>
+    <dimen name="qs_media_icon_size">14dp</dimen>
     <dimen name="qs_center_guideline_padding">10dp</dimen>
     <dimen name="qs_seamless_icon_size">@dimen/qs_media_icon_size</dimen>
     <dimen name="qs_seamless_fallback_icon_size">@dimen/qs_seamless_icon_size</dimen>
@@ -1306,7 +1306,7 @@
     <dimen name="qqs_media_spacing">16dp</dimen>
     <dimen name="qs_footer_horizontal_margin">22dp</dimen>
     <dimen name="qs_media_disabled_seekbar_height">1dp</dimen>
-    <dimen name="qs_media_enabled_seekbar_height">3dp</dimen>
+    <dimen name="qs_media_enabled_seekbar_height">2.5dp</dimen>
     <dimen name="qs_media_enabled_seekbar_vertical_padding">15dp</dimen>
     <dimen name="qs_media_disabled_seekbar_vertical_padding">16dp</dimen>
 
