@@ -484,8 +484,7 @@ public class MobileSignalController extends SignalController<
             }
             boolean dataDisabled = mCurrentState.userSetup
                     && (mCurrentState.iconGroup == TelephonyIcons.DATA_DISABLED
-                    || (mCurrentState.iconGroup == TelephonyIcons.NOT_DEFAULT_DATA
-                            && mCurrentState.defaultDataOff));
+                    || (mCurrentState.iconGroup == TelephonyIcons.NOT_DEFAULT_DATA));
             boolean noInternet = mCurrentState.inetCondition == 0;
             boolean cutOut = dataDisabled || noInternet;
             return SignalDrawable.getState(level, getNumLevels(), cutOut);
