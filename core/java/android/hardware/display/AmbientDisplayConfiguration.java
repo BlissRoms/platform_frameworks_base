@@ -164,8 +164,10 @@ public class AmbientDisplayConfiguration {
      * {@hide}
      */
     @TestApi
-    public boolean alwaysOnEnabled(int user) {
-        return alwaysOnEnabledSetting(user) || alwaysOnChargingEnabled(user);
+public boolean alwaysOnEnabled(int user) {
+        return (boolSetting(Settings.Secure.DOZE_ALWAYS_ON, user, mAlwaysOnByDefault ? 1 : 0) ||
+                boolSetting(Settings.Secure.DOZE_ON_CHARGE_NOW, user, 0))
+                && alwaysOnAvailable() && !accessibilityInversionEnabled(user);
     }
 
     /**
@@ -246,22 +248,6 @@ public class AmbientDisplayConfiguration {
         return mDeviceHasSoli;
     }
 
-    /** {@hide} */
-    public boolean alwaysOnEnabledSetting(int user) {
-        boolean alwaysOnEnabled = boolSetting(Settings.Secure.DOZE_ALWAYS_ON, user, mAlwaysOnByDefault ? 1 : 0);
-        return alwaysOnEnabled && alwaysOnAvailable() && !accessibilityInversionEnabled(user);
-    }
-
-    /** {@hide} */
-    public boolean alwaysOnChargingEnabled(int user) {
-        final boolean dozeOnChargeEnabled = boolSetting(Settings.Secure.DOZE_ON_CHARGE, user, 0);
-        if (dozeOnChargeEnabled) {
-            final boolean dozeOnChargeEnabledNow = boolSetting(Settings.Secure.DOZE_ON_CHARGE_NOW, user, 0);
-            return dozeOnChargeEnabledNow && alwaysOnAvailable() && !accessibilityInversionEnabled(user);
-        }
-        return false;
-    }
-    
     /** {@hide} */
     public boolean isAmbientGestureEnabled(int user) {
         return !mDeviceHasSoli && Settings.System.getIntForUser(mContext.getContentResolver(),

@@ -64,6 +64,7 @@ public class TunerServiceImpl extends TunerService {
     private static final String[] RESET_BLACKLIST = new String[] {
             QSTileHost.TILES_SETTING,
             Settings.Secure.DOZE_ALWAYS_ON,
+            Settings.Secure.DOZE_ON_CHARGE_NOW,
             Settings.Secure.MEDIA_CONTROLS_RESUME,
             StatusBar.SCREEN_BRIGHTNESS_MODE,
             StatusBar.STATUS_BAR_BRIGHTNESS_CONTROL,
