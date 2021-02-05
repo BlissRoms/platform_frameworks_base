@@ -54,9 +54,11 @@ import com.android.settingslib.Utils;
 import com.android.settingslib.development.DevelopmentSettingsEnabler;
 import com.android.settingslib.drawable.UserIconDrawable;
 import com.android.systemui.Dependency;
+import com.android.keyguard.CarrierText;
 import com.android.systemui.R;
 import com.android.systemui.R.dimen;
 import com.android.systemui.plugins.ActivityStarter;
+import com.android.systemui.statusbar.DataUsageView;
 import com.android.systemui.qs.TouchAnimator.Builder;
 import com.android.systemui.statusbar.phone.MultiUserSwitch;
 import com.android.systemui.statusbar.phone.SettingsButton;
@@ -79,6 +81,8 @@ public class OPQSFooter extends LinearLayout {
     private Boolean mExpanded;
     private Boolean mIsLandscape;
     private FrameLayout mFooterActions;
+    private DataUsageView mDataUsageView;
+    private CarrierText mCarrierText;
 
     public OPQSFooter(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -91,6 +95,9 @@ public class OPQSFooter extends LinearLayout {
         mEdit = findViewById(R.id.edit);
         mSettingsButton = findViewById(R.id.settings_button);
         mFooterActions = findViewById(R.id.op_qs_footer_actions);
+        mCarrierText = findViewById(R.id.qs_carrier_text);
+        mDataUsageView = findViewById(R.id.data_usage_view);
+        mDataUsageView.setVisibility(View.GONE);
         mFooterAnimator = createFooterAnimator();
         mCarrierTextAnimator = createCarrierTextAnimator();
     }
@@ -105,6 +112,12 @@ public class OPQSFooter extends LinearLayout {
     }
 
     public void setExpanded(boolean expanded) {
+        if (mDataUsageView != null) {
+            mDataUsageView.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            if (expanded) {
+                mDataUsageView.updateUsage();
+            }
+        }
         mExpanded = expanded;
         if (mEdit != null) {
             int visibility = mExpanded ? View.VISIBLE : View.GONE;
@@ -115,8 +128,8 @@ public class OPQSFooter extends LinearLayout {
     @Nullable
     private TouchAnimator createFooterAnimator() {
         return new TouchAnimator.Builder()
-                .addFloat(mEdit, "alpha", 0, 1)
-                .setStartDelay(0.9f)
+                .addFloat(mEdit, "alpha", 0, 0, 1)
+                .addFloat(mDataUsageView, "alpha", 0, 0, 1)
                 .build();
     }
 
