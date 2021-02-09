@@ -498,11 +498,11 @@ public class NavigationBarView extends FrameLayout implements
         final boolean dirChange = oldConfig.getLayoutDirection() != mConfiguration.getLayoutDirection();
 
         if (orientationChange || densityChange) {
-            mDockedIcon = getDrawable(R.drawable.ic_sysbar_docked);
+            mDockedIcon = getDrawable(R.drawable.ic_sysbar_docked2);
             mHomeDefaultIcon = getHomeDrawable();
         }
         if (densityChange || dirChange) {
-            mRecentIcon = getDrawable(R.drawable.ic_sysbar_recent);
+            mRecentIcon = getDrawable(R.drawable.ic_sysbar_recent2);
             mContextualButtonGroup.updateIcons();
         }
         if (orientationChange || densityChange || dirChange) {
@@ -517,7 +517,7 @@ public class NavigationBarView extends FrameLayout implements
     }
 
     public @DrawableRes int getBackDrawableRes() {
-        return chooseNavigationIconDrawableRes(R.drawable.ic_sysbar_back,
+        return chooseNavigationIconDrawableRes(R.drawable.ic_sysbar_back2,
                 R.drawable.ic_sysbar_back_quick_step);
     }
 
@@ -525,7 +525,7 @@ public class NavigationBarView extends FrameLayout implements
         final boolean quickStepEnabled = mOverviewProxyService.shouldShowSwipeUpUI();
         KeyButtonDrawable drawable = quickStepEnabled
                 ? getDrawable(R.drawable.ic_sysbar_home_quick_step)
-                : getDrawable(R.drawable.ic_sysbar_home);
+                : getDrawable(R.drawable.ic_sysbar_home2);
         orientHomeButton(drawable);
         return drawable;
     }
