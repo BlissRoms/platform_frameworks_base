@@ -545,7 +545,7 @@
     <dimen name="qs_header_tooltip_height">48dp</dimen>
     <dimen name="qs_header_alarm_icon_size">@dimen/status_bar_icon_drawing_size</dimen>
     <dimen name="qs_header_mobile_icon_size">@dimen/status_bar_icon_drawing_size</dimen>
-    <dimen name="qs_header_alarm_text_margin_start">6dp</dimen>
+    <dimen name="qs_header_alarm_text_margin_start">4dp</dimen>
     <dimen name="qs_header_separator_width">8dp</dimen>
     <dimen name="qs_header_carrier_separator_width">6dp</dimen>
     <dimen name="qs_status_separator">32dp</dimen>

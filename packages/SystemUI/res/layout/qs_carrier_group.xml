@@ -44,11 +44,14 @@
         android:id="@+id/carrier1"
         android:layout_weight="1"/>
 
-    <View
+    <TextView
         android:id="@+id/qs_carrier_divider1"
-        android:layout_width="@dimen/qs_header_carrier_separator_width"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:visibility="gone"
+        android:gravity="center"
+        android:text="@string/qs_header_info_separator"
+        android:textAppearance="@style/TextAppearance.QS.Status"
         android:importantForAccessibility="no"/>
 
     <include
@@ -57,12 +60,15 @@
         android:layout_weight="1"
         android:visibility="gone"/>
 
-    <View
+    <TextView
         android:id="@+id/qs_carrier_divider2"
-        android:layout_width="@dimen/qs_header_carrier_separator_width"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:visibility="gone"
+        android:gravity="center"
+        android:text="@string/qs_header_info_separator"
+        android:textAppearance="@style/TextAppearance.QS.Status"
         android:importantForAccessibility="no"/>
 
     <include

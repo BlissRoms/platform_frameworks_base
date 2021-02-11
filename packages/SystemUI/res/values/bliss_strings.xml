@@ -180,4 +180,7 @@
     <!-- Screenrecorder -->
     <string name="screenrecord_stopdot_label">Show dot to stop recording</string>
     <string name="screenrecord_lowquality_label">Lower recording quality</string>
+
+    <!-- QS header info separator -->
+    <string name="qs_header_info_separator" translatable="false">\u0020\u0020•\u0020\u0020</string>
 </resources>

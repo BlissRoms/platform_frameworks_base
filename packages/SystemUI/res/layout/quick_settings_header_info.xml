@@ -57,10 +57,13 @@
                     android:visibility="gone"/>
             </LinearLayout>
 
-            <View
+            <TextView
                 android:id="@+id/status_separator"
-                android:layout_width="@dimen/qs_header_separator_width"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/qs_header_info_separator"
+                android:textAppearance="@style/TextAppearance.QS.Status"
                 android:visibility="gone"/>
 
             <LinearLayout
