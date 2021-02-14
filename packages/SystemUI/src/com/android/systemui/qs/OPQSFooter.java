@@ -74,6 +74,7 @@ public class OPQSFooter extends LinearLayout {
     private SettingsButton mSettingsButton;
     protected View mEdit;
     protected TouchAnimator mFooterAnimator;
+    protected TouchAnimator mCarrierTextAnimator;
     private ActivityStarter mActivityStarter;
     private Boolean mExpanded;
     private Boolean mIsLandscape;
@@ -86,16 +87,20 @@ public class OPQSFooter extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        
+
         mEdit = findViewById(R.id.edit);
         mSettingsButton = findViewById(R.id.settings_button);
         mFooterActions = findViewById(R.id.op_qs_footer_actions);
         mFooterAnimator = createFooterAnimator();
+        mCarrierTextAnimator = createCarrierTextAnimator();
     }
 
     public void setExpansion(float headerExpansionFraction) {
         if (mFooterAnimator != null) {
             mFooterAnimator.setPosition(headerExpansionFraction);
+        }
+        if (mCarrierTextAnimator != null) {
+            mCarrierTextAnimator.setPosition(headerExpansionFraction);
         }
     }
 
@@ -112,6 +117,13 @@ public class OPQSFooter extends LinearLayout {
         return new TouchAnimator.Builder()
                 .addFloat(mEdit, "alpha", 0, 1)
                 .setStartDelay(0.9f)
+                .build();
+    }
+
+    @Nullable
+    private TouchAnimator createCarrierTextAnimator() {
+        return new TouchAnimator.Builder()
+                .addFloat(mCarrierText, "alpha", 1, 0, 0)
                 .build();
     }
 
