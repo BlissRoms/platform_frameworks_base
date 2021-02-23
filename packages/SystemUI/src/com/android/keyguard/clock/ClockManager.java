@@ -181,6 +181,8 @@ public final class ClockManager {
         addBuiltinClock(() -> new StickerTagClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OOSClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OctaviDigitalClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new Fluidv2ClockController(res, layoutInflater, colorExtractor));
+
         // Store the size of the display for generation of clock preview.
         DisplayMetrics dm = res.getDisplayMetrics();
         mWidth = dm.widthPixels;
