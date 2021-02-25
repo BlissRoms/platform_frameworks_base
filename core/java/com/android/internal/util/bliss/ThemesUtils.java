@@ -81,6 +81,10 @@ public static final String TAG = "ThemesUtils";
 
     public static final String NAVBAR_COLOR_ACCENT = "com.gnonymous.gvisualmod.pgm_accent";
 
+    public static final String HEADER_LARGE = "com.android.theme.header.large";
+
+    public static final String HEADER_XLARGE = "com.android.theme.header.xlarge";
+
     public static final String[] STOCK = {
             "com.android.theme.stock.system",
     };
