@@ -90,14 +90,9 @@
     <!-- App Lock -->
     <dimen name="applock_icon_dimension">54dp</dimen>
 
-    <!-- Bottom margin size when fingerprint in display is active -->
-    <dimen name="keyguard_indication_margin_bottom_fingerprint_in_display">30dp</dimen>
-
     <!-- QS -->
     <dimen name="op_qs_footer_height">45dp</dimen>
     <dimen name="op_qs_footer_action_layout_size">96dp</dimen>
-    <dimen name="quick_settings_top_margin_media">10dp</dimen>
-    <dimen name="quick_settings_top_margin_media_extra">14dp</dimen>
     <dimen name="qs_media_action_button_margin_top">20dp</dimen>
     <dimen name="qs_media_action_button_size">40dp</dimen>
     <dimen name="op_brightness_margin">37dp</dimen>
@@ -135,4 +130,8 @@
     <dimen name="qs_header_image_side_margin">4dp</dimen>
     <dimen name="qs_header_image_top_margin">4dp</dimen>
     <dimen name="qs_header_image_bottom_margin">4dp</dimen>
+
+    <!-- Media Player -->
+    <dimen name="quick_settings_top_margin_media">4dp</dimen>
+    <dimen name="quick_settings_top_margin_media_extra">8dp</dimen>
 </resources>
