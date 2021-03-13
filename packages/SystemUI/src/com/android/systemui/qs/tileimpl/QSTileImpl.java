@@ -536,7 +536,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 if (setQsUseNewTint == 1) {
                     return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorPrimary);
                 } else if (setQsUseNewTint == 2) {
-                    return context.getResources().getColor(R.color.qs_tile_oos_background);
+                    return context.getResources().getColor(R.color.qs_tile_icon_oos);
                 } else {
                     return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
                 }
