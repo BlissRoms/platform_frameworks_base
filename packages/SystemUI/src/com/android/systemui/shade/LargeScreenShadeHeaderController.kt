@@ -131,6 +131,8 @@ class LargeScreenShadeHeaderController @Inject constructor(
 
     private var cutoutLeft = 0
     private var cutoutRight = 0
+    private var sbPaddingLeft = 0
+    private var sbPaddingRight = 0
     private var roundedCorners = 0
     private var lastInsets: WindowInsets? = null
 
@@ -354,8 +356,8 @@ class LargeScreenShadeHeaderController @Inject constructor(
         val cutout = insets.displayCutout
 
         val sbInsets: Pair<Int, Int> = insetsProvider.getStatusBarContentInsetsForCurrentRotation()
-        cutoutLeft = sbInsets.first
-        cutoutRight = sbInsets.second
+        cutoutLeft = sbInsets.first + sbPaddingLeft
+        cutoutRight = sbInsets.second + sbPaddingRight
         val hasCornerCutout: Boolean = insetsProvider.currentRotationHasCornerCutout()
         updateQQSPaddings()
         // Set these guides as the left/right limits for content that lives in the top row, using
@@ -484,6 +486,8 @@ class LargeScreenShadeHeaderController @Inject constructor(
 
     private fun updateResources() {
         roundedCorners = resources.getDimensionPixelSize(R.dimen.rounded_corner_content_padding)
+        sbPaddingLeft = resources.getDimensionPixelSize(R.dimen.status_bar_padding_start)
+        sbPaddingRight = resources.getDimensionPixelSize(R.dimen.status_bar_padding_end)
         val padding = resources.getDimensionPixelSize(R.dimen.qs_panel_padding)
         header.setPadding(padding, header.paddingTop, padding, header.paddingBottom)
         updateQQSPaddings()
