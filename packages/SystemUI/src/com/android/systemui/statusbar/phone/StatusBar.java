@@ -3093,6 +3093,7 @@ public class StatusBar extends SystemUI implements
             mStatusBarStateController.setState(StatusBarState.KEYGUARD);
         }
         updatePanelExpansionForKeyguard();
+        mNotificationPanelViewController.updateNotificationTranslucency();
     }
 
     private void updatePanelExpansionForKeyguard() {
@@ -3102,6 +3103,10 @@ public class StatusBar extends SystemUI implements
         } else if (mState == StatusBarState.FULLSCREEN_USER_SWITCHER) {
             instantCollapseNotificationPanel();
         }
+    }
+
+    public PulseController getPulseController() {
+        return mPulseController;
     }
 
     private void onLaunchTransitionFadingEnded() {
