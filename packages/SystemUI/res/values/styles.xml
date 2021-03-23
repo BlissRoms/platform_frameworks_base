@@ -376,6 +376,8 @@
         <item name="android:itemTextAppearance">@style/Control.MenuItem</item>
     </style>
 
+    <style name="Theme_SystemUI_QuickSettings" parent="@style/Theme.SystemUI.QuickSettings"/>
+
     <style name="Theme.SystemUI.QuickSettings.BrightnessDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
