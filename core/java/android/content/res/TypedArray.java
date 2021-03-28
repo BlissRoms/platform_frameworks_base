@@ -519,10 +519,8 @@ public class TypedArray {
             if (resId > 0) {
                 String resName = this.mAssets.getResourceName(resId);
                 int newColor = defValue;
-                if (AccentUtils.isResourceDarkAccent(resName))
-                    newColor = AccentUtils.getDarkAccentColor(defValue);
-                else if (AccentUtils.isResourceLightAccent(resName))
-                    newColor = AccentUtils.getLightAccentColor(defValue);
+                if (AccentUtils.isResourceColorAccent(resName))
+                    newColor = AccentUtils.getAccent(defValue);
                 if (newColor != defValue)
                     return newColor;
             }

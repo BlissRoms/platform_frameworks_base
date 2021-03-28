@@ -16,28 +16,20 @@ public final class AccentUtils {
 
     private static final String TAG = "AccentUtils";
 
-    private static final String ACCENT_DARK_SETTING = "accent_dark";
-    private static final String ACCENT_LIGHT_SETTING = "accent_light";
+    private static final String ACCENT_COLOR_SETTING = "accent_color";
 
-    public static boolean isResourceDarkAccent(@Nullable String resName) {
+    public static boolean isResourceColorAccent(@Nullable String resName) {
         return resName == null
                 ? false
-                : resName.contains("accent_device_default_dark");
+                :  resName.contains("accent_device_default_dark")
+                || resName.contains("colorAccent")
+                || resName.contains("accent_device_default_light");
     }
 
-    public static boolean isResourceLightAccent(@Nullable String resName) {
-        return resName == null
-                ? false
-                : resName.contains("accent_device_default_light");
+    public static int getAccent(int defaultColor) {
+        return getAccentColor(defaultColor, ACCENT_COLOR_SETTING);
     }
 
-    public static int getDarkAccentColor(int defaultColor) {
-        return getAccentColor(defaultColor, ACCENT_DARK_SETTING);
-    }
-
-    public static int getLightAccentColor(int defaultColor) {
-        return getAccentColor(defaultColor, ACCENT_LIGHT_SETTING);
-    }
 
     private static int getAccentColor(int defaultColor, String setting) {
         final Context context = ActivityThread.currentApplication();

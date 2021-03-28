@@ -1062,10 +1062,8 @@ public class Resources {
                 if (id != 0) {
                     try {
                         String resName = getResourceName(id);
-                        if (AccentUtils.isResourceDarkAccent(resName))
-                            value.data = AccentUtils.getDarkAccentColor(value.data);
-                        else if (AccentUtils.isResourceLightAccent(resName))
-                            value.data = AccentUtils.getLightAccentColor(value.data);
+                        if (AccentUtils.isResourceColorAccent(resName))
+                            value.data = AccentUtils.getAccent(value.data);
                     } catch (NotFoundException ignored) {
                     } catch (Exception ex) {
                         Log.e(TAG, ex.getMessage());
