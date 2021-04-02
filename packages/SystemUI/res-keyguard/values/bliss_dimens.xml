@@ -39,4 +39,8 @@
 
     <!-- Custom clock outline size -->
     <dimen name="clock_oronos_outline_size">4dp</dimen>
+
+    <!-- Tag clock size -->
+    <dimen name="btlg_tag_width">300dp</dimen>
+    <dimen name="btlg_tag_height">165dp</dimen>
 </resources>
