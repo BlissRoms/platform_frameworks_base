@@ -78,6 +78,7 @@ public class CameraServiceProxy extends SystemService
     // Handler message codes
     private static final int MSG_SWITCH_USER = 1;
     private static final int MSG_CAMERA_CLOSED = 1001;
+    private static final int MSG_CAMERA_OPEN = 1002;
 
     private static final int RETRY_DELAY_TIME = 20; //ms
     private static final int RETRY_TIMES = 60;
@@ -115,6 +116,7 @@ public class CameraServiceProxy extends SystemService
     private final boolean mSendCameraStatusIntent;
 
     private long mClosedEvent;
+    private long mOpenEvent;
 
     /**
      * Structure to track camera usage
@@ -215,9 +217,12 @@ public class CameraServiceProxy extends SystemService
                        if (SystemClock.elapsedRealtime() - mClosedEvent < CAMERA_EVENT_DELAY_TIME) {
                            mHandler.removeMessages(MSG_CAMERA_CLOSED);
                        }
-                       sendCameraStateIntent("1");
+                       mHandler.sendEmptyMessageDelayed(MSG_CAMERA_OPEN, CAMERA_EVENT_DELAY_TIME);
                    } break;
                    case ICameraServiceProxy.CAMERA_STATE_CLOSED : {
+                       if (SystemClock.elapsedRealtime() - mOpenEvent < CAMERA_EVENT_DELAY_TIME) {
+                           mHandler.removeMessages(MSG_CAMERA_OPEN);
+                       }
                        mClosedEvent = SystemClock.elapsedRealtime();
                        mHandler.sendEmptyMessageDelayed(MSG_CAMERA_CLOSED, CAMERA_EVENT_DELAY_TIME);
                    } break;
@@ -252,9 +257,10 @@ public class CameraServiceProxy extends SystemService
                 notifySwitchWithRetries(msg.arg1);
             } break;
             case MSG_CAMERA_CLOSED: {
-                if (mSendCameraStatusIntent){
-                    sendCameraStateIntent("0");
-                }
+                sendCameraStateIntent("0");
+            } break;
+            case MSG_CAMERA_OPEN: {
+                sendCameraStateIntent("1");
             } break;
             default: {
                 Slog.e(TAG, "CameraServiceProxy error, invalid message: " + msg.what);
