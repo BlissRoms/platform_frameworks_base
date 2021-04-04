@@ -44,6 +44,7 @@ class MediaArtworkProcessor @Inject constructor() {
     private val mTmpSize = Point()
     private var mArtworkCache: Bitmap? = null
     private var mDownSample: Int = DOWNSAMPLE
+    private var mColorAlpha: Int = COLOR_ALPHA
 
     fun processArtwork(context: Context, artwork: Bitmap, blur_radius: Float): Bitmap? {
         if (mArtworkCache != null) {
@@ -55,8 +56,14 @@ class MediaArtworkProcessor @Inject constructor() {
         var output: Allocation? = null
         var inBitmap: Bitmap? = null
         try {
+            if (blur_radius < 5f) {
+                mDownSample = 2
+                mColorAlpha = (mColorAlpha * 0.5f).toInt()
+            } else if (blur_radius < 1f) {
+                mDownSample = 1
+                mColorAlpha = (mColorAlpha * 0.1f).toInt()
+            }
             @Suppress("DEPRECATION")
-            if (blur_radius < 5f) mDownSample = 2 else mDownSample = DOWNSAMPLE
             context.display?.getSize(mTmpSize)
             val rect = Rect(0, 0, artwork.width, artwork.height)
             MathUtils.fitRect(rect, Math.max(mTmpSize.x / mDownSample, mTmpSize.y / mDownSample))
@@ -69,21 +76,20 @@ class MediaArtworkProcessor @Inject constructor() {
                 inBitmap = oldIn.copy(Bitmap.Config.ARGB_8888, false /* isMutable */)
                 oldIn.recycle()
             }
-            var outBitmap: Bitmap?
-            if (blur_radius >= 1f) {
-                outBitmap = Bitmap.createBitmap(inBitmap.width, inBitmap.height,
-                        Bitmap.Config.ARGB_8888)
-                input = Allocation.createFromBitmap(renderScript, inBitmap,
-                        Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_GRAPHICS_TEXTURE)
-                output = Allocation.createFromBitmap(renderScript, outBitmap)
-                    blur.setRadius(blur_radius)
-                    blur.setInput(input)
-                    blur.forEach(output)
-                output.copyTo(outBitmap)
-            } else {
-                outBitmap = inBitmap.copy(Bitmap.Config.ARGB_8888, true/*mutable*/)
-            }
+            val outBitmap = Bitmap.createBitmap(inBitmap.width, inBitmap.height,
+                    Bitmap.Config.ARGB_8888)
+
+            input = Allocation.createFromBitmap(renderScript, inBitmap,
+                    Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_GRAPHICS_TEXTURE)
+            output = Allocation.createFromBitmap(renderScript, outBitmap)
+
+            blur.setRadius(blur_radius)
+            blur.setInput(input)
+            blur.forEach(output)
+            output.copyTo(outBitmap)
+
             val swatch = MediaNotificationProcessor.findBackgroundSwatch(artwork)
+
             val canvas = Canvas(outBitmap)
             canvas.drawColor(ColorUtils.setAlphaComponent(swatch.rgb, COLOR_ALPHA))
             return outBitmap
@@ -91,12 +97,10 @@ class MediaArtworkProcessor @Inject constructor() {
             Log.e(TAG, "error while processing artwork", ex)
             return null
         } finally {
-            if (blur_radius >= 1f) {
-                input?.destroy()
-                output?.destroy()
-            }
-            inBitmap?.recycle()
+            input?.destroy()
+            output?.destroy()
             blur.destroy()
+            inBitmap?.recycle()
         }
     }
 
