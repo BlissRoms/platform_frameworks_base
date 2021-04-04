@@ -339,7 +339,7 @@ public class ActionHandler {
         private static void toggleFlashlight() {
             IStatusBarService service = getStatusBarService();
             try {
-                service.toggleCameraFlash();
+                service.toggleCameraFlash(false);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
