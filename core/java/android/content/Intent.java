@@ -4660,7 +4660,7 @@ public class Intent implements Parcelable, Cloneable {
     @SdkConstant(SdkConstantType.BROADCAST_INTENT_ACTION)
     public static final String ACTION_PACKAGE_NEEDS_INTEGRITY_VERIFICATION =
             "android.intent.action.PACKAGE_NEEDS_INTEGRITY_VERIFICATION";
-        
+
     /**
      * Broadcast action: Camera satus Changed
      * @hide
