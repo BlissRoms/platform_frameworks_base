@@ -73,6 +73,7 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
     private final ImageView mBg;
     private int mColorActive;
     private int mColorActiveAlpha;
+    private int mColorTwelveAlpha;
     private int mColorDisabledAlpha;
     private final int mColorInactive;
     private final int mColorDisabled;
@@ -131,6 +132,7 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
 
         mColorActive = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
         mColorActiveAlpha = adjustAlpha(mColorActive, 0.2f);
+        mColorTwelveAlpha = adjustAlpha(mColorActive, 0.15f);
 
         int setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.QS_PANEL_BG_USE_NEW_TINT, 2, UserHandle.USER_CURRENT);
@@ -141,6 +143,9 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
         } else if (setQsUseNewTint == 2) {
             mColorActive = context.getResources().getColor(R.color.qs_tile_oos_background);
             mColorDisabled = context.getResources().getColor(R.color.op_qs_tile_background_color_disabled);
+        } else if (setQsUseNewTint == 3) {
+            mColorActive = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
+            mColorDisabled = mColorTwelveAlpha;
         } else {
             mColorDisabled = Utils.getDisabled(context,
                     Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
