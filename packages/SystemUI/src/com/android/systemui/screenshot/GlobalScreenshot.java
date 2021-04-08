@@ -987,7 +987,6 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
 
         ScreenshotActionChip shareChip = (ScreenshotActionChip) inflater.inflate(
                 R.layout.global_screenshot_action_chip, mActionsView, false);
-        shareChip.setText(imageData.shareAction.title);
         shareChip.setIcon(imageData.shareAction.getIcon(), true);
         shareChip.setPendingIntent(imageData.shareAction.actionIntent, () -> {
             mUiEventLogger.log(ScreenshotEvent.SCREENSHOT_SHARE_TAPPED);
@@ -999,7 +998,6 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
 
         ScreenshotActionChip editChip = (ScreenshotActionChip) inflater.inflate(
                 R.layout.global_screenshot_action_chip, mActionsView, false);
-        editChip.setText(imageData.editAction.title);
         editChip.setIcon(imageData.editAction.getIcon(), true);
         editChip.setPendingIntent(imageData.editAction.actionIntent, () -> {
             mUiEventLogger.log(ScreenshotEvent.SCREENSHOT_EDIT_TAPPED);
@@ -1011,7 +1009,6 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
 
         ScreenshotActionChip deleteChip = (ScreenshotActionChip) inflater.inflate(
                 R.layout.global_screenshot_action_chip, mActionsView, false);
-        deleteChip.setText(imageData.deleteAction.title);
         deleteChip.setIcon(imageData.deleteAction.getIcon(), true);
         deleteChip.setPendingIntent(imageData.deleteAction.actionIntent, () -> {
             mUiEventLogger.log(ScreenshotEvent.SCREENSHOT_DELETE_TAPPED);
@@ -1024,7 +1021,6 @@ public class GlobalScreenshot implements ViewTreeObserver.OnComputeInternalInset
         // Scrolling Screenshot
         ScreenshotActionChip scrollChip = (ScreenshotActionChip) inflater.inflate(
                 R.layout.global_screenshot_action_chip, mActionsView, false);
-        scrollChip.setText(imageData.scrollAction.title);
         scrollChip.setIcon(imageData.scrollAction.getIcon(), true);
         scrollChip.setPendingIntent(imageData.scrollAction.actionIntent, () -> {
             mUiEventLogger.log(ScreenshotEvent.SCREENSHOT_SCROLL_TAPPED);
