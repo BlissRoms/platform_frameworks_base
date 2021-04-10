@@ -103,7 +103,6 @@ public class OOSClockController implements ClockPlugin {
         mDate = view.findViewById(R.id.timedate);
     }
 
-
     @Override
     public void onDestroyView() {
         mBigClockView = null;
