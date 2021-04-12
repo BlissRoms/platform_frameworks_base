@@ -116,4 +116,7 @@
 
   <!-- Wether to handle audio direction changes between major call states -->
   <bool name="config_handleAudioDirectionChangesBetweenCallStateChanges">true</bool>
+
+    <!-- Switch USB controller on Asus ROG devices-->
+    <bool name="config_switchUsbController">false</bool>	
 </resources>
