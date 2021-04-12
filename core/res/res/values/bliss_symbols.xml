@@ -89,4 +89,7 @@
   <!-- Wether to handle audio direction changes between major call states -->
   <java-symbol type="bool" name="config_handleAudioDirectionChangesBetweenCallStateChanges" />
 
+    <!-- Switch USB controller on Asus ROG devices-->
+    <java-symbol type="bool" name="config_switchUsbController" />
+
 </resources>
