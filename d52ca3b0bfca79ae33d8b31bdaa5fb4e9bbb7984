@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "22e8a079_9209744a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2021-04-12T04:01:00Z",
+      "side": 1,
+      "message": "Requires a commit in system/security repo",
+      "revId": "d52ca3b0bfca79ae33d8b31bdaa5fb4e9bbb7984",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    }
+  ]
+}
