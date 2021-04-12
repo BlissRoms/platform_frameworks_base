@@ -85,4 +85,7 @@
 
     <!-- Whether device has SuperDart charging support -->
     <bool name="config_hasSuperDartCharger">false</bool>
+	
+    <!-- Switch USB controller on Asus ROG devices-->
+    <bool name="config_switchUsbController">false</bool>	
 </resources>
