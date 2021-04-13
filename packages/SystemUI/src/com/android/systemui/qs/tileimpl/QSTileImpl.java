@@ -533,7 +533,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 return Utils.getDisabled(context,
                         Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary));
             case Tile.STATE_INACTIVE:
-                if (setQsUseNewTint == 1 || setQsUseNewTint == 3) {
+                if (setQsUseNewTint == 1) {
                     return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorPrimary);
                 } else if (setQsUseNewTint == 2) {
                     return context.getResources().getColor(R.color.qs_tile_icon_oos);
@@ -545,6 +545,8 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                     return Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
 		} else if (setQsUseNewTint == 2){
                     return context.getResources().getColor(R.color.qs_tile_oos);
+                } else if (setQsUseNewTint == 3){
+                    return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorPrimaryInverse);
 		} else {
                     return Utils.getColorAttrDefaultColor(context, android.R.attr.colorPrimary);
                 }
