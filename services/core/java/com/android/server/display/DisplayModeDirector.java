@@ -1291,7 +1291,7 @@ public class DisplayModeDirector {
         private void updateRefreshRateSettingLocked() {
             final ContentResolver cr = mContext.getContentResolver();
             float minRefreshRate = Settings.System.getFloatForUser(cr,
-                    Settings.System.MIN_REFRESH_RATE, 0f, cr.getUserId());
+                    Settings.System.MIN_REFRESH_RATE, 60.0f, cr.getUserId());
             float peakRefreshRate = Settings.System.getFloatForUser(cr,
                     Settings.System.PEAK_REFRESH_RATE, mDefaultPeakRefreshRate, cr.getUserId());
             float preferredRefreshRate = Settings.System.getFloatForUser(cr,
