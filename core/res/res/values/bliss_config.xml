@@ -315,4 +315,7 @@
     <!-- Parallel space max count. Should overlay according to device performance. -->
     <integer name="config_parallelSpaceMaxCount">9</integer>
 
+    <!-- Switch USB controller on Asus ROG devices-->
+    <bool name="config_switchUsbController">false</bool>
+
 </resources>

@@ -232,4 +232,7 @@
     <!-- Parallel space max count. -->
     <java-symbol type="integer" name="config_parallelSpaceMaxCount" />
 
+    <!-- Switch USB controller on Asus ROG devices-->
+    <java-symbol type="bool" name="config_switchUsbController" />
+
 </resources>
