@@ -170,4 +170,7 @@
 
     <!-- Defines custom OEM sensor for pocket detection. -->
     <string name="config_pocketJudgeVendorSensorName"></string>
+
+    <!-- Switch USB controller on Asus ROG devices-->
+    <bool name="config_switchUsbController">false</bool>
 </resources>

@@ -237,4 +237,7 @@
 
      <!-- Pocket Service -->
      <java-symbol type="string" name="config_pocketJudgeVendorSensorName" />
+
+     <!-- Switch USB controller on Asus ROG devices-->
+     <java-symbol type="bool" name="config_switchUsbController" />
 </resources>
