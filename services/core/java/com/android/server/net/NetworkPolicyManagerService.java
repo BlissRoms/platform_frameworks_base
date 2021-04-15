@@ -284,15 +284,22 @@ import dalvik.annotation.optimization.NeverCompile;
 
 import libcore.io.IoUtils;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -2668,8 +2675,9 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         }
     }
 
-    private void readPolicyXml(FileInputStream fis) {
-        final TypedXmlPullParser in = Xml.resolvePullParser(fis);
+    private void readPolicyXml(InputStream inputStream, boolean forRestore, int userId)
+            throws IOException, XmlPullParserException {
+        final TypedXmlPullParser in = Xml.resolvePullParser(inputStream);
 
         // Must save the <restrict-background> tags and convert them to <uid-policy> later,
         // to skip UIDs that were explicitly denied.
@@ -2787,7 +2795,7 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                                 lastLimitSnooze, metered, inferred));
                     }
                 } else if (TAG_UID_POLICY.equals(tag)) {
-                    final int uid = readIntAttribute(in, ATTR_UID);
+                    int uid = readUidAttribute(in, forRestore, userId);
                     final int policy = readIntAttribute(in, ATTR_POLICY);
 
                     if (UserHandle.isApp(uid)) {
@@ -2810,10 +2818,10 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                 } else if (TAG_WHITELIST.equals(tag)) {
                     insideAllowlist = true;
                 } else if (TAG_RESTRICT_BACKGROUND.equals(tag) && insideAllowlist) {
-                    final int uid = readIntAttribute(in, ATTR_UID);
+                    int uid = readUidAttribute(in, forRestore, userId);
                     restrictBackgroundAllowedUids.append(uid, true);
                 } else if (TAG_REVOKED_RESTRICT_BACKGROUND.equals(tag) && insideAllowlist) {
-                    final int uid = readIntAttribute(in, ATTR_UID);
+                    int uid = readUidAttribute(in, forRestore, userId);
                     mRestrictBackgroundAllowlistRevokedUids.put(uid, true);
                 }
             } else if (type == END_TAG) {
@@ -2921,8 +2929,8 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         FileOutputStream fos = null;
         try {
             fos = mPolicyFile.startWrite();
-            writePolicyXml(fos);
-
+            writePolicyXml(fos, false, UserHandle.USER_ALL);
+            mPolicyFile.finishWrite(fos);
         } catch (IOException e) {
             if (fos != null) {
                 mPolicyFile.failWrite(fos);
@@ -2930,7 +2938,7 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         }
     }
 
-    private void writePolicyXml(FileOutputStream fos) {
+    private void writePolicyXml(OutputStream outputStream, boolean forBackup, int userId)
             throws IOException {
         TypedXmlSerializer out = Xml.resolveSerializer(outputStream);
         out.startDocument(null, true);
@@ -2987,6 +2995,85 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         out.endDocument();
     }
 
+    private void writeUidIndependentAttributes(TypedXmlSerializer out) throws IOException {
+        out.startTag(null, TAG_POLICY_LIST);
+        writeIntAttribute(out, ATTR_VERSION, VERSION_LATEST);
+        writeIntAttribute(out, ATTR_LINEAGE_VERSION, LINEAGE_VERSION_LATEST);
+        writeBooleanAttribute(out, ATTR_RESTRICT_BACKGROUND, mRestrictBackground);
+
+        // write all known network policies
+        for (int i = 0; i < mNetworkPolicy.size(); i++) {
+            final NetworkPolicy policy = mNetworkPolicy.valueAt(i);
+            final NetworkTemplate template = policy.template;
+            if (!NetworkPolicy.isTemplatePersistable(template)) continue;
+
+            out.startTag(null, TAG_NETWORK_POLICY);
+            writeIntAttribute(out, ATTR_NETWORK_TEMPLATE, template.getMatchRule());
+            final String subscriberId = template.getSubscriberIds().isEmpty() ? null
+                    : template.getSubscriberIds().iterator().next();
+            if (subscriberId != null) {
+                out.attribute(null, ATTR_SUBSCRIBER_ID, subscriberId);
+            }
+            final int subscriberIdMatchRule = template.getSubscriberIds().isEmpty()
+                    ? NetworkStatsUtils.SUBSCRIBER_ID_MATCH_RULE_ALL
+                    : NetworkStatsUtils.SUBSCRIBER_ID_MATCH_RULE_EXACT;
+            writeIntAttribute(out, ATTR_SUBSCRIBER_ID_MATCH_RULE, subscriberIdMatchRule);
+            if (!template.getWifiNetworkKeys().isEmpty()) {
+                out.attribute(null, ATTR_NETWORK_ID,
+                        template.getWifiNetworkKeys().iterator().next());
+            }
+            writeIntAttribute(out, ATTR_TEMPLATE_METERED,
+                    template.getMeteredness());
+            writeStringAttribute(out, ATTR_CYCLE_START,
+                    RecurrenceRule.convertZonedDateTime(policy.cycleRule.start));
+            writeStringAttribute(out, ATTR_CYCLE_END,
+                    RecurrenceRule.convertZonedDateTime(policy.cycleRule.end));
+            writeStringAttribute(out, ATTR_CYCLE_PERIOD,
+                    RecurrenceRule.convertPeriod(policy.cycleRule.period));
+            writeLongAttribute(out, ATTR_WARNING_BYTES, policy.warningBytes);
+            writeLongAttribute(out, ATTR_LIMIT_BYTES, policy.limitBytes);
+            writeLongAttribute(out, ATTR_LAST_WARNING_SNOOZE, policy.lastWarningSnooze);
+            writeLongAttribute(out, ATTR_LAST_LIMIT_SNOOZE, policy.lastLimitSnooze);
+            writeBooleanAttribute(out, ATTR_METERED, policy.metered);
+            writeBooleanAttribute(out, ATTR_INFERRED, policy.inferred);
+            out.endTag(null, TAG_NETWORK_POLICY);
+        }
+        out.endTag(null, TAG_POLICY_LIST);
+    }
+
+    @Override
+    public byte[] getBackupPayload(int user) {
+        enforceSystemCaller();
+        if (LOGD) Slog.d(TAG, "getBackupPayload u= " + user);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            writePolicyXml(baos, true, user);
+            return baos.toByteArray();
+        } catch (IOException e) {
+            Slog.w(TAG, "getBackupPayload: error writing payload for user " + user, e);
+        }
+        return null;
+    }
+
+    @Override
+    public void applyRestore(byte[] payload, int user) {
+        enforceSystemCaller();
+        if (LOGD) Slog.d(TAG, "applyRestore u=" + user + " payload="
+                + (payload != null ? new String(payload, StandardCharsets.UTF_8) : null));
+        if (payload == null) {
+            Slog.w(TAG, "applyRestore: no payload to restore for user " + user);
+            return;
+        }
+
+        final ByteArrayInputStream bais = new ByteArrayInputStream(payload);
+        try {
+            readPolicyXml(bais, true, user);
+        } catch (IOException | XmlPullParserException e) {
+            Slog.w(TAG, "applyRestore: error reading payload for user " + user, e);
+        }
+    }
+
+    @EnforcePermission(MANAGE_NETWORK_POLICY)
     @Override
     public void setUidPolicy(int uid, int policy) {
         setUidPolicy_enforcePermission();
@@ -3182,6 +3269,12 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         if (!checkAnyPermissionOf(permissions)) {
             throw new SecurityException("Requires one of the following permissions: "
                     + String.join(", ", permissions) + ".");
+        }
+    }
+
+    private void enforceSystemCaller() {
+        if (Binder.getCallingUid() != android.os.Process.SYSTEM_UID) {
+            throw new SecurityException("Caller must be system");
         }
     }
 
@@ -6540,6 +6633,23 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
             mMeteredRestrictedUids.put(userId, newRestrictedUids);
             handleRestrictedPackagesChangeUL(oldRestrictedUids, newRestrictedUids);
             mLogger.meteredRestrictedPkgsChanged(newRestrictedUids);
+        }
+    }
+
+    private int readUidAttribute(TypedXmlPullParser in, boolean forRestore, int userId)
+            throws IOException {
+        if (!forRestore) {
+            return readIntAttribute(in, ATTR_UID);
+        } else {
+            return getUidForPackage(readStringAttribute(in, ATTR_XML_UTILS_NAME), userId);
+        }
+    }
+
+    private String getPackageForUid(int uid) {
+        try {
+            return mContext.getPackageManager().getPackagesForUid(uid)[0];
+        } catch (Exception e) {
+            return null;
         }
     }
 
