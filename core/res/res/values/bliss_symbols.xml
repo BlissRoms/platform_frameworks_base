@@ -126,4 +126,8 @@
 
    <!-- Default value for FOD animation package resources -->
    <java-symbol type="string" name="config_fodAnimationPackage" />
+
+   <!-- Hide FOD while Going to sleep from lockscreen to avoid HBM flicker
+       or FOD Circle hiding after the screen is put to sleep  -->
+   <java-symbol type="bool" name="config_hideFodCircleGoingToSleep" />
 </resources>

@@ -145,4 +145,8 @@
 
     <!-- Default value for FOD animation package resources -->
     <string name="config_fodAnimationPackage" translatable="false">com.bliss.fod.animations</string>
+
+    <!-- Hide FOD while Going to sleep from lockscreen to avoid HBM flicker
+         or FOD Circle hiding after the screen is put to sleep -->
+    <bool name="config_hideFodCircleGoingToSleep">false</bool>
 </resources>
