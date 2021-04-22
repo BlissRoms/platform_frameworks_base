@@ -135,7 +135,7 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
         mColorTwelveAlpha = adjustAlpha(mColorActive, 0.2f);
 
         int setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.QS_PANEL_BG_USE_NEW_TINT, 2, UserHandle.USER_CURRENT);
+                Settings.System.QS_PANEL_BG_USE_NEW_TINT, 1, UserHandle.USER_CURRENT);
 
         if (setQsUseNewTint == 1) {
             mColorActive = mColorActiveAlpha;
