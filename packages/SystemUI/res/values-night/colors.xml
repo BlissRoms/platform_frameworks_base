@@ -112,4 +112,5 @@
     <color name="qs_tile_oos_background">#DBDBDB</color>
 
     <color name="qs_tile_oos">#222222</color>
+    <color name="qs_tile_icon_oos">#98a098</color>
 </resources>
