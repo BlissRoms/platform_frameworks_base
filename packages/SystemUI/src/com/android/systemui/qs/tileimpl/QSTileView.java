@@ -134,7 +134,7 @@ public class QSTileView extends QSTileBaseView {
         }
 
         int setQsUseNewTint = Settings.System.getIntForUser(getContext().getContentResolver(),
-                Settings.System.QS_PANEL_BG_USE_NEW_TINT, 2, UserHandle.USER_CURRENT);
+                Settings.System.QS_PANEL_BG_USE_NEW_TINT, 1, UserHandle.USER_CURRENT);
 
         if (setQsUseNewTint == 1) {
             if (state.state == Tile.STATE_ACTIVE) {
