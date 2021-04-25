@@ -110,6 +110,7 @@
     <!-- Home button wake -->
     <java-symbol type="bool" name="config_HomeWakeButton" />
 
+<<<<<<< HEAD
     <!-- Custom Battery light -->
     <java-symbol type="bool" name="config_intrusiveBatteryLed" />
     <java-symbol type="bool" name="config_multiColorBatteryLed" />
@@ -120,4 +121,8 @@
 
   <!-- Enable face auth only when swiping security view -->
   <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
+=======
+    <!-- Whether to send camera status intent -->
+    <java-symbol type="bool" name="config_sendCameraStatusIntent" />
+>>>>>>> 9279899a6c10 (core: Add camera intents for camera state)
 </resources>
