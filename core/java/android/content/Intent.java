@@ -4647,7 +4647,6 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_DEVICE_CUSTOMIZATION_READY =
             "android.intent.action.DEVICE_CUSTOMIZATION_READY";
 
-
     /**
      * Activity Action: Display an activity state associated with an unique {@link LocusId}.
      *
