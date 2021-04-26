@@ -122,4 +122,18 @@ public static final String TAG = "ThemesUtils";
         "com.android.system.switch.fluid", // 7
         "com.android.system.switch.android_s", // 8
     };
+
+    // Statusbar Signal icons
+    private static final String[] SIGNAL_BAR = {
+        "org.blissroms.systemui.signalbar_a",
+        "org.blissroms.systemui.signalbar_b",
+        "org.blissroms.systemui.signalbar_c",
+    };
+
+    // Statusbar Wifi icons
+    private static final String[] WIFI_BAR = {
+        "org.blissroms.systemui.wifibar_a",
+        "org.blissroms.systemui.wifibar_b",
+        "org.blissroms.systemui.wifibar_c",
+    };
 }
