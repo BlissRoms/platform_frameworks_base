@@ -18,4 +18,23 @@
         <item name="android:fontFamily">sans-serif-thin</item>
     </style>
 
+    <!-- IDE Clock styles -->
+    <style name="IdeClock_StaticString">
+        <item name="android:textSize">@dimen/ide_clock_font_size</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
+    </style>
+
+    <style name="IdeClock_StaticString.Bold" parent="IdeClock_StaticString">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="IdeClock_StaticString.Colored" parent="IdeClock_StaticString.Bold">
+        <item name="android:textColor">#3DDB86</item>
+    </style>
+
+    <style name="IdeClock_StaticString.WallColor" parent="IdeClock_StaticString.Bold">
+        <item name="android:textColor">?attr/wallpaperTextColor</item>
+    </style>
 </resources>
