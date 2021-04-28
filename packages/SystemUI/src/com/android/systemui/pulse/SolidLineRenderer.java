@@ -137,7 +137,7 @@ public class SolidLineRenderer extends Renderer {
         if (mView.getWidth() > 0 && mView.getHeight() > 0) {
             mWidth = mView.getWidth();
             mHeight = mView.getHeight();
-            mVertical = mKeyguardShowing ? mHeight < mWidth : mHeight > mWidth;
+            mVertical = !mKeyguardShowing && mHeight > mWidth;
             loadValueAnimators();
             if (mVertical) {
                 setVerticalPoints();

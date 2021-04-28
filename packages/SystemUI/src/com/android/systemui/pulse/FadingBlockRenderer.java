@@ -134,7 +134,7 @@ public class FadingBlockRenderer extends Renderer {
         if (mView.getWidth() > 0 && mView.getHeight() > 0) {
             mWidth = mView.getWidth();
             mHeight = mView.getHeight();
-            mVertical = mKeyguardShowing ? mHeight < mWidth : mHeight > mWidth;
+            mVertical = !mKeyguardShowing && mHeight > mWidth;
             mCanvasBitmap = Bitmap.createBitmap(mWidth, mHeight, Config.ARGB_8888);
             mCanvas = new Canvas(mCanvasBitmap);
         }
