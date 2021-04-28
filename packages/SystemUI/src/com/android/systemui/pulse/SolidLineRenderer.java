@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2016 The DirtyUnicorns Project
  * Copyright (C) 2015 The CyanogenMod Project
  * 
@@ -37,16 +37,13 @@ import android.provider.Settings;
 import androidx.core.graphics.ColorUtils;
 
 public class SolidLineRenderer extends Renderer {
-    private Paint mPaint;
+    private final Paint mPaint;
     private int mUnitsOpacity = 255;
     private int mColor = Color.WHITE;
     private ValueAnimator[] mValueAnimators;
     private FFTAverage[] mFFTAverage;
     private float[] mFFTPoints;
 
-    private byte rfk, ifk;
-    private int dbValue;
-    private float magnitude;
     private int mDbFuzzFactor;
     private boolean mVertical;
     private boolean mLeftInLandscape;
@@ -54,10 +51,10 @@ public class SolidLineRenderer extends Renderer {
 
     private boolean mSmoothingEnabled;
     private boolean mRounded;
-    private CMRendererObserver mObserver;
+    private final CMRendererObserver mObserver;
 
     public SolidLineRenderer(Context context, Handler handler, PulseView view,
-            PulseControllerImpl controller, ColorController colorController) {
+            ColorController colorController) {
         super(context, handler, view, colorController);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -90,12 +87,9 @@ public class SolidLineRenderer extends Renderer {
             }
             mValueAnimators[i] = new ValueAnimator();
             mValueAnimators[i].setDuration(128);
-            mValueAnimators[i].addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mFFTPoints[j] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
+            mValueAnimators[i].addUpdateListener(animation -> {
+                mFFTPoints[j] = (float) animation.getAnimatedValue();
+                postInvalidate();
             });
         }
     }
@@ -111,7 +105,7 @@ public class SolidLineRenderer extends Renderer {
     }
 
     private void setPortraitPoints() {
-        float units = Float.valueOf(mUnits);
+        float units = (float) mUnits;
         float barUnit = mWidth / units;
         float barWidth = barUnit * 8f / 9f;
         barUnit = barWidth + (barUnit - barWidth) * units / (units - 1);
@@ -125,7 +119,7 @@ public class SolidLineRenderer extends Renderer {
     }
 
     private void setVerticalPoints() {
-        float units = Float.valueOf(mUnits);
+        float units = (float) mUnits;
         float barUnit = mHeight / units;
         float barHeight = barUnit * 8f / 9f;
         barUnit = barHeight + (barUnit - barHeight) * units / (units - 1);
@@ -168,10 +162,10 @@ public class SolidLineRenderer extends Renderer {
         for (int i = 0; i < mUnits; i++) {
             if (mValueAnimators[i] == null) continue;
             mValueAnimators[i].cancel();
-            rfk = fft[i * 2 + 2];
-            ifk = fft[i * 2 + 3];
-            magnitude = rfk * rfk + ifk * ifk;
-            dbValue = magnitude > 0 ? (int) (10 * Math.log10(magnitude)) : 0;
+            byte rfk = fft[i * 2 + 2];
+            byte ifk = fft[i * 2 + 3];
+            float magnitude = rfk * rfk + ifk * ifk;
+            int dbValue = magnitude > 0 ? (int) (10 * Math.log10(magnitude)) : 0;
             if (mSmoothingEnabled) {
                 if (mFFTAverage == null) {
                     setupFFTAverage();

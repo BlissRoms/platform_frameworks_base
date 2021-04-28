@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2016 The DirtyUnicorns Project
  * 
  * @author: Randall Rushing <randall.rushing@gmail.com>
@@ -26,9 +26,9 @@ import android.graphics.Color;
 
 public class ColorAnimator implements ValueAnimator.AnimatorUpdateListener {
     public interface ColorAnimationListener {
-        public default void onColorChanged(ColorAnimator colorAnimator, int color) {}
-        public default void onStartAnimation(ColorAnimator colorAnimator, int firstColor) {}
-        public default void onStopAnimation(ColorAnimator colorAnimator, int lastColor) {}
+        default void onColorChanged(ColorAnimator colorAnimator, int color) {}
+        default void onStartAnimation(ColorAnimator colorAnimator, int firstColor) {}
+        default void onStopAnimation(ColorAnimator colorAnimator, int lastColor) {}
     }
 
     public static final int ANIM_DEF_DURATION = 10 * 1000;
@@ -38,9 +38,9 @@ public class ColorAnimator implements ValueAnimator.AnimatorUpdateListener {
     protected final float[] from = new float[3], to = new float[3], hsv = new float[3];
 
     protected ValueAnimator mColorAnim;
-    protected long mAnimTime = ANIM_DEF_DURATION;
-    protected int mFromColor = Color.parseColor(RED);
-    protected int mToColor = Color.parseColor(BLUE);
+    protected long mAnimTime;
+    protected int mFromColor;
+    protected int mToColor;
     protected int mLastColor = Color.parseColor(RED);
     protected boolean mIsRunning;
 
@@ -108,7 +108,7 @@ public class ColorAnimator implements ValueAnimator.AnimatorUpdateListener {
         mListener = listener;
     }
 
-    public void removeColorAnimatorListener(ColorAnimationListener listener) {
+    public void removeColorAnimatorListener() {
         mListener = null;
     }
 

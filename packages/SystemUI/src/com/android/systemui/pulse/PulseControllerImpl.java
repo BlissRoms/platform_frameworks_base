@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2014 The TeamEos Project
  * Copyright (C) 2016 The DirtyUnicorns Project
  *
@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Control class for Pulse media fuctions and visualizer state management
+ * Control class for Pulse media functions and visualizer state management
  * Basic logic flow inspired by Roman Birg aka romanbb in his Equalizer
  * tile produced for Cyanogenmod
  *
@@ -28,15 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.database.ContentObserver;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.IAudioService;
 import android.media.MediaMetadata;
@@ -47,19 +43,16 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
 import com.android.systemui.Dependency;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.statusbar.CommandQueue;
-import com.android.systemui.statusbar.CommandQueue.Callbacks;
 import com.android.systemui.statusbar.phone.NavigationBarFrame;
 import com.android.systemui.statusbar.phone.NavigationBarView;
 import com.android.systemui.statusbar.phone.StatusBar;
@@ -70,7 +63,6 @@ import com.android.systemui.statusbar.policy.PulseController.PulseStateListener;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
@@ -84,17 +76,16 @@ public class PulseControllerImpl
     private static final int RENDER_STYLE_FADING_BARS = 0;
     private static final int RENDER_STYLE_SOLID_LINES = 1;
 
-    private Context mContext;
-    private Handler mHandler;
-    private AudioManager mAudioManager;
-    private Renderer mRenderer;
-    private VisualizerStreamHandler mStreamHandler;
-    private ColorController mColorController;
+    private final Context mContext;
+    private final Handler mHandler;
+    private final AudioManager mAudioManager;
+    private final VisualizerStreamHandler mStreamHandler;
+    private final ColorController mColorController;
     private final List<PulseStateListener> mStateListeners = new ArrayList<>();
-    private SettingsObserver mSettingsObserver;
-    private PulseView mPulseView;
+    private final PulseView mPulseView;
+    private final StatusBar mStatusbar;
     private int mPulseStyle;
-    private StatusBar mStatusbar;
+    private Renderer mRenderer;
 
     // Pulse state
     private boolean mLinked;
@@ -222,7 +213,7 @@ public class PulseControllerImpl
             mPulseStyle = Settings.Secure.getIntForUser(mContext.getContentResolver(),
                     Settings.Secure.PULSE_RENDER_STYLE, RENDER_STYLE_SOLID_LINES, UserHandle.USER_CURRENT);
         }
-    };
+    }
 
     public void notifyKeyguardGoingAway() {
         if (mLsPulseEnabled) {
@@ -322,9 +313,9 @@ public class PulseControllerImpl
         filter.addAction(AudioManager.STREAM_MUTE_CHANGED_ACTION);
         filter.addAction(AudioManager.VOLUME_CHANGED_ACTION);
         context.registerReceiverAsUser(mBroadcastReceiver, UserHandle.ALL, filter, null, null);
-        mSettingsObserver = new SettingsObserver(mainHandler);
-        mSettingsObserver.register();
-        mSettingsObserver.updateSettings();
+        SettingsObserver settingsObserver = new SettingsObserver(mainHandler);
+        settingsObserver.register();
+        settingsObserver.updateSettings();
         //loadRenderer();
     }
 
@@ -368,11 +359,7 @@ public class PulseControllerImpl
     private void notifyStateListeners(boolean isStarting) {
         for (PulseStateListener listener : mStateListeners) {
             if (listener != null) {
-                if (isStarting) {
-                    listener.onPulseStateChanged(true);
-                } else {
-                    listener.onPulseStateChanged(false);
-                }
+                listener.onPulseStateChanged(isStarting);
             }
         }
     }
@@ -441,13 +428,10 @@ public class PulseControllerImpl
     }
 
     private Renderer getRenderer() {
-        switch (mPulseStyle) {
-            case RENDER_STYLE_FADING_BARS:
-                return new FadingBlockRenderer(mContext, mHandler, mPulseView, this, mColorController);
-            case RENDER_STYLE_SOLID_LINES:
-                return new SolidLineRenderer(mContext, mHandler, mPulseView, this, mColorController);
-            default:
-                return new FadingBlockRenderer(mContext, mHandler, mPulseView, this, mColorController);
+        if (mPulseStyle == RENDER_STYLE_SOLID_LINES) {
+            return new SolidLineRenderer(mContext, mHandler, mPulseView, mColorController);
+        } else {
+            return new FadingBlockRenderer(mContext, mHandler, mPulseView, mColorController);
         }
     }
 

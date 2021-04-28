@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2019 The AquariOS Project
  *
  * @author: Randall Rushing <randall.rushing@gmail.com>
@@ -30,7 +30,7 @@ import android.widget.FrameLayout.LayoutParams;
 public class PulseView extends View {
     public static final String TAG = "PulseView";
 
-    private PulseControllerImpl mPulse;
+    private final PulseControllerImpl mPulse;
 
     public PulseView(Context context, PulseControllerImpl controller) {
         super(context);

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2020 The DirtyUnicorns Project
  *
  * @author: Randall Rushing <randall.rushing@gmail.com>
@@ -27,7 +27,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -45,9 +44,9 @@ public class ColorController extends ContentObserver
     public static final int COLOR_TYPE_AUTO = 3;
     public static final int LAVA_LAMP_SPEED_DEF = 10000;
 
-    private Context mContext;
+    private final Context mContext;
     private Renderer mRenderer;
-    private ColorAnimator mLavaLamp;
+    private final ColorAnimator mLavaLamp;
     private int mColorType;
     private int mAccentColor;
     private int mColor;

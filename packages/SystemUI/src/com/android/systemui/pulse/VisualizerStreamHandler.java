@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2016 The DirtyUnicorns Project
  *
  * @author: Randall Rushing <randall.rushing@gmail.com>
@@ -25,21 +25,21 @@ package com.android.systemui.pulse;
 import android.content.Context;
 import android.media.audiofx.Visualizer;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import com.android.systemui.Dependency;
 import com.android.systemui.dagger.qualifiers.Background;
 
 import java.util.concurrent.Executor;
 
 public class VisualizerStreamHandler {
     public interface Listener {
-        public void onStreamAnalyzed(boolean isValid);
+        void onStreamAnalyzed(boolean isValid);
 
-        public void onFFTUpdate(byte[] bytes);
+        void onFFTUpdate(byte[] bytes);
 
-        public void onWaveFormUpdate(byte[] bytes);
+        void onWaveFormUpdate(byte[] bytes);
     }
 
     protected static final String TAG = VisualizerStreamHandler.class.getSimpleName();
@@ -66,7 +66,7 @@ public class VisualizerStreamHandler {
 
     private final Executor mUiBgExecutor;
 
-    private Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message m) {
             switch (m.what) {
@@ -196,11 +196,8 @@ public class VisualizerStreamHandler {
     }
 
     private boolean isDataEmpty(byte[] data) {
-        for (int i = 0; i < data.length; i++) {
-            if (data[i] != 0) {
-                return false;
-            }
-        }
+        for (byte datum : data)
+            if (datum != 0) return false;
         return true;
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2011, Felix Palmer
  * Copyright (C) 2014 The TeamEos Project
  * Copyright (C) 2016 The DirtyUnicorns Project
@@ -37,31 +37,25 @@ import android.util.TypedValue;
 public class FadingBlockRenderer extends Renderer {
     //private static final int DEF_PAINT_ALPHA = (byte) 188;
     private static final int DBFUZZ = 2;
-    private byte[] mFFTBytes;
-    private Paint mPaint;
-    private Paint mFadePaint;
+    private final Paint mPaint;
+    private final Paint mFadePaint;
     private boolean mVertical;
     private boolean mLeftInLandscape;
     private FFTAverage[] mFFTAverage;
     private float[] mFFTPoints;
-    private byte rfk, ifk;
-    private int dbValue;
-    private float magnitude;
     private int mDivisions;
     private int mDbFuzzFactor;
-    private int mPathEffect1;
-    private int mPathEffect2;
     private Bitmap mCanvasBitmap;
     private Canvas mCanvas;
-    private Matrix mMatrix;
+    private final Matrix mMatrix;
     private int mWidth;
     private int mHeight;
 
-    private LegacySettingsObserver mObserver;
+    private final LegacySettingsObserver mObserver;
     private boolean mSmoothingEnabled;
 
     public FadingBlockRenderer(Context context, Handler handler, PulseView view,
-            PulseControllerImpl controller, ColorController colorController) {
+            ColorController colorController) {
         super(context, handler, view, colorController);
         mObserver = new LegacySettingsObserver(handler);
         mPaint = new Paint();
@@ -85,13 +79,12 @@ public class FadingBlockRenderer extends Renderer {
 
     @Override
     public void onFFTUpdate(byte[] bytes) {
-        int fudgeFactor = mKeyguardShowing ? mDbFuzzFactor * 2 : mDbFuzzFactor;
-        mFFTBytes = bytes;
-        if (mFFTBytes != null) {
-            if (mFFTPoints == null || mFFTPoints.length < mFFTBytes.length * 4) {
-                mFFTPoints = new float[mFFTBytes.length * 4];
+        int fudgeFactor = mKeyguardShowing ? mDbFuzzFactor * 4 : mDbFuzzFactor;
+        if (bytes != null) {
+            if (mFFTPoints == null || mFFTPoints.length < bytes.length * 4) {
+                mFFTPoints = new float[bytes.length * 4];
             }
-            int divisionLength = mFFTBytes.length / mDivisions;
+            int divisionLength = bytes.length / mDivisions;
             if (mSmoothingEnabled) {
                 if (mFFTAverage == null || mFFTAverage.length != divisionLength) {
                     setupFFTAverage(divisionLength);
@@ -107,10 +100,10 @@ public class FadingBlockRenderer extends Renderer {
                     mFFTPoints[i * 4] = i * 4 * mDivisions;
                     mFFTPoints[i * 4 + 2] = i * 4 * mDivisions;
                 }
-                rfk = mFFTBytes[mDivisions * i];
-                ifk = mFFTBytes[mDivisions * i + 1];
-                magnitude = (rfk * rfk + ifk * ifk);
-                dbValue = magnitude > 0 ? (int) (10 * Math.log10(magnitude)) : 0;
+                byte rfk = bytes[mDivisions * i];
+                byte ifk = bytes[mDivisions * i + 1];
+                float magnitude = (rfk * rfk + ifk * ifk);
+                int dbValue = magnitude > 0 ? (int) (10 * Math.log10(magnitude)) : 0;
                 if (mSmoothingEnabled) {
                     dbValue = mFFTAverage[i].average(dbValue);
                 }
@@ -241,8 +234,8 @@ public class FadingBlockRenderer extends Renderer {
                     resolver, Settings.Secure.PULSE_FILLED_BLOCK_SIZE, 4,
                     UserHandle.USER_CURRENT);
 
-            mPathEffect1 = getLimitedDimenValue(filledBlock, 4, 8, res);
-            mPathEffect2 = getLimitedDimenValue(emptyBlock, 0, 4, res);
+            int mPathEffect1 = getLimitedDimenValue(filledBlock, 4, 8, res);
+            int mPathEffect2 = getLimitedDimenValue(emptyBlock, 0, 4, res);
             mPaint.setPathEffect(null);
             mPaint.setPathEffect(new android.graphics.DashPathEffect(new float[] {
                     mPathEffect1,
