@@ -176,11 +176,11 @@ public class TypeAltClockController implements ClockPlugin {
         // Let's see what string we need according to the time
         int saluteResId = R.string.salute_fallback;
 
-        if (mTime.get(Calendar.HOUR_OF_DAY) > 4) {
+        if (mTime.get(Calendar.HOUR_OF_DAY) > 4 && mTime.get(Calendar.HOUR_OF_DAY) <= 12) {
             saluteResId = R.string.salute_morning;
-        } else if (mTime.get(Calendar.HOUR_OF_DAY) > 12) {
+        } else if (mTime.get(Calendar.HOUR_OF_DAY) > 12 && mTime.get(Calendar.HOUR_OF_DAY) <= 19) {
             saluteResId = R.string.salute_evening;
-        } else if (mTime.get(Calendar.HOUR_OF_DAY) > 19 || mTime.get(Calendar.HOUR_OF_DAY) < 5) {
+        } else if (mTime.get(Calendar.HOUR_OF_DAY) > 19 &&  mTime.get(Calendar.HOUR_OF_DAY) <= 4) {
             saluteResId = R.string.salute_night;
         }
 
