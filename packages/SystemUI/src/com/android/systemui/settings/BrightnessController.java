@@ -229,8 +229,10 @@ public class BrightnessController implements ToggleSlider.Listener {
                         Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL,
                         UserHandle.USER_CURRENT);
                 mAutomatic = automatic != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+                mHandler.obtainMessage(MSG_UPDATE_ICON, mAutomatic ? 1 : 0).sendToTarget();
             } else {
                 mHandler.obtainMessage(MSG_SET_CHECKED, 0).sendToTarget();
+                mHandler.obtainMessage(MSG_UPDATE_ICON, 0 /* automatic */).sendToTarget();
             }
             mHandler.sendEmptyMessage(MSG_UPDATE_ICON);
         }
@@ -276,7 +278,7 @@ public class BrightnessController implements ToggleSlider.Listener {
             try {
                 switch (msg.what) {
                     case MSG_UPDATE_ICON:
-                        updateIcon();
+                        updateIcon(mAutomatic);
                         break;
                     case MSG_UPDATE_SLIDER:
                         updateSlider(Float.intBitsToFloat(msg.arg1), msg.arg2 != 0);
@@ -305,6 +307,7 @@ public class BrightnessController implements ToggleSlider.Listener {
     public BrightnessController(Context context, ToggleSlider control, ImageView icon,
             BroadcastDispatcher broadcastDispatcher) {
         mContext = context;
+        mIcon = icon;
         mControl = control;
         mControl.setMax(GAMMA_SPACE_MAX);
         mIcon = icon;
@@ -379,7 +382,7 @@ public class BrightnessController implements ToggleSlider.Listener {
     @Override
     public void onChanged(ToggleSlider toggleSlider, boolean tracking, boolean automatic,
             int value, boolean stopTracking) {
-        updateIcon();
+        updateIcon(mAutomatic);
         if (mExternalChange) return;
 
         if (mSliderAnimator != null) {
@@ -454,6 +457,18 @@ public class BrightnessController implements ToggleSlider.Listener {
     private void updateIcon() {
         if (mIcon != null) {
             mIcon.setImageResource(mAutomatic ?
+                    com.android.systemui.R.drawable.ic_qs_brightness_auto_on :
+                    com.android.systemui.R.drawable.ic_qs_brightness_auto_off);
+        }
+    }
+
+    private void setBrightnessAdj(float adj) {
+        mDisplayManager.setTemporaryAutoBrightnessAdjustment(adj);
+    }
+
+    private void updateIcon(boolean automatic) {
+        if (mIcon != null) {
+            mIcon.setImageResource(automatic && SHOW_AUTOMATIC_ICON ?
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_on :
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_off);
         }
