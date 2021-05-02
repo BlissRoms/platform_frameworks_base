@@ -27,6 +27,8 @@ public class DescendantSeamlessClockSwitch {
         "com.android.keyguard.clock.AnalogClockController",
         "com.android.keyguard.clock.SamsungClockController",
         "com.android.keyguard.clock.SamsungBoldClockController",
+        "com.android.keyguard.clock.AndroidSClockController",
+        "com.android.keyguard.clock.AndroidSDP3ClockController",
         "com.android.keyguard.clock.TypeClockController",
         "com.android.keyguard.clock.IDEClockController",
         "com.android.keyguard.clock.DividedLinesClockController",
