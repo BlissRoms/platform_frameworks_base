@@ -182,6 +182,9 @@ public final class ClockManager {
         addBuiltinClock(() -> new OOSClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OctaviDigitalClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new Fluidv2ClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new AndroidSClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new AndroidSDP3ClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new Android12ClockController(res, layoutInflater, colorExtractor));
 
         // Store the size of the display for generation of clock preview.
         DisplayMetrics dm = res.getDisplayMetrics();

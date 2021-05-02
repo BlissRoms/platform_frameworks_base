@@ -22,6 +22,9 @@
     <string name="clock_title_samsung_bold">Samsung (bold)</string>
     <string name="clock_title_mnml_box" translatable="false">MNML\'s Box</string>
     <string name="clock_title_mnml_minimal" translatable="false">MNML\'s Minimal</string>
+    <string name="clock_title_android_s" translatable="false">Android S</string>
+    <string name="clock_title_android_s_dp3" translatable="false">Android S DP3</string>
+    <string name="clock_title_android_12" translatable="false">Android 12</string>
     <string name="date_long_title_today">Today is %s</string>
 
     <!-- Clock required strings -->
