@@ -5671,6 +5671,11 @@ public final class Settings {
         public static final String SETTINGS_SPACER = "settings_spacer";
 
         /**
+         * Settings dasbhoard icons
+         */
+        public static final String SETTINGS_DASHBOARD_ICONS = "settings_dashboard_icons";
+
+	/**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -5813,6 +5818,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(POCKET_JUDGE);
             PRIVATE_SETTINGS.add(USE_OLD_MOBILETYPE);
             PRIVATE_SETTINGS.add(FOOTER_TEXT_SHOW);
+            PRIVATE_SETTINGS.add(SETTINGS_DASHBOARD_ICONS);
         }
 
         /**
