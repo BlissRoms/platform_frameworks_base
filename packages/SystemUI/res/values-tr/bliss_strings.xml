@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2020 BlissRoms Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Text to use when the number in a notification info is too large
+         (greater than status_bar_notification_info_maxnum, defined in
+         values/config.xml) and must be truncated.
+         [CHAR LIMIT=4] -->
+    <!-- Caffeine QS Tile -->
+    <string name="quick_settings_caffeine_label">Kafein</string>
+    <string name="accessibility_quick_settings_caffeine_off">Kafein kapalı</string>
+    <string name="accessibility_quick_settings_caffeine_on">Kafein açık</string>
+    <!-- Ambient display QS tile -->
+    <string name="quick_settings_ambient_display_label">Ortam ekranı</string>
+    <string name="accessibility_quick_settings_ambient_display_off">Ortam ekranı kapalı.</string>
+    <string name="accessibility_quick_settings_ambient_display_on">Ortam ekranı açık.</string>
+    <string name="accessibility_quick_settings_ambient_display_changed_off">Ortam ekranı kapatıldı.</string>
+    <string name="accessibility_quick_settings_ambient_display_changed_on">Ortam ekranı açıldı.</string>
+    <!-- USB tethering QS tile -->
+    <string name="quick_settings_usb_tether_label">USB internet paylaşımı</string>
+    <!-- Sync QS Tile -->
+    <string name="quick_settings_sync_label">Eşitleme</string>
+    <string name="accessibility_quick_settings_sync_off">Eşitleme kapalı</string>
+    <string name="accessibility_quick_settings_sync_on">Eşitleme açık</string>
+    <string name="accessibility_quick_settings_sync_changed_off">Eşitleme kapatıldı</string>
+    <string name="accessibility_quick_settings_sync_changed_on">Eşitleme açıldı</string>
+    <!-- Advance location quick setting tile -->
+    <string name="quick_settings_location_secondary_battery_saving">Pil tasarrufu</string>
+    <string name="accessibility_quick_settings_location_battery_saving">Konum bildirimi: pil tasarrufu modu.</string>
+    <string name="quick_settings_location_secondary_gps_only">Yalnızca sensörler</string>
+    <string name="accessibility_quick_settings_location_gps_only">Konum bildirimi: yalnızca sensörler modu.</string>
+    <string name="quick_settings_location_secondary_high_accuracy">Yüksek doğruluk</string>
+    <string name="accessibility_quick_settings_location_high_accuracy">Konum bildirimi: yüksek doğruluk modu.</string>
+    <!-- Power Menu -->
+    <string name="global_action_restart_advanced">Gelişmiş</string>
+    <string name="global_action_restart_recovery">Kurtarma</string>
+    <string name="global_action_restart_bootloader">Ön yükleyici</string>
+    <string name="global_action_restart_ui">Sistem arayüzü</string>
+    <!-- QS Config -->
+    <string name="qs_menu_item_columns">Sütunlar</string>
+    <string name="qs_menu_item_columns_landscape">Yatay modda sütunlar</string>
+    <string name="qs_menu_item_columns_three">3</string>
+    <string name="qs_menu_item_columns_four">4</string>
+    <string name="qs_menu_item_columns_five">5</string>
+    <string name="qs_menu_item_columns_six">6</string>
+    <string name="qs_menu_item_columns_seven">7</string>
+    <string name="qs_menu_item_columns_eight">8</string>
+    <string name="qs_menu_item_columns_nine">9</string>
+    <string name="qs_menu_item_reset">Sıfırla</string>
+    <string name="qs_menu_item_qs_columns">Hızlı ayarlar sütunları</string>
+    <string name="qs_menu_item_columns_auto">Otomatik</string>
+    <string name="qs_menu_item_titles">Etiketleri göster</string>
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Ses</string>
+    <string name="quick_settings_sound_ring">Zil Sesi</string>
+    <string name="quick_settings_sound_vibrate">Titreşim</string>
+    <string name="quick_settings_sound_dnd">Rahatsız etmeyin</string>
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_label">Ekran görüntüsü</string>
+    <string name="quick_settings_region_screenshot_label">Kısmi ekran görüntüsü</string>
+    <!-- Spidey Analog clock -->
+    <!-- Spectrum Analog clock -->
+    <!-- Dot Analog clock -->
+    <!-- Sneeky Analog clock -->
+    <!-- Bliss Analog clock -->
+    <!-- Custom num Analog clock -->
+    <!-- Oneplus Numbers clock -->
+    <!-- Oneplus Analog clock -->
+    <!-- Oneplus Analog clock -->
+    <!-- Oneplus Analog clock -->
+    <!-- Oneplus Analog clock -->
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time">Dash Şarj oluyor (tam dolmasına <xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> kaldı)</string>
+    <string name="keyguard_plugged_in_dash_charging">Dash Şarj oluyor</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a warp charger. Should match keyguard_plugged_in_warp_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_warp_charging_time" formatted="false"><xliff:g id="percentage">%2$s</xliff:g> • Warp Şarj Oluyor (tam dolmasına <xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> kaldı)</string>
+    <string name="keyguard_plugged_in_warp_charging">Warp Şarj oluyor</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a VOOC charger. Should match keyguard_plugged_in_vooc_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_vooc_charging_time" formatted="false"><xliff:g id="percentage">%2$s</xliff:g> • VOOC Şarj oluyor (tam dolmasına <xliff:g id="charging_time_left" example="4 hours and 2 minutes">%1$s</xliff:g> kaldı)</string>
+    <string name="keyguard_plugged_in_vooc_charging">VOOC Şarj oluyor</string>
+    <!-- Heads Up QS Tile -->
+    <string name="quick_settings_heads_up_label">Bildirim pencereleri</string>
+    <string name="accessibility_quick_settings_heads_up_off">Bildirim pencereleri kapalı.</string>
+    <string name="accessibility_quick_settings_heads_up_on">Bildirim pencereleri açık.</string>
+    <string name="accessibility_quick_settings_heads_up_changed_off">Bildirim pencereleri kapatıldı.</string>
+    <string name="accessibility_quick_settings_heads_up_changed_on">Bildirim pencereleri açıldı.</string>
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Göz atma bildirimi 1 dakika kadar erteleniyor.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%1$s</xliff:g> - Bildirim pencereleri <xliff:g id="number">%1$d</xliff:g> dakika ertelendi.</string>
+    <!-- Running service button -->
+    <string name="accessibility_quick_settings_running_services">Çalışan Hizmetler ekranını aç.</string>
+    <!-- Kill button in notification guts -->
+    <string name="force_stop_dlg_title">Zorla durdurulsun mu?</string>
+    <string name="force_stop_dlg_text">Uygulamayı durdurmaya zorlarsanız, bir hata meydana gelebilir.</string>
+    <string name="dlg_ok">@android:string/ok</string>
+    <string name="dlg_cancel">@android:string/cancel</string>
+    <string name="guts_force_close_app">Uygulamayı kapat</string>
+</resources>
