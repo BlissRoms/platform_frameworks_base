@@ -15,8 +15,6 @@
  */
 package com.android.keyguard.clock;
 
-import static com.android.systemui.statusbar.phone.KeyguardClockPositionAlgorithm.CLOCK_USE_DEFAULT_Y;
-
 import android.app.WallpaperManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -75,7 +73,7 @@ public class StickerTagClockController implements ClockPlugin {
     /**
      * Root view of preview.
      */
-    private View mView;
+    private View mBigClockView;
 
     /**
      * Background of the tag view
@@ -102,14 +100,14 @@ public class StickerTagClockController implements ClockPlugin {
     }
 
     private void createViews() {
-        mView = mLayoutInflater.inflate(R.layout.clock_tag, null);
-        mTagContainer = mView.findViewById(R.id.tagContainer);
-        mBuildTag = mView.findViewById(R.id.tagBuild);
+        mBigClockView = mLayoutInflater.inflate(R.layout.clock_tag, null);
+        mTagContainer = mBigClockView.findViewById(R.id.tagContainer);
+        mBuildTag = mBigClockView.findViewById(R.id.tagBuild);
     }
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mTagContainer = null;
         mBuildTag = null;
     }
@@ -147,20 +145,20 @@ public class StickerTagClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        if (mView == null) {
-            createViews();
-        }
-        return mView;
-    }
-
-    @Override
-    public View getBigClockView() {
         return null;
     }
 
     @Override
+    public View getBigClockView() {
+        if (mBigClockView == null) {
+            createViews();
+        }
+        return mBigClockView;
+    }
+
+    @Override
     public int getPreferredY(int totalHeight) {
-        return CLOCK_USE_DEFAULT_Y;
+        return totalHeight / 2;
     }
 
     @Override

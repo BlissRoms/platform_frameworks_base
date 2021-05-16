@@ -39,8 +39,6 @@ import com.android.systemui.plugins.ClockPlugin;
 
 import java.util.TimeZone;
 
-import static com.android.systemui.statusbar.phone.KeyguardClockPositionAlgorithm.CLOCK_USE_DEFAULT_Y;
-
 /**
  * Plugin for the default clock face used only to provide a preview.
  */
@@ -74,7 +72,7 @@ public class ClockertinoClockController implements ClockPlugin {
     /**
      * Root view of clock.
      */
-    private ClockLayout mView;
+    private ClockLayout mBigClockView;
 
     /**
      * Views for the dynamic gradient tinting
@@ -97,15 +95,15 @@ public class ClockertinoClockController implements ClockPlugin {
     }
 
     private void createViews() {
-        mView = (ClockLayout) mLayoutInflater
+        mBigClockView = (ClockLayout) mLayoutInflater
                 .inflate(R.layout.clock_clockertino, null);
-        mTimeWidgetBase = mView.findViewById(R.id.timeWidget);
-        mDateWidgetBase = mView.findViewById(R.id.dateWidget);
+        mTimeWidgetBase = mBigClockView.findViewById(R.id.timeWidget);
+        mDateWidgetBase = mBigClockView.findViewById(R.id.dateWidget);
     }
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mTimeWidgetBase = null;
         mDateWidgetBase = null;
     }
@@ -141,20 +139,20 @@ public class ClockertinoClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        if (mView == null) {
-            createViews();
-        }
-        return mView;
+		return null;
     }
 
     @Override
     public View getBigClockView() {
-        return null;
+        if (mBigClockView == null) {
+            createViews();
+        }
+        return mBigClockView;
     }
 
     @Override
     public int getPreferredY(int totalHeight) {
-        return CLOCK_USE_DEFAULT_Y;
+        return totalHeight / 2;
     }
 
     @Override
