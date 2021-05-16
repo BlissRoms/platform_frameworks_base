@@ -25,7 +25,6 @@
     <string name="date_long_title_today">Today is %s</string>
 
     <!-- Clock required strings -->
-    <string name="gradient_fire_clock_title">Gradient Fire</string>
     <string name="sticker_tag_clock_title">Sticker Tag</string>
     <string name="custom_clock_hours_title">Hours</string>
     <string name="custom_clock_minutes_title">Minutes</string>
