@@ -5629,6 +5629,12 @@ public final class Settings {
         public static final String FOD_ICON_ANIMATION = "fod_icon_animation";
 
         /**
+         * FOD icon animation style
+         * @hide
+         */
+        public static final String FOD_ICON_ANIM_TYPE = "fod_icon_anim_type";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
