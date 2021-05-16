@@ -42,8 +42,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static com.android.systemui.statusbar.phone.KeyguardClockPositionAlgorithm.CLOCK_USE_DEFAULT_Y;
-
 /**
  * Plugin for the default clock face used only to provide a preview.
  */
@@ -77,7 +75,7 @@ public class OronosClockController implements ClockPlugin {
     /**
      * Root view of clock.
      */
-    private ClockLayout mView;
+    private ClockLayout mBigClockView;
 
     /**
      * Text clock for both hour and minute
@@ -108,18 +106,18 @@ public class OronosClockController implements ClockPlugin {
     }
 
     private void createViews() {
-        mView = (ClockLayout) mLayoutInflater
+        mBigClockView = (ClockLayout) mLayoutInflater
                 .inflate(R.layout.oronos_clock, null);
 
-        mHourClock = mView.findViewById(R.id.clockHr);
-        mMinuteClock = mView.findViewById(R.id.clockMin);
-        mLongDate = mView.findViewById(R.id.longDate);
+        mHourClock = mBigClockView.findViewById(R.id.clockHr);
+        mMinuteClock = mBigClockView.findViewById(R.id.clockMin);
+        mLongDate = mBigClockView.findViewById(R.id.longDate);
         onTimeTick();
     }
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mHourClock = null;
         mMinuteClock = null;
         mLongDate = null;
@@ -156,20 +154,20 @@ public class OronosClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        if (mView == null) {
-            createViews();
-        }
-        return mView;
-    }
-
-    @Override
-    public View getBigClockView() {
         return null;
     }
 
     @Override
+    public View getBigClockView() {
+        if (mBigClockView == null) {
+            createViews();
+        }
+        return mBigClockView;
+    }
+
+    @Override
     public int getPreferredY(int totalHeight) {
-        return CLOCK_USE_DEFAULT_Y;
+        return totalHeight / 2;
     }
 
     @Override

@@ -37,8 +37,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static com.android.systemui.statusbar.phone.KeyguardClockPositionAlgorithm.CLOCK_USE_DEFAULT_Y;
-
 /**
  * Plugin for the default clock face used only to provide a preview.
  */
@@ -67,7 +65,7 @@ public class TypeAltClockController implements ClockPlugin {
     /**
      * Root view of preview.
      */
-    private View mView;
+    private View mBigClockView;
 
     /**
      * Text clock and date in formal.
@@ -97,14 +95,14 @@ public class TypeAltClockController implements ClockPlugin {
     }
 
     private void createViews() {
-        mView = mLayoutInflater.inflate(R.layout.clock_type_text_alt, null);
-        mTextFormalTime = mView.findViewById(R.id.formalTime);
-        mTextFormalDate = mView.findViewById(R.id.formalDate);
+        mBigClockView = mLayoutInflater.inflate(R.layout.clock_type_text_alt, null);
+        mTextFormalTime = mBigClockView.findViewById(R.id.formalTime);
+        mTextFormalDate = mBigClockView.findViewById(R.id.formalDate);
     }
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mTextFormalTime = null;
         mTextFormalDate = null;
     }
@@ -143,20 +141,20 @@ public class TypeAltClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        if (mView == null) {
-            createViews();
-        }
-        return mView;
-    }
-
-    @Override
-    public View getBigClockView() {
         return null;
     }
 
     @Override
+    public View getBigClockView() {
+        if (mBigClockView == null) {
+            createViews();
+        }
+        return mBigClockView;
+    }
+
+    @Override
     public int getPreferredY(int totalHeight) {
-        return CLOCK_USE_DEFAULT_Y;
+        return totalHeight / 2;
     }
 
     @Override
