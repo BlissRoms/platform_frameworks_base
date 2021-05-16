@@ -177,7 +177,6 @@ public final class ClockManager {
         addBuiltinClock(() -> new OronosReshapedClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new IDEJavaClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new ClockertinoClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new GradientFireClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new TypeAltClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new StickerTagClockController(res, layoutInflater, colorExtractor));
 
