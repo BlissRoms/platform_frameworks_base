@@ -509,6 +509,10 @@ public class MobileSignalController extends SignalController<
                 case 7:
                     resId = R.drawable.ic_volte_emui;
                     break;
+                // OOS 11 VoLTE icon
+                case 8:
+                    resId = R.drawable.ic_volte_oos11;
+                    break;
                 case 0:
                 default:
                     resId = R.drawable.ic_volte;
