@@ -23,8 +23,37 @@ public class DescendantSeamlessClockSwitch {
 
     private static final String[] CLOCK_FACES = {
         "com.android.keyguard.clock.DefaultClockController",
-        "com.android.keyguard.clock.BubbleClockController",
-        "com.android.keyguard.clock.AnalogClockController"
+        "com.android.keyguard.clock.DefaultBoldClockController",
+        "com.android.keyguard.clock.AnalogClockController",
+        "com.android.keyguard.clock.SamsungClockController",
+        "com.android.keyguard.clock.SamsungBoldClockController",
+        "com.android.keyguard.clock.TypeClockController",
+        "com.android.keyguard.clock.IDEClockController",
+        "com.android.keyguard.clock.DividedLinesClockController",
+        "com.android.keyguard.clock.BinaryClockController",
+        "com.android.keyguard.clock.SpectrumClockController",
+        "com.android.keyguard.clock.SfunyClockController",
+        "com.android.keyguard.clock.MNMLBoxClockController",
+        "com.android.keyguard.clock.MNMLMinimalClockController",
+        "com.android.keyguard.clock.FluidClockController",
+        "com.android.keyguard.clock.ShapeShiftClockController",
+        "com.android.keyguard.clock.BlissClockController",
+        "com.android.keyguard.clock.ClockertinoClockController",
+        "com.android.keyguard.clock.CrossFadeDarkController",
+        "com.android.keyguard.clock.CustomNumClockController",
+        "com.android.keyguard.clock.DotClockController",
+        "com.android.keyguard.clock.IDEJavaClockController",
+        "com.android.keyguard.clock.OPAnalogClockController",
+        "com.android.keyguard.clock.OPMinimalClockController",
+        "com.android.keyguard.clock.OPMinimalismClockController",
+        "com.android.keyguard.clock.OPNumbersClockController",
+        "com.android.keyguard.clock.OPRomanClockControlle",
+        "com.android.keyguard.clock.OronosClockController",
+        "com.android.keyguard.clock.OronosReshapedClockController",
+        "com.android.keyguard.clock.SneekyClockController",
+        "com.android.keyguard.clock.SpideyClockController",
+        "com.android.keyguard.clock.StickerTagClockController",
+        "com.android.keyguard.clock.TypeAltClockController"
     };
 
     public static int getCurrentPosition(String currentClockFace) {
@@ -90,7 +119,12 @@ public class DescendantSeamlessClockSwitch {
             targetView.setTextColor(color);
             targetView.setVisibility(View.VISIBLE);
         } else {
-            targetView.setVisibility(View.GONE);
+	        targetView.animate().alpha(0f).setDuration(200).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    targetView.setVisibility(View.GONE);
+                }
+            });
         }
     }
 }
