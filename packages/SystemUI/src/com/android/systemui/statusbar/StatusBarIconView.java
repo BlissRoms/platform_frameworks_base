@@ -691,6 +691,16 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
      * transitioning this also immediately sets the color.
      */
     public void setStaticDrawableColor(int color) {
+        
+            mDrawableColor = color;
+            setColorInternal(color);
+            updateContrastedStaticColor();
+            mIconColor = color;
+            mDozer.setColor(color);
+        
+    }
+
+       public void setStaticDrawableColorNotif(int color) {
         if (mNotification == null) return;
         if (mNotification.getPackageName().contains("systemui") || !NewIconStyle) { //if (mIsSystemUI) {
             mDrawableColor = color;
@@ -702,14 +712,38 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
     }
 
     private void setColorInternal(int color) {
-        if (mNotification == null) return;
-        if (mNotification.getPackageName().contains("systemui") || !NewIconStyle) { //if (mIsSystemUI) {
+         
             mCurrentSetColor = color;
             updateIconColor();
-        }
+        
     }
 
     private void updateIconColor() {
+        if (mShowsConversation) {
+            setColorFilter(null);
+            return;
+        }
+
+        
+        
+            if (mCurrentSetColor != NO_COLOR) {
+                if (mMatrixColorFilter == null) {
+                    mMatrix = new float[4 * 5];
+                    mMatrixColorFilter = new ColorMatrixColorFilter(mMatrix);
+                }
+                int color = NotificationUtils.interpolateColors(
+                        mCurrentSetColor, Color.WHITE, mDozeAmount);
+                updateTintMatrix(mMatrix, color, DARK_ALPHA_BOOST * mDozeAmount);
+                mMatrixColorFilter.setColorMatrixArray(mMatrix);
+                setColorFilter(null);  // setColorFilter only invalidates if the instance changed.
+                setColorFilter(mMatrixColorFilter);
+            } else {
+                mDozer.updateGrayscale(this, mDozeAmount);
+            }
+        
+    }
+
+private void updateIconColorDoze() {
         if (mShowsConversation) {
             setColorFilter(null);
             return;
@@ -733,7 +767,6 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
             }
         }
     }
-
     /**
      * Updates {@param array} such that it represents a matrix that changes RGB to {@param color}
      * and multiplies the alpha channel with the color's alpha+{@param alphaBoost}.
@@ -973,7 +1006,7 @@ public class StatusBarIconView extends AnimatedImageView implements StatusIconDi
         mDozer.setDozing(f -> {
             mDozeAmount = f;
             updateDecorColor();
-            updateIconColor();
+            updateIconColorDoze();
             updateAllowAnimation();
         }, dozing, fade, delay, this);
     }
