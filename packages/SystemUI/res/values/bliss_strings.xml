@@ -174,6 +174,6 @@
     <string name="qs_data_switch_toast_1">Currently only one SIM card is inserted</string>
 
     <!-- Screenrecorder -->
-    <string name="screenrecord_stopdot_label">Show stop dot\nLongpress to move it</string>
-    <string name="screenrecord_lowquality_label">Lower quality for smaller file size</string>
+    <string name="screenrecord_stopdot_label">Show dot to stop recording</string>
+    <string name="screenrecord_lowquality_label">Lower recording quality</string>
 </resources>
