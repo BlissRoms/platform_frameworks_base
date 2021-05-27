@@ -23,6 +23,20 @@ public class ThemesUtils {
             "com.android.systemui.qstile.circletrim",
             "com.android.systemui.qstile.dualtonecircletrim",
             "com.android.systemui.qstile.squircletrim",
+		    "com.android.systemui.qstile.wavey", // 4
+		    "com.android.systemui.qstile.pokesign", // 5
+		    "com.android.systemui.qstile.ninja", // 6
+		    "com.android.systemui.qstile.dottedcircle", // 7
+		    "com.android.systemui.qstile.attemptmountain", // 8
+		    "com.android.systemui.qstile.squaremedo", // 9
+		    "com.android.systemui.qstile.inkdrop", // 10
+		    "com.android.systemui.qstile.cookie", // 11
+		    "com.android.systemui.qstile.circleoutline", //12
+		    "com.android.systemui.qstile.neonlike", // 13
+		    "com.android.systemui.qstile.oos", // 14
+		    "com.android.systemui.qstile.triangles", // 15
+		    "com.android.systemui.qstile.divided", // 16
+		    "com.android.systemui.qstile.cosmos", // 17
     };
 
 }
