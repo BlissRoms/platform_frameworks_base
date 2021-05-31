@@ -674,6 +674,9 @@
     <!-- Font service -->
     <protected-broadcast android:name="com.android.server.ACTION_FONT_CHANGED" />
 
+    <!-- Sleep Mode -->
+    <protected-broadcast android:name="android.intent.action.SLEEP_MODE_TURN_OFF" />
+
     <!-- Gaming Mode -->
     <protected-broadcast android:name="exthmui.intent.action.GAMING_MODE_ON" />
     <protected-broadcast android:name="exthmui.intent.action.GAMING_MODE_OFF" />
