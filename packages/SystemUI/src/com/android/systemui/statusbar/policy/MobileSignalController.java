@@ -1054,7 +1054,7 @@ public class MobileSignalController extends SignalController<
 
     static class MobileIconGroup extends SignalController.IconGroup {
         final int mDataContentDescription; // mContentDescriptionDataType
-        int mDataType;
+        final int mDataType;
         final boolean mIsWide;
         final int mQsDataType;
 
