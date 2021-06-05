@@ -42,7 +42,6 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -243,7 +242,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
                     (PagedTileLayout) mRegularTileLayout);
         }
         mQSLogger.logAllTilesChangeListening(mListening, getDumpableTag(), mCachedSpecs);
-        updateSettings();
         updateResources();
     }
 
@@ -1309,9 +1307,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         int getOffsetTop(TileRecord tile);
 
         boolean updateResources();
-        int getNumColumns();
-        void updateSettings();
-        boolean isShowTitles();
 
         void setListening(boolean listening);
 
@@ -1393,25 +1388,11 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
     private void tileClickListener(QSTile t, QSTileView v) {
         if (mTileLayout != null) {
-            v.setHideLabel(!mTileLayout.isShowTitles());
             v.setOnClickListener(view -> {
                     t.click();
                     setAnimationTile(v);
             });
         }
-    }
-
-    public void updateSettings() {
-        if (mTileLayout != null) {
-            mTileLayout.updateSettings();
-            for (TileRecord r : mRecords) {
-                tileClickListener(r.tile, r.tileView);
-            }
-        }
-    }
-
-    public int getNumColumns() {
-        return mTileLayout.getNumColumns();
     }
 
     private void setBrightnessMinMax(boolean min) {

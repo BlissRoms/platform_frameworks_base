@@ -4910,34 +4910,6 @@ public final class Settings {
          */
         public static final String VOLUME_ROCKER_WAKE = "volume_rocker_wake";
 
-        /**
-         * Number of qs columns on landscape orientation
-         * @hide
-         */
-        public static final String QS_LAYOUT_COLUMNS_LANDSCAPE = "qs_layout_columns_landscape";
-
-         /**
-         * @hide
-         */
-        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
-
-        /**
-         * Whether to display qs tile titles in the qs panel
-         * @hide
-         */
-        public static final String QS_TILE_TITLE_VISIBILITY = "qs_tile_title_visibility";
-
-        /**
-         * @hide
-         */
-        public static final String QS_LAYOUT_ROWS = "qs_layout_rows";
-
-        /**
-         * Number of qs columns on quickbar
-         * @hide
-         */
-        public static final String QS_QUICKBAR_COLUMNS = "qs_quickbar_columns";
-
 	/**
          * Home wake button
          * @hide
@@ -5760,10 +5732,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
             PRIVATE_SETTINGS.add(DOUBLE_TAP_SLEEP_GESTURE);
             PRIVATE_SETTINGS.add(DOUBLE_TAP_SLEEP_LOCKSCREEN);
-            PRIVATE_SETTINGS.add(QS_LAYOUT_COLUMNS_LANDSCAPE);
-            PRIVATE_SETTINGS.add(QS_LAYOUT_COLUMNS);
-            PRIVATE_SETTINGS.add(QS_TILE_TITLE_VISIBILITY);
-            PRIVATE_SETTINGS.add(QS_LAYOUT_ROWS);
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK);
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_STYLE);
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_SECONDS);
