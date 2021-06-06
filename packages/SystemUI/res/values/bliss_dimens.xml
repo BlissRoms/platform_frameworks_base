@@ -61,12 +61,6 @@
     <!-- Width of the battery icon in the status bar when set to circle style. -->
     <dimen name="status_bar_battery_icon_circle_width">13.5dp</dimen>
 
-    <!-- QS Brightness control padding -->
-    <dimen name="qs_brightness_footer_padding">12dp</dimen>
-    <dimen name="qs_footer_padding_top">0dp</dimen>
-    <dimen name="qs_page_indicator_margin_bottom">12dp</dimen>
-    <dimen name="qs_paged_tile_layout_padding_bottom">4dp</dimen>
-
     <!-- The width/height of the charging indicator view on keyguard. -->
     <dimen name="keyguard_charging_indication_height">60dp</dimen>
     <dimen name="keyguard_charging_indication_width">35dp</dimen>
