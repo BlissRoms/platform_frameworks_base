@@ -240,4 +240,7 @@
 
      <!-- Switch USB controller on Asus ROG devices-->
      <java-symbol type="bool" name="config_switchUsbController" />
+
+     <!-- App Lock -->
+     <java-symbol type="string" name="lockscreen_pattern_instructions" />
 </resources>
