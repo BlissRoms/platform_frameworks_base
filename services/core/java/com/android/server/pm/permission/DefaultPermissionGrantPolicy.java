@@ -704,6 +704,9 @@ public final class DefaultPermissionGrantPolicy {
         String wpPickerPackageName = "com.android.wallpaper.livepicker";
         grantPermissionsToSystemPackage(pm, wpPickerPackageName, userId, WALLPAPER_PERMISSIONS);
 
+        // Google sound picker
+        grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.soundpicker", userId, STORAGE_PERMISSIONS);
+
         // Voice interaction
         if (voiceInteractPackageNames != null) {
             for (String voiceInteractPackageName : voiceInteractPackageNames) {
