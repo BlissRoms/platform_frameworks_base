@@ -700,6 +700,11 @@ public final class DefaultPermissionGrantPolicy {
         grantPermissionsToPackage(pm, browserPackage, userId, false /* ignoreSystemPackage */,
                 true /*whitelistRestrictedPermissions*/, FOREGROUND_LOCATION_PERMISSIONS);
 
+        // Device Personalization Services
+        grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.as", userId, CALENDAR_PERMISSIONS,
+                CAMERA_PERMISSIONS, CONTACTS_PERMISSIONS, ALWAYS_LOCATION_PERMISSIONS,
+                MICROPHONE_PERMISSIONS, PHONE_PERMISSIONS, SMS_PERMISSIONS);
+
         // Google prebuilt WP picker
         String wpPickerPackageName = "com.android.wallpaper.livepicker";
         grantPermissionsToSystemPackage(pm, wpPickerPackageName, userId, WALLPAPER_PERMISSIONS);
@@ -708,10 +713,23 @@ public final class DefaultPermissionGrantPolicy {
         grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.soundpicker", userId, STORAGE_PERMISSIONS);
 
         // Google Wallpapers
-        grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.apps.wallpaper", userId, STORAGE_PERMISSIONS);
+        grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.apps.wallpaper", userId, PHONE_PERMISSIONS,
+                STORAGE_PERMISSIONS);
 
         // Pixel Live Wallpapers
         grantSystemFixedPermissionsToSystemPackage(pm,"com.google.pixel.livewallpaper", userId, ALWAYS_LOCATION_PERMISSIONS);
+
+        // Google Photos
+        grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.apps.photos", userId, CONTACTS_PERMISSIONS,
+                PHONE_PERMISSIONS, STORAGE_PERMISSIONS, ALWAYS_LOCATION_PERMISSIONS);
+
+        // Google Recorder
+        grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.apps.recorder", userId, MICROPHONE_PERMISSIONS,
+                ALWAYS_LOCATION_PERMISSIONS);
+
+        // Settings Services
+        grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.settings.intelligence", userId, PHONE_PERMISSIONS,
+                ALWAYS_LOCATION_PERMISSIONS);
 
         // Voice interaction
         if (voiceInteractPackageNames != null) {
