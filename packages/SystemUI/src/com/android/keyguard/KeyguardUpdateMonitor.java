@@ -298,9 +298,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
 
     private final boolean mFingerprintWakeAndUnlock;
     private final boolean mFaceAuthOnlyOnSecurityView;
-    private int mFaceUnlockBehavior;
     private static final int FACE_UNLOCK_BEHAVIOR_DEFAULT = 0;
     private static final int FACE_UNLOCK_BEHAVIOR_SWIPE = 1;
+    private int mFaceUnlockBehavior = FACE_UNLOCK_BEHAVIOR_DEFAULT;
     private boolean mBouncerFullyShown;
 
     // Face unlock
@@ -2031,7 +2031,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
                 && !mSwitchingUser && !isFingerprintDisabled(getCurrentUser())
                 && (!mKeyguardGoingAway || !mDeviceInteractive) && mIsPrimaryUser
                 && allowedOnBouncer && !mIsDeviceInPocket;
-        return shouldListen;
+      }
     }
 
     /**
@@ -3094,7 +3094,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
         if (mFaceAuthOnlyOnSecurityView){
-            mFaceUnlockBehavior = FACE_UNLOCK_BEHAVIOR_DEFAULT;
+            mFaceUnlockBehavior = FACE_UNLOCK_BEHAVIOR_SWIPE;
         }else{
             mFaceUnlockBehavior = Settings.Secure.getIntForUser(resolver,
                 Settings.Secure.FACE_UNLOCK_METHOD, FACE_UNLOCK_BEHAVIOR_DEFAULT,
