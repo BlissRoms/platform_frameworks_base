@@ -455,6 +455,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     SettingsObserver mSettingsObserver;
 
     private final boolean mFaceAuthOnlyOnSecurityView;
+    private static final int FACE_UNLOCK_BEHAVIOR_DEFAULT = 0;
+    private static final int FACE_UNLOCK_BEHAVIOR_SWIPE = 1;
+    private int mFaceUnlockBehavior = FACE_UNLOCK_BEHAVIOR_DEFAULT;
 
     // Face unlock
     private static final boolean mCustomFaceUnlockSupported = FaceUnlockUtils.isFaceUnlockSupported();
@@ -2711,7 +2714,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
                 && !faceAuthenticated
                 && !fpLockedout;
 
-        if (shouldListen && mFaceAuthOnlyOnSecurityView && !mBouncerFullyShown){
+        if (shouldListen && mFaceUnlockBehavior == FACE_UNLOCK_BEHAVIOR_SWIPE && !mBouncerFullyShown){
             shouldListen = false;
         }
 
@@ -2748,7 +2751,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     public void onKeyguardBouncerFullyShown(boolean fullyShow) {
         if (mBouncerFullyShown != fullyShow){
             mBouncerFullyShown = fullyShow;
-            if (mFaceAuthOnlyOnSecurityView){
+            if (mFaceUnlockBehavior == FACE_UNLOCK_BEHAVIOR_SWIPE){
                 updateFaceListeningState();
             }
         }
@@ -3830,6 +3833,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
             mContentResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.FINGERPRINT_WAKE_UNLOCK), false, this,
                     UserHandle.USER_ALL);
+            mContentResolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.FACE_UNLOCK_METHOD), false, this,
+                    UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -3848,6 +3854,18 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
         updateFingerprintSettings();
+        updateFaceSettings();
+    }
+
+    private void updateFaceSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+        if (mFaceAuthOnlyOnSecurityView){
+            mFaceUnlockBehavior = FACE_UNLOCK_BEHAVIOR_SWIPE;
+        }else{
+            mFaceUnlockBehavior = Settings.Secure.getIntForUser(resolver,
+                Settings.Secure.FACE_UNLOCK_METHOD, FACE_UNLOCK_BEHAVIOR_DEFAULT,
+                UserHandle.USER_CURRENT);
+        }
     }
 
     private void updateFingerprintSettings() {
