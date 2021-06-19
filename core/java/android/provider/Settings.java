@@ -4955,21 +4955,6 @@ public final class Settings {
         public static final String LOCKSCREEN_BATTERY_INFO = "lockscreen_battery_info";
 
         /**
-         * Applications list where heasdup should't show
-         *
-         * @hide
-         */
-        public static final String HEADS_UP_STOPLIST_VALUES = "heads_up_stoplist_values";
-
-
-        /**
-         * Which applications to disable heads up notifications for
-         *
-         * @hide
-         */
-        public static final String HEADS_UP_BLACKLIST_VALUES = "heads_up_blacklist_values";
-
-        /**
          * Show or hide clock
          * 0 - hide
          * 1 - show (default)
