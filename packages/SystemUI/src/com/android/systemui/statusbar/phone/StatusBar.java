@@ -2184,9 +2184,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_SHOW_BATTERY_PERCENT),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LESS_BORING_HEADS_UP),
-                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS),
                     false, this, UserHandle.USER_ALL);
@@ -2259,7 +2256,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             setLockScreenMediaBlurLevel();
             setPulseOnNewTracks();
             setQsBatteryPercentMode();
-            setUseLessBoringHeadsUp();
             setFpToDismissNotifications();
             updateNavigationBar(false);
             setOldMobileType();
@@ -2347,13 +2343,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                     Settings.System.PULSE_ON_NEW_TRACKS, 1,
                     UserHandle.USER_CURRENT) == 1);
         }
-    }
-
-    private void setUseLessBoringHeadsUp() {
-        boolean lessBoringHeadsUp = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.LESS_BORING_HEADS_UP, 0,
-                UserHandle.USER_CURRENT) == 1;
-        mNotificationInterruptStateProvider.setUseLessBoringHeadsUp(lessBoringHeadsUp);
     }
 
     private void setFpToDismissNotifications() {

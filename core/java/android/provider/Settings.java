@@ -5387,12 +5387,6 @@ public final class Settings {
                 "statusbar_battery_bar_blend_color_reverse";
 
         /**
-         * Whether to show heads up only for dialer and sms apps
-         * @hide
-         */
-        public static final String LESS_BORING_HEADS_UP = "less_boring_heads_up";
-
-        /**
          * Whether to show the kill app button in notification guts
          *
          * @hide
