@@ -21,7 +21,7 @@
     <LinearLayout
         android:id="@+id/clock_view"
         android:layout_width="match_parent"
-        android:paddingLeft="20dp"
+        android:paddingLeft="50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical">
