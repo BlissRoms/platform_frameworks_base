@@ -1,0 +1,5 @@
+[gerrit]
+host=review.blissroms.org
+port=29418
+project=platform_frameworks_base
+defaultbranch=r
