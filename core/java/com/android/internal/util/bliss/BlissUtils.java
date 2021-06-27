@@ -612,4 +612,44 @@ public class BlissUtils {
             }
         }
     }
+    public static void unzip(String path, String destDirPath) {
+        try {
+            File destDir = new File(destDirPath != null ? destDirPath : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getCanonicalPath());
+            byte[] buffer = new byte[1024];
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(path));
+            ZipEntry zipEntry;
+            while ((zipEntry = zis.getNextEntry()) != null) {
+                // preparing destination file
+                File newFile = new File(destDir, zipEntry.getName());
+                String destDirCanonicalPath = destDir.getCanonicalPath();
+                String destFilePath = newFile.getCanonicalPath();
+                if (!destFilePath.startsWith(destDirCanonicalPath + File.separator)) {
+                    throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+                }
+                // current file is a directory
+                if (zipEntry.isDirectory()) {
+                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                        throw new IOException("Failed to create directory " + newFile);
+                    }
+                } else {
+                    // fix for Windows-created archives
+                    File parent = newFile.getParentFile();
+                    if (parent != null && !parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException("Failed to create directory " + parent);
+                    }
+                    // write file content
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+                }
+            }
+            zis.closeEntry();
+            zis.close();
+        } catch (Exception e) {
+            Log.w(TAG, "Cannot perform unzip: " + e.getMessage(), e);
+        }
+    }
 }
