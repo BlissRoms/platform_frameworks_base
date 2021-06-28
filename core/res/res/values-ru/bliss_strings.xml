@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014-2020 BlissRoms Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Button that copies the url to the log of a crashed application -->
+    <string name="aerr_copy">Скопировать ссылку лога ошибки</string>
+    <string name="url_copy_success">Ссылка скопирована успешно</string>
+    <string name="url_copy_failed">Произошла ошибка во время загрузки лога на dogbin</string>
+    <!-- Power Menu -->
+    <string name="reboot_title">Перезагрузка</string>
+    <string name="reboot_message">Перезагрузка системы</string>
+    <!-- Alert slider proc nodes paths. -->
+    <!-- [CHAR LIMIT=NONE] Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_accessFontManager">доступ к менеджеру шрифтов</string>
+    <!-- [CHAR LIMIT=NONE] Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_accessFontManager">Позволяет приложению получить доступ к менеджеру шрифтов.</string>
+    <!-- [CHAR LIMIT=NONE] Error when a package is installed but got the missing fonts.xml file, notifying the user why it isn't showing up. -->
+    <string name="fontservice_incompatible_font">Пакет шрифтов, который вы установили, несовместим из-за отсутствия fonts.xml в их файлах. Пожалуйста, свяжитесь с разработчиком пакета для поддержки.</string>
+    <!-- AOKP custom system animations -->
+    <string name="animation_fade">Затухание</string>
+    <string name="animation_slide_right">Сдвиг вправо</string>
+    <string name="animation_slide_left">Сдвиг влево</string>
+    <string name="animation_slide_right_no_fade">Сдвиг справа (без затухания)</string>
+    <string name="animation_slide_left_no_fade">Сдвиг слева (без затухания)</string>
+    <string name="animation_slide_up">Сдвиг вниз</string>
+    <string name="animation_slide_down">Сдвиг сверху</string>
+    <string name="animation_default">По умолчанию</string>
+    <string name="animation_translucent">Полупрозрачный</string>
+    <string name="animation_grow_shrink">Увеличение (вверх)</string>
+    <string name="animation_grow_shrink_center">Увеличение (по центру)</string>
+    <string name="animation_grow_shrink_bottom">Увеличение (низ)</string>
+    <string name="animation_grow_shrink_left">Увеличение (слева)</string>
+    <string name="animation_grow_shrink_right">Вырастать (справа)</string>
+    <string name="animation_random">Случайный</string>
+    <string name="action_null">Пусто</string>
+    <string name="animation_ethans">Ethans</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_lock_message_long_press">Нажмите и удерживайте кнопку питания для разблокировки</string>
+    <!-- Pocket Lock -->
+    <string name="pocket_view_title">Режим \"В кармане\" включен</string>
+    <string name="pocket_view_title_cancel">Для активации телефона:</string>
+    <string name="pocket_view_top_tag_cancel">Не закрывайте выделеную зону телефона и очистите от грязи или пыль.</string>
+    <string name="pocket_view_top_tag_cancel2">Долгое нажатие кнопки питания для принудительного выхода из карманного режима</string>
+    <string name="pocket_view_top_tag_number1">1.\u0020</string>
+    <string name="pocket_view_top_tag_number2">2.\u0020</string>
+</resources>
