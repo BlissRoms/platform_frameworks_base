@@ -32,7 +32,7 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public final class DogbinUtils {
     private static final String TAG = "DogbinUtils";
-    private static final String BASE_URL = "https://del.dog";
+    private static final String BASE_URL = "https://hastebin.com";
     private static final String API_URL = String.format("%s/documents", BASE_URL);
     private static Handler handler;
 
