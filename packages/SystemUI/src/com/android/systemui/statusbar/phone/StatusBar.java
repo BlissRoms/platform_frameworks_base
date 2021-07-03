@@ -116,6 +116,7 @@ import android.util.Log;
 import android.util.MathUtils;
 import android.util.Slog;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.IWindowManager;
 import android.view.InsetsState.InternalInsetsType;
@@ -556,6 +557,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             mLinger = BRIGHTNESS_CONTROL_LINGER_THRESHOLD + 1;
         }
     };
+
+    public float mQsExpansionFraction = 0f;
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
     @VisibleForTesting
@@ -1489,17 +1492,52 @@ public class StatusBar extends SystemUI implements DemoMode,
         mBroadcastDispatcher.registerReceiver(mBroadcastReceiver, filter, null, UserHandle.ALL);
     }
 
+    private int getDismissAllButtonGravity() {
+        return Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.CLEAR_ALL_BUTTON_GRAVITY, 1, UserHandle.USER_CURRENT);
+    }
+
+    public void setQsExpansionFraction(float value) {
+        mQsExpansionFraction = value;
+        updateDismissAllVisibility(true);
+    }
+
     public void updateDismissAllVisibility(boolean visible) {
         if (mClearableNotifications && mState != StatusBarState.KEYGUARD && visible && !mQSPanel.isExpanded()) {
             mDismissAllButton.setVisibility(View.VISIBLE);
             int DismissAllAlpha = Math.round(255.0f * mNotificationPanelViewController.getExpandedFraction());
             mDismissAllButton.setAlpha(DismissAllAlpha);
             mDismissAllButton.getBackground().setAlpha(DismissAllAlpha);
+            mDismissAllButton.setRotation(Math.round(180.0f * mNotificationPanelViewController.getExpandedFraction()));
+            mDismissAllButton.setTranslationY(MathUtils.lerp(-500f, 0f, mNotificationPanelViewController.getExpandedFraction()));
+        } else if (mClearableNotifications && mState != StatusBarState.KEYGUARD && visible && mQsExpansionFraction != 0) {
+            float fraction = MathUtils.lerp(1f, 0f, mQsExpansionFraction);
+            mDismissAllButton.setVisibility(View.VISIBLE);
+            mDismissAllButton.setAlpha(Math.round(255.0f * fraction));
+            mDismissAllButton.getBackground().setAlpha(Math.round(255.0f * fraction));
+            mDismissAllButton.setRotation(Math.round(180.0f * mQsExpansionFraction));
+            mDismissAllButton.setTranslationY(MathUtils.lerp(0f, 100f, mQsExpansionFraction));
         } else {
             mDismissAllButton.setAlpha(0);
             mDismissAllButton.getBackground().setAlpha(0);
+            mDismissAllButton.setRotation(0);
+            mDismissAllButton.setTranslationY(0f);
             mDismissAllButton.setVisibility(View.INVISIBLE);
         }
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mDismissAllButton.getLayoutParams();
+        switch (getDismissAllButtonGravity()) {
+            case 0:
+                lp.gravity = Gravity.LEFT|Gravity.BOTTOM;
+                break;
+            case 1:
+                lp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM;
+                break;
+            case 2:
+                lp.gravity = Gravity.RIGHT|Gravity.BOTTOM;
+                break;
+        }
+        mDismissAllButton.setLayoutParams(lp);
     }
 
     public void updateDismissAllButton(int iconcolor) {

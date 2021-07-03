@@ -5946,6 +5946,30 @@ public final class Settings {
         public static final String POWER_MENU_BG_ALPHA = "power_menu_bg_alpha";
 
         /**
+         * Center Notification Header
+         * @hide
+         */
+        public static final String CENTER_NOTIFICATION_HEADER = "center_notification_header";
+
+        /**
+         * Separators Notification Header
+         * @hide
+         */
+        public static final String SEPARATORS_NOTIFICATION_HEADER = "separators_notification_header";
+
+        /**
+         * Notification Header Gravity
+         * @hide
+         */
+        public static final String NOTIFICATION_HEADER_GRAVITY = "notification_header_gravity";
+
+        /**
+         * Clear All button gravity
+         * @hide
+         */
+        public static final String CLEAR_ALL_BUTTON_GRAVITY = "clear_all_button_gravity";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *

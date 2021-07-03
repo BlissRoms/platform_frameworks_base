@@ -17,7 +17,10 @@
 package com.android.systemui.statusbar.notification.stack
 
 import android.annotation.ColorInt
+import android.content.ContentResolver
 import android.content.Context
+import android.os.UserHandle
+import android.provider.Settings
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -91,6 +94,32 @@ class PeopleHubView(context: Context, attrs: AttributeSet) :
             view.alpha = contentAlpha
             view.translationY = translationY
         }
+        var separator_start: View? = requireViewById(R.id.line_separator_start)
+        var separator_end: View? = requireViewById(R.id.line_separator_end)
+        when (getGravity()) {
+            0 -> {
+                separator_start?.visibility = (View.GONE)
+                separator_end?.visibility = (if (showSeparetors()) View.VISIBLE else View.INVISIBLE)
+            }
+            1 -> {
+                separator_start?.visibility = (if (showSeparetors()) View.VISIBLE else View.INVISIBLE)
+                separator_end?.visibility = (if (showSeparetors()) View.VISIBLE else View.INVISIBLE)
+            }
+            2 -> {
+                separator_start?.visibility = (if (showSeparetors()) View.VISIBLE else View.INVISIBLE)
+                separator_end?.visibility = (View.GONE)
+            }
+        }
+    }
+
+    private fun getGravity(): Int? {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.NOTIFICATION_HEADER_GRAVITY, 0, UserHandle.USER_CURRENT)
+    }
+
+    private fun showSeparetors(): Boolean {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.SEPARATORS_NOTIFICATION_HEADER, 0, UserHandle.USER_CURRENT) != 0;
     }
 
     fun setOnHeaderClickListener(listener: OnClickListener?) = label.setOnClickListener(listener)
