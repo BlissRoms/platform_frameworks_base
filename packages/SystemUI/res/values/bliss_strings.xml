@@ -180,4 +180,8 @@
     <!-- Screenrecorder -->
     <string name="screenrecord_stopdot_label">Show dot to stop recording</string>
     <string name="screenrecord_lowquality_label">Lower recording quality</string>
+
+    <!-- Smart pixels QS tile -->
+    <string name="quick_settings_smart_pixels">Smart pixels</string>
+    <string name="quick_settings_smart_pixels_on_power_save">Auto-enabled smart pixels</string>
 </resources>
