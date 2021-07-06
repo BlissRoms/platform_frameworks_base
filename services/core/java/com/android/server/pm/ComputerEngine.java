@@ -1617,7 +1617,9 @@ public class ComputerEngine implements Computer {
                 if (DEBUG_PACKAGE_INFO) {
                     Log.v(TAG, "Spoofing signature for microG");
                 }
-                pi.signatures = new Signature[] {new Signature(MICROG_FAKE_SIGNATURE)};
+                if (pi != null) {
+                    pi.signatures = new Signature[] {new Signature(MICROG_FAKE_SIGNATURE)};
+                }
             }
         } catch (Throwable t) {
             // We should never die because of any failures, this is system code!
