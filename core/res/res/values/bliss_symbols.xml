@@ -36,4 +36,7 @@
   <java-symbol type="string" name="config_alertSliderIntent" />
   <java-symbol type="integer" name="config_alertSliderLocation" />
   <java-symbol type="string" name="config_alertSliderIntent" />
+
+  <!-- For dynamic default font styles -->
+  <java-symbol type="string" name="config_bodyFontFamily" />
 </resources>
