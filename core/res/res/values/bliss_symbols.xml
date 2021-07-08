@@ -71,4 +71,7 @@
     <java-symbol type="array" name="notification_light_package_mapping" />
     <!-- On-device lights (LED) capabilities -->
     <java-symbol type="integer" name="config_deviceLightCapabilities" />
+
+    <!-- For dynamic default font styles -->
+    <java-symbol type="string" name="config_bodyFontFamily" />
 </resources>
