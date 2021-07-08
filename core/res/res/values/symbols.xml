@@ -5136,4 +5136,7 @@
 
   <!-- Whether we order unlocking and waking -->
   <java-symbol type="bool" name="config_orderUnlockAndWake" />
+
+  <!-- For dynamic default font styles -->
+  <java-symbol type="string" name="config_bodyFontFamily" />
 </resources>
