@@ -5301,4 +5301,7 @@
   <java-symbol type="bool" name="config_viewBasedRotaryEncoderHapticsEnabled" />
 
   <java-symbol type="bool" name="config_quickSettingsShowMediaPlayer" />
+
+  <!-- For dynamic default font styles -->
+  <java-symbol type="string" name="config_bodyFontFamily" />
 </resources>
