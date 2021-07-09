@@ -146,6 +146,7 @@ public class AndroidSClockController implements ClockPlugin {
     private final HashMap<View, PendingIntent> mClickActions;
     private Uri mKeyguardSliceUri;
 
+    private final ClockPalette mPalette = new ClockPalette();
     private int mTextColor;
     private float mDarkAmount = 0;
     private int mRowHeight = 0;
@@ -257,7 +258,7 @@ public class AndroidSClockController implements ClockPlugin {
 
     @Override
     public void setTextColor(int color) {
-        mClock.setTextColor(color);
+        updateTextColors();
     }
 
     @Override
@@ -508,6 +509,11 @@ public class AndroidSClockController implements ClockPlugin {
                 ((TextView) v).setTextColor(blendedColor);
             }
         }
+
+        ColorExtractor.GradientColors colors = mColorExtractor.getColors(
+                WallpaperManager.FLAG_LOCK);
+        mPalette.setColorPalette(colors.supportsDarkText(), colors.getColorPalette());
+        mClock.setTextColor(ColorUtils.blendARGB(mPalette.getPrimaryColor(), Color.WHITE, 0.3f));
     }
 
     int getTextColor() {
