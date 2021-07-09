@@ -419,8 +419,10 @@ public class AndroidSClockController implements ClockPlugin {
                             .setUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                 @Override
                                 public void onAnimationUpdate(ValueAnimator animation) {
-                                    mClock.setTextSize((float) Converter.dpToPx(mContext, (int) (mTextSizeNormal + (differenceSize * animation.getAnimatedFraction()))));
-                                    mClock.requestLayout();
+                                    if (mClock != null) {
+                                        mClock.setTextSize((float) Converter.dpToPx(mContext, (int) (mTextSizeNormal + (differenceSize * animation.getAnimatedFraction()))));
+                                        mClock.requestLayout();
+                                    }
                                 }
                             })
                             .setDuration(550)
@@ -441,8 +443,10 @@ public class AndroidSClockController implements ClockPlugin {
                             .setUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                 @Override
                                 public void onAnimationUpdate(ValueAnimator animation) {
-                                    mClock.setTextSize((float) Converter.dpToPx(mContext, (int) (mTextSizeNormal + (differenceSize * (1f - animation.getAnimatedFraction())))));
-                                    mClock.requestLayout();
+                                    if (mClock != null) {
+                                        mClock.setTextSize((float) Converter.dpToPx(mContext, (int) (mTextSizeNormal + (differenceSize * (1f - animation.getAnimatedFraction())))));
+                                        mClock.requestLayout();
+                                    }
                                 }
                             })
                             .setDuration(550)
