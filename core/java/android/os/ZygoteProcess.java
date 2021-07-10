@@ -86,7 +86,7 @@ public class ZygoteProcess {
      * not be used if the devices has a DeviceConfig profile pushed to it that contains a value for
      * this key.
      */
-    private static final String USAP_POOL_ENABLED_DEFAULT = "false";
+    private static final String USAP_POOL_ENABLED_DEFAULT = "true";
 
     /**
      * The name of the socket used to communicate with the primary zygote.
@@ -426,7 +426,7 @@ public class ZygoteProcess {
         // avoid writing a partial response to the zygote.
         for (String arg : args) {
             // Making two indexOf calls here is faster than running a manually fused loop due
-            // to the fact that indexOf is an optimized intrinsic.
+            // to the fact that indexOf is a optimized intrinsic.
             if (arg.indexOf('\n') >= 0) {
                 throw new ZygoteStartFailedEx("Embedded newlines not allowed");
             } else if (arg.indexOf('\r') >= 0) {
