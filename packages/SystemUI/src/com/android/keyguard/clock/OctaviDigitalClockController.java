@@ -115,7 +115,7 @@ public class OctaviDigitalClockController implements ClockPlugin {
 
     @Override
     public String getTitle() {
-        return "OctaviDigitalClock";
+        return "Octavi";
     }
 
     @Override
