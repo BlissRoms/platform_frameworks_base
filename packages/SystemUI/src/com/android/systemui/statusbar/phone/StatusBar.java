@@ -2350,11 +2350,11 @@ public class StatusBar extends SystemUI implements DemoMode,
     public void updateSwitchStyle() {
         int switchStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.SWITCH_STYLE, 0, mLockscreenUserManager.getCurrentUserId());
-        ThemesUtils.updateSwitchStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), switchStyle);
+        BlissUtils.updateSwitchStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), switchStyle);
     }
 
     public void stockSwitchStyle() {
-        ThemesUtils.stockSwitchStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId());
+        BlissUtils.stockSwitchStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId());
     }
 
     public void updateSystemTheme() {
