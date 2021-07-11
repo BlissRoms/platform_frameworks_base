@@ -628,4 +628,29 @@ public class BlissUtils {
     public static boolean supportsBlur() {
         return mBlurSupportedSysProp && !mBlurDisabledSysProp && ActivityManager.isHighEndGfx();
     }
+
+    public static void updateSwitchStyle(IOverlayManager om, int userId, int switchStyle) {
+        if (switchStyle == 1) {
+            stockSwitchStyle(om, userId);
+        } else {
+            try {
+                om.setEnabled(ThemesUtils.SWITCH_THEMES[switchStyle],
+                        true, userId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Can't change switch theme", e);
+            }
+        }
+    }
+
+    public static void stockSwitchStyle(IOverlayManager om, int userId) {
+        for (int i = 0; i < ThemesUtils.SWITCH_THEMES.length; i++) {
+            String switchtheme = ThemesUtils.SWITCH_THEMES[i];
+            try {
+                om.setEnabled(switchtheme,
+                        false /*disable*/, userId);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
