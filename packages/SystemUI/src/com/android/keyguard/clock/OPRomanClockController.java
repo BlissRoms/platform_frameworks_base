@@ -92,12 +92,12 @@ public class OPRomanClockController implements ClockPlugin {
 
     @Override
     public String getName() {
-        return "Oneplus Roman";
+        return "OP Roman";
     }
 
     @Override
     public String getTitle() {
-        return mResources.getString(R.string.clock_title_oneplus_roman);
+        return "OP Roman";
     }
 
     @Override

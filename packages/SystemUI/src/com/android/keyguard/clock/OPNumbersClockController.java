@@ -92,12 +92,12 @@ public class OPNumbersClockController implements ClockPlugin {
 
     @Override
     public String getName() {
-        return "Oneplus";
+        return "OP Numbers";
     }
 
     @Override
     public String getTitle() {
-        return mResources.getString(R.string.clock_title_oneplus_numbers);
+        return "OP Numbers";
     }
 
     @Override

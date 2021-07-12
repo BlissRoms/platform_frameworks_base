@@ -92,12 +92,12 @@ public class OPMinimalClockController implements ClockPlugin {
 
     @Override
     public String getName() {
-        return "Oneplus Minimal";
+        return "OP Minimal";
     }
 
     @Override
     public String getTitle() {
-        return mResources.getString(R.string.clock_title_oneplus_minimal);
+        return "OP Minimal";
     }
 
     @Override

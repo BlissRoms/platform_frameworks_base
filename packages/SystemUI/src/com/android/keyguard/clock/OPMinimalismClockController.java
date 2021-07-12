@@ -92,12 +92,12 @@ public class OPMinimalismClockController implements ClockPlugin {
 
     @Override
     public String getName() {
-        return "Oneplus Analog";
+        return "OP Analog";
     }
 
     @Override
     public String getTitle() {
-        return mResources.getString(R.string.clock_title_minimalism);
+        return "OP Analog";
     }
 
     @Override
