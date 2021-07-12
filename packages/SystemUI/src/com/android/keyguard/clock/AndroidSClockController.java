@@ -152,6 +152,7 @@ public class AndroidSClockController implements ClockPlugin {
     private int mRowHeight = 0;
 
     private Typeface mSliceTypeface;
+    private Typeface mClockTypeface;
 
     /**
      * Time and calendars to check the date
@@ -188,6 +189,7 @@ public class AndroidSClockController implements ClockPlugin {
         mContainerSetBig.clone(mContainerBig);
         mClock.setFormat12Hour("hh\nmm");
         mClock.setFormat24Hour("kk\nmm");
+        mClockTypeface = mClock.getTypeface();
 
         mTitle = mBigClockView.findViewById(R.id.title);
         mRow = mBigClockView.findViewById(R.id.row);
@@ -198,7 +200,6 @@ public class AndroidSClockController implements ClockPlugin {
         mRowWithHeaderTextSize = mContext.getResources().getDimensionPixelSize(
                 R.dimen.header_row_font_size);
         mTextColor = Utils.getColorAttrDefaultColor(mContext, R.attr.wallpaperTextColor);
-        mSliceTypeface = mClock.getTypeface();
     }
 
     @Override
@@ -220,7 +221,7 @@ public class AndroidSClockController implements ClockPlugin {
 
     @Override
     public Bitmap getThumbnail() {
-        return BitmapFactory.decodeResource(mResources, R.drawable.default_thumbnail);
+        return BitmapFactory.decodeResource(mResources, R.drawable.samsung_thumbnail);
     }
 
     @Override
@@ -258,6 +259,11 @@ public class AndroidSClockController implements ClockPlugin {
     @Override
     public void setTextColor(int color) {
         updateTextColors();
+    }
+
+    @Override
+    public void setTypeface(Typeface tf) {
+        mClockTypeface = tf;
     }
 
     @Override
@@ -460,6 +466,7 @@ public class AndroidSClockController implements ClockPlugin {
     @Override
     public void setDarkAmount(float darkAmount) {
         mBigClockView.setDarkAmount(darkAmount);
+        if (mClockTypeface != null) mClock.setTypeface(Typeface.create(mClockTypeface, (mClockTypeface.getWeight() - ((int) (300f * darkAmount))), mClockTypeface.isItalic()));
         for (int i = 0; i < mRow.getChildCount(); i++) {
             KeyguardSliceTextView child = (KeyguardSliceTextView) mRow.getChildAt(i);
             final boolean isDateSlice = child.getTag().toString().equals(KeyguardSliceProvider.KEYGUARD_DATE_URI);
