@@ -353,7 +353,7 @@ public class BrightnessController implements ToggleSlider.Listener {
         mDisplayManager = context.getSystemService(DisplayManager.class);
         mVrManager = IVrManager.Stub.asInterface(ServiceManager.getService(
                 Context.VR_SERVICE));
-        
+
         updateIcon(mAutomatic);
     }
 
@@ -489,7 +489,7 @@ public class BrightnessController implements ToggleSlider.Listener {
             }
         }
     }
-    
+
     private void updateVrMode(boolean isEnabled) {
         if (mIsVrModeEnabled != isEnabled) {
             mIsVrModeEnabled = isEnabled;

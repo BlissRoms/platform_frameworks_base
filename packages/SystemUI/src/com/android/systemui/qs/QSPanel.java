@@ -51,6 +51,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ImageView;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.UiEventLogger;
@@ -260,20 +261,24 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.op_qs_footer_layout, this, false);
         addView(mBrightnessView);
-        mBrightnessController = new BrightnessController(getContext(), findViewById(R.id.brightness_level), findViewById(R.id.brightness_icon),
-            findViewById(R.id.brightness_slider), mBroadcastDispatcher);
+        final ImageView level = findViewById(R.id.brightness_level);
+        final ImageView icon = findViewById(R.id.brightness_icon);
+        final ToggleSliderView slider = findViewById(R.id.brightness_slider);
+        mBrightnessController = new BrightnessController(getContext(), level, icon,
+                slider, mBroadcastDispatcher);
 
         mOPFooterView = findViewById(R.id.op_qs_footer);
         if (mOPFooterView.getSettingsButton() != null) {
-            mOPFooterView.getSettingsButton().setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                   Dependency.get(ActivityStarter.class).postStartActivityDismissingKeyguard(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-                }
-            });
-        } if (mOPFooterView.getEditButton() != null) {
+            mOPFooterView.getSettingsButton().setOnClickListener(view ->
+                Dependency.get(ActivityStarter.class).postStartActivityDismissingKeyguard(new Intent(
+                    android.provider.Settings.ACTION_SETTINGS), 0)
+            );
+        }
+        if (mOPFooterView.getEditButton() != null) {
             mOPFooterView.getEditButton().setOnClickListener(view ->
                 Dependency.get(ActivityStarter.class).postQSRunnableDismissingKeyguard(() ->
-                        showEdit(view)));
+                        showEdit(view))
+            );
         }
     }
 
@@ -738,7 +743,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
                     ? mMediaTotalBottomMargin - getPaddingBottom() : 0;
             layoutParams.topMargin = mMediaTotalTopMargin;
         }
-        
     }
 
     public void updateBrightnessMirror() {
