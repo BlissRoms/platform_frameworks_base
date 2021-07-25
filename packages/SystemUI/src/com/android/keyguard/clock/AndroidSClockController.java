@@ -227,7 +227,7 @@ public class AndroidSClockController implements ClockPlugin {
     public Bitmap getPreview(int width, int height) {
 
         View previewView = mLayoutInflater.inflate(R.layout.android_s_clock, null);
-        TextClock previewClock = mView.findViewById(R.id.clock);
+        TextClock previewClock = mBigClockView.findViewById(R.id.clock);
         previewClock.setFormat12Hour("hh\nmm");
         previewClock.setFormat24Hour("kk\nmm");
 
@@ -453,6 +453,8 @@ public class AndroidSClockController implements ClockPlugin {
     @Override
     public void onTimeTick() {
         animate();
+        mBigClockView.onTimeChanged();
+        mClock.refreshTime();
     }
 
     @Override
