@@ -1503,41 +1503,40 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     public void updateDismissAllVisibility(boolean visible) {
-        if (mClearableNotifications && mState != StatusBarState.KEYGUARD && visible && !mQSPanel.isExpanded()) {
-            mDismissAllButton.setVisibility(View.VISIBLE);
+        boolean shouldVisible = visible && mClearableNotifications && mState != StatusBarState.KEYGUARD;
+        mDismissAllButton.setVisibility(shouldVisible ? View.VISIBLE : View.INVISIBLE);
+        if (!shouldVisible) {
+            return; // no need another bell and whistle
+        } else if (!mQSPanel.isExpanded()) {
             int DismissAllAlpha = Math.round(255.0f * mNotificationPanelViewController.getExpandedFraction());
             mDismissAllButton.setAlpha(DismissAllAlpha);
             mDismissAllButton.getBackground().setAlpha(DismissAllAlpha);
             mDismissAllButton.setRotation(Math.round(180.0f * mNotificationPanelViewController.getExpandedFraction()));
             mDismissAllButton.setTranslationY(MathUtils.lerp(-500f, 0f, mNotificationPanelViewController.getExpandedFraction()));
-        } else if (mClearableNotifications && mState != StatusBarState.KEYGUARD && visible && mQsExpansionFraction != 0) {
+        } else if (mQsExpansionFraction != 0) {
             float fraction = MathUtils.lerp(1f, 0f, mQsExpansionFraction);
-            mDismissAllButton.setVisibility(View.VISIBLE);
             mDismissAllButton.setAlpha(Math.round(255.0f * fraction));
             mDismissAllButton.getBackground().setAlpha(Math.round(255.0f * fraction));
             mDismissAllButton.setRotation(Math.round(180.0f * mQsExpansionFraction));
             mDismissAllButton.setTranslationY(MathUtils.lerp(0f, 100f, mQsExpansionFraction));
-        } else {
-            mDismissAllButton.setAlpha(0);
-            mDismissAllButton.getBackground().setAlpha(0);
-            mDismissAllButton.setRotation(0);
-            mDismissAllButton.setTranslationY(0f);
-            mDismissAllButton.setVisibility(View.INVISIBLE);
         }
 
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mDismissAllButton.getLayoutParams();
+        int targetGravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         switch (getDismissAllButtonGravity()) {
             case 0:
-                lp.gravity = Gravity.LEFT|Gravity.BOTTOM;
-                break;
-            case 1:
-                lp.gravity = Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM;
+                targetGravity = Gravity.LEFT | Gravity.BOTTOM;
                 break;
             case 2:
-                lp.gravity = Gravity.RIGHT|Gravity.BOTTOM;
+                targetGravity = Gravity.RIGHT | Gravity.BOTTOM;
                 break;
         }
-        mDismissAllButton.setLayoutParams(lp);
+        if (lp.gravity != targetGravity) {
+            lp.gravity = targetGravity;
+            mNotificationShadeWindowViewController.getView().post(() -> {
+                mDismissAllButton.setLayoutParams(lp);
+            });
+        }
     }
 
     public void updateDismissAllButton(int iconcolor) {
