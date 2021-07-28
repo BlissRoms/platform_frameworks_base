@@ -354,7 +354,7 @@ public final class Zygote {
 
             // If no GIDs were specified, don't make any permissions changes based on groups.
             if (gids != null && gids.length > 0) {
-                NetworkUtilsInternal.setAllowNetworkingForProcess(containsInetGid(gids));
+                NetworkUtilsInternal.setAllowNetworkingForProcess(uid, containsInetGid(gids));
             }
         }
 
@@ -415,7 +415,7 @@ public final class Zygote {
         Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, "PostFork");
 
         if (gids != null && gids.length > 0) {
-            NetworkUtilsInternal.setAllowNetworkingForProcess(containsInetGid(gids));
+            NetworkUtilsInternal.setAllowNetworkingForProcess(uid, containsInetGid(gids));
         }
 
         // Set the Java Language thread priority to the default value for new apps.
