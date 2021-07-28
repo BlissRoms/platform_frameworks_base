@@ -21,9 +21,9 @@
 #include "jni.h"
 
 namespace android {
-static void android_net_utils_setAllowNetworkingForProcess(JNIEnv *env, jobject thiz,
+static void android_net_utils_setAllowNetworkingForProcess(JNIEnv *env, jobject thiz, jint uid,
                                                            jboolean hasConnectivity) {
-    setAllowNetworkingForProcess(hasConnectivity == JNI_TRUE);
+    setAllowNetworkingForProcess(uid, hasConnectivity == JNI_TRUE);
 }
 
 static jboolean android_net_utils_protectFromVpn(JNIEnv *env, jobject thiz, jint socket) {
@@ -35,7 +35,7 @@ static jboolean android_net_utils_protectFromVpnWithFd(JNIEnv *env, jobject thiz
 }
 
 static const JNINativeMethod gNetworkUtilMethods[] = {
-        {"setAllowNetworkingForProcess", "(Z)V",
+        {"setAllowNetworkingForProcess", "(IZ)V",
          (void *)android_net_utils_setAllowNetworkingForProcess},
         {"protectFromVpn", "(I)Z", (void *)android_net_utils_protectFromVpn},
         {"protectFromVpn", "(Ljava/io/FileDescriptor;)Z",
