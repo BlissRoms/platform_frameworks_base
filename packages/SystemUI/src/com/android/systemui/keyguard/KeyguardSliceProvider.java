@@ -228,8 +228,9 @@ public class KeyguardSliceProvider extends SliceProvider implements
         // Show header if music is playing and the status bar is in the shade state. This way, an
         // animation isn't necessary when pressing power and transitioning to AOD.
         boolean keepWhenShade = mStatusBarState == StatusBarState.SHADE && mMediaIsVisible;
-        return !TextUtils.isEmpty(mMediaTitle) && (mMediaIsVisible || isAndroidSClockSelected) && (mDozing || keepWhenAwake
-                || keepWhenShade || isAndroidSClockSelected);
+        boolean isShapeShiftTwelveClockSelected = currentClock == null ? false : currentClock.contains("Twelve");
+        return !TextUtils.isEmpty(mMediaTitle) && (mMediaIsVisible || isAndroidSClockSelected || isShapeShiftTwelveClockSelected) && (mDozing || keepWhenAwake
+                || keepWhenShade || isAndroidSClockSelected || isShapeShiftTwelveClockSelected);
     }
 
     protected void addMediaLocked(ListBuilder listBuilder) {
@@ -282,16 +283,30 @@ public class KeyguardSliceProvider extends SliceProvider implements
      * @param builder The slice builder.
      */
     protected void addZenModeLocked(ListBuilder builder) {
+        String currentClock = Settings.Secure.getString(
+                mContentResolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+        boolean isShapeShiftTwelveClockSelected = currentClock == null ? false : currentClock.contains("Twelve");
         if (!isDndOn()) {
             return;
         }
-        RowBuilder dndBuilder = new RowBuilder(mDndUri)
-                .setContentDescription(getContext().getResources()
-                        .getString(R.string.accessibility_quick_settings_dnd))
-                .addEndItem(
-                    IconCompat.createWithResource(getContext(), R.drawable.stat_sys_dnd),
-                    ListBuilder.ICON_IMAGE);
-        builder.addRow(dndBuilder);
+
+        IconCompat noOOS12 = IconCompat.createWithResource(getContext(), com.android.internal.R.drawable.ic_qs_dnd);
+        IconCompat OOS12 = IconCompat.createWithResource(getContext(), R.drawable.ic_no_disturb_ssos);
+        String dndString = getContext().getResources().getString(R.string.accessibility_quick_settings_dnd);
+        String dndStringTitle = getContext().getResources().getString(R.string.quick_settings_dnd_label);
+
+        if (isShapeShiftTwelveClockSelected) {
+                RowBuilder dndBuilder = new RowBuilder(mDndUri)
+                        .setTitle(dndStringTitle)
+                        .setContentDescription(dndString)
+                        .addEndItem(noOOS12, ListBuilder.ICON_IMAGE);
+                builder.addRow(dndBuilder);
+        } else {
+            RowBuilder dndBuilder = new RowBuilder(mDndUri)
+                    .setContentDescription(dndString)
+                    .addEndItem(IconCompat.createWithResource(getContext(), R.drawable.stat_sys_dnd), ListBuilder.ICON_IMAGE);
+            builder.addRow(dndBuilder);
+        }
     }
 
     /**
@@ -481,6 +496,9 @@ public class KeyguardSliceProvider extends SliceProvider implements
     }
 
     private void updateMediaStateLocked(MediaMetadata metadata, @PlaybackState.State int state) {
+        String currentClock = Settings.Secure.getString(
+                mContentResolver, Settings.Secure.LOCK_SCREEN_CUSTOM_CLOCK_FACE);
+        boolean isShapeShiftTwelveClockSelected = currentClock == null ? false : currentClock.contains("Twelve");
         boolean nextVisible = NotificationMediaManager.isPlayingState(state);
         // Get track info from Now Playing notification, if available, and only if there's no playing media notification
         CharSequence npTitle = mMediaManager.getNowPlayingTrack();
@@ -509,7 +527,13 @@ public class KeyguardSliceProvider extends SliceProvider implements
         }
 
         // Set new track info from playing media notification
-        mMediaTitle = title;
+        if (isShapeShiftTwelveClockSelected) {
+            StringBuffer evenSB = new StringBuffer(" ");
+            evenSB.append(title);
+            mMediaTitle = evenSB;
+        } else {
+            mMediaTitle = title;
+        }
         mMediaArtist = nowPlayingAvailable ? null : artist;
         mMediaIsVisible = nextVisible || nowPlayingAvailable;
 
