@@ -117,7 +117,7 @@ public class AndroidSDP3ClockController implements ClockPlugin {
     /**
      * Root view of clock.
      */
-    private ClockLayout mView;
+    private ClockLayout mBigClockView;
 
     /**
      * Text clock in preview view hierarchy.
@@ -163,14 +163,14 @@ public class AndroidSDP3ClockController implements ClockPlugin {
     }
 
     private void createViews() {
-        mView = (ClockLayout) mLayoutInflater
+        mBigClockView = (ClockLayout) mLayoutInflater
                 .inflate(R.layout.android_s_dp3_clock, null);
-        mClock = mView.findViewById(R.id.clock);
+        mClock = mBigClockView.findViewById(R.id.clock);
         mClock.setFormat12Hour("hh:mm");
         mClock.setFormat24Hour("kk:mm");
 
-        mTitle = mView.findViewById(R.id.title);
-        mRow = mView.findViewById(R.id.row);
+        mTitle = mBigClockView.findViewById(R.id.title);
+        mRow = mBigClockView.findViewById(R.id.row);
 
         mIconSize = (int) mContext.getResources().getDimension(R.dimen.widget_icon_size);
         mIconSizeWithHeader = (int) mContext.getResources().getDimension(R.dimen.header_icon_size);
@@ -184,7 +184,7 @@ public class AndroidSDP3ClockController implements ClockPlugin {
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mClock = null;
         mTitle = null;
         mRow = null;
@@ -209,7 +209,7 @@ public class AndroidSDP3ClockController implements ClockPlugin {
     public Bitmap getPreview(int width, int height) {
 
         View previewView = mLayoutInflater.inflate(R.layout.android_s_dp3_clock, null);
-        TextClock previewClock = mView.findViewById(R.id.clock);
+        TextClock previewClock = mBigClockView.findViewById(R.id.clock);
         previewClock.setFormat12Hour("hh\nmm");
         previewClock.setFormat24Hour("kk\nmm");
 
@@ -218,20 +218,20 @@ public class AndroidSDP3ClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        if (mView == null) {
-            createViews();
-        }
-        return mView;
+	return null;
     }
 
     @Override
     public View getBigClockView() {
-        return null;
+        if (mBigClockView == null) {
+            createViews();
+        }
+        return mBigClockView;
     }
 
     @Override
     public int getPreferredY(int totalHeight) {
-        return CLOCK_USE_DEFAULT_Y;
+        return totalHeight / 2;
     }
 
     @Override
@@ -371,7 +371,7 @@ public class AndroidSDP3ClockController implements ClockPlugin {
 
     @Override
     public void setDarkAmount(float darkAmount) {
-        mView.setDarkAmount(darkAmount);
+        mBigClockView.setDarkAmount(darkAmount);
         for (int i = 0; i < mRow.getChildCount(); i++) {
             KeyguardSliceTextView child = (KeyguardSliceTextView) mRow.getChildAt(i);
             final boolean isDateSlice = child.getTag().toString().equals(KeyguardSliceProvider.KEYGUARD_DATE_URI);

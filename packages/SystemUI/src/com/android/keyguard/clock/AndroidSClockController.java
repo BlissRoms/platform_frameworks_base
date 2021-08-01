@@ -177,20 +177,20 @@ public class AndroidSClockController implements ClockPlugin {
     }
 
     private void createViews() {
-        mView = (ClockLayout) mLayoutInflater
+        mBigClockView = (ClockLayout) mLayoutInflater
                 .inflate(R.layout.android_s_clock, null);
         final ClockLayout viewBig = (ClockLayout) mLayoutInflater
                 .inflate(R.layout.android_s_big_clock, null);
-        mClock = mView.findViewById(R.id.clock);
-        mContainer = mView.findViewById(R.id.clock_view);
+        mClock = mBigClockView.findViewById(R.id.clock);
+        mContainer = mBigClockView.findViewById(R.id.clock_view);
         mContainerBig = viewBig.findViewById(R.id.clock_view);
         mContainerSet.clone(mContainer);
         mContainerSetBig.clone(mContainerBig);
         mClock.setFormat12Hour("hh\nmm");
         mClock.setFormat24Hour("kk\nmm");
 
-        mTitle = mView.findViewById(R.id.title);
-        mRow = mView.findViewById(R.id.row);
+        mTitle = mBigClockView.findViewById(R.id.title);
+        mRow = mBigClockView.findViewById(R.id.row);
         mIconSize = (int) mContext.getResources().getDimension(R.dimen.widget_icon_size);
         mIconSizeWithHeader = (int) mContext.getResources().getDimension(R.dimen.header_icon_size);
         mRowTextSize = mContext.getResources().getDimensionPixelSize(
@@ -203,7 +203,7 @@ public class AndroidSClockController implements ClockPlugin {
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mClock = null;
         mContainer = null;
     }
@@ -236,15 +236,15 @@ public class AndroidSClockController implements ClockPlugin {
 
     @Override
     public View getView() {
-        if (mView == null) {
-            createViews();
-        }
-        return mView;
+        return null;
     }
 
     @Override
     public View getBigClockView() {
-        return null;
+        if (mBigClockView  == null) {
+            createViews();
+        }
+        return mBigClockView;
     }
 
     @Override
@@ -457,7 +457,7 @@ public class AndroidSClockController implements ClockPlugin {
 
     @Override
     public void setDarkAmount(float darkAmount) {
-        mView.setDarkAmount(darkAmount);
+        mBigClockView.setDarkAmount(darkAmount);
         for (int i = 0; i < mRow.getChildCount(); i++) {
             KeyguardSliceTextView child = (KeyguardSliceTextView) mRow.getChildAt(i);
             final boolean isDateSlice = child.getTag().toString().equals(KeyguardSliceProvider.KEYGUARD_DATE_URI);
