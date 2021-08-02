@@ -33,7 +33,6 @@ import android.graphics.drawable.Icon;
 import android.media.session.MediaController;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -102,6 +101,8 @@ public class MediaControlPanel {
     private final ViewOutlineProvider mViewOutlineProvider;
     private final MediaOutputDialogFactory mMediaOutputDialogFactory;
     private final MediaArtworkProcessor mMediaArtworkProcessor;
+    private boolean mBackgroundArtwork = false;
+    private int mArtworkFadeLevel = 30;
 
     /**
      * Initialize a new control panel
@@ -178,6 +179,11 @@ public class MediaControlPanel {
         mSeekBarViewModel.setListening(listening);
     }
 
+    public void updateBgArtworkParams(boolean backgroundArtwork, int fadeLevel) {
+        mBackgroundArtwork = backgroundArtwork;
+        mArtworkFadeLevel = fadeLevel;
+    }
+
     /**
      * Get the context
      * @return context
@@ -239,11 +245,6 @@ public class MediaControlPanel {
         ConstraintSet expandedSet = mMediaViewController.getExpandedLayout();
         ConstraintSet collapsedSet = mMediaViewController.getCollapsedLayout();
 
-        boolean backgroundArtwork = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.ARTWORK_MEDIA_BACKGROUND, 0) == 1;
-        int artworkFadeLevel = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.ARTWORK_MEDIA_FADE_LEVEL, 30);
-
         ImageView backgroundImage = mViewHolder.getPlayer().findViewById(R.id.bg_album_art);
 
         mViewHolder.getPlayer().setBackgroundTintList(
@@ -264,8 +265,8 @@ public class MediaControlPanel {
         if (hasArtwork) {
             albumView.setImageDrawable(scaleDrawable(artwork));
         }
-        setVisibleAndAlpha(collapsedSet, R.id.album_art, hasArtwork && !backgroundArtwork);
-        setVisibleAndAlpha(expandedSet, R.id.album_art, hasArtwork && !backgroundArtwork);
+        setVisibleAndAlpha(collapsedSet, R.id.album_art, hasArtwork && !mBackgroundArtwork);
+        setVisibleAndAlpha(expandedSet, R.id.album_art, hasArtwork && !mBackgroundArtwork);
 
         if (hasArtwork) {
             BitmapDrawable ong = (BitmapDrawable) artwork.loadDrawable(mContext);
@@ -282,14 +283,14 @@ public class MediaControlPanel {
                         backgroundImage.getHeight(), mAlbumArtRadius);
                 }
             });
-            if (backgroundArtwork) {
-                int extraTint = ColorUtils.setAlphaComponent(mBackgroundColor, artworkFadeLevel * 255 / 100);
-                extraTint = ColorUtils.blendARGB(extraTint, android.graphics.Color.BLACK, Math.min(artworkFadeLevel / 100f, 0.5f));
+            if (mBackgroundArtwork) {
+                int extraTint = ColorUtils.setAlphaComponent(mBackgroundColor, mArtworkFadeLevel * 255 / 100);
+                extraTint = ColorUtils.blendARGB(extraTint, android.graphics.Color.BLACK, Math.min(mArtworkFadeLevel / 100f, 0.5f));
                 backgroundImage.setColorFilter(extraTint, android.graphics.PorterDuff.Mode.SRC_ATOP);
             }
         }
-        setVisibleAndAlpha(collapsedSet, R.id.bg_album_art, backgroundArtwork);
-        setVisibleAndAlpha(expandedSet, R.id.bg_album_art, backgroundArtwork);
+        setVisibleAndAlpha(collapsedSet, R.id.bg_album_art, mBackgroundArtwork);
+        setVisibleAndAlpha(expandedSet, R.id.bg_album_art, mBackgroundArtwork);
 
 
         // App icon
