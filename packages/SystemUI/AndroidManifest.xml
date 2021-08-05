@@ -309,12 +309,6 @@
     <uses-permission android:name="android.permission.REBOOT" />
     <uses-permission android:name="android.permission.RECOVERY" />
 
-    <!-- Smart space -->
-    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.QSB"/>
-    <protected-broadcast android:name="com.google.android.systemui.smartspace.ENABLE_UPDATE"/>
-    <protected-broadcast android:name="com.google.android.systemui.smartspace.EXPIRE_EVENT"/>
-    <protected-broadcast android:name="com.google.android.systemui.smartspace.CLICK_EVENT"/>
-
     <!-- LiveDisplay -->
     <uses-permission android:name="lineageos.permission.MANAGE_LIVEDISPLAY" />
     <uses-permission android:name="lineageos.permission.HARDWARE_ABSTRACTION_ACCESS" />
