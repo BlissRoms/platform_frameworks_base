@@ -830,11 +830,6 @@ class ActivityStarter {
         return res;
     }
 
-    private String getTopStackPackageName(){
-        final ActivityStack topStack = mRootWindowContainer.getTopDisplayFocusedStack();
-        return topStack != null ? topStack.mPackageName : "";
-    }
-
     /**
      * Executing activity start request and starts the journey of starting an activity. Here
      * begins with performing several preliminary checks. The normally activity launch flow will
@@ -1015,8 +1010,7 @@ class ActivityStarter {
         final String pkg = aInfo == null ? null : aInfo.packageName;
         if (mService.isAppLocked(pkg) && !mService.isAppOpened(pkg)
                 && !mService.isAlarmOrCallIntent(intent)
-                && !callingPackage.equals(pkg)
-                && !getTopStackPackageName().equals(pkg)) {
+                && !callingPackage.equals(pkg)) {
             if (DEBUG_APPLOCK) Slog.d(TAG_APPLOCK, "Locked pkg:" + pkg + " intent:" + intent);
             mService.mAppLockService.setAppIntent(pkg, intent);
             mService.mAppLockService.launchBeforeActivity(pkg);
