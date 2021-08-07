@@ -17,8 +17,9 @@
 package com.android.systemui.qs;
 
 import android.content.Context;
-import com.android.keyguard.CarrierText;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -26,6 +27,8 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 import com.android.systemui.R;
+import com.android.keyguard.CarrierText;
+import com.android.systemui.Dependency;
 import com.android.systemui.statusbar.DataUsageView;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.statusbar.phone.SettingsButton;
@@ -33,8 +36,13 @@ import com.android.systemui.statusbar.phone.SettingsButton;
 public class OPQSFooter extends LinearLayout {
 
     protected View mEdit;
+    private LinearLayout mMediaSpacer;
+    private View mBrightnessView;
     protected TouchAnimator mFooterAnimator;
     protected TouchAnimator mCarrierTextAnimator;
+    private Boolean mExpanded;
+    private Boolean mIsLandscape = false;
+    private boolean mIsQQSPanel = false;
 
     private SettingsButton mSettingsButton;
     private ActivityStarter mActivityStarter;
@@ -49,12 +57,16 @@ public class OPQSFooter extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mBrightnessView = findViewById(R.id.brightness_view);
+        mMediaSpacer = findViewById(R.id.qs_footer_media_spacer);
         mEdit = findViewById(R.id.edit);
         mSettingsButton = findViewById(R.id.settings_button);
         mFooterActions = findViewById(R.id.op_qs_footer_actions);
         mCarrierText = findViewById(R.id.qs_carrier_text);
         mDataUsageView = findViewById(R.id.data_usage_view);
         mDataUsageView.setVisibility(View.GONE);
+        mIsLandscape = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
         mFooterAnimator = createFooterAnimator();
         mCarrierTextAnimator = createCarrierTextAnimator();
     }
@@ -69,31 +81,81 @@ public class OPQSFooter extends LinearLayout {
     }
 
     public void setExpanded(boolean expanded) {
+        mExpanded = expanded;
         if (mDataUsageView != null) {
-            mDataUsageView.setVisibility(expanded ? View.VISIBLE : View.GONE);
-            if (expanded) {
+            mDataUsageView.setVisibility(mExpanded ? View.VISIBLE : View.GONE);
+            if (mExpanded) {
                 mDataUsageView.updateUsage();
             }
         }
         if (mEdit != null) {
-            mEdit.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            mEdit.setVisibility(mExpanded ? View.VISIBLE : View.GONE);
         }
+        mIsQQSPanel = !mExpanded;
+        setOrientation(mIsLandscape);
+    }
+
+    public void setIsQQSPanel() {
+        mIsQQSPanel = true;
+        mEdit.setVisibility(View.GONE);
+        mDataUsageView.setVisibility(View.GONE);
+        setOrientation(mIsLandscape);
     }
 
     @Nullable
     private TouchAnimator createFooterAnimator() {
-        return new TouchAnimator.Builder()
-                .addFloat(mEdit, "alpha", 0, 0, 1)
-                .addFloat(mDataUsageView, "alpha", 0, 0, 1)
-                .addFloat(mCarrierText, "alpha", 1, 1)
-                .build();
+        TouchAnimator.Builder builder = new TouchAnimator.Builder()
+                .addFloat(mEdit, "alpha", 0, 0, 1);
+        if (mIsLandscape) {
+            builder = builder.addFloat(mBrightnessView, "alpha", 0, 0, 1)
+                    .setStartDelay(0.5f);
+            builder = builder.addFloat(mSettingsButton, "alpha", 0, 0, 1)
+                    .setStartDelay(0.5f);
+        }
+        return builder.build();
     }
 
     @Nullable
     private TouchAnimator createCarrierTextAnimator() {
-        return new TouchAnimator.Builder()
-                .addFloat(mCarrierText, "alpha", 1, 0, 0)
-                .build();
+        TouchAnimator.Builder builder = new TouchAnimator.Builder()
+                .addFloat(mDataUsageView, "alpha", 0, 0, 1);
+        if (mIsLandscape) {
+            builder = builder.addFloat(mCarrierText, "alpha", 0, 0, 0)
+                    .setStartDelay(0.5f);
+        } else {
+            builder = builder.addFloat(mCarrierText, "alpha", 1, 0, 0);
+        }
+        return builder.build();
+    }
+
+    public View getFooterActions() {
+        return mFooterActions;
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setOrientation(newConfig.orientation
+                == Configuration.ORIENTATION_LANDSCAPE);
+    }
+
+    public void setOrientation(boolean isLandscape) {
+        if (mIsLandscape != isLandscape) {
+            mIsLandscape = isLandscape;
+            mBrightnessView.setAlpha(1.0f);
+            mSettingsButton.setAlpha(1.0f);
+            mFooterAnimator = createFooterAnimator();
+            mCarrierTextAnimator = createCarrierTextAnimator();
+        }
+        if (mIsLandscape && mIsQQSPanel) {
+            mMediaSpacer.setVisibility(View.VISIBLE);
+            mBrightnessView.setVisibility(View.GONE);
+            mFooterActions.setVisibility(View.GONE);
+        } else {
+            mMediaSpacer.setVisibility(View.GONE);
+            mBrightnessView.setVisibility(View.VISIBLE);
+            mFooterActions.setVisibility(View.VISIBLE);
+        }
     }
 
     public View getSettingsButton() {
@@ -102,9 +164,5 @@ public class OPQSFooter extends LinearLayout {
 
     public View getEditButton() {
         return mEdit;
-    }
-
-    public void setOrientation(boolean isLandscape) {
-        mFooterActions.setVisibility(isLandscape ? View.GONE : View.VISIBLE);
     }
 }

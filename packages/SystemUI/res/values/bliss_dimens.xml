@@ -139,4 +139,7 @@
 
     <!-- Weather condition icon  -->
     <dimen name="weather_icon_size">24dp</dimen>
+
+    <dimen name="media_spacer_height">28dp</dimen>
+    <dimen name="brightness_slider_height">48dp</dimen>
 </resources>
