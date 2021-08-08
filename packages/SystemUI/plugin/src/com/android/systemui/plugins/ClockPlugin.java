@@ -145,6 +145,10 @@ public interface ClockPlugin extends Plugin {
         return false;
     }
 
+    default boolean shouldShowInContainer() {
+        return false;
+    }
+
     /**
      * Allows Setting the Clock Typeface
      */

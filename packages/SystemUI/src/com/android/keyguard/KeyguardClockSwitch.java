@@ -221,7 +221,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
     }
 
     public boolean hasCustomClockInBigContainer() {
-        return hasCustomClock() && mClockPlugin.shouldShowInBigContainer();
+        return hasCustomClock() && mClockPlugin.shouldShowInContainer();
     }
 
     @Override

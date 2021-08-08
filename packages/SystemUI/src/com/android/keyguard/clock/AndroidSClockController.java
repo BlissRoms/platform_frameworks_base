@@ -500,6 +500,11 @@ public class AndroidSClockController implements ClockPlugin {
         return false;
     }
 
+    @Override
+    public boolean shouldShowInContainer() {
+        return true;
+    }
+
     private void updateTextColors() {
         final int blendedColor = getTextColor();
         mTitle.setTextColor(blendedColor);
