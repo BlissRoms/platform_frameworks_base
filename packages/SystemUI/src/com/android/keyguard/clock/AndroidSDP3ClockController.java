@@ -143,7 +143,6 @@ public class AndroidSDP3ClockController implements ClockPlugin {
     private float mDarkAmount = 0;
 
     private Typeface mSliceTypeface;
-    private Typeface mClockTypeface;
 
     /**
      * Create a DefaultClockController instance.
@@ -169,7 +168,6 @@ public class AndroidSDP3ClockController implements ClockPlugin {
         mClock = mBigClockView.findViewById(R.id.clock);
         mClock.setFormat12Hour("hh:mm");
         mClock.setFormat24Hour("kk:mm");
-        mClockTypeface = mClock.getTypeface();
 
         mTitle = mBigClockView.findViewById(R.id.title);
         mRow = mBigClockView.findViewById(R.id.row);
@@ -181,6 +179,7 @@ public class AndroidSDP3ClockController implements ClockPlugin {
         mRowWithHeaderTextSize = mContext.getResources().getDimensionPixelSize(
                 R.dimen.header_row_font_size);
         mTextColor = Utils.getColorAttrDefaultColor(mContext, R.attr.wallpaperTextColor);
+        mSliceTypeface = mClock.getTypeface();
     }
 
     @Override
@@ -244,11 +243,6 @@ public class AndroidSDP3ClockController implements ClockPlugin {
     }
 
     @Override
-    public void setTypeface(Typeface tf) {
-        mClockTypeface = tf;
-    }
-
-    @Override
     public void setColorPalette(boolean supportsDarkText, int[] colorPalette) {}
 
     @Override
@@ -306,8 +300,8 @@ public class AndroidSDP3ClockController implements ClockPlugin {
             if (button == null) {
                 button = new KeyguardSliceTextView(mContext);
                 button.setTextSize(isDateSlice ? mTitleTextSize : mSliceTextSize);
-                button.setTextColor(blendedColor);
                 button.setGravity(Gravity.START);
+                button.setTextColor(blendedColor);
                 button.setTag(itemTag);
                 final int viewIndex = i - (mHasHeader ? 0 : 0);
                 mRow.addView(button, viewIndex);
@@ -380,7 +374,6 @@ public class AndroidSDP3ClockController implements ClockPlugin {
     @Override
     public void setDarkAmount(float darkAmount) {
         mBigClockView.setDarkAmount(darkAmount);
-        if (mClockTypeface != null) mClock.setTypeface(Typeface.create(mClockTypeface, (mClockTypeface.getWeight() - ((int) (300f * darkAmount))), mClockTypeface.isItalic()));
         for (int i = 0; i < mRow.getChildCount(); i++) {
             KeyguardSliceTextView child = (KeyguardSliceTextView) mRow.getChildAt(i);
             final boolean isDateSlice = child.getTag().toString().equals(KeyguardSliceProvider.KEYGUARD_DATE_URI);
