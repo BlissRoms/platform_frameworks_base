@@ -53,6 +53,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class Ringtone {
     private static final String TAG = "Ringtone";
+    private static final boolean LOGD = false;
 
     /**
      * The ringtone should only play sound. Any vibration is managed externally.
