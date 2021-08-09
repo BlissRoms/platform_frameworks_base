@@ -444,7 +444,6 @@ public class BatteryMeterView extends LinearLayout implements
         final boolean addPercentView = mBatteryStyle != BATTERY_STYLE_HIDDEN
                                     && (showBatteryPercent == 2
                                     || (mBatteryPercentCharging && mCharging)
-                                    || mBatteryStyle == BATTERY_STYLE_TEXT
                                     || mShowPercentMode == MODE_ON
                                     || mShowBatteryEstimate != 0);
 
@@ -475,6 +474,7 @@ public class BatteryMeterView extends LinearLayout implements
         } else {
             removeBatteryPercentView();
         }
+        updatePercentText();
     }
 
     public void setIsQsHeader(boolean isQs) {
