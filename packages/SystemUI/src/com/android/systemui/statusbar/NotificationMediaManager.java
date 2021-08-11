@@ -58,6 +58,7 @@ import com.android.systemui.colorextraction.SysuiColorExtractor;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.media.MediaData;
 import com.android.systemui.media.MediaDataManager;
+import com.android.systemui.media.MediaFeatureFlag;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.dagger.StatusBarModule;
 import com.android.systemui.statusbar.notification.NotificationEntryListener;
@@ -76,8 +77,6 @@ import com.android.systemui.util.DeviceConfigProxy;
 import com.android.systemui.util.Utils;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.tuner.TunerService;
-import com.android.systemui.statusbar.phone.StatusBar;
-import com.android.systemui.statusbar.VisualizerView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -94,7 +93,7 @@ import dagger.Lazy;
  * Handles tasks and state related to media notifications. For example, there is a 'current' media
  * notification, which this class keeps track of.
  */
-public class NotificationMediaManager implements Dumpable, TunerService.Tunable {
+public class NotificationMediaManager implements Dumpable, TunerService.Tunable, MediaDataManager.Listener {
     private static final String TAG = "NotificationMediaManager";
     public static final boolean DEBUG_MEDIA = false;
 
@@ -120,6 +119,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
 
     private final NotificationEntryManager mEntryManager;
     private final MediaDataManager mMediaDataManager;
+    private final boolean mIsMediaInQS;
 
     @Nullable
     private Lazy<NotificationShadeWindowController> mNotificationShadeWindowController;
@@ -183,11 +183,6 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                 if (!isPlaybackActive(state.getState())) {
                     clearCurrentMediaNotification();
                 }
-                StatusBar statusBar = mStatusBarLazy.get();
-                if (statusBar != null) {
-                    statusBar.getVisualizer().setPlaying(state.getState()
-                            == PlaybackState.STATE_PLAYING);
-                }
                 findAndUpdateMediaNotifications();
             }
         }
@@ -216,7 +211,8 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
             KeyguardBypassController keyguardBypassController,
             @Main DelayableExecutor mainExecutor,
             DeviceConfigProxy deviceConfig,
-            MediaDataManager mediaDataManager) {
+            MediaDataManager mediaDataManager,
+            MediaFeatureFlag mediaFeatureFlag) {
         mContext = context;
         mMediaArtworkProcessor = mediaArtworkProcessor;
         mKeyguardBypassController = keyguardBypassController;
@@ -231,6 +227,8 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
         mEntryManager = notificationEntryManager;
         mMainExecutor = mainExecutor;
         mMediaDataManager = mediaDataManager;
+        mMediaDataManager.addListener(this);
+        mIsMediaInQS = mediaFeatureFlag.getEnabled();
 
         notificationEntryManager.addNotificationEntryListener(new NotificationEntryListener() {
 
@@ -252,6 +250,9 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
             @Override
             public void onEntryReinflated(NotificationEntry entry) {
                 findAndUpdateMediaNotifications();
+                if (!mIsMediaInQS) {
+                    checkMediaNotificationColor(entry);
+                }
             }
 
             @Override
@@ -261,6 +262,17 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
                     boolean removedByUser,
                     int reason) {
                 removeEntry(entry);
+            }
+
+            // these get called from NotificationEntryManager.onAsyncInflationFinished
+            // so we are sure the final media notification albumart and colors elaboration
+            // has been completed by the system
+            @Override
+            public void onNotificationAdded(
+                    NotificationEntry entry) {
+                if (!mIsMediaInQS) {
+                    checkMediaNotificationColor(entry);
+                }
             }
         });
 
@@ -339,6 +351,37 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
             mNowPlayingNotificationKey = null;
             dispatchUpdateMediaMetaData(true /* changed */, true /* allowEnterAnimation */);
         }
+    }
+
+    private void checkMediaNotificationColor(NotificationEntry entry) {
+        if (entry.getSbn().getKey().equals(mMediaNotificationKey)) {
+            ArrayList<MediaListener> callbacks = new ArrayList<>(mMediaListeners);
+            for (int i = 0; i < callbacks.size(); i++) {
+                callbacks.get(i).setMediaNotificationColor(
+                        entry.getSbn().getNotification().isColorizedMedia(),
+                        entry.getRow().getCurrentBackgroundTint());
+            }
+        }
+    }
+
+    @Override
+    public void onMediaDataLoaded(String key, String oldKey, MediaData data) {
+        /* for future reference, now this static call is also available:
+        MediaDataManagerKt.isMediaNotification(sbn)*/
+        // TODO: mIsMediaInQS check should be useless here, if so we can remove it
+        if (mIsMediaInQS && key.equals(mMediaNotificationKey)) {
+            ArrayList<MediaListener> callbacks = new ArrayList<>(mMediaListeners);
+            for (int i = 0; i < callbacks.size(); i++) {
+                callbacks.get(i).setMediaNotificationColor(
+                        true/*colorized*/,
+                        data.getBackgroundColor());
+            }
+        }
+    }
+
+    @Override
+    public void onMediaDataRemoved(String key) {
+        //
     }
 
     public String getMediaNotificationKey() {
@@ -664,22 +707,6 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
             mScrimController.setHasBackdrop(hasArtwork);
         }
 
-        StatusBar statusBar = mStatusBarLazy.get();
-        if (statusBar != null &&
-                mStatusBarStateController.getState() != StatusBarState.SHADE) {
-            VisualizerView visualizerView = statusBar.getVisualizer();
-            if (!mKeyguardStateController.isKeyguardFadingAway()) {
-                // ensure visualizer is visible
-                visualizerView.setPlaying(getMediaControllerPlaybackState(mMediaController) ==
-                        PlaybackState.STATE_PLAYING);
-            }
-
-            if (hasMediaArtwork && (artworkDrawable instanceof BitmapDrawable)) {
-                // always use current backdrop to color eq
-                visualizerView.setBitmap(((BitmapDrawable)artworkDrawable).getBitmap());
-            }
-        }
-
         if ((hasArtwork || DEBUG_MEDIA_FAKE_ARTWORK)
                 && (mStatusBarStateController.getState() != StatusBarState.SHADE || allowWhenShade)
                 &&  mBiometricUnlockController != null && mBiometricUnlockController.getMode()
@@ -884,5 +911,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
          */
         default void onPrimaryMetadataOrStateChanged(MediaMetadata metadata,
                 @PlaybackState.State int state) {}
+
+        default void setMediaNotificationColor(boolean colorizedMedia, int color) {};
     }
 }

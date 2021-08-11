@@ -234,6 +234,8 @@ oneway interface IStatusBar
      */
     void toggleCameraFlash(boolean proximityCheck);
     void toggleCameraFlashState(boolean enable);
+    void screenPinningStateChanged(boolean enabled);
+    void leftInLandscapeChanged(boolean isLeft);
 
     /**
      *  Used to show or hide in display fingerprint view.

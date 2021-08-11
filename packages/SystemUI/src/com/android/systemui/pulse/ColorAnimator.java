@@ -1,6 +1,7 @@
-/*
+/**
  * Copyright (C) 2016 The DirtyUnicorns Project
- *               2019 crDroid Android Project
+ * 
+ * @author: Randall Rushing <randall.rushing@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +14,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * Produce a smooth HSV color wheel type animation much like a LavaLamp
+ * 
  */
 
-package com.android.internal.util.bliss;
+package com.android.systemui.pulse;
 
 import android.animation.ValueAnimator;
 import android.graphics.Color;
 
 public class ColorAnimator implements ValueAnimator.AnimatorUpdateListener {
     public interface ColorAnimationListener {
-        public void onColorChanged(ColorAnimator colorAnimator, int color);
-        public void onStartAnimation(ColorAnimator colorAnimator, int firstColor);
-        public void onStopAnimation(ColorAnimator colorAnimator, int lastColor);
+        public default void onColorChanged(ColorAnimator colorAnimator, int color) {}
+        public default void onStartAnimation(ColorAnimator colorAnimator, int firstColor) {}
+        public default void onStopAnimation(ColorAnimator colorAnimator, int lastColor) {}
     }
 
     public static final int ANIM_DEF_DURATION = 10 * 1000;

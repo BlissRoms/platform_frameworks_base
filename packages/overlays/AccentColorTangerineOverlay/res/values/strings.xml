@@ -20,6 +20,3 @@
     <!-- Black accent color name application label. [CHAR LIMIT=50] -->
     <string name="accent_color_overlay" translatable="false">Tangerine</string>
 </resources>
-
-
-
