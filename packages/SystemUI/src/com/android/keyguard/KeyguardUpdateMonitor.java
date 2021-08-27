@@ -200,6 +200,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -398,6 +399,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     BatteryStatus mBatteryStatus;
     @VisibleForTesting
     boolean mIncompatibleCharger;
+
+    Date mLastBatteryUpdate;
 
     private StrongAuthTracker mStrongAuthTracker;
 
@@ -3783,6 +3786,15 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
      */
     private void handleBatteryUpdate(BatteryStatus status) {
         Assert.isMainThread();
+        if (mLastBatteryUpdate == null) {
+            mLastBatteryUpdate = new Date();
+        } else {
+            Date newDate = new Date();
+            if (mLastBatteryUpdate.getTime() + 2000 > newDate.getTime()) {
+                return;
+            }
+            mLastBatteryUpdate = newDate;
+        }
         final boolean batteryUpdateInteresting = isBatteryUpdateInteresting(mBatteryStatus, status);
         mBatteryStatus = status;
         if (batteryUpdateInteresting) {
