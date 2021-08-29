@@ -25,20 +25,25 @@ import static android.net.wifi.WifiManager.TrafficStateCallback.DATA_ACTIVITY_OU
 
 import android.annotation.Nullable;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.ConnectivityManager.NetworkCallback;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.telephony.CarrierConfigManager;
 import android.telephony.CellSignalStrength;
@@ -139,6 +144,12 @@ public class NetworkControllerImpl extends BroadcastReceiver
     private final DumpManager mDumpManager;
 
     private boolean mShowImsIcon = true;
+
+    private final Handler mHandler = new Handler();
+
+    // Volte Icon Style
+    private int mVolteIconStyle = 1;
+    private int resId;
 
     private TelephonyCallback.ActiveDataSubscriptionIdListener mPhoneStateListener;
     private int mActiveMobileDataSubscription = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
@@ -455,6 +466,9 @@ public class NetworkControllerImpl extends BroadcastReceiver
         mDemoModeController.addCallback(this);
         mProviderModelBehavior = mFeatureFlags.isEnabled(Flags.COMBINED_STATUS_BAR_SIGNAL_ICONS);
 
+        mSettingsObserver.observe();
+        mSettingsObserver.update();
+
         mDumpManager.registerDumpable(TAG, this);
     }
 
@@ -547,12 +561,38 @@ public class NetworkControllerImpl extends BroadcastReceiver
         return mWifiSignalController.getState().level;
     }
 
+    private SettingsObserver mSettingsObserver = new SettingsObserver(mHandler);
+    private class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.VOLTE_ICON_STYLE), false,
+                    this, UserHandle.USER_ALL);
+        }
+
+        /*
+         *  @hide
+         */
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        private void update() {
+            ContentResolver resolver = mContext.getContentResolver();
+	        mVolteIconStyle = Settings.System.getIntForUser(resolver,
+    	            Settings.System.VOLTE_ICON_STYLE, 1,
+        	        UserHandle.USER_CURRENT);
+            updateImsIcon();
+            notifyListeners();
+        }
+    }
+
     @Override
     public void onTuningChanged(String key, String newValue) {
-        if (key.equals("ims")) {
-            mShowImsIcon = TunerService.parseIntegerSwitch(newValue, true);
-            updateImsIcon();
-        }
     }
 
     @Override
@@ -748,6 +788,8 @@ public class NetworkControllerImpl extends BroadcastReceiver
         cb.setConnectivityStatus(mNoDefaultNetwork, !mInetCondition, mNoNetworksAvailable);
         mWifiSignalController.notifyListeners(cb);
         mEthernetSignalController.notifyListeners(cb);
+        mVolteIconStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.VOLTE_ICON_STYLE, 1, UserHandle.USER_CURRENT);
         for (int i = 0; i < mMobileSignalControllers.size(); i++) {
             MobileSignalController mobileSignalController = mMobileSignalControllers.valueAt(i);
             mobileSignalController.notifyListeners(cb);
@@ -760,7 +802,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
             boolean volte2 = mMobileSignalControllers.valueAt(1).isVolteAvailable();
             boolean vowifi1 = mMobileSignalControllers.valueAt(0).isVowifiAvailable();
             boolean vowifi2 = mMobileSignalControllers.valueAt(1).isVowifiAvailable();
-            cb.setImsIcon(new ImsIconState((volte1 || volte2) && mShowImsIcon,
+            cb.setImsIcon(new ImsIconState((volte1 || volte2) && (mVolteIconStyle != 0),
                     (vowifi1 || vowifi2) && mShowImsIcon,
                     getVolteResId(volte1, volte2),
                     getVowifiResId(vowifi1, vowifi2),
@@ -769,9 +811,32 @@ public class NetworkControllerImpl extends BroadcastReceiver
         } else if (mMobileSignalControllers.size() == 1) {
             boolean volte = mMobileSignalControllers.valueAt(0).isVolteAvailable();
             boolean vowifi = mMobileSignalControllers.valueAt(0).isVowifiAvailable();
-            cb.setImsIcon(new ImsIconState(volte && mShowImsIcon,
+            switch(mVolteIconStyle) {
+                // Vo
+                case 2:
+                    resId = R.drawable.ic_volte;
+                    break;
+                 // VoLTE
+                case 3:
+                    resId = R.drawable.ic_volte1;
+                    break;
+                // OOS VoLTE
+                case 4:
+                    resId = R.drawable.ic_volte2;
+                    break;
+                // HD Icon
+                case 5:
+                    resId = R.drawable.ic_hd_volte;
+                    break;
+                // Dynamic
+                case 1:
+                default:
+                    resId = R.drawable.stat_sys_volte;
+                    break;
+            }
+            cb.setImsIcon(new ImsIconState(volte && (mVolteIconStyle !=0),
                     vowifi && mShowImsIcon,
-                    volte && mShowImsIcon ? R.drawable.stat_sys_volte : 0,
+                    volte && (mVolteIconStyle !=0) ? resId : 0,
                     vowifi && mShowImsIcon ? R.drawable.stat_sys_vowifi : 0,
                     mContext.getString(com.android.internal.R.string.status_bar_ims)
             ));
@@ -787,12 +852,14 @@ public class NetworkControllerImpl extends BroadcastReceiver
     }
 
     public void updateImsIcon() {
+        mVolteIconStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.VOLTE_ICON_STYLE, 1, UserHandle.USER_CURRENT);
         if (mMobileSignalControllers.size() == 2) {
             boolean volte1 = mMobileSignalControllers.valueAt(0).isVolteAvailable();
             boolean volte2 = mMobileSignalControllers.valueAt(1).isVolteAvailable();
             boolean vowifi1 = mMobileSignalControllers.valueAt(0).isVowifiAvailable();
             boolean vowifi2 = mMobileSignalControllers.valueAt(1).isVowifiAvailable();
-            mCallbackHandler.setImsIcon(new ImsIconState((volte1 || volte2) && mShowImsIcon,
+            mCallbackHandler.setImsIcon(new ImsIconState((volte1 || volte2) && (mVolteIconStyle != 0),
                     (vowifi1 || vowifi2) && mShowImsIcon,
                     getVolteResId(volte1, volte2),
                     getVowifiResId(vowifi1, vowifi2),
@@ -801,9 +868,32 @@ public class NetworkControllerImpl extends BroadcastReceiver
         } else if (mMobileSignalControllers.size() == 1) {
             boolean volte = mMobileSignalControllers.valueAt(0).isVolteAvailable();
             boolean vowifi = mMobileSignalControllers.valueAt(0).isVowifiAvailable();
-            mCallbackHandler.setImsIcon(new ImsIconState(volte && mShowImsIcon,
+            switch(mVolteIconStyle) {
+                // Vo
+                case 2:
+                    resId = R.drawable.ic_volte;
+                    break;
+                 // VoLTE
+                case 3:
+                    resId = R.drawable.ic_volte1;
+                    break;
+                // OOS VoLTE
+                case 4:
+                    resId = R.drawable.ic_volte2;
+                    break;
+                // HD Icon
+                case 5:
+                    resId = R.drawable.ic_hd_volte;
+                    break;
+                // Dynamic
+                case 1:
+                default:
+                    resId = R.drawable.stat_sys_volte;
+                    break;
+            }
+            mCallbackHandler.setImsIcon(new ImsIconState(volte && (mVolteIconStyle != 0),
                     vowifi && mShowImsIcon,
-                    (volte && mShowImsIcon) ? R.drawable.stat_sys_volte : 0,
+                    (volte && (mVolteIconStyle !=0)) ? resId : 0,
                     (vowifi && mShowImsIcon) ? R.drawable.stat_sys_vowifi : 0,
                     mContext.getString(com.android.internal.R.string.status_bar_ims)
             ));
@@ -819,13 +909,79 @@ public class NetworkControllerImpl extends BroadcastReceiver
 
     private int getVolteResId(boolean volte1, boolean volte2) {
         if (volte1 && volte2) {
-            return R.drawable.stat_sys_volte_slot12;
+            switch(mVolteIconStyle) {
+                // Vo
+                case 2:
+                    resId = R.drawable.ic_volte;
+                    break;
+                 // VoLTE
+                case 3:
+                    resId = R.drawable.ic_volte1;
+                    break;
+                // OOS VoLTE
+                case 4:
+                    resId = R.drawable.ic_volte2;
+                    break;
+                // HD Icon
+                case 5:
+                    resId = R.drawable.ic_hd_volte;
+                    break;
+                // Dynamic
+                case 1:
+                default:
+                    resId = R.drawable.stat_sys_volte_slot12;
+                    break;
+            }
         } else if (volte1) {
-            return R.drawable.stat_sys_volte_slot1;
+            switch(mVolteIconStyle) {
+                // Vo
+                case 2:
+                    resId = R.drawable.ic_volte;
+                    break;
+                 // VoLTE
+                case 3:
+                    resId = R.drawable.ic_volte1;
+                    break;
+                // OOS VoLTE
+                case 4:
+                    resId = R.drawable.ic_volte2;
+                    break;
+                // HD Icon
+                case 5:
+                    resId = R.drawable.ic_hd_volte;
+                    break;
+                // Dynamic
+                case 1:
+                default:
+                    resId = R.drawable.stat_sys_volte_slot1;
+                    break;
+            }
         } else if (volte2) {
-            return R.drawable.stat_sys_volte_slot2;
+            switch(mVolteIconStyle) {
+                // Vo
+                case 2:
+                    resId = R.drawable.ic_volte;
+                    break;
+                 // VoLTE
+                case 3:
+                    resId = R.drawable.ic_volte1;
+                    break;
+                // OOS VoLTE
+                case 4:
+                    resId = R.drawable.ic_volte2;
+                    break;
+                // HD Icon
+                case 5:
+                    resId = R.drawable.ic_hd_volte;
+                    break;
+                // Dynamic
+                case 1:
+                default:
+                    resId = R.drawable.stat_sys_volte_slot2;
+                    break;
+            }
         }
-        return 0;
+        return resId;
     }
 
     private int getVowifiResId(boolean vowifi1, boolean vowifi2) {
