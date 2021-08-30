@@ -132,6 +132,8 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     // Volte Icon Style
     private int mVolteIconStyle = 1;
 
+    // VoWiFi Icon
+    private int mVoWifiIconStyle = 1;
 
     private final MobileStatusTracker.Callback mMobileCallback =
             new MobileStatusTracker.Callback() {
@@ -318,6 +320,9 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.VOLTE_ICON_STYLE), false,
                     this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.VOWIFI_ICON_STYLE), false,
+                    this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -338,6 +343,10 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
 
         mVolteIconStyle = Settings.System.getIntForUser(resolver,
                 Settings.System.VOLTE_ICON_STYLE, 1,
+                UserHandle.USER_CURRENT);
+
+        mVoWifiIconStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.VOWIFI_ICON_STYLE, 1,
                 UserHandle.USER_CURRENT);
 
         mConfig = Config.readConfig(mContext);
