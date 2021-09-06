@@ -6243,6 +6243,24 @@ public final class Settings {
                 "statusbar_battery_bar_blend_color_reverse";
 
         /**
+         * Whether to add top padding on statusbar
+         * @hide
+         */
+        public static final String TOP_PADDING = "statusbar_top_padding";
+
+        /**
+         * Whether to add left padding on statusbar
+         * @hide
+         */
+        public static final String LEFT_PADDING = "statusbar_left_padding";
+
+        /**
+         * Whether to add right padding on statusbar
+         * @hide
+         */
+        public static final String RIGHT_PADDING = "statusbar_right_padding";
+
+        /**
          * These are all public system settings
          *
          * @hide
