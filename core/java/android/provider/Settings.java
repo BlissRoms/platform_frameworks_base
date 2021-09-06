@@ -6227,6 +6227,18 @@ public final class Settings {
 	public static final String STATUS_BAR_LOGO_COLOR = "status_bar_logo_color";
 
         /**
+         * @hide
+         */
+        @Readable
+        public static final String CUSTOM_SB_LOGO_ENABLED = "custom_sb_logo_enabled";
+
+        /**
+         * @hide
+         */
+        @Readable
+        public static final String CUSTOM_SB_LOGO_IMAGE = "custom_sb_logo_image";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
