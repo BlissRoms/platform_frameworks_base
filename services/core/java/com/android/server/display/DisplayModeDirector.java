@@ -618,10 +618,11 @@ public class DisplayModeDirector {
             mAppRequestObserver.dumpLocked(pw);
             mBrightnessObserver.dumpLocked(pw);
             mUdfpsObserver.dumpLocked(pw);
-            mSensorObserver.dumpLocked(pw);
             mHbmObserver.dumpLocked(pw);
             mSkinThermalStatusObserver.dumpLocked(pw);
         }
+           //mLock not needed to collect sensor dump
+            mSensorObserver.dumpLocked(pw);
     }
 
     private void updateVoteLocked(int priority, Vote vote) {
@@ -2243,14 +2244,12 @@ public class DisplayModeDirector {
 
         void dumpLocked(PrintWriter pw) {
             pw.println("  SensorObserver");
-            synchronized (mSensorObserverLock) {
                 pw.println("    mIsProxActive=" + mIsProxActive);
                 pw.println("    mDozeStateByDisplay:");
                 for (int i = 0; i < mDozeStateByDisplay.size(); i++) {
                     final int id = mDozeStateByDisplay.keyAt(i);
                     final boolean dozed = mDozeStateByDisplay.valueAt(i);
                     pw.println("      " + id + " -> " + dozed);
-                }
             }
         }
 
