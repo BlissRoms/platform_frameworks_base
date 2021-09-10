@@ -26,6 +26,7 @@ import android.content.Context;
 import android.net.NetworkPolicy;
 import android.net.NetworkPolicyManager;
 import android.net.NetworkTemplate;
+import android.net.wifi.WifiManager;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.format.DateUtils;
@@ -39,6 +40,7 @@ import com.android.internal.util.ArrayUtils;
 import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
 
 public class DataUsageController {
 
@@ -52,6 +54,7 @@ public class DataUsageController {
     private final Context mContext;
     private final NetworkPolicyManager mPolicyManager;
     private final NetworkStatsManager mNetworkStatsManager;
+    private final WifiManager mWifiManager;
 
     private Callback mCallback;
     private NetworkNameProvider mNetworkController;
@@ -61,6 +64,7 @@ public class DataUsageController {
         mContext = context;
         mPolicyManager = NetworkPolicyManager.from(mContext);
         mNetworkStatsManager = context.getSystemService(NetworkStatsManager.class);
+        mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         mSubscriptionId = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
     }
 
@@ -92,6 +96,42 @@ public class DataUsageController {
     private DataUsageInfo warn(String msg) {
         Log.w(TAG, "Failed to get data usage, " + msg);
         return null;
+    }
+
+    public DataUsageInfo getDataUsageInfo() {
+        NetworkTemplate template = DataUsageUtils.getMobileTemplate(mContext, mSubscriptionId);
+
+        return getDataUsageInfo(template);
+    }
+
+    public DataUsageInfo getDailyDataUsageInfo() {
+        NetworkTemplate template = DataUsageUtils.getMobileTemplate(mContext, mSubscriptionId);
+
+        return getDailyDataUsageInfo(template);
+    }
+
+    public DataUsageInfo getWifiDataUsageInfo() {
+        return getWifiDataUsageInfo(false);
+    }
+
+    public DataUsageInfo getWifiDataUsageInfo(boolean currentNetwork) {
+        return getDataUsageInfo(getWifiNetworkTemplate(currentNetwork));
+    }
+
+    public DataUsageInfo getWifiDailyDataUsageInfo(boolean currentNetwork) {
+        return getDailyDataUsageInfo(getWifiNetworkTemplate(currentNetwork));
+    }
+
+    public NetworkTemplate getWifiNetworkTemplate(boolean currentNetwork) {
+        final NetworkTemplate.Builder builder =
+                new NetworkTemplate.Builder(NetworkTemplate.MATCH_WIFI);
+        if (currentNetwork) {
+            final String networkKey = mWifiManager.getConnectionInfo().getNetworkKey();
+            if (networkKey != null) {
+                builder.setWifiNetworkKeys(Set.of(networkKey));
+            }
+        }
+        return builder.build();
     }
 
     public DataUsageInfo getDataUsageInfo(NetworkTemplate template) {
@@ -126,6 +166,34 @@ public class DataUsageController {
             usage.warningLevel = getDefaultWarningLevel();
         }
         if (mNetworkController != null) {
+            usage.carrier = mNetworkController.getMobileDataNetworkName();
+        }
+        return usage;
+    }
+
+    public DataUsageInfo getDailyDataUsageInfo(NetworkTemplate template) {
+        final NetworkPolicy policy = findNetworkPolicy(template);
+        final long end = System.currentTimeMillis();
+        long start = end - DataUsageUtils.getTodayMillis();
+
+        final long totalBytes = getUsageLevel(template, start, end);
+        if (totalBytes < 0L) {
+            return warn("no entry data");
+        }
+        final DataUsageInfo usage = new DataUsageInfo();
+        usage.startDate = start;
+        usage.usageLevel = totalBytes;
+        usage.period = formatDateRange(start, end);
+        usage.cycleStart = start;
+        usage.cycleEnd = end;
+
+        if (policy != null) {
+            usage.limitLevel = policy.limitBytes > 0 ? policy.limitBytes : 0;
+            usage.warningLevel = policy.warningBytes > 0 ? policy.warningBytes : 0;
+        } else {
+            usage.warningLevel = getDefaultWarningLevel();
+        }
+        if (usage != null && mNetworkController != null) {
             usage.carrier = mNetworkController.getMobileDataNetworkName();
         }
         return usage;
