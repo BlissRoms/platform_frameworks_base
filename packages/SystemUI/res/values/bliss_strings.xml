@@ -82,4 +82,8 @@
 
     <!-- Name of the data saver status bar icon. -->
     <string name="status_bar_data_saver">Data saver</string>
+
+    <!-- Refresh Rate Tile -->
+    <string name="refresh_rate_tile_label">Refresh rate</string>
+    <string name="auto_mode_label">Auto</string>
 </resources>
