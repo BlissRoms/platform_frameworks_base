@@ -30,6 +30,9 @@ import android.graphics.drawable.Drawable
 import android.util.PathParser
 import android.util.TypedValue
 
+import android.provider.Settings.System;
+import android.os.UserHandle;
+
 import com.android.settingslib.R
 import com.android.settingslib.Utils
 
@@ -178,9 +181,22 @@ open class ThemedBatteryDrawable(private val context: Context, frameColor: Int) 
         intrinsicHeight = (Companion.HEIGHT * density).toInt()
         intrinsicWidth = (Companion.WIDTH * density).toInt()
 
+        val setCustomBatteryLevelTint = System.getIntForUser(
+            context.getContentResolver(),
+            System.BATTERY_LEVEL_COLORS, 0, UserHandle.USER_CURRENT
+        ) === 1
+        
         val res = context.resources
-        val levels = res.obtainTypedArray(R.array.batterymeter_color_levels)
-        val colors = res.obtainTypedArray(R.array.batterymeter_color_values)
+        val levels = if(setCustomBatteryLevelTint)
+            res.obtainTypedArray(R.array.bliss_batterymeter_color_levels)
+        else
+            res.obtainTypedArray(R.array.batterymeter_color_levels)
+        
+        val colors = if(setCustomBatteryLevelTint) 
+            res.obtainTypedArray(R.array.bliss_batterymeter_color_values)
+        else
+            res.obtainTypedArray(R.array.batterymeter_color_values)
+            
         val N = levels.length()
         colorLevels = IntArray(2 * N)
         for (i in 0 until N) {

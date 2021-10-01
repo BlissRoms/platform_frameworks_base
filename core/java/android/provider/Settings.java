@@ -6620,6 +6620,12 @@ public final class Settings {
         public static final String NOTIFICATION_MATERIAL_DISMISS_BGSTYLE = "notification_material_dismiss_bgstyle";
 
         /**
+         * Toggle between stock and color coded battery icon
+         * @hide
+         */
+        public static final String BATTERY_LEVEL_COLORS = "battery_level_colors";
+
+        /**
          * Whether to enable statusbar brightness control
          * @hide
          */
@@ -6762,6 +6768,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(VOLTE_ICON_STYLE);
             PRIVATE_SETTINGS.add(VOWIFI_ICON_STYLE);
             PRIVATE_SETTINGS.add(VOLTE_VOWIFI_OVERRIDE);
+            PRIVATE_SETTINGS.add(BATTERY_LEVEL_COLORS);
         }
 
         /**

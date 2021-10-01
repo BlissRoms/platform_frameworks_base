@@ -120,5 +120,6 @@ public class SystemSettings {
         Settings.System.CUSTOM_RINGTONE_VIBRATION_PATTERN,
         Settings.System.SCREEN_OFF_FOD,
         Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
+        Settings.System.BATTERY_LEVEL_COLORS,
     };
 }

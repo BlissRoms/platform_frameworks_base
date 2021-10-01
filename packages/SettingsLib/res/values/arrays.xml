@@ -589,6 +589,27 @@
         <item>?android:attr/colorError</item>
         <item>@android:color/white</item>
     </array>
+
+    <!-- bliss Battery Levels  -->
+    <array name="bliss_batterymeter_color_levels">
+        <item>15</item>
+        <item>25</item>
+        <item>40</item>
+        <item>55</item>
+        <item>70</item>
+        <item>85</item>
+        <item>100</item>
+    </array>
+    <array name="bliss_batterymeter_color_values">
+        <item>?android:attr/colorError</item>
+        <item>@color/battery_25</item>
+        <item>@color/battery_40</item>
+        <item>@color/battery_55</item>
+        <item>@color/battery_70</item>
+        <item>@color/battery_85</item>
+        <item>@color/battery_full</item>
+    </array>
+
     <array name="batterymeter_bolt_points">
         <item>73</item> <item>0</item>
         <item>392</item><item>0</item>
