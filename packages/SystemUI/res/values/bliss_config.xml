@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2014-2022 BlissRoms Project
+     Copyright (C) 2014-2023 BlissRoms Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
+
+    <!-- Color of the UDFPS pressed view -->
+    <color name="config_udfpsColor">#ffffffff</color>
 
 </resources>
