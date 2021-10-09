@@ -15,4 +15,6 @@
     <dimen name="qs_top_brightness_margin_bottom">10dp</dimen>
     <dimen name="qs_bottom_brightness_margin_top">10dp</dimen>
 
+    <!-- Maximum vertical offset of statusbar for burn-in protection -->
+    <dimen name="status_bar_offset_max_y">4dp</dimen>
 </resources>
