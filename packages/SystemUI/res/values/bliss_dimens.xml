@@ -39,4 +39,8 @@
 
     <!-- Bottom margin size when fingerprint in display is active -->
     <dimen name="keyguard_indication_margin_bottom_fingerprint_in_display">@dimen/keyguard_indication_margin_bottom</dimen>
+
+    <!-- StatusBar burn-in protection -->
+    <dimen name="horizontal_max_shift">3.0dp</dimen>
+    <dimen name="vertical_max_shift">2.0dp</dimen>
 </resources>
