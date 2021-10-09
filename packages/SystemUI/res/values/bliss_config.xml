@@ -50,4 +50,7 @@
          before the screen has had chance to switch out of HBM mode -->
      <integer name="config_udfpsDimmingDisableDelay">0</integer>
 
+    <!-- StatusBar burn-in protection -->
+    <bool name="config_statusBarBurnInProtection">false</bool>
+
 </resources>
