@@ -41,6 +41,7 @@ public class PixelPropsUtils {
             "com.google.android.apps.maps",
             "com.google.android.apps.messaging",
             "com.google.android.contacts",
+            "com.google.android.calculator",
             "com.google.android.apps.nexuslauncher",
             "com.google.android.apps.pixelmigrate",
             "com.google.android.apps.recorder",
