@@ -17,8 +17,6 @@
 package com.android.server.am;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-import com.android.internal.util.DogbinUtils;
-import com.android.internal.util.DogbinUtils.UploadResultCallback;
 
 import android.content.ClipboardManager;
 import android.content.ClipData;
@@ -37,6 +35,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.internal.util.MemochoUtils;
 
 final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListener {
 
@@ -187,7 +187,7 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
                 mHandler.obtainMessage(FORCE_QUIT_AND_REPORT).sendToTarget();
                 break;
             case com.android.internal.R.id.aerr_copy:
-                postToDogbinAndCopyURL();
+                postToMemochoAndCopyURL();
                 mHandler.obtainMessage(FORCE_QUIT).sendToTarget();
                 break;
             case com.android.internal.R.id.aerr_close:
@@ -204,9 +204,10 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
         }
     }
 
-    private void postToDogbinAndCopyURL() {
-        // Post to dogbin
-        DogbinUtils.upload(mPaste, new UploadResultCallback() {
+    private void postToMemochoAndCopyURL() {
+        // Post to Memochō
+        MemochoUtils.upload(mPaste, new MemochoUtils.UploadResultCallback() {
+            @Override
             public void onSuccess(String url) {
                 // Copy to clipboard
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -216,6 +217,7 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
                 Toast.makeText(getContext(), com.android.internal.R.string.url_copy_success, Toast.LENGTH_LONG).show();
             }
 
+            @Override
             public void onFail(String message, Exception e) {
                 Toast.makeText(getContext(), com.android.internal.R.string.url_copy_failed, Toast.LENGTH_LONG).show();
                 Log.e(TAG, message, e);
