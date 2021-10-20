@@ -40,6 +40,7 @@ public class PixelPropsUtils {
             "com.google.android.apps.googleassistant",
             "com.google.android.apps.maps",
             "com.google.android.apps.messaging",
+            "com.google.android.contacts",
             "com.google.android.apps.nexuslauncher",
             "com.google.android.apps.pixelmigrate",
             "com.google.android.apps.recorder",
@@ -70,6 +71,7 @@ public class PixelPropsUtils {
             "com.google.pixel.dynamicwallpapers",
             "com.google.pixel.livewallpaper",
             "com.google.android.apps.photos",
+            "com.android.chrome",
             "com.google.android.googlequicksearchbox",
             "com.google.android.gm"
     };
