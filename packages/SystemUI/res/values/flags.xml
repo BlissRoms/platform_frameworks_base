@@ -45,7 +45,7 @@
 
     <bool name="flag_pm_lite">true</bool>
 
-    <bool name="flag_charging_ripple">false</bool>
+    <bool name="flag_charging_ripple">true</bool>
 
     <bool name="flag_ongoing_call_status_bar_chip">true</bool>
 
