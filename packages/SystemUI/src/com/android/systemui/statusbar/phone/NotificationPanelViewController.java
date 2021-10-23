@@ -295,10 +295,10 @@ public class NotificationPanelViewController extends PanelViewController {
     private final NotificationStackScrollLayoutController mNotificationStackScrollLayoutController;
     private final NotificationIconAreaController mNotificationIconAreaController;
 
-    // Cap and total height of Inter font. Needs to be adjusted when font for the big clock is
+    // Cap and total height of GSans Clock font. Needs to be adjusted when font for the big clock is
     // changed.
-    private static final int CAP_HEIGHT = 2048;
-    private static final int FONT_HEIGHT = 3072;
+    private static final int CAP_HEIGHT = 716;
+    private static final int FONT_HEIGHT = 827;
 
     /**
      * Maximum time before which we will expand the panel even for slow motions when getting a
@@ -5080,7 +5080,7 @@ public class NotificationPanelViewController extends PanelViewController {
             // Update Clock Pivot
             mKeyguardStatusViewController.setPivotX(mView.getWidth() / 2);
             mKeyguardStatusViewController.setPivotY(
-                    (FONT_HEIGHT - CAP_HEIGHT) / 2816f
+                    (FONT_HEIGHT - CAP_HEIGHT) / 1000f
                             * mKeyguardStatusViewController.getClockTextSize());
 
             // Calculate quick setting heights.
