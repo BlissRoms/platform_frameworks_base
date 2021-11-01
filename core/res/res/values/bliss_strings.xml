@@ -27,4 +27,8 @@
     <string name="reboot_to_bootloader_message" translatable="false">Rebooting to bootloader</string>
     <string name="reboot_title">Reboot</string>
     <string name="reboot_message">Rebooting system</string>
+
+    <!-- Cycle through ringer modes -->
+    <string name="volume_dialog_ringer_guidance_normal">Calls and notifications will ring</string>
+
 </resources>
