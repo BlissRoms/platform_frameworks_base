@@ -79,4 +79,7 @@
 
   <!-- Whether device has turbo power charging support -->
   <java-symbol type="bool" name="config_hasTurboPowerCharger" />
+
+  <!-- Whether device has SuperDart charging support -->
+  <java-symbol type="bool" name="config_hasSuperDartCharger" />
 </resources>
