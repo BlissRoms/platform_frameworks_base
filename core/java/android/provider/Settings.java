@@ -6328,6 +6328,12 @@ public final class Settings {
         public static final String BURN_IN_PROTECTION_INTERVAL = "burn_in_protection_interval";
 
         /**
+         * Whether to play haptic feedback when touching udfps icon
+         * @hide
+         */
+        public static final String UDFPS_HAPTIC_FEEDBACK = "udfps_haptic_feedback";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
