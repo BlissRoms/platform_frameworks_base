@@ -18,6 +18,9 @@ package android.hardware.display;
 
 import android.annotation.TestApi;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.SystemProperties;
 import android.provider.Settings;
@@ -41,6 +44,8 @@ public class AmbientDisplayConfiguration {
     private final Context mContext;
     private final boolean mAlwaysOnByDefault;
     private final boolean mPickupGestureEnabledByDefault;
+
+    private static final IntentFilter sIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 
     /** Copied from android.provider.Settings.Secure since these keys are hidden. */
     private static final String[] DOZE_SETTINGS = {
@@ -238,8 +243,10 @@ public class AmbientDisplayConfiguration {
     public boolean alwaysOnChargingEnabled(int user) {
         final boolean dozeOnChargeEnabled = boolSettingSystem(Settings.System.DOZE_ON_CHARGE, user, 0);
         if (dozeOnChargeEnabled) {
-            final boolean dozeOnChargeEnabledNow = boolSettingSystem(Settings.System.DOZE_ON_CHARGE_NOW, user, 0);
-            return dozeOnChargeEnabledNow && alwaysOnAvailable() && !accessibilityInversionEnabled(user);
+            final Intent intent = mContext.registerReceiver(null, sIntentFilter);
+            if (intent != null) {
+                return intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
+            }
         }
         return false;
     }
