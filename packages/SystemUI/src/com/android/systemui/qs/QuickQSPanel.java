@@ -144,15 +144,12 @@ public class QuickQSPanel extends QSPanel implements TunerService.Tunable {
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        if (QQS_BRIGHTNESS_SLIDER.equals(key))
-        try {
-            if ((QQS_BRIGHTNESS_SLIDER.equals(key) || QS_SHOW_BRIGHTNESS.equals(key)) && mBrightnessView != null) {
-                boolean mQQsSlider = Dependency.get(TunerService.class).getValue(QQS_BRIGHTNESS_SLIDER, 0) == 1;
-                boolean mQsSlider = Dependency.get(TunerService.class).getValue(QS_SHOW_BRIGHTNESS, 1) == 1;
-                mBrightnessView.setVisibility(mQQsSlider && mQsSlider ? VISIBLE : GONE);
-            }
-        } catch (Exception e){
-            // Do nothing
+        if ((QQS_BRIGHTNESS_SLIDER.equals(key) || QS_SHOW_BRIGHTNESS.equals(key)) && mBrightnessView != null) {
+            boolean mQQsSlider = Dependency.get(TunerService.class).getValue(
+                    QQS_BRIGHTNESS_SLIDER, 0) == 1;
+            boolean mQsSlider = Dependency.get(TunerService.class).getValue(
+                    QS_SHOW_BRIGHTNESS, 1) == 1;
+            mBrightnessView.setVisibility(mQQsSlider && mQsSlider ? VISIBLE : GONE);
         }
         if (QS_BRIGHTNESS_POSITION_BOTTOM.equals(key)) {
             mTop = newValue == null || Integer.parseInt(newValue) == 0;
@@ -163,7 +160,6 @@ public class QuickQSPanel extends QSPanel implements TunerService.Tunable {
                 mBrightnessRunnable.run();
             }
         }
-
         if (QS_SHOW_AUTO_BRIGHTNESS_BUTTON.equals(key)) {
             mShowAutoBrightnessButton = newValue == null
                     || Integer.parseInt(newValue) == 1;
