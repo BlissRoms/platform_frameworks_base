@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2021 The AospExtended Project
+                   2022 The Project Nyanpasu
+
+     SPDX-License-Identifier: Apache-2.0
+-->
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:gravity="fill_horizontal|center"
+        android:id="@android:id/background">
+        <shape
+            android:tint="?android:attr/colorAccent"
+            android:shape="rectangle"
+            android:alpha="0.8">
+            <size android:height="10dp" />
+            <solid android:color="#80626161" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <item
+        android:gravity="fill_horizontal|center"
+        android:id="@android:id/progress">
+        <selector>
+            <item
+                android:state_enabled="false"
+                android:drawable="@color/transparent" />
+            <item>
+                <com.android.internal.graphics.drawable.RoundedCornerProgressDrawable
+                    android:drawable="@drawable/seekbar_progress"/>
+            </item>
+        </selector>
+    </item>
+</layer-list>
+
