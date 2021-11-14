@@ -212,4 +212,6 @@
     <!-- Whether device supports in-display fingerprint -->
     <java-symbol type="bool" name="config_supportsUdfps" />
 
+    <!-- Whether devices suports in-display fingerprint when screen is off -->
+    <java-symbol type="bool" name="config_supportScreenOffUdfps" />
 </resources>
