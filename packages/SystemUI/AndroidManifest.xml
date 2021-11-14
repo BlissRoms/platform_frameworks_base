@@ -320,6 +320,8 @@
 
     <protected-broadcast android:name="com.android.systemui.doze.pulse" />
 
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"
