@@ -29,23 +29,27 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.hardware.biometrics.BiometricOverlayConstants;
 import android.hardware.biometrics.SensorLocationInternal;
 import android.hardware.display.ColorDisplayManager;
+import android.hardware.display.AmbientDisplayConfiguration;
 import android.hardware.display.DisplayManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
 import android.hardware.fingerprint.IUdfpsOverlayController;
 import android.hardware.fingerprint.IUdfpsOverlayControllerCallback;
 import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.UserHandle;
@@ -82,6 +86,7 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.Execution;
 import com.android.systemui.util.time.SystemClock;
+import com.android.systemui.util.settings.SystemSettings;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -176,6 +181,9 @@ public class UdfpsController implements DozeReceiver {
     private boolean mNightModeActive;
     private int mAutoModeState;
     private UdfpsAnimation mUdfpsAnimation;
+    private final AmbientDisplayConfiguration mAmbientDisplayConfiguration;
+    private final SystemSettings mSystemSettings;
+    private boolean mScreenOffFod;
 
     @VisibleForTesting
     public static final AudioAttributes VIBRATION_SONIFICATION_ATTRIBUTES =
@@ -341,7 +349,9 @@ public class UdfpsController implements DozeReceiver {
         @Override
         public void onAcquired(int sensorId, int acquiredInfo, int vendorCode) {
             mFgExecutor.execute(() -> {
-                if (acquiredInfo == 6 && (mStatusBarStateController.isDozing() || !mScreenOn)) {
+                final boolean isAodEnabled = mAmbientDisplayConfiguration.alwaysOnEnabled(UserHandle.USER_CURRENT);
+                final boolean isShowingAmbientDisplay = mStatusBarStateController.isDozing() && mScreenOn;
+                if (acquiredInfo == 6 && ((mScreenOffFod && !mScreenOn) || (isAodEnabled && isShowingAmbientDisplay))) {
                     if (vendorCode == mUdfpsVendorCode) {
                         if (mContext.getResources().getBoolean(R.bool.config_pulseOnFingerDown)) {
                             mContext.sendBroadcastAsUser(new Intent(PULSE_ACTION),
@@ -620,7 +630,8 @@ public class UdfpsController implements DozeReceiver {
             @NonNull ConfigurationController configurationController,
             @NonNull SystemClock systemClock,
             @NonNull UnlockedScreenOffAnimationController unlockedScreenOffAnimationController,
-            @NonNull SystemUIDialogManager dialogManager) {
+            @NonNull SystemUIDialogManager dialogManager,
+            @NonNull SystemSettings systemSettings) {
         mContext = context;
         mExecution = execution;
         mVibrator = vibrator;
@@ -686,6 +697,23 @@ public class UdfpsController implements DozeReceiver {
         if (BlissUtils.isPackageInstalled(mContext, "org.bliss.udfps.resources")) {
             mUdfpsAnimation = new UdfpsAnimation(mContext, mWindowManager, mSensorProps);
         }
+        mAmbientDisplayConfiguration = new AmbientDisplayConfiguration(mContext);
+        mSystemSettings = systemSettings;
+        updateScreenOffFodState();
+        mSystemSettings.registerContentObserver(Settings.System.SCREEN_OFF_FOD,
+            new ContentObserver(mainHandler) {
+                @Override
+                public void onChange(boolean selfChange, Uri uri) {
+                    if (uri.getLastPathSegment().equals(Settings.System.SCREEN_OFF_FOD)) {
+                        updateScreenOffFodState();
+                    }
+                }
+            }
+        );
+    }
+
+    private void updateScreenOffFodState() {
+        mScreenOffFod = mSystemSettings.getInt(Settings.System.SCREEN_OFF_FOD, 1) == 1;
     }
 
     private void disableNightMode() {

@@ -251,5 +251,6 @@ public class SystemSettingsValidators {
                         return true;
                     }
                 });
+        VALIDATORS.put(System.SCREEN_OFF_FOD, BOOLEAN_VALIDATOR);
     }
 }
