@@ -106,7 +106,6 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
     private final int mDisplayId;
     private final UserTracker mUserTracker;
     private final boolean mVibrateOnOpening;
-    private final VibrationEffect mCameraLaunchGestureVibrationEffect;
     private final SystemBarAttributesListener mSystemBarAttributesListener;
     private final ActivityStarter mActivityStarter;
     private final Lazy<CameraLauncher> mCameraLauncherLazy;
@@ -181,8 +180,6 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
         mFeatureFlags = featureFlags;
 
         mVibrateOnOpening = resources.getBoolean(R.bool.config_vibrateOnIconAnimation);
-        mCameraLaunchGestureVibrationEffect = getCameraGestureVibrationEffect(
-                mVibratorOptional, resources);
         mSystemBarAttributesListener = systemBarAttributesListener;
         mActivityStarter = activityStarter;
     }
@@ -567,35 +564,7 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
 
     private void vibrateForCameraGesture() {
         mVibratorOptional.ifPresent(
-                v -> v.vibrate(mCameraLaunchGestureVibrationEffect,
-                        HARDWARE_FEEDBACK_VIBRATION_ATTRIBUTES));
-    }
-
-    private static VibrationEffect getCameraGestureVibrationEffect(
-            Optional<Vibrator> vibratorOptional, Resources resources) {
-        if (vibratorOptional.isPresent() && vibratorOptional.get().areAllPrimitivesSupported(
-                VibrationEffect.Composition.PRIMITIVE_QUICK_RISE,
-                VibrationEffect.Composition.PRIMITIVE_CLICK)) {
-            return VibrationEffect.startComposition()
-                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_RISE)
-                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_CLICK, 1, 50)
-                    .compose();
-        }
-        if (vibratorOptional.isPresent() && vibratorOptional.get().hasAmplitudeControl()) {
-            // Make sure to pass -1 for repeat so VibratorManagerService doesn't stop us when going
-            // to sleep.
-            return VibrationEffect.createWaveform(
-                    CentralSurfaces.CAMERA_LAUNCH_GESTURE_VIBRATION_TIMINGS,
-                    CentralSurfaces.CAMERA_LAUNCH_GESTURE_VIBRATION_AMPLITUDES,
-                    /* repeat= */ -1);
-        }
-
-        int[] pattern = resources.getIntArray(R.array.config_cameraLaunchGestureVibePattern);
-        long[] timings = new long[pattern.length];
-        for (int i = 0; i < pattern.length; i++) {
-            timings[i] = pattern[i];
-        }
-        return VibrationEffect.createWaveform(timings, /* repeat= */ -1);
+                v -> v.vibrate(VibrationEffect.get(VibrationEffect.EFFECT_DOUBLE_CLICK)));
     }
 
     @VisibleForTesting
