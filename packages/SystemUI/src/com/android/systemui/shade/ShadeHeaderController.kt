@@ -24,12 +24,15 @@ import android.app.StatusBarManager
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Insets
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.os.Trace
 import android.os.Trace.TRACE_TAG_APP
 import android.os.UserHandle;
 import android.provider.AlarmClock
 import android.provider.Settings
+import android.provider.CalendarContract
 import android.view.DisplayCutout
 import android.view.View
 import android.view.WindowInsets
@@ -382,6 +385,8 @@ constructor(
             v.pivotY = v.height.toFloat() / 2
         }
         clock.setOnClickListener { launchClockActivity() }
+        date.setOnClickListener { launchDateActivity() }
+        batteryIcon.setOnClickListener { launchBatteryActivity() }
 
         dumpManager.registerDumpable(this)
         configurationController.addCallback(configurationControllerListener)
@@ -428,6 +433,19 @@ constructor(
         } else {
             activityStarter.postStartActivityDismissingKeyguard(DEFAULT_CLOCK_INTENT, 0 /*delay */)
         }
+    }
+
+    internal fun launchDateActivity() {
+        val builder: Uri.Builder = CalendarContract.CONTENT_URI.buildUpon()
+        builder.appendPath("time")
+        builder.appendPath(System.currentTimeMillis().toString())
+        val todayIntent: Intent = Intent(Intent.ACTION_VIEW, builder.build())
+        activityStarter.postStartActivityDismissingKeyguard(todayIntent, 0 /*delay */)
+    }
+
+    internal fun launchBatteryActivity() {
+        activityStarter.postStartActivityDismissingKeyguard(Intent(
+                Intent.ACTION_POWER_USAGE_SUMMARY), 0)
     }
 
     private fun loadConstraints() {
