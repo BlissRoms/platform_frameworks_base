@@ -555,13 +555,13 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
         }
 
         @Override
-        public boolean showShutdownUi(boolean isReboot, String reason) {
+        public boolean showShutdownUi(boolean isReboot, String reason, boolean advancedReboot) {
             if (!mContext.getResources().getBoolean(R.bool.config_showSysuiShutdown)) {
                 return false;
             }
             if (mBar != null) {
                 try {
-                    mBar.showShutdownUi(isReboot, reason);
+                    mBar.showShutdownUi(isReboot, reason, advancedReboot);
                     return true;
                 } catch (RemoteException ex) {}
             }
