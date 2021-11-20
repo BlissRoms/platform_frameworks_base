@@ -58,4 +58,7 @@
   <java-symbol type="style" name="GlobalActionsAnimationCard" />
   <java-symbol type="style" name="GlobalActionsAnimationRotate" />
 
+  <!-- Global Actions pref list -->
+  <java-symbol type="array" name="custom_config_globalActionsList" />
+
 </resources>
