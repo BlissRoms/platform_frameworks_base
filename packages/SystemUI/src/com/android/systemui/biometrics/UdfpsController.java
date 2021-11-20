@@ -38,6 +38,7 @@ import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
 import android.hardware.fingerprint.IUdfpsOverlayController;
 import android.hardware.fingerprint.IUdfpsOverlayControllerCallback;
 import android.media.AudioAttributes;
+import android.os.FileUtils;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.Process;
@@ -46,6 +47,7 @@ import android.os.Trace;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.util.Slog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -78,6 +80,7 @@ import com.android.systemui.util.concurrency.Execution;
 import com.android.systemui.util.time.SystemClock;
 
 import java.util.HashSet;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -163,6 +166,10 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
     private Set<Callback> mCallbacks = new HashSet<>();
 
     private final int mUdfpsVendorCode;
+
+    // UDFPS Local HBM Node
+    private static final String ASUS_LOCAL_HBM_MODE =
+            "/proc/localHbm";
 
     @VisibleForTesting
     public static final AudioAttributes VIBRATION_SONIFICATION_ATTRIBUTES =
@@ -1048,6 +1055,14 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
     @Override
     public void enableHbm(@HbmType int hbmType, @Nullable Surface surface,
             @Nullable Runnable onHbmEnabled) {
+        
+        // Enable LocalHBM
+        try {
+            FileUtils.stringToFile(ASUS_LOCAL_HBM_MODE, "1");
+        } catch (IOException e) {
+            Slog.e(TAG, "failed to write to " + ASUS_LOCAL_HBM_MODE);
+        }
+
         // TO-DO send call to lineage biometric hal and/or add dummy jni that device could override
         if (onHbmEnabled != null) {
             onHbmEnabled.run();
@@ -1056,6 +1071,13 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
 
     @Override
     public void disableHbm(@Nullable Runnable onHbmDisabled) {
+
+        // Enable LocalHBM
+        try {
+            FileUtils.stringToFile(ASUS_LOCAL_HBM_MODE, "0");
+        } catch (IOException e) {
+            Slog.e(TAG, "failed to write to " + ASUS_LOCAL_HBM_MODE);
+        }
         // TO-DO send call to lineage biometric hal and/or add dummy jni that device could override
         if (onHbmDisabled != null) {
             onHbmDisabled.run();
