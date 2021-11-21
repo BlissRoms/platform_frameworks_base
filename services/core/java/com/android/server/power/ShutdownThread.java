@@ -385,6 +385,20 @@ public final class ShutdownThread extends Thread {
             pd.setMessage(context.getText(
                         com.android.internal.R.string.reboot_to_bootloader_message));
             pd.setIndeterminate(true);
+        } else if (mReason != null && mReason.equals(PowerManager.REBOOT_FASTBOOT) && mAdvancedReboot) {
+            if (showSysuiReboot()) {
+                return null;
+            }
+            if (SystemProperties.getBoolean("ro.fastbootd.available", false)) {
+                pd.setTitle(context.getText(com.android.internal.R.string.reboot_to_fastboot_title));
+                pd.setMessage(context.getText(
+                            com.android.internal.R.string.reboot_to_fastboot_message));
+            } else {
+                pd.setTitle(context.getText(com.android.internal.R.string.reboot_to_fastbootd_title));
+                pd.setMessage(context.getText(
+                            com.android.internal.R.string.reboot_to_fastbootd_message));
+            }
+            pd.setIndeterminate(true);
         } else if (mReboot) {
              if (showSysuiReboot()) {
                   return null;
