@@ -13,7 +13,11 @@
     <string name="reboot_to_recovery_title" translatable="false">Recovery</string>
     <string name="reboot_to_recovery_message" translatable="false">Rebooting to recovery</string>
     <string name="reboot_to_bootloader_title" translatable="false">Bootloader</string>
-    <string name="reboot_to_bootloader_message" translatable="false">Rebooting to bootloader</string>
+    <string name="reboot_to_bootloader_message" translatable="false">Rebooting to bootloader...</string>
+    <string name="reboot_to_fastboot_title" translatable="false">Fastboot</string>
+    <string name="reboot_to_fastboot_message" translatable="false">Rebooting to fastboot...</string>
+    <string name="reboot_to_fastbootd_title" translatable="false">FastbootD</string>
+    <string name="reboot_to_fastbootd_message" translatable="false">Rebooting to fastbootD...</string>
     <string name="reboot_title">Reboot</string>
     <string name="reboot_message">Rebooting system...</string>
 
