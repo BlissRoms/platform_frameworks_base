@@ -196,6 +196,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     private static final int RESTART_RECOVERY_BUTTON = 1;
     private static final int RESTART_BOOTLOADER_BUTTON = 2;
     private static final int RESTART_UI_BUTTON = 3;
+    private static final int RESTART_FASTBOOT_BUTTON = 4;
 
     // See NotificationManagerService#scheduleDurationReachedLocked
     private static final long TOAST_FADE_TIME = 333;
@@ -726,6 +727,36 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             }
         };
 
+        AdvancedAction restartFastbootAction = new AdvancedAction(
+                RESTART_FASTBOOT_BUTTON,
+                com.android.systemui.R.drawable.ic_restart_fastboot,
+                com.android.systemui.R.string.global_action_reboot_fastboot,
+                mWindowManagerFuncs, mHandler) {
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return true;
+            }
+        };
+
+        AdvancedAction restartFastbootdAction = new AdvancedAction(
+                RESTART_FASTBOOT_BUTTON,
+                com.android.systemui.R.drawable.ic_restart_fastboot,
+                com.android.systemui.R.string.global_action_reboot_fastbootd,
+                mWindowManagerFuncs, mHandler) {
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return true;
+            }
+        };
+
         ArraySet<String> addedKeys = new ArraySet<>();
         List<Action> tempActions = new ArrayList<>();
         CurrentUserProvider currentUser = new CurrentUserProvider();
@@ -797,6 +828,11 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                     mPowerItems.add(restartRecoveryAction);
                     mPowerItems.add(restartBootloaderAction);
                     mPowerItems.add(restartSystemUiAction);
+                    if (SystemProperties.getBoolean("ro.fastbootd.available", false)) {
+                        mPowerItems.add(restartFastbootAction);
+                    } else {
+                        mPowerItems.add(restartFastbootdAction);
+                    }
                     addIfShouldShowAction(tempActions, new PowerOptionsAction());
                 }
             } else if (GLOBAL_ACTION_KEY_SCREENSHOT.equals(actionKey)) {
@@ -2163,6 +2199,10 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             case RESTART_BOOTLOADER_BUTTON:
                 h.sendEmptyMessage(MESSAGE_DISMISS);
                 funcs.advancedReboot(PowerManager.REBOOT_BOOTLOADER);
+                break;
+            case RESTART_FASTBOOT_BUTTON:
+                h.sendEmptyMessage(MESSAGE_DISMISS);
+                funcs.advancedReboot(PowerManager.REBOOT_FASTBOOT);
                 break;
             case RESTART_UI_BUTTON:
                 /* no time and need to dismiss the dialog here, just kill systemui straight after telling to
