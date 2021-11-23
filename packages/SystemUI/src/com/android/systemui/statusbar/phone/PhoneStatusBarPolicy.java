@@ -100,8 +100,7 @@ public class PhoneStatusBarPolicy
     private final String mSlotBluetooth;
     private final String mSlotTty;
     private final String mSlotZen;
-    private final String mSlotMute;
-    private final String mSlotVibrate;
+    private final String mSlotVolume;
     private final String mSlotAlarmClock;
     private final String mSlotManagedProfile;
     private final String mSlotRotate;
@@ -139,8 +138,7 @@ public class PhoneStatusBarPolicy
     private final RingerModeTracker mRingerModeTracker;
 
     private boolean mZenVisible;
-    private boolean mVibrateVisible;
-    private boolean mMuteVisible;
+    private boolean mVolumeVisible;
     private boolean mCurrentUserSetup;
 
     private boolean mManagedProfileIconVisible = false;
@@ -196,8 +194,7 @@ public class PhoneStatusBarPolicy
         mSlotBluetooth = resources.getString(com.android.internal.R.string.status_bar_bluetooth);
         mSlotTty = resources.getString(com.android.internal.R.string.status_bar_tty);
         mSlotZen = resources.getString(com.android.internal.R.string.status_bar_zen);
-        mSlotMute = resources.getString(com.android.internal.R.string.status_bar_mute);
-        mSlotVibrate = resources.getString(com.android.internal.R.string.status_bar_volume);
+        mSlotVolume = resources.getString(com.android.internal.R.string.status_bar_volume);
         mSlotAlarmClock = resources.getString(com.android.internal.R.string.status_bar_alarm_clock);
         mSlotManagedProfile = resources.getString(
                 com.android.internal.R.string.status_bar_managed_profile);
@@ -247,14 +244,9 @@ public class PhoneStatusBarPolicy
         mIconController.setIcon(mSlotZen, R.drawable.stat_sys_dnd, null);
         mIconController.setIconVisibility(mSlotZen, false);
 
-        // vibrate
-        mIconController.setIcon(mSlotVibrate, R.drawable.stat_sys_ringer_vibrate,
-                mResources.getString(R.string.accessibility_ringer_vibrate));
-        mIconController.setIconVisibility(mSlotVibrate, false);
-        // mute
-        mIconController.setIcon(mSlotMute, R.drawable.stat_sys_ringer_silent,
-                mResources.getString(R.string.accessibility_ringer_silent));
-        mIconController.setIconVisibility(mSlotMute, false);
+        // volume
+        mIconController.setIcon(mSlotVolume, R.drawable.stat_sys_ringer_vibrate, null);
+        mIconController.setIconVisibility(mSlotVolume, false);
         updateVolumeZen();
 
         // cast
@@ -347,8 +339,9 @@ public class PhoneStatusBarPolicy
         int zenIconId = 0;
         String zenDescription = null;
 
-        boolean vibrateVisible = false;
-        boolean muteVisible = false;
+        boolean volumeVisible = false;
+        int volumeIconId = 0;
+        String volumeDescription = null;
         int zen = mZenController.getZen();
 
         if (DndTile.isVisible(mSharedPreferences) || DndTile.isCombinedIcon(mSharedPreferences)) {
@@ -370,9 +363,13 @@ public class PhoneStatusBarPolicy
                     mRingerModeTracker.getRingerModeInternal().getValue();
             if (ringerModeInternal != null) {
                 if (ringerModeInternal == AudioManager.RINGER_MODE_VIBRATE) {
-                    vibrateVisible = true;
+                    volumeVisible = true;
+                    volumeIconId = R.drawable.stat_sys_ringer_vibrate;
+                    volumeDescription = mResources.getString(R.string.accessibility_ringer_vibrate);
                 } else if (ringerModeInternal == AudioManager.RINGER_MODE_SILENT) {
-                    muteVisible = true;
+                    volumeVisible = true;
+                    volumeIconId = R.drawable.stat_sys_ringer_silent;
+                    volumeDescription = mResources.getString(R.string.accessibility_ringer_silent);
                 }
             }
         }
@@ -385,16 +382,13 @@ public class PhoneStatusBarPolicy
             mZenVisible = zenVisible;
         }
 
-        if (vibrateVisible != mVibrateVisible) {
-            mIconController.setIconVisibility(mSlotVibrate, vibrateVisible);
-            mVibrateVisible = vibrateVisible;
+        if (volumeVisible) {
+            mIconController.setIcon(mSlotVolume, volumeIconId, volumeDescription);
         }
-
-        if (muteVisible != mMuteVisible) {
-            mIconController.setIconVisibility(mSlotMute, muteVisible);
-            mMuteVisible = muteVisible;
+        if (volumeVisible != mVolumeVisible) {
+            mIconController.setIconVisibility(mSlotVolume, volumeVisible);
+            mVolumeVisible = volumeVisible;
         }
-
         updateAlarm();
     }
 
