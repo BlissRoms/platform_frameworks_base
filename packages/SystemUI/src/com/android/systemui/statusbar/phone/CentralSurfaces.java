@@ -576,6 +576,7 @@ public interface CentralSurfaces extends Dumpable, ActivityStarter, LifecycleOwn
     void extendDozePulse();
 
     GameSpaceManager getGameSpaceManager();
+    void setBlockedGesturalNavigation(boolean blocked);
 
     public static class KeyboardShortcutsMessage {
         final int mDeviceId;
