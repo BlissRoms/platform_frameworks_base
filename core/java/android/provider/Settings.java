@@ -7445,6 +7445,12 @@ public final class Settings {
         public static final String DOZE_TRIGGER_DOUBLETAP = "doze_trigger_doubletap";
 
         /**
+         * Enable\Disable swipe up or down gesture on ambient display like OOS
+         * @hide
+         */
+        public static final String DOZE_AMBIENT_SWIPE = "doze_ambient_swipe";
+
+        /**
          * These are all public system settings
          *
          * @hide
