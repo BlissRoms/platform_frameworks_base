@@ -103,11 +103,10 @@ public class FeatureFlags {
 
     /** Whether or not to use the provider model behavior for the status bar icons */
     public boolean isCombinedStatusBarSignalIconsEnabled() {
-        boolean showCombinedStatusBarSignalIcons =
-            Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                                             Settings.Secure.SHOW_COMBINED_STATUS_BAR_SIGNAL_ICONS, 0,
-                                             UserHandle.USER_CURRENT) != 0;
-        return mFlagReader.isEnabled(R.bool.flag_combined_status_bar_signal_icons) && showCombinedStatusBarSignalIcons;
+        return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+            Settings.Secure.SHOW_COMBINED_STATUS_BAR_SIGNAL_ICONS,
+            mFlagReader.isEnabled(R.bool.flag_combined_status_bar_signal_icons) ? 1 : 0,
+            UserHandle.USER_CURRENT) == 1;
     }
 
     /** System setting for provider model behavior */
