@@ -1043,7 +1043,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             mIconState.isVisible = !isCameraDisabled
                     && mShowCameraAffordance
                     && mUserSetupComplete
-                    && resolveCameraIntent() != null;
+                    && resolveCameraIntent(0) != null;
             mIconState.drawable = mContext.getDrawable(R.drawable.ic_camera_ssos);
             mIconState.contentDescription =
                     mContext.getString(R.string.accessibility_camera_button);
