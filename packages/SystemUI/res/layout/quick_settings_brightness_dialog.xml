@@ -47,6 +47,6 @@
         android:src="@drawable/ic_qs_brightness_auto_off_new"
         android:tint="?android:attr/textColorPrimaryInverse"
         android:contentDescription="@null"
-        android:layout_marginStart="20.0dip" />
+        android:layout_marginStart="12dp" />
 
 </com.android.systemui.settings.brightness.BrightnessSliderView>
