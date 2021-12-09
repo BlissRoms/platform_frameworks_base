@@ -6228,6 +6228,12 @@ public final class Settings {
         public static final String STATUSBAR_NOTIF_COUNT = "statusbar_notif_count";
 
         /**
+         * Whether StatusBar icons should use app icon
+         * @hide
+         */
+        public static final String STATUSBAR_COLORED_ICONS = "statusbar_colored_icons";
+
+        /**
          * @hide
          */
         public static final String STATUSBAR_BATTERY_BAR_BLEND_COLOR = "statusbar_battery_bar_blend_color";
