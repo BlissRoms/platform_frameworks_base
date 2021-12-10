@@ -5451,6 +5451,12 @@ public final class Settings {
          */
         public static final String VOWIFI_ICON = "vowifi_icon";
 
+        /**
+         * VoWiFi icon style
+         * @hide
+         */
+        public static final String VOWIFI_ICON_STYLE = "vowifi_icon_style";
+
 	/**
          * Home wake button
          * @hide
