@@ -6471,6 +6471,16 @@ public final class Settings {
         public static final String SHOW_APP_VOLUME = "show_app_volume";
 
         /**
+         * @hide
+         */
+        public static final String QS_BATTERY_STYLE = "qs_battery_style";
+
+        /**
+         * @hide
+         */
+        public static final String QS_SHOW_BATTERY_PERCENT = "qs_show_battery_percent";
+
+        /**
          * Whether to auto hide clock
          * @hide
          */
