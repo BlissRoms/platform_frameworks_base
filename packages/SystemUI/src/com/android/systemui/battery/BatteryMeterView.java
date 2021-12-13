@@ -170,6 +170,10 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
         setLayoutTransition(transition);
     }
 
+    public int getBatteryStyle() {
+        return mBatteryStyle;
+    }
+
     public void setBatteryStyle(int batteryStyle) {
         if (batteryStyle == mBatteryStyle) return;
         mBatteryStyle = batteryStyle;
@@ -183,13 +187,13 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
         updateVisibility();
     }
 
-    protected void setBatteryPercent(int showBatteryPercent) {
+    public void setBatteryPercent(int showBatteryPercent) {
         if (showBatteryPercent == mShowBatteryPercent) return;
         mShowBatteryPercent = showBatteryPercent;
         updatePercentView();
     }
 
-    protected void setBatteryPercentCharging(boolean batteryPercentCharging) {
+    public void setBatteryPercentCharging(boolean batteryPercentCharging) {
         if (batteryPercentCharging == mBatteryPercentCharging) return;
         mBatteryPercentCharging = batteryPercentCharging;
         updatePercentView();
