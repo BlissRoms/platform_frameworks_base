@@ -6734,6 +6734,16 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCK_DATE_FORMAT = "status_bar_clock_date_format";
 
         /**
+         * @hide
+         */
+        public static final String QS_BATTERY_STYLE = "qs_battery_style";
+
+        /**
+         * @hide
+         */
+        public static final String QS_SHOW_BATTERY_PERCENT = "qs_show_battery_percent";
+
+        /**
          * Whether to auto hide clock
          * @hide
          */
