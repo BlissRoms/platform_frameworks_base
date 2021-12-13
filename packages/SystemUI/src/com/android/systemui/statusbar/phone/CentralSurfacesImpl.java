@@ -960,12 +960,11 @@ public class CentralSurfacesImpl extends CoreStartable implements
             Log.v(TAG, "start(): no wallpaper service ");
         }
 
+        // Set up the initial notification state. This needs to happen before CommandQueue.disable()
+        setUpPresenter();
 
         mBlissSettingsObserver.observe();
         mBlissSettingsObserver.update();
-
-        // Set up the initial notification state. This needs to happen before CommandQueue.disable()
-        setUpPresenter();
 
         if (containsType(result.mTransientBarTypes, ITYPE_STATUS_BAR)) {
             showTransientUnchecked();
@@ -4064,10 +4063,15 @@ public class CentralSurfacesImpl extends CoreStartable implements
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_STOPLIST_VALUES))) {
+                setHeadsUpStoplist();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_BLACKLIST_VALUES))) {
+                setHeadsUpBlacklist();
+            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.LESS_BORING_HEADS_UP))) {
                 setUseLessBoringHeadsUp();
             }
-	    update();
         }
 
         public void update() {
