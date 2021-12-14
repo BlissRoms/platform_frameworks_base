@@ -336,7 +336,7 @@ public class LocationProviderManager extends
         @GuardedBy("mLock")
         @Override
         protected final void onRemovableListenerRegister() {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -364,7 +364,7 @@ public class LocationProviderManager extends
         @GuardedBy("mLock")
         @Override
         protected final void onRemovableListenerUnregister() {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -391,7 +391,7 @@ public class LocationProviderManager extends
 
         @Override
         protected final void onActive() {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -407,7 +407,7 @@ public class LocationProviderManager extends
 
         @Override
         protected final void onInactive() {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -499,7 +499,7 @@ public class LocationProviderManager extends
 
         @GuardedBy("mLock")
         private boolean isUsingHighPower() {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -533,7 +533,7 @@ public class LocationProviderManager extends
 
         @GuardedBy("mLock")
         private boolean onLocationPermissionsChanged() {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -561,7 +561,7 @@ public class LocationProviderManager extends
 
         @GuardedBy("mLock")
         final boolean onAdasGnssLocationEnabledChanged(int userId) {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -574,7 +574,7 @@ public class LocationProviderManager extends
 
         @GuardedBy("mLock")
         final boolean onForegroundChanged(int uid, boolean foreground) {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -602,7 +602,7 @@ public class LocationProviderManager extends
 
         @GuardedBy("mLock")
         final boolean onProviderLocationRequestChanged() {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -839,7 +839,7 @@ public class LocationProviderManager extends
         @Override
         @Nullable ListenerOperation<LocationTransport> acceptLocationChange(
                 LocationResult fineLocationResult) {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -1199,7 +1199,7 @@ public class LocationProviderManager extends
         @Override
         @Nullable ListenerOperation<LocationTransport> acceptLocationChange(
                 @Nullable LocationResult fineLocationResult) {
-            if (Build.IS_DEBUGGABLE) {
+            if (Build.IS_ENG) {
                 Preconditions.checkState(Thread.holdsLock(mLock));
             }
 
@@ -1867,7 +1867,7 @@ public class LocationProviderManager extends
     @GuardedBy("mLock")
     @Override
     protected void onRegister() {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -1888,7 +1888,7 @@ public class LocationProviderManager extends
     @GuardedBy("mLock")
     @Override
     protected void onUnregister() {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -1909,7 +1909,7 @@ public class LocationProviderManager extends
     @GuardedBy("mLock")
     @Override
     protected void onRegistrationAdded(Object key, Registration registration) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -1938,7 +1938,7 @@ public class LocationProviderManager extends
     @GuardedBy("mLock")
     @Override
     protected void onRegistrationRemoved(Object key, Registration registration) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -1965,7 +1965,7 @@ public class LocationProviderManager extends
     @Override
     protected boolean reregisterWithService(ProviderRequest oldRequest,
             ProviderRequest newRequest, Collection<Registration> registrations) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -2020,7 +2020,7 @@ public class LocationProviderManager extends
     @GuardedBy("mLock")
     @Override
     protected void unregisterWithService() {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -2051,7 +2051,7 @@ public class LocationProviderManager extends
     @GuardedBy("mLock")
     @Override
     protected boolean isActive(Registration registration) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -2121,7 +2121,7 @@ public class LocationProviderManager extends
     @GuardedBy("mLock")
     @Override
     protected ProviderRequest mergeRegistrations(Collection<Registration> registrations) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -2344,7 +2344,7 @@ public class LocationProviderManager extends
     @Override
     public void onStateChanged(
             AbstractLocationProvider.State oldState, AbstractLocationProvider.State newState) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -2366,7 +2366,7 @@ public class LocationProviderManager extends
     @GuardedBy("mLock")
     @Override
     public void onReportLocation(LocationResult locationResult) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -2415,7 +2415,7 @@ public class LocationProviderManager extends
 
     @GuardedBy("mLock")
     private void onUserStarted(int userId) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -2438,7 +2438,7 @@ public class LocationProviderManager extends
 
     @GuardedBy("mLock")
     private void onUserStopped(int userId) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
@@ -2458,7 +2458,7 @@ public class LocationProviderManager extends
 
     @GuardedBy("mLock")
     private void onEnabledChanged(int userId) {
-        if (Build.IS_DEBUGGABLE) {
+        if (Build.IS_ENG) {
             Preconditions.checkState(Thread.holdsLock(mLock));
         }
 
