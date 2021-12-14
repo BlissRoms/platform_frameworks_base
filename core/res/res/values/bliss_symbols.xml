@@ -81,4 +81,10 @@
 
     <!-- Whether device has SuperDart charging support -->
     <java-symbol type="bool" name="config_hasSuperDartCharger" />
+
+    <!-- Alert slider. -->
+    <java-symbol type="string" name="alert_slider_state_path" />
+    <java-symbol type="string" name="alert_slider_uevent_match_path" />
+    <java-symbol type="bool" name="config_hasAlertSlider" />
+
 </resources>
