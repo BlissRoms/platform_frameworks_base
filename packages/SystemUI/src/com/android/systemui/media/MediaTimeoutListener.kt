@@ -28,7 +28,7 @@ import com.android.systemui.util.concurrency.DelayableExecutor
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-private const val DEBUG = true
+private const val DEBUG = false
 private const val TAG = "MediaTimeout"
 
 @VisibleForTesting
