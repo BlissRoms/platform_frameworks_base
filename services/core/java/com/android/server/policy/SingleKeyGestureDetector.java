@@ -46,6 +46,9 @@ public final class SingleKeyGestureDetector {
     private static final int MSG_KEY_VERY_LONG_PRESS = 1;
     private static final int MSG_KEY_DELAYED_PRESS = 2;
 
+    private final long mLongPressTimeout;
+    private final long mVeryLongPressTimeout;
+
     private volatile int mKeyPressCounter;
     private boolean mBeganFromNonInteractive = false;
 
