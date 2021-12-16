@@ -84,6 +84,7 @@ android_library {
         "res-product",
         "res-keyguard",
         "res",
+        "res-pixel",
         "res-hwkeys",
     ],
     static_libs: [
@@ -124,8 +125,12 @@ android_library {
         "faceunlock_framework",
         "colorkt",
         "themelib",
+        "SystemUIGoogle-lib",
+        "android.frameworks.stats-V1-java",
+        "vendor-pixelatoms-java",
     ],
     manifest: "AndroidManifest.xml",
+    additional_manifests: ["SystemUIGoogle-Manifest.xml"],
 
     libs: [
         "ims-common",
@@ -238,7 +243,14 @@ android_app {
     static_libs: [
         "SystemUI-core",
     ],
+    jni_libs: ["libtensorflowlite_jni"],
+    use_embedded_native_libs: true,
     resource_dirs: [],
+    asset_dirs: ["assets"],
+    aaptflags: [
+        "-0 .tflite",
+        "-0 .vocab",
+    ],
 
     platform_apis: true,
     system_ext_specific: true,
