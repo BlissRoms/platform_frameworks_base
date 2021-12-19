@@ -6182,6 +6182,35 @@ public final class Settings {
          */
 
         /**
+         * Whether to show brightness slider in qs panel.
+         * Default 1.
+         * @hide
+         */
+        public static final String QS_SHOW_BRIGHTNESS = "qs_show_brightness";
+
+        /**
+         * Whether to show brightness slider in qqs panel.
+         * This setting is independent of QS_SHOW_BRIGHTNESS.
+         * Default 0.
+         * @hide
+         */
+        public static final String QQS_SHOW_BRIGHTNESS = "qqs_show_brightness";
+
+        /**
+         * Whether to show qs / qqs brightness slider at the bottom of the panel.
+         * Default 0.
+         * @hide
+         */
+        public static final String QS_BRIGHTNESS_POSITION_BOTTOM = "qs_brightness_position_bottom";
+
+        /**
+         * Whether to show auto brightness icon next to brightness slider.
+         * Default 0.
+         * @hide
+         */
+        public static final String QS_SHOW_AUTO_BRIGHTNESS_BUTTON = "qs_show_auto_brightness_button";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
