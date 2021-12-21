@@ -7019,6 +7019,16 @@ public final class Settings {
         public static final String ISLAND_NOTIFICATION_NOW_PLAYING = "island_notification_now_playing";
 
         /**
+         * @hide
+         */
+        public static final String UDFPS_ANIM = "udfps_anim";
+
+        /**
+         * @hide
+         */
+        public static final String UDFPS_ANIM_STYLE = "udfps_anim_style";
+
+        /**
          * These are all public system settings
          *
          * @hide

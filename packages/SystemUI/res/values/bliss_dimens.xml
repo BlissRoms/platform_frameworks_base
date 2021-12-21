@@ -44,4 +44,7 @@
     <dimen name="right_tri_state_up_top_left_radius">24.0dip</dimen>
     <dimen name="right_tri_state_up_top_right_radius">24.0dip</dimen>
 
+    <!-- Udfps fingerprint animation -->
+    <dimen name="udfps_animation_size">200dp</dimen>
+    <dimen name="udfps_animation_offset">0dp</dimen>
 </resources>
