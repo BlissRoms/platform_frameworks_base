@@ -72,4 +72,8 @@
     <!-- Screenshot drawables -->
     <dimen name="screenshot_border_corner_radius">24dp</dimen>
     <dimen name="screenshot_preview_corner_radius">20dp</dimen>
+
+    <!-- Udfps fingerprint animation -->
+    <dimen name="udfps_animation_size">280dp</dimen>
+    <dimen name="udfps_animation_offset">0dp</dimen>
 </resources>
