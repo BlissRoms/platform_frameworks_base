@@ -288,7 +288,8 @@ constructor(
         object : UdfpsController.Callback {
             override fun onFingerDown() {
                 // only show dwell ripple for device entry
-                if (keyguardUpdateMonitor.isFingerprintDetectionRunning) {
+                if (keyguardUpdateMonitor.isFingerprintDetectionRunning &&
+                        udfpsController?.isAnimationEnabled() == false) {
                     if (SceneContainerFlag.isEnabled) {
                         authRippleInteractor.sendAuthRippleEvent(
                             AuthRippleInteractor.AuthRippleEvent.PulseOut
@@ -300,12 +301,14 @@ constructor(
             }
 
             override fun onFingerUp() {
-                if (SceneContainerFlag.isEnabled) {
-                    authRippleInteractor.sendAuthRippleEvent(
-                        AuthRippleInteractor.AuthRippleEvent.Retract
-                    )
-                } else {
-                    mView.retractDwellRipple()
+                if (udfpsController?.isAnimationEnabled() == false) {
+                    if (SceneContainerFlag.isEnabled) {
+                        authRippleInteractor.sendAuthRippleEvent(
+                            AuthRippleInteractor.AuthRippleEvent.Retract
+                        )
+                    } else {
+                        mView.retractDwellRipple()
+                    }
                 }
             }
         }
