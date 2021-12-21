@@ -61,4 +61,8 @@
 
     <!-- Network traffic -->
     <dimen name="network_traffic_width">25sp</dimen>
+
+    <!-- Udfps fingerprint animation -->
+    <dimen name="udfps_animation_size">280dp</dimen>
+    <dimen name="udfps_animation_offset">0dp</dimen>
 </resources>
