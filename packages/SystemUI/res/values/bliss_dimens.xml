@@ -66,4 +66,8 @@
     <dimen name="alertslider_dialog_minwidth">108dp</dimen>
     <dimen name="alertslider_padding">15dp</dimen>
 
+    <!-- Recognizing fingerprint animation -->
+    <dimen name="udfps_animation_size">280dp</dimen>
+    <dimen name="udfps_animation_offset">0dp</dimen>
+
 </resources>
