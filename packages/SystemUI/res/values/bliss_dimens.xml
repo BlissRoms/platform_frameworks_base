@@ -47,4 +47,8 @@
     <dimen name="weather_dream_complication_text_descent_extra_padding">1.0dp</dimen>
     <dimen name="weather_dream_overlay_complication_line_height">52.0dp</dimen>
     <dimen name="weather_dream_overlay_complication_text_size">45.0dp</dimen>
+
+    <!-- Udfps fingerprint animation -->
+    <dimen name="udfps_animation_size">280dp</dimen>
+    <dimen name="udfps_animation_offset">0dp</dimen>
 </resources>
