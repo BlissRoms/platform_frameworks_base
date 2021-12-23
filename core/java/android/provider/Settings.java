@@ -12140,6 +12140,13 @@ public final class Settings {
         public static final String HIDE_PRIVATESPACE_ENTRY_POINT = "hide_privatespace_entry_point";
 
         /**
+         * Whether to show QS without unlocks
+         * @hide
+         */
+        @Readable
+        public static final String QSTILE_REQUIRES_UNLOCKING = "qstile_requires_unlocking";
+
+        /**
          * These entries are considered common between the personal and the managed profile,
          * since the managed profile doesn't get to change them.
          */
