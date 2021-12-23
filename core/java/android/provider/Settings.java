@@ -11741,6 +11741,13 @@ public final class Settings {
         public static final String GESTURE_NAVBAR_LENGTH_MODE = "gesture_navbar_length_mode";
 
         /**
+         * Whether to show QS auto brightness toggle button
+         * @hide
+         */
+        @Readable
+        public static final String QSTILE_REQUIRES_UNLOCKING = "qstile_requires_unlocking";
+
+        /**
          * Whether to show privacy indicator for location
          * @hide
          */
