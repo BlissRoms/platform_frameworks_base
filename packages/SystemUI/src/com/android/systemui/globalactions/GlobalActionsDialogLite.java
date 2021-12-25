@@ -1385,6 +1385,12 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         @Override
         public void onPress() {
+            /*
+              No time and need to dismiss the dialog here, just kill systemui straight after telling to
+              policy/GlobalActions that we hid the dialog within the kill action itself so its onStatusBarConnectedChanged
+              won't show the LegacyGlobalActions after systemui restart.
+            */
+            mWindowManagerFuncs.onGlobalActionsHidden();
             Process.killProcess(Process.myPid());
         }
     }
