@@ -81,9 +81,6 @@
     <!-- Shows when people have clicked on the custom lockscreen shortcut [CHAR LIMIT=60] -->
     <string name="custom_hint">Swipe from icon to launch</string>
 
-    <!-- VPN -->
-    <string name="status_bar_vpn">VPN</string>
-
     <!-- Heads up snooze toast -->
     <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Peeking notification are snoozing for 1 minute.</string>
     <string name="heads_up_snooze_message"><xliff:g id="string">%1$s</xliff:g> - Peeking notifications are snoozing for <xliff:g id="number">%2$d</xliff:g> minutes.</string>
@@ -123,8 +120,10 @@
     <string name="qs_data_switch_changed_1">Switch data card to SIM 1.</string>
     <string name="qs_data_switch_changed_2">Switch data card to SIM 2.</string>
 
-    <!-- Name of the nfc status bar icon. -->
+    <!-- Names of the status bar icons. -->
+    <string name="status_bar_call_strength">Call strength</string>
     <string name="status_bar_nfc">NFC</string>
+    <string name="status_bar_vpn">VPN</string>
 
     <!-- Accessibility label for nfc icon (not shown on screen) [CHAR LIMIT=NONE] -->
     <string name="accessibility_status_bar_nfc">Nfc</string>
