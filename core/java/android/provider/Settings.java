@@ -6545,6 +6545,20 @@ public final class Settings {
         /** @hide */
         public static final String STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION = "status_bar_clock_auto_hide_sduration";
 
+	/**
+         * GameSpace: List of added games by user
+         * @hide
+         */
+        @Readable
+        public static final String GAMESPACE_GAME_LIST = "gamespace_game_list";
+
+        /**
+         * GameSpace: Whether fullscreen intent will be suppressed while in game session
+         * @hide
+         */
+        @Readable
+        public static final String GAMESPACE_SUPPRESS_FULLSCREEN_INTENT = "gamespace_suppress_fullscreen_intent";
+
         /**
          * @hide
          */
