@@ -836,11 +836,11 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
                 break;
                 // GZR Skull
             case 2:
-                logo = getContext().getResources().getDrawable(R.drawable.status_bar_gzr_skull_logo);
+                logo = getContext().getDrawable(R.drawable.status_bar_gzr_skull_logo);
                 break;
                 // GZR Circle
             case 3:
-                logo = getContext().getResources().getDrawable(R.drawable.status_bar_gzr_circle_logo);
+                logo = getContext().getDrawable(R.drawable.status_bar_gzr_circle_logo);
                 break;
                 // Batman
             case 4:
