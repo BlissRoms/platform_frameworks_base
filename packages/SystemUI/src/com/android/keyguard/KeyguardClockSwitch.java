@@ -11,6 +11,15 @@ import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
+import android.database.ContentObserver;
+import android.graphics.Paint;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
+import android.os.SystemClock;
+import android.provider.Settings;
+import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +100,53 @@ public class KeyguardClockSwitch extends RelativeLayout {
 
     private int mClockSwitchYAmount;
     @VisibleForTesting boolean mChildrenAreLaidOut = false;
+    private Handler mHandler;
+    private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
+        public void onLogoutEnabledChanged() {
+        }
+
+        public void onUserSwitchComplete(int i) {
+        }
+
+        public void onTimeChanged() {
+            if (mClockPlugin != null) {
+                mClockPlugin.onTimeTick();
+            }
+        }
+
+        public void onTimeZoneChanged(TimeZone timeZone) {
+            if (mClockPlugin != null) {
+                mClockPlugin.onTimeTick();
+            }
+        }
+
+        public void onKeyguardVisibilityChanged(boolean z) {
+            if (mClockPlugin != null) {
+                mClockPlugin.setTextColor(mDarkAmount > 0.0f ? -1 : mContext.getResources().getColor(17170490));
+            }
+        }
+
+        public void onStartedWakingUp() {
+            if (mClockPlugin != null) {
+                mClockPlugin.setTextColor(mDarkAmount > 0.0f ? -1 : mContext.getResources().getColor(17170490));
+                mClockPlugin.onTimeTick();
+            }
+        }
+
+        public void onFinishedGoingToSleep(int i) {
+            if (mClockPlugin != null) {
+                mClockPlugin.setTextColor(mDarkAmount > 0.0f ? -1 : mContext.getResources().getColor(17170490));
+            }
+        }
+
+        public void onStartedGoingToSleep(int i) {
+            if (mDisplayedClockSize != null) {
+                KeyguardClockSwitch keyguardClockSwitch = KeyguardClockSwitch.this;
+                setupFrames("startedGoingToSleep", mDisplayedClockSize.intValue() != 0);
+            }
+        }
+    };
+
 
     public KeyguardClockSwitch(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -158,9 +214,13 @@ public class KeyguardClockSwitch extends RelativeLayout {
             mClockPlugin.onDestroyView();
             mClockPlugin = null;
         }
+        boolean useLargeClock = false;
         if (plugin == null) {
-            mClockView.setVisibility(View.VISIBLE);
-            mLargeClockView.setVisibility(View.VISIBLE);
+            this.mKeyguardStatusArea.setVisibility(View.VISIBLE);
+            this.mClockView.setVisibility(View.VISIBLE);
+            this.mLargeClockView.setVisibility(View.VISIBLE);
+            this.mClockFrame.setVisibility(View.VISIBLE);
+            setMargins(this.mLargeClockFrame, 0, 0, 0, 0);
             return;
         }
         // Attach small and big clock views to hierarchy.
@@ -176,12 +236,17 @@ public class KeyguardClockSwitch extends RelativeLayout {
             mLargeClockFrame.addView(bigClockView);
             mLargeClockView.setVisibility(View.GONE);
         }
-
+        mKeyguardStatusArea.setVisibility(plugin.shouldShowStatusArea() ? View.VISIBLE : View.GONE);
         // Initialize plugin parameters.
         mClockPlugin = plugin;
         mClockPlugin.setStyle(getPaint().getStyle());
         mClockPlugin.setTextColor(getCurrentTextColor());
         mClockPlugin.setDarkAmount(mDarkAmount);
+        Boolean bool = mHasVisibleNotifications;
+        if (bool != null) {
+            useLargeClock = bool.booleanValue();
+        }
+        setupFrames("setPlugin", useLargeClock);
         if (mColorPalette != null) {
             mClockPlugin.setColorPalette(mSupportsDarkText, mColorPalette);
         }
@@ -269,6 +334,13 @@ public class KeyguardClockSwitch extends RelativeLayout {
             }
         });
         mStatusAreaAnim.start();
+        setupFrames("useLargeClock", !useLargeClock);
+    }
+
+    private void setPluginBelowKgArea() {
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(-1, -2);
+        layoutParams.addRule(3, this.mStatusArea.getId());
+        mLargeClockFrame.setLayoutParams(layoutParams);
     }
 
     /**
@@ -363,8 +435,41 @@ public class KeyguardClockSwitch extends RelativeLayout {
         mColorPalette = colors.getColorPalette();
         if (mClockPlugin != null) {
             mClockPlugin.setColorPalette(mSupportsDarkText, mColorPalette);
+            this.mClockPlugin.setTextColor(this.mDarkAmount > 0.0f ? -1 : this.mContext.getResources().getColor(17170490));
         }
     }
+
+    private void setupFrames(String str, boolean useLargeClock) {
+        int i = 0;
+        if (useLargeClock) {
+            this.mClockFrame.setVisibility(View.VISIBLE);
+            setMargins(this.mLargeClockFrame, 0, 0, 0, 0);
+        } else if (hasCustomClock()) {
+                int dimensionPixelSize = mContext.getResources().getDisplayMetrics().heightPixels - mContext.getResources().getDimensionPixelSize(R.dimen.status_bar_height);
+                mClockFrame.setVisibility(!mClockPlugin.shouldShowClockFrame() ? View.GONE : View.VISIBLE);
+            if (mClockPlugin.shouldShowStatusArea()) {
+                setPluginBelowKgArea();
+            } else {
+                FrameLayout frameLayout = mLargeClockFrame;
+                if (mClockPlugin.usesPreferredY()) {
+                    i = mClockPlugin.getPreferredY(dimensionPixelSize);
+                }
+                setMargins(frameLayout, 0, i, 0, 0);
+                }
+            } else {
+                mClockFrame.setVisibility(View.VISIBLE);
+                setMargins(mLargeClockFrame, 0, 0, 0, 0);
+            }
+            refresh();
+    }
+
+    public void setMargins(View view, int i, int i2, int i3, int i4) {
+        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).setMargins(i, i2, i3, i4);
+            view.requestLayout(); 
+        }
+    }
+
 
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.println("KeyguardClockSwitch:");

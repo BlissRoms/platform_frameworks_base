@@ -244,4 +244,11 @@ number">%d</xliff:g> remaining attempts before SIM becomes permanently unusable.
     <string name="clock_title_bubble">Bubble</string>
     <!-- Name of the "Analog" clock face [CHAR LIMIT=15]-->
     <string name="clock_title_analog">Analog</string>
+
+    <string name="custom_clock_day_title">Day</string>
+    <string name="custom_clock_hours_title">Hours</string>
+    <string name="custom_clock_minutes_title">Minutes</string>
+    <string name="custom_clock_month_title">Month</string>
+    <string name="custom_clock_seconds_title">Seconds</string>
+    <string name="custom_clock_year_title">Year</string>
 </resources>

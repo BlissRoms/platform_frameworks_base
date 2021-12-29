@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.keyguard.clock.ClockLayout xmlns:androidprv="http://schemas.android.com/apk/prv/res/android" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:layout_gravity="top|center_vertical|center_horizontal|center" android:layout_width="match_parent" android:layout_height="wrap_content">
+    <LinearLayout android:gravity="center" android:layout_gravity="top|center_vertical|center_horizontal|center" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextClock android:textSize="88sp" android:textColor="?attr/wallpaperTextColor" android:gravity="right" android:id="@+id/clockHour" android:paddingRight="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:format12Hour="hh" android:format24Hour="kk"/>
+        <TextClock android:textSize="48sp" android:textColor="?attr/wallpaperTextColor" android:id="@+id/clockMinute" android:paddingLeft="4dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:format12Hour="mm" android:format24Hour="mm"/>
+    </LinearLayout>
+</com.android.keyguard.clock.ClockLayout>
