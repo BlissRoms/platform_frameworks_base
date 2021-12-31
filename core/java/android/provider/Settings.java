@@ -15977,6 +15977,16 @@ public final class Settings {
         };
 
         /**
+         * Restrict USB
+         * 0 = Off, never
+         * 1 = Only when the screen is locked
+         * 2 = On, always
+         *
+         * @hide
+         */
+        public static final String TRUST_RESTRICT_USB = "trust_restrict_usb";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
