@@ -108,5 +108,6 @@ public class SystemSettings {
         Settings.System.SCREEN_OFF_FOD,
         Settings.System.ENABLE_FLOATING_ROTATION_BUTTON,
         Settings.System.STATUS_BAR_NOTIF_COUNT,
+        Settings.System.LOCKSCREEN_SMALL_CLOCK,
     };
 }
