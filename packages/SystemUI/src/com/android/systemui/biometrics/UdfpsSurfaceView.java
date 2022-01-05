@@ -31,7 +31,9 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
+import com.android.internal.util.bliss.BlissUtils;
+import android.provider.Settings;
+import android.content.pm.PackageManager;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.tuner.TunerService;
@@ -39,7 +41,7 @@ import com.android.systemui.tuner.TunerService;
 /**
  * Surface View for providing the Global High-Brightness Mode (GHBM) illumination for UDFPS.
  */
-public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callback, TunerService.Tunable {
+public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "UdfpsSurfaceView";
 
     /**
@@ -61,21 +63,14 @@ public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     boolean mAwaitingSurfaceToStartIllumination;
     boolean mHasValidSurface;
 
-    private Drawable mUdfpsIconPressed;
+    Drawable mUdfpsIconPressed;
 
-    private static final String UDFPS_COLOR =
-            "system:" + Settings.System.UDFPS_COLOR;
+    static final String UDFPS_COLOR = "system:" + Settings.System.UDFPS_COLOR;
 
-    private int mDefaultPressedColor;
-    private int mPressedColor;
-    private final int[] PRESSED_COLOR = {
-        R.drawable.udfps_icon_pressed,
-        R.drawable.udfps_icon_pressed_white,
-        R.drawable.udfps_icon_pressed_white_new,
-        R.drawable.udfps_icon_pressed_green,
-        R.drawable.udfps_icon_pressed_yellow,
-        R.drawable.udfps_icon_pressed_light_yellow
-    };
+    String udfpsResourcesPackage = "org.bliss.udfps.resources";
+    Resources udfpsRes;
+    String[] mUdfpsPressedIcons;
+    int mSelectedIcon = 0;
 
     public UdfpsSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -96,27 +91,38 @@ public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mSensorPaint.setAntiAlias(true);
         mSensorPaint.setColor(context.getColor(R.color.config_udfpsColor));
         mSensorPaint.setStyle(Paint.Style.FILL);
-
-        mUdfpsIconPressed = mContext.getDrawable(PRESSED_COLOR[mPressedColor]);
-        mDefaultPressedColor = res.getInteger(com.android.internal.R.
-             integer.config_udfps_pressed_color);
-
-        Dependency.get(TunerService.class).addTunable(this,
-                UDFPS_COLOR);
+        init();
     }
 
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        switch (key) {
-            case UDFPS_COLOR:
-                mPressedColor =
-                        TunerService.parseInteger(newValue, mDefaultPressedColor);
-                mUdfpsIconPressed =
-                        mContext.getDrawable(PRESSED_COLOR[mPressedColor]);
-                break;
-            default:
-                break;
+   void init() {
+        if (BlissUtils.isPackageInstalled(mContext, udfpsResourcesPackage)) {
+            try {
+                PackageManager pm = mContext.getPackageManager();
+                udfpsRes = pm.getResourcesForApplication(udfpsResourcesPackage);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            int res = udfpsRes.getIdentifier("udfps_pressedicons",
+                    "array", udfpsResourcesPackage);
+            mUdfpsPressedIcons = udfpsRes.getStringArray(res);
+
+            TunerService.Tunable tunable = (key, newValue) -> {
+                if (UDFPS_COLOR.equals(key)) {
+                    mSelectedIcon = newValue == null ? 0 : Integer.parseInt(newValue);
+                    mUdfpsIconPressed = mSelectedIcon == 0 ? null :
+                            loadDrawable(udfpsRes,
+                                    mUdfpsPressedIcons[mSelectedIcon]);
+                }
+            };
+            Dependency.get(TunerService.class).addTunable(tunable, UDFPS_COLOR);
         }
+    }
+
+    Drawable loadDrawable(Resources res, String resName) {
+        int resId = res.getIdentifier(resName,
+                "drawable", udfpsResourcesPackage);
+        return res.getDrawable(resId);
     }
 
     @Override public void surfaceCreated(SurfaceHolder holder) {
