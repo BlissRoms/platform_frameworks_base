@@ -481,6 +481,9 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
      * Looks up the scale factor for status bar icons and scales the battery view by that amount.
      */
     void scaleBatteryMeterViews() {
+        if (mBatteryIconView == null) {
+            return;
+        }
         Resources res = getContext().getResources();
         TypedValue typedValue = new TypedValue();
 
@@ -526,7 +529,9 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
         scaledLayoutParams.setMargins(0, marginTop, 0, marginBottom);
 
         mAccessorizedDrawable.setDisplayShield(displayShield);
-        mBatteryIconView.setLayoutParams(scaledLayoutParams);
+        if (mBatteryIconView != null) {
+            mBatteryIconView.setLayoutParams(scaledLayoutParams);
+        }
         mBatteryIconView.invalidateDrawable(mAccessorizedDrawable);
     }
 
