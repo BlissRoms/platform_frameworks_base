@@ -26,9 +26,11 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.MathUtils;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -79,6 +81,8 @@ public class UdfpsKeyguardView extends UdfpsAnimationView {
     private boolean mFullyInflated;
 
     private boolean mCustomUdfpsIcon;
+    private boolean mCustomFpIconEnabled;
+    private String customIconURI;
 
     public UdfpsKeyguardView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -125,7 +129,14 @@ public class UdfpsKeyguardView extends UdfpsAnimationView {
         mCustomUdfpsIcon = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.UDFPS_ICON, 0) != 0
                 && BlissUtils.isPackageInstalled(mContext, "org.bliss.udfps.resources");
-        mBgProtection.setImageDrawable(mCustomUdfpsIcon
+        mCustomFpIconEnabled = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.OMNI_CUSTOM_FP_ICON_ENABLED, 0) == 1;
+        customIconURI = Settings.System.getStringForUser(getContext().getContentResolver(),
+                Settings.System.OMNI_CUSTOM_FP_ICON,
+                UserHandle.USER_CURRENT);
+
+        mBgProtection.setImageDrawable(mCustomUdfpsIcon ||
+                                      (!TextUtils.isEmpty(customIconURI) && mCustomFpIconEnabled)
                 ? mFingerprintDrawable :
                 getContext().getDrawable(R.drawable.fingerprint_bg));
     }
@@ -151,13 +162,14 @@ public class UdfpsKeyguardView extends UdfpsAnimationView {
             mLockScreenFp.setTranslationX(mBurnInOffsetX);
             mLockScreenFp.setTranslationY(mBurnInOffsetY);
             mBgProtection.setAlpha(1f - mInterpolatedDarkAmount);
-            mLockScreenFp.setAlpha(mCustomUdfpsIcon ? 0.0f
-                               : (1f - mInterpolatedDarkAmount));
+            mLockScreenFp.setAlpha(mCustomUdfpsIcon || (!TextUtils.isEmpty(customIconURI)
+                    && mCustomFpIconEnabled) ? 0.0f : (1f - mInterpolatedDarkAmount));
         } else if (darkAmountForAnimation == 0f) {
             mLockScreenFp.setTranslationX(0);
             mLockScreenFp.setTranslationY(0);
             mBgProtection.setAlpha(mAlpha / 255f);
-            mLockScreenFp.setAlpha(mCustomUdfpsIcon ? 0.0f : mAlpha / 255f);
+            mLockScreenFp.setAlpha(mCustomUdfpsIcon || (!TextUtils.isEmpty(customIconURI)
+                                   && mCustomFpIconEnabled) ? 0.0f : mAlpha / 255f);
         } else {
             mBgProtection.setAlpha(0f);
             mLockScreenFp.setAlpha(0f);
