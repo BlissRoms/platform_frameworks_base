@@ -88,5 +88,6 @@ public class SystemSettings {
         Settings.System.ALARM_ALERT,
         Settings.System.NOTIFICATION_LIGHT_PULSE,
         Settings.System.DOZE_ON_CHARGE,
+        Settings.System.ENABLE_RIPPLE_EFFECT,
     };
 }
