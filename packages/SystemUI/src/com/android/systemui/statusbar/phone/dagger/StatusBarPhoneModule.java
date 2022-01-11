@@ -104,6 +104,7 @@ import com.android.systemui.statusbar.policy.ExtensionController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
+import com.android.systemui.statusbar.policy.SecureLockscreenQSDisabler;
 import com.android.systemui.statusbar.policy.TaskHelper;
 import com.android.systemui.statusbar.policy.BurnInProtectionController;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
@@ -226,7 +227,8 @@ public interface StatusBarPhoneModule {
             UnlockedScreenOffAnimationController unlockedScreenOffAnimationController,
             Optional<StartingSurface> startingSurfaceOptional,
             TaskHelper taskHelper,
-            BurnInProtectionController burnInProtectionController) {
+            BurnInProtectionController burnInProtectionController,
+            SecureLockscreenQSDisabler secureLockscreenQSDisabler) {
         return new StatusBar(
                 context,
                 notificationsController,
@@ -318,6 +320,7 @@ public interface StatusBarPhoneModule {
                 unlockedScreenOffAnimationController,
                 startingSurfaceOptional,
                 taskHelper,
-                burnInProtectionController);
+                burnInProtectionController,
+                secureLockscreenQSDisabler);
     }
 }
