@@ -152,6 +152,7 @@ public final class ClockManager {
         addBuiltinClock(() -> new SfunnyClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new ClockertinoClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new SparkClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new SparkCircleClockController(res, layoutInflater, colorExtractor));
 
 
         // Store the size of the display for generation of clock preview.
