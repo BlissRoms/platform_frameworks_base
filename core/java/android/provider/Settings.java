@@ -11484,6 +11484,12 @@ public final class Settings {
         public static final String PROJECTION_PRIVACY_INDICATOR = "projection_privacy_indicator";
 
         /**
+         * Whether to turn on black theme
+         * @hide
+         */
+        public static final String SYSTEM_BLACK_THEME = "system_black_theme";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
