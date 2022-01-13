@@ -92,6 +92,9 @@ public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mSensorPaint.setColor(context.getColor(R.color.config_udfpsColor));
         mSensorPaint.setStyle(Paint.Style.FILL);
         init();
+        if (mUdfpsIconPressed == null) {
+         mUdfpsIconPressed = context.getDrawable(R.drawable.udfps_icon_pressed);
+        }  
     }
 
    void init() {
