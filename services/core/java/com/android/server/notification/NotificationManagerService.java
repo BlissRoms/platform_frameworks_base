@@ -680,6 +680,8 @@ public class NotificationManagerService extends SystemService {
     // Broadcast intent receiver for notification permissions review-related intents
     private ReviewNotificationPermissionsReceiver mReviewNotificationPermissionsReceiver;
 
+    private boolean mSoundVibScreenOn;
+
     static class Archive {
         final SparseArray<Boolean> mEnabled;
         final int mBufferSize;
