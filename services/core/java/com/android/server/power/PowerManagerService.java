@@ -1998,7 +1998,15 @@ public final class PowerManagerService extends SystemService
         } finally {
             Trace.traceEnd(Trace.TRACE_TAG_POWER);
         }
+        mHandler.post(() -> sendSleepBroadcast());
         return true;
+    }
+
+    private void sendSleepBroadcast() {
+        Intent intent = new Intent(
+                com.android.internal.util.bliss.content.Intent.ACTION_GO_TO_SLEEP);
+        intent.setFlags(Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND);
+        mContext.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
     }
 
     private void dreamDisplayGroup(int groupId, long eventTime, int uid) {
