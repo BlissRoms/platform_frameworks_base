@@ -11427,6 +11427,24 @@ public final class Settings {
         public static final String LOCKSCREEN_MEDIA_METADATA = "lockscreen_media_metadata";
 
         /**
+         * Whether to show privacy indicator for location
+         * @hide
+         */
+        public static final String LOCATION_PRIVACY_INDICATOR = "location_privacy_indicator";
+
+        /**
+         * Whether to show privacy indicator for camera
+         * @hide
+         */
+        public static final String CAMERA_PRIVACY_INDICATOR = "camera_privacy_indicator";
+
+        /**
+         * Whether to show privacy indicator for media projection
+         * @hide
+         */
+        public static final String PROJECTION_PRIVACY_INDICATOR = "projection_privacy_indicator";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
