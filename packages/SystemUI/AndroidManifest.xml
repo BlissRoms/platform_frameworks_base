@@ -318,6 +318,10 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.PREVENT_POWER_KEY" />
 
+    <protected-broadcast android:name="com.android.systemui.doze.pulse" />
+
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"
@@ -945,5 +949,9 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <!-- FPS Info -->
+        <service android:name=".FPSInfoService"
+                android:exported="false" />
     </application>
 </manifest>

@@ -264,6 +264,7 @@ import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.OnHeadsUpChangedListener;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
+import com.android.systemui.statusbar.policy.TaskHelper;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.volume.VolumeComponent;
@@ -469,6 +470,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     private final SystemStatusAnimationScheduler mAnimationScheduler;
     private final StatusBarLocationPublisher mStatusBarLocationPublisher;
     private final StatusBarIconController mStatusBarIconController;
+
+    protected TaskHelper mTaskHelper;
 
     // expanded notifications
     // the sliding/resizing panel within the notification window
@@ -865,7 +868,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             FeatureFlags featureFlags,
             KeyguardUnlockAnimationController keyguardUnlockAnimationController,
             UnlockedScreenOffAnimationController unlockedScreenOffAnimationController,
-            Optional<StartingSurface> startingSurfaceOptional) {
+            Optional<StartingSurface> startingSurfaceOptional,
+            TaskHelper taskHelper) {
         super(context);
         mNotificationsController = notificationsController;
         mLightBarController = lightBarController;
@@ -951,6 +955,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mFeatureFlags = featureFlags;
         mKeyguardUnlockAnimationController = keyguardUnlockAnimationController;
         mUnlockedScreenOffAnimationController = unlockedScreenOffAnimationController;
+        mTaskHelper = taskHelper;
 
         mLockscreenShadeTransitionController = lockscreenShadeTransitionController;
         mStartingSurfaceOptional = startingSurfaceOptional;
@@ -2473,6 +2478,19 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
     }
 
+
+    @Override
+    public void toggleCameraFlashState(boolean enable) {
+        if (DEBUG) {
+            Log.d(TAG, "Disabling camera flashlight");
+        }
+        if (mFlashlightController != null) {
+            if (mFlashlightController.hasFlashlight() && mFlashlightController.isAvailable()) {
+                mFlashlightController.setFlashlight(enable);
+            }
+        }
+    }
+
     void makeExpandedVisible(boolean force) {
         if (SPEW) Log.d(TAG, "Make expanded visible: expanded visible=" + mExpandedVisible);
         if (!force && (mExpandedVisible || !mCommandQueue.panelsEnabled())) {
@@ -2509,6 +2527,15 @@ public class StatusBar extends SystemUI implements DemoMode,
             mShadeController.animateCollapsePanels();
         } else {
             animateExpandNotificationsPanel();
+        }
+    }
+
+    @Override
+    public void toggleSettingsPanel() {
+        if (mPanelExpanded) {
+            mShadeController.animateCollapsePanels();
+        } else {
+            animateExpandSettingsPanel(null);
         }
     }
 

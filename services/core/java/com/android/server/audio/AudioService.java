@@ -24,6 +24,7 @@ import static android.media.AudioManager.STREAM_SYSTEM;
 import static android.os.Process.FIRST_APPLICATION_UID;
 import static android.provider.Settings.Secure.VOLUME_HUSH_CYCLE;
 import static android.provider.Settings.Secure.VOLUME_HUSH_MUTE;
+import static android.provider.Settings.Secure.VOLUME_HUSH_MUTE_NO_MEDIA;
 import static android.provider.Settings.Secure.VOLUME_HUSH_OFF;
 import static android.provider.Settings.Secure.VOLUME_HUSH_VIBRATE;
 
@@ -585,7 +586,6 @@ public class AudioService extends IAudioService.Stub
     // Devices for which the volume is fixed (volume is either max or muted)
     Set<Integer> mFixedVolumeDevices = new HashSet<>(Arrays.asList(
             AudioSystem.DEVICE_OUT_DGTL_DOCK_HEADSET,
-            AudioSystem.DEVICE_OUT_ANLG_DOCK_HEADSET,
             AudioSystem.DEVICE_OUT_HDMI_ARC,
             AudioSystem.DEVICE_OUT_HDMI_EARC,
             AudioSystem.DEVICE_OUT_AUX_LINE));
@@ -4355,6 +4355,8 @@ public class AudioService extends IAudioService.Stub
         setRingerMode(ringerMode, caller, false /*external*/);
     }
 
+    private static Toast mSilenceToast;
+
     public void silenceRingerModeInternal(String reason) {
         VibrationEffect effect = null;
         int ringerMode = AudioManager.RINGER_MODE_SILENT;
@@ -4374,6 +4376,12 @@ public class AudioService extends IAudioService.Stub
                 ringerMode = AudioManager.RINGER_MODE_SILENT;
                 toastText = com.android.internal.R.string.volume_dialog_ringer_guidance_silent;
                 break;
+            case VOLUME_HUSH_MUTE_NO_MEDIA:
+                effect = VibrationEffect.get(VibrationEffect.EFFECT_DOUBLE_CLICK);
+                ringerMode = AudioManager.RINGER_MODE_SILENT;
+                mStreamStates[AudioSystem.STREAM_MUSIC].mute(true);
+                toastText = com.android.internal.R.string.volume_dialog_ringer_guidance_silent_no_media;
+                break;
             case VOLUME_HUSH_VIBRATE:
                 effect = VibrationEffect.get(VibrationEffect.EFFECT_HEAVY_CLICK);
                 ringerMode = AudioManager.RINGER_MODE_VIBRATE;
@@ -4392,7 +4400,6 @@ public class AudioService extends IAudioService.Stub
                         toastText = com.android.internal.R.string.volume_dialog_ringer_guidance_silent;
                         break;
                     case AudioManager.RINGER_MODE_SILENT:
-                        effect = VibrationEffect.get(VibrationEffect.EFFECT_HEAVY_CLICK);
                         ringerMode = AudioManager.RINGER_MODE_NORMAL;
                         toastText = com.android.internal.R.string.volume_dialog_ringer_guidance_normal;
                         break;
@@ -4401,7 +4408,11 @@ public class AudioService extends IAudioService.Stub
         }
         maybeVibrate(effect, reason);
         setRingerModeInternal(ringerMode, reason);
-        Toast.makeText(mContext, toastText, Toast.LENGTH_SHORT).show();
+        if (ringerMode == AudioManager.RINGER_MODE_NORMAL)
+            playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD);
+        if (mSilenceToast != null) mSilenceToast.cancel();
+        mSilenceToast = Toast.makeText(mContext, toastText, Toast.LENGTH_SHORT);
+        mSilenceToast.show();
     }
 
     private boolean maybeVibrate(VibrationEffect effect, String reason) {

@@ -702,6 +702,18 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
     }
 
     @Override
+    public void toggleSettingsPanel() {
+        enforceExpandStatusBar();
+
+        if (mBar != null) {
+            try {
+                mBar.toggleSettingsPanel();
+            } catch (RemoteException ex) {
+            }
+        }
+    }
+
+    @Override
     public void expandSettingsPanel(String subPanel) {
         enforceExpandStatusBar();
 
@@ -900,6 +912,16 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
     }
 
     @Override
+    public void killForegroundApp() {
+        if (mBar != null) {
+            try {
+                mBar.killForegroundApp();
+            } catch (RemoteException ex) {
+            }
+        }
+    }
+
+    @Override
     public void startTracing() {
         if (mBar != null) {
             try {
@@ -931,6 +953,16 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
         if (mBar != null) {
             try {
                 mBar.toggleCameraFlash();
+            } catch (RemoteException ex) {
+            }
+        }
+    }
+
+    @Override
+    public void toggleCameraFlashState(boolean enable) {
+        if (mBar != null) {
+            try {
+                mBar.toggleCameraFlashState(enable);
             } catch (RemoteException ex) {
             }
         }

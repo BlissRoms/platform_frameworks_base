@@ -39,6 +39,7 @@ oneway interface IStatusBar
     void animateExpandSettingsPanel(String subPanel);
     void animateCollapsePanels();
     void togglePanel();
+    void toggleSettingsPanel();
 
     void showWirelessChargingAnimation(int batteryLevel);
 
@@ -289,4 +290,7 @@ oneway interface IStatusBar
      * Camera Flash
      */
     void toggleCameraFlash();
+    void toggleCameraFlashState(boolean enable);
+    void killForegroundApp();
+
 }

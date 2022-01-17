@@ -1561,6 +1561,8 @@ public class KeyguardViewMediator extends SystemUI implements Dumpable,
             if (mLockPatternUtils.isLockScreenDisabled(KeyguardUpdateMonitor.getCurrentUser())
                     && !lockedOrMissing && !forceShow) {
                 if (DEBUG) Log.d(TAG, "doKeyguard: not showing because lockscreen is off");
+                setShowingLocked(false, mAodShowing);
+                hideLocked();
                 return;
             }
 
@@ -2139,13 +2141,6 @@ public class KeyguardViewMediator extends SystemUI implements Dumpable,
      */
     private void handleHide() {
         Trace.beginSection("KeyguardViewMediator#handleHide");
-
-        // It's possible that the device was unlocked in a dream state. It's time to wake up.
-        if (mAodShowing) {
-            PowerManager pm = mContext.getSystemService(PowerManager.class);
-            pm.wakeUp(SystemClock.uptimeMillis(), PowerManager.WAKE_REASON_GESTURE,
-                    "com.android.systemui:BOUNCER_DOZING");
-        }
 
         synchronized (KeyguardViewMediator.this) {
             if (DEBUG) Log.d(TAG, "handleHide");

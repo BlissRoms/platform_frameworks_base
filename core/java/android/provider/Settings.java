@@ -5978,6 +5978,44 @@ public final class Settings {
         public static final String STATUS_BAR_NOTIF_COUNT = "status_bar_notif_count";
 
         /**
+         * @hide
+         */
+        public static final String USE_TILES_ON_SECURE_KEYGUARD = "use_tiles_on_secure_keyguard";
+
+        /**
+         * Which Vibration Pattern to use
+         * 0: dzzz-dzzz
+         * 1: dzzz-da
+         * 2: mm-mm-mm
+         * 3: da-da-dzzz
+         * 4: da-dzzz-da
+         * 5: custom
+         * @hide
+         */
+        @Readable
+        public static final String RINGTONE_VIBRATION_PATTERN = "ringtone_vibration_pattern";
+
+        /**
+         * Custom vibration pattern
+         * format: ms,ms,ms each a range from 0 to 1000 ms
+         * @hide
+         */
+        @Readable
+        public static final String CUSTOM_RINGTONE_VIBRATION_PATTERN = "custom_ringtone_vibration_pattern";
+
+        /** @hide */
+        public static final String BACK_GESTURE_HAPTIC = "back_gesture_haptic";
+
+        /**
+         * Whether to show charging animation
+         * @hide
+         */
+        public static final String CHARGING_ANIMATION = "charging_animation";
+
+        /** @hide */
+        public static final String BACK_GESTURE_HEIGHT = "back_gesture_height";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -5988,6 +6026,24 @@ public final class Settings {
          */
         public static final String[] LEGACY_RESTORE_SETTINGS = {
         };
+
+        /**
+         * Whether to auto hide clock
+         * @hide
+         */
+        public static final String STATUS_BAR_CLOCK_AUTO_HIDE = "status_bar_clock_auto_hide";
+
+        /**
+         * Auto hide clock hours duration
+         * @hide
+         */
+        public static final String STATUS_BAR_CLOCK_AUTO_HIDE_HDURATION = "status_bar_clock_auto_hide_hduration";
+
+        /**
+         * Auto hide clock seconds duration
+         * @hide
+         */
+        public static final String STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION = "status_bar_clock_auto_hide_sduration";
 
         /**
          * These are all public system settings
@@ -6115,6 +6171,10 @@ public final class Settings {
             PRIVATE_SETTINGS.add(BATTERY_LIGHT_MEDIUM_COLOR);
             PRIVATE_SETTINGS.add(BATTERY_LIGHT_FULL_COLOR);
             PRIVATE_SETTINGS.add(BATTERY_LIGHT_REALLYFULL_COLOR);
+            PRIVATE_SETTINGS.add(BACK_GESTURE_HAPTIC);
+            PRIVATE_SETTINGS.add(STATUS_BAR_CLOCK_AUTO_HIDE);
+            PRIVATE_SETTINGS.add(STATUS_BAR_CLOCK_AUTO_HIDE_HDURATION);
+            PRIVATE_SETTINGS.add(STATUS_BAR_CLOCK_AUTO_HIDE_SDURATION);
         }
 
         /**
@@ -10597,7 +10657,7 @@ public final class Settings {
 
         /**
          * What behavior should be invoked when the volume hush gesture is triggered
-         * One of VOLUME_HUSH_OFF, VOLUME_HUSH_VIBRATE, VOLUME_HUSH_MUTE, VOLUME_HUSH_CYCLE.
+         * One of VOLUME_HUSH_OFF, VOLUME_HUSH_VIBRATE, VOLUME_HUSH_MUTE, VOLUME_HUSH_MUTE_NO_MEDIA, VOLUME_HUSH_CYCLE.
          *
          * @hide
          */
@@ -10615,7 +10675,11 @@ public final class Settings {
         @SystemApi
         public static final int VOLUME_HUSH_MUTE = 2;
         /** @hide */
-        public static final int VOLUME_HUSH_CYCLE = 3;
+        @SystemApi
+        public static final int VOLUME_HUSH_MUTE_NO_MEDIA = 3;
+        /** @hide */
+        @SystemApi
+        public static final int VOLUME_HUSH_CYCLE = 4;
 
         /**
          * The number of times (integer) the user has manually enabled battery saver.
@@ -10727,12 +10791,6 @@ public final class Settings {
         @Readable
         public static final String BACK_GESTURE_INSET_SCALE_RIGHT =
                 "back_gesture_inset_scale_right";
-
-        /**
-         * Position of gesture bar length slider.
-         * @hide
-         */
-        public static final String GESTURE_NAVBAR_LENGTH = "gesture_navbar_length";
 
         /**
          * Current provider of proximity-based sharing services.
@@ -15844,6 +15902,11 @@ public final class Settings {
         @Readable
         public static final String KEY_CHORD_POWER_VOLUME_UP =
                 "key_chord_power_volume_up";
+
+        /**
+         * @hide
+         */
+        public static final String SHOW_FPS_OVERLAY = "show_fps_overlay";
 
         /**
          * Keyguard should be on the left hand side of the screen, for wide screen layouts.
