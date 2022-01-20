@@ -510,7 +510,6 @@ public class BatteryMeterView extends LinearLayout implements
         if (mBatteryIconView == null) {
             return;
         }
-
         Resources res = getContext().getResources();
         TypedValue typedValue = new TypedValue();
 
@@ -539,9 +538,7 @@ public class BatteryMeterView extends LinearLayout implements
                 (int) (batteryWidth * iconScaleFactor), (int) (batteryHeight * iconScaleFactor));
         scaledLayoutParams.setMargins(0, 0, 0, marginBottom);
 
-        if (mBatteryIconView != null) {
-            mBatteryIconView.setLayoutParams(scaledLayoutParams);
-        }
+        mBatteryIconView.setLayoutParams(scaledLayoutParams);
     }
 
     public void updateBatteryStyle() {
