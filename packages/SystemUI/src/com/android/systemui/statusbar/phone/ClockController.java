@@ -63,6 +63,10 @@ public class ClockController implements TunerService.Tunable {
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        void update() {
             mClockPosition = Settings.Secure.getInt(mContext.getContentResolver(),
                     Settings.Secure.STATUS_BAR_CLOCK, CLOCK_POSITION_LEFT);
             updateActiveClock();
@@ -80,6 +84,7 @@ public class ClockController implements TunerService.Tunable {
 
         mCustomSettingsObserver = new CustomSettingsObserver();
         mCustomSettingsObserver.observe();
+        mCustomSettingsObserver.update();
 
         Dependency.get(TunerService.class).addTunable(this,
                 StatusBarIconController.ICON_HIDE_LIST);
