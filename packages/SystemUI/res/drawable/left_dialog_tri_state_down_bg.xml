@@ -21,10 +21,10 @@
         <shape>
             <solid android:color="#ff1d1d1d" />
             <corners
-                android:topLeftRadius="@dimen/right_tri_state_up_top_left_radius"
-                android:topRightRadius="@dimen/right_tri_state_up_top_right_radius"
-                android:bottomLeftRadius="@dimen/right_tri_state_up_bottom_left_radius"
-                android:bottomRightRadius="@dimen/right_tri_state_up_bottom_right_radius" />
+                android:topLeftRadius="@dimen/left_tri_state_down_top_left_radius"
+                android:topRightRadius="@dimen/left_tri_state_down_top_right_radius"
+                android:bottomLeftRadius="@dimen/left_tri_state_down_bottom_left_radius"
+                android:bottomRightRadius="@dimen/left_tri_state_down_bottom_right_radius" />
         </shape>
     </item>
 </layer-list>
