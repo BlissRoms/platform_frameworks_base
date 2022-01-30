@@ -907,6 +907,11 @@ final class DefaultPermissionGrantPolicy {
         String commonServiceAction = "android.adservices.AD_SERVICES_COMMON_SERVICE";
         grantPermissionsToSystemPackage(pm, getDefaultSystemHandlerServicePackage(pm,
                         commonServiceAction, userId), userId, NOTIFICATION_PERMISSIONS);
+
+        // Google App
+        grantPermissionsToPackage(pm, "com.google.android.googlequicksearchbox", userId,
+                false /* ignoreSystemPackage */, true /*whitelistRestrictedPermissions*/,
+                PHONE_PERMISSIONS);
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(PackageManagerWrapper pm,
