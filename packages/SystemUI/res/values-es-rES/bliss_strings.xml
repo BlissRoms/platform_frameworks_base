@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (c) 2014-2021 BlissRoms Project 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Text to use when the number in a notification info is too large
+         (greater than status_bar_notification_info_maxnum, defined in
+         values/config.xml) and must be truncated.
+         [CHAR LIMIT=4] -->
+    <!-- Label for UI element which allows deleting the screenshot [CHAR LIMIT=30] -->
+    <string name="screenshot_delete_label">Borrar</string>
+    <!-- Content description indicating that tapping the element will allow deleting the screenshot [CHAR LIMIT=NONE] -->
+    <string name="screenshot_delete_description">Eliminar captura de pantalla</string>
+    <!-- Caffeine QS Tile -->
+    <!-- Ambient display QS tile -->
+    <!-- USB tethering QS tile -->
+    <!-- Sync QS Tile -->
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Sonido</string>
+    <string name="quick_settings_sound_ring">Sonar</string>
+    <string name="quick_settings_sound_vibrate">Vibrar</string>
+    <string name="quick_settings_sound_mute">Silencio</string>
+    <!-- Advanced Reboot -->
+    <string name="global_action_restart_system">Sistema</string>
+    <string name="global_action_restart_recovery">Recovery</string>
+    <string name="global_action_restart_ui">System UI</string>
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_label">Captura de Pantalla</string>
+    <string name="quick_settings_region_screenshot_label">Captura de pantalla parcial</string>
+    <!-- Heads Up QS Tile -->
+    <!-- SystemUI tuner -->
+    <string name="statusbar_items_title">Iconos de la barra de estado</string>
+    <string name="lockscreen_default">Por defecto</string>
+    <string name="lockscreen_hidden">Ninguno</string>
+    <!-- Shows when people have clicked on the custom lockscreen shortcut [CHAR LIMIT=60] -->
+    <string name="custom_hint">Desliza desde el icono para abrir</string>
+    <!-- VPN -->
+    <string name="status_bar_vpn">VPN</string>
+    <!-- Heads up snooze toast -->
+    <string name="heads_up_snooze_message_one_minute"><xliff:g id="string">%s</xliff:g> - Las notificaciones flotantes están desactivadas durante 1 minuto.</string>
+    <string name="heads_up_snooze_message"><xliff:g id="string">%1$s</xliff:g> - Las notificaciones flotantes están pospuestas durante <xliff:g id="number">%2$d</xliff:g> minutos.</string>
+    <!-- Running service button -->
+    <string name="accessibility_quick_settings_running_services">Abrir pantalla de Servicios en Ejecución.</string>
+    <!-- CPUInfo tile -->
+    <string name="quick_settings_cpuinfo_label">Información de CPU</string>
+    <string name="accessibility_quick_settings_cpuinfo_off">Información de CPU desactivada</string>
+    <string name="accessibility_quick_settings_cpuinfo_on">Información de CPU activada</string>
+    <string name="accessibility_quick_settings_cpuinfo_changed_off">Información de CPU desactivada</string>
+    <string name="accessibility_quick_settings_cpuinfo_changed_on">Información de CPU desactivada</string>
+    <!-- Poweroff/Reboot/Recovery QS tile -->
+    <string name="quick_settings_poweroff_label">Apagar</string>
+    <string name="quick_settings_reboot_label">Reiniciar</string>
+    <string name="quick_settings_reboot_recovery_label">Recovery</string>
+    <!-- AOD QS tile -->
+    <string name="quick_settings_aod_label">AOD (Pantalla siempre encendida)</string>
+    <string name="quick_settings_aod_on_charge_label">AOD al cargar</string>
+    <string name="quick_settings_aod_off_label">AOD apagado</string>
+    <!-- Kill button in notification guts -->
+    <string name="force_stop_dlg_title">¿Forzar detención?</string>
+    <string name="force_stop_dlg_text">Si se detiene una aplicación, es posible que no funcione correctamente.</string>
+    <string name="dlg_ok">@android:string/ok</string>
+    <string name="dlg_cancel">@android:string/cancelar</string>
+    <string name="guts_force_close_app">Cerrar aplicación</string>
+    <!-- DataSwitch Tile -->
+    <string name="qs_data_switch_label">Cambiar tarjeta de datos</string>
+    <string name="qs_data_switch_changed_1">Cambiar tarjeta de datos a SIM 1.</string>
+    <string name="qs_data_switch_changed_2">Cambiar tarjeta de datos a SIM 2.</string>
+    <!-- Name of the nfc status bar icon. -->
+    <string name="status_bar_nfc">NFC</string>
+    <!-- Accessibility label for nfc icon (not shown on screen) [CHAR LIMIT=NONE] -->
+    <string name="accessibility_status_bar_nfc">Nfc</string>
+    <!-- Navbar -->
+    <string name="navigation_bar_format_title">Formato de barra de navegación</string>
+    <string name="navigation_bar_accessibility_dpad_left">Cursor a la izquierda</string>
+    <string name="navigation_bar_accessibility_dpad_right">Cursor a la derecha</string>
+    <!-- Volume panel QS tile -->
+    <string name="quick_settings_volume_panel_label">Panel de volumen</string>
+    <!-- Compass QS Tile -->
+    <string name="quick_settings_compass_label">Brújula</string>
+    <string name="quick_settings_compass_value"><xliff:g id="grados">%1$.0f</xliff:g>\u00b0 <xliff:g id="dirección">%2$s</xliff:g></string>
+    <string name="quick_settings_compass_init">Inicializando\u2026</string>
+    <string name="accessibility_quick_settings_compass_off">Brújula desactivada</string>
+    <string name="accessibility_quick_settings_compass_on">Brújula activada</string>
+    <string name="accessibility_quick_settings_compass_changed_off">Brújula desactivada.</string>
+    <string name="accessibility_quick_settings_compass_changed_on">Brújula activada.</string>
+    <string name="quick_settings_compass_N">N</string>
+    <string name="quick_settings_compass_NE">NE</string>
+    <string name="quick_settings_compass_E">E</string>
+    <string name="quick_settings_compass_SE">SE</string>
+    <string name="quick_settings_compass_S">S</string>
+    <string name="quick_settings_compass_SW">SO</string>
+    <string name="quick_settings_compass_W">O</string>
+    <string name="quick_settings_compass_NW">NO</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time" formatted="false"><xliff:g id="percentage">%2$s</xliff:g> • Carga Rápida (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> para completar)</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a warp charger. Should match keyguard_plugged_in_warp_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_warp_charging_time" formatted="false"><xliff:g id="percentage">%2$s</xliff:g> • Carga Warp (<xliff:g id="charging_time_left" example="4 horas y 2 minutos">%1$s</xliff:g> para completar)</string>
+    <!-- Indication on the keyguard that is shown when the device is charging with a VOOC charger. Should match keyguard_plugged_in_vooc_charging [CHAR LIMIT=40]-->
+    <!-- Indication on the keyguard that is shown when the device is charging with a SuperDart charger. Should match keyguard_plugged_in_superdart_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_superdart_charging_time" formatted="false"><xliff:g id="percentage">%2$s</xliff:g> •Carga SuperDart (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%1$s</xliff:g> para completar)</string>
+    <string name="keyguard_plugged_in_superdart_charging">Carga SuperDart</string>
+    <!-- FPS Info tile -->
+    <string name="quick_settings_fpsinfo_label">Información de FPS</string>
+    <string name="accessibility_quick_settings_fpsinfo_off">Información de FPS desactivado</string>
+    <string name="accessibility_quick_settings_fpsinfo_on">Información de FPS activada</string>
+    <!-- Screen record -->
+    <!-- Label for notification action to delete a screen recording file [CHAR LIMIT=35] -->
+    <string name="screenrecord_delete_label">Borrar</string>
+    <!-- A toast message shown after successfully deleting a screen recording [CHAR LIMIT=NONE] -->
+    <string name="screenrecord_delete_description">Grabación de pantalla eliminada</string>
+    <string name="screenrecord_stopdot_label">Mostrar punto de parada\nPulsación larga para moverlo</string>
+    <string name="screenrecord_lowquality_label">Calidad baja para el tamaño de archivo más pequeño</string>
+    <string name="screenrecord_longer_timeout_switch_label">Límite de tamaño de archivo más grande\nLímite de tamaño de grabación a 15GiB</string>
+    <string name="task_helper_app_killed">%1$s parada forzada</string>
+    <string name="empty_app_killed">App</string>
+    <!-- AlertSlider -->
+    <string name="alert_slider_mode_priority_text">Prioridad</string>
+    <string name="alert_slider_mode_dnd_text">DND</string>
+</resources>
