@@ -16,6 +16,7 @@
 package com.android.internal.util.bliss;
 
 import android.os.Build;
+import android.os.SystemProperties;
 import android.util.Log;
 
 import java.util.Arrays;
@@ -99,6 +100,9 @@ public class PixelPropsUtils {
             }
 
             if (Arrays.asList(packagesToChangePixelXL).contains(packageName)) {
+                final String sysPropSpoof = SystemProperties.get("persist.sys.photo", "1");
+                boolean dontSpoof = ("0".equals(sysPropSpoof)) ? true : false;
+                if (dontSpoof && packageName.equals("com.google.android.apps.photos")) return;
                 propsToChange = propsToChangePixelXL;
             }
 
