@@ -236,4 +236,8 @@
     <java-symbol type="array" name="config_parallelSpaceWhitelist" />
     <java-symbol type="array" name="config_parallelSpaceBlocklist" />
 
+    <!-- App lock -->
+    <java-symbol type="string" name="unlock_application" />
+    <java-symbol type="array" name="config_appLockAllowedSystemApps" />
+
 </resources>
