@@ -42,4 +42,7 @@
     <string name="alert_slider_mode_silent" translatable="false">mode_silent</string>
     <string name="alert_slider_mode_dnd" translatable="false">mode_dnd</string>
 
+    <!-- App lock -->
+    <string name="unlock_application">Unlock <xliff:g id="label" example="Telegram">%1$s</xliff:g></string>
+
 </resources>
