@@ -105,4 +105,8 @@
 
     <!-- Whether the device supports Smart Pixels -->
     <java-symbol type="bool" name="config_supportSmartPixels" />
+
+    <!-- App lock -->
+    <java-symbol type="string" name="unlock_application" />
+    <java-symbol type="array" name="config_appLockAllowedSystemApps" />
 </resources>
