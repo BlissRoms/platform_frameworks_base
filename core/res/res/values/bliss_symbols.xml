@@ -145,4 +145,8 @@
 
     <!-- Whether to use old mobile type icons as default -->
     <java-symbol type="bool" name="config_useOldMobileIcons" />
+
+    <!-- App lock -->
+    <java-symbol type="string" name="unlock_application" />
+    <java-symbol type="array" name="config_appLockAllowedSystemApps" />
 </resources>
