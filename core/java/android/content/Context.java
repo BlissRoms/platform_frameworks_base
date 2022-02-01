@@ -38,6 +38,7 @@ import android.annotation.UiContext;
 import android.annotation.UserIdInt;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AppLockManager;
 import android.app.BroadcastOptions;
 import android.app.GameManager;
 import android.app.IApplicationThread;
@@ -6047,6 +6048,13 @@ public abstract class Context {
      */
     @SystemApi
     public static final String AMBIENT_CONTEXT_SERVICE = "ambient_context";
+
+    /**
+     * {@link AppLockManager}.
+     *
+     * @see #getSystemService(String)
+     */
+    public static final String APP_LOCK_SERVICE = "app_lock";
 
     /**
      * Determine whether the given permission is allowed for a particular

@@ -128,4 +128,8 @@
 
     <!-- Switch USB controller on Asus ROG devices-->
     <java-symbol type="bool" name="config_switchUsbController" />
+
+  <!-- App lock -->
+  <java-symbol type="string" name="unlock_application" />
+  <java-symbol type="array" name="config_appLockAllowedSystemApps" />
 </resources>
