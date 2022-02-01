@@ -384,6 +384,8 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
     private float mBottomRoundnessDuringLaunchAnimation;
     private float mSmallRoundness;
 
+    private boolean mForceHideContents = false;
+
     /**
      * Returns whether the given {@code statusBarNotification} is a system notification.
      * <b>Note</b>, this should be run in the background thread if possible as it makes multiple IPC
@@ -2189,12 +2191,15 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
     private void updateChildrenVisibility() {
         boolean hideContentWhileLaunching = mExpandAnimationRunning && mGuts != null
                 && mGuts.isExposed();
-        mPrivateLayout.setVisibility(!mShowingPublic && !mIsSummaryWithChildren
+        mPrivateLayout.setVisibility(!mForceHideContents
+                && !mShowingPublic
+                && !mIsSummaryWithChildren
                 && !hideContentWhileLaunching ? VISIBLE : INVISIBLE);
         if (mChildrenContainer != null) {
-            mChildrenContainer.setVisibility(!mShowingPublic && mIsSummaryWithChildren
-                    && !hideContentWhileLaunching ? VISIBLE
-                    : INVISIBLE);
+            mChildrenContainer.setVisibility(!mForceHideContents
+                && !mShowingPublic
+                && mIsSummaryWithChildren
+                && !hideContentWhileLaunching ? VISIBLE : INVISIBLE);
         }
         // The limits might have changed if the view suddenly became a group or vice versa
         updateLimits();
@@ -2387,6 +2392,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
     }
 
     public boolean isExpandable() {
+        if (mForceHideContents) return false;
         if (mIsSummaryWithChildren && !shouldShowPublic()) {
             return !mChildrenExpanded;
         }
@@ -2549,6 +2555,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
 
     @Override
     public int getIntrinsicHeight() {
+        if (mForceHideContents) return getCollapsedHeight();
         if (isUserLocked()) {
             return getActualHeight();
         }
@@ -2787,7 +2794,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
                 mChildrenContainer.animate().cancel();
             }
             resetAllContentAlphas();
-            mPublicLayout.setVisibility(mShowingPublic ? View.VISIBLE : View.INVISIBLE);
+            mPublicLayout.setVisibility((mShowingPublic || mForceHideContents) ? VISIBLE : INVISIBLE);
             updateChildrenVisibility();
         } else {
             animateShowingPublic(delay, duration, mShowingPublic);
@@ -2853,7 +2860,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
     }
 
     private boolean shouldShowPublic() {
-        return mSensitive && mHideSensitiveForIntrinsicHeight;
+        return mForceHideContents || (mSensitive && mHideSensitiveForIntrinsicHeight);
     }
 
     public void makeActionsVisibile() {
@@ -3524,6 +3531,13 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
         if (isAboveShelf() != wasAboveShelf) {
             mAboveShelfChangedListener.onAboveShelfStateChanged(!wasAboveShelf);
         }
+    }
+
+    public void setForceHideContents(boolean forceHide) {
+        if (mForceHideContents == forceHide) return;
+        mForceHideContents = forceHide;
+        updateChildrenVisibility();
+        onNotificationUpdated();
     }
 
     private static class NotificationViewState extends ExpandableViewState {
