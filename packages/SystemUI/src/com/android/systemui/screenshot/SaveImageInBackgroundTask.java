@@ -161,6 +161,8 @@ class SaveImageInBackgroundTask extends AsyncTask<String, Void, Void> {
             mImageData.uri = uri;
             mImageData.owner = mParams.owner;
             mImageData.smartActions = smartActions;
+            mImageData.lensAction = createLensAction(mContext, mContext.getResources(), uri,
+                    smartActionsEnabled);
             mImageData.quickShareAction = createQuickShareAction(
                     mQuickShareData.quickShareAction, mScreenshotId, uri, mImageTime, image,
                     mParams.owner);
@@ -211,6 +213,31 @@ class SaveImageInBackgroundTask extends AsyncTask<String, Void, Void> {
         }
         mParams.finisher.accept(null);
         mParams.clearImage();
+    }
+
+    @VisibleForTesting
+    Notification.Action createLensAction(Context context, Resources r, Uri uri,
+            boolean smartActionsEnabled) {
+        // Make sure pending intents for the system user are still unique across users
+        // by setting the (otherwise unused) request code to the current user id.
+        int requestCode = mContext.getUserId();
+
+        // Create a lens action for the notification
+        PendingIntent lensAction = PendingIntent.getBroadcast(context, requestCode,
+                new Intent(context, LensScreenshotReceiver.class)
+                        .putExtra(ScreenshotController.SCREENSHOT_URI_ID, uri.toString())
+                        .putExtra(ScreenshotController.EXTRA_ID, mScreenshotId)
+                        .putExtra(ScreenshotController.EXTRA_SMART_ACTIONS_ENABLED,
+                                smartActionsEnabled)
+                        .addFlags(Intent.FLAG_RECEIVER_FOREGROUND),
+                PendingIntent.FLAG_CANCEL_CURRENT
+                        | PendingIntent.FLAG_ONE_SHOT
+                        | PendingIntent.FLAG_IMMUTABLE);
+        Notification.Action.Builder lensActionBuilder = new Notification.Action.Builder(
+                Icon.createWithResource(r, R.drawable.ic_screenshot_lens),
+                r.getString(R.string.screenshot_lens_label), lensAction);
+
+        return lensActionBuilder.build();
     }
 
     private List<Notification.Action> buildSmartActions(
