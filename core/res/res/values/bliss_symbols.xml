@@ -64,4 +64,7 @@
   <!-- Global Actions pref list -->
   <java-symbol type="array" name="custom_config_globalActionsList" />
 
+    <!-- These are system packages exempted from privacy indicator -->
+    <java-symbol type="array" name="config_indicatorExemptedPackageNames" />
+
 </resources>
