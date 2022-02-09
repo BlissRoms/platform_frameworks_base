@@ -79,6 +79,13 @@ public class PhoneStatusBarView extends PanelBar implements Callbacks, TunerServ
 
     private ViewGroup mStatusBarContents;
 
+    private int mBasePaddingBottomcc;
+    private int mBasePaddingLeftcc;
+    private int mBasePaddingRightcc;
+    private int mBasePaddingTopcc;
+
+    private ViewGroup mStatusBarContentscc;
+
     StatusBar mBar;
 
     boolean mIsFullyOpenedPanel = false;
@@ -137,11 +144,22 @@ public class PhoneStatusBarView extends PanelBar implements Callbacks, TunerServ
             return;
         }
 
+        if (mStatusBarContentscc == null) {
+            return;
+        }
+
         mStatusBarContents.setPaddingRelative(
             mLeftPad + horizontalShift,
             mBasePaddingTop + verticalShift,
             mRightPad + horizontalShift,
             mBasePaddingBottom - verticalShift
+        );
+
+        mStatusBarContentscc.setPaddingRelative(
+            mBasePaddingLeftcc + horizontalShift,
+            mBasePaddingTopcc + verticalShift,
+            mBasePaddingRightcc + horizontalShift,
+            mBasePaddingBottomcc - verticalShift
         );
         invalidate();
     }
@@ -155,11 +173,17 @@ public class PhoneStatusBarView extends PanelBar implements Callbacks, TunerServ
         mCutoutSpace = findViewById(R.id.cutout_space_view);
         mCenterIconSpace = findViewById(R.id.centered_icon_area);
         mStatusBarContents = (ViewGroup) findViewById(R.id.status_bar_contents);
+        mStatusBarContentscc = (ViewGroup) findViewById(R.id.center_clock_layout);
 
         mBasePaddingTop = mStatusBarContents.getPaddingTop();
         mBasePaddingBottom = mStatusBarContents.getPaddingBottom();
                 Dependency.get(TunerService.class).addTunable(this,
                 LEFT_PADDING, RIGHT_PADDING);
+        mBasePaddingLeftcc = mStatusBarContentscc.getPaddingStart();
+        mBasePaddingTopcc = mStatusBarContentscc.getPaddingTop();
+        mBasePaddingRightcc = mStatusBarContentscc.getPaddingEnd();
+        mBasePaddingBottomcc = mStatusBarContentscc.getPaddingBottom();
+
         updateResources();
     }
 
