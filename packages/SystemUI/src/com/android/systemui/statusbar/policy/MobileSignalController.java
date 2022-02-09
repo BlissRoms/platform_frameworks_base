@@ -595,6 +595,9 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
                 // Margaritov's VoLTE icon2
                 case 11:
                     resId = R.drawable.ic_volte_margaritov2;
+                // Moto VoLTE
+                case 12:
+                    resId = R.drawable.ic_volte_moto;
                     break;
                 default:
                     break;
