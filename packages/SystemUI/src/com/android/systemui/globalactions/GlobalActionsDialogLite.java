@@ -716,8 +716,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 }
             } else if (GLOBAL_ACTION_KEY_ONTHEGO.equals(actionKey)) {
                 if (Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.POWERMENU_ONTHEGO, 0) != 0) {
-                    addIfShouldShowAction(tempActions, getOnTheGoAction());
+                        Settings.System.POWERMENU_ONTHEGO, 0) == 1) {
+                    addIfShouldShowAction(tempActions, new OnTheGoAction());
                 }
             } else {
                 Log.e(TAG, "Invalid global action key " + actionKey);
@@ -1118,9 +1118,11 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         };
     }
 
-    private Action getOnTheGoAction() {
-        return new SinglePressAction(com.android.systemui.R.drawable.ic_lock_onthego,
-                    com.android.systemui.R.string.global_action_onthego) {
+    private final class OnTheGoAction extends SinglePressAction {
+        private OnTheGoAction() {
+            super(com.android.systemui.R.drawable.ic_lock_onthego,
+                    com.android.systemui.R.string.global_action_onthego);
+        }
 
         @Override
         public void onPress() {
@@ -1139,9 +1141,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         @Override
         public boolean showBeforeProvisioning() {
-            return false;
+            return true;
         }
-       };
     }
 
     @VisibleForTesting
