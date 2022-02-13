@@ -81,6 +81,9 @@ LOCAL_REQUIRED_MODULES := \
         IconPackOOSLauncherOverlay \
         IconPackOOSSettingsOverlay \
         IconPackOOSThemePickerOverlay \
+        IconPackOutlineAndroidOverlay \
+        IconPackOutlineSettingsOverlay \
+        IconPackOutlineSystemUIOverlay \
 	NavigationBarMode3ButtonOverlay \
 	NavigationBarMode2ButtonOverlay \
 	NavigationBarModeGesturalOverlay \
