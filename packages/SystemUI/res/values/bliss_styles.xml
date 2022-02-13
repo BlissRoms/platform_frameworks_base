@@ -29,4 +29,21 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
+    <!-- Media output Primary -->
+    <style name="DialogButton">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:background">@drawable/qs_dialog_btn_filled</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:buttonCornerRadius">28dp</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <!-- Media output Secondary -->
+    <style name="DialogBorderButton" parent="@style/DialogButton">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:background">@drawable/qs_dialog_btn_outline</item>
+    </style>
+
 </resources>
