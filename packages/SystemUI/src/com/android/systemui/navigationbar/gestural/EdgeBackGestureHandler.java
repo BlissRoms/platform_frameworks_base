@@ -849,9 +849,6 @@ public class EdgeBackGestureHandler extends CurrentUserTracker
     }
 
     private void onMotionEvent(MotionEvent ev) {
-        // Get updated values
-        updateCurrentUserResources();
-
         int action = ev.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             if (DEBUG_MISSING_GESTURE) {
