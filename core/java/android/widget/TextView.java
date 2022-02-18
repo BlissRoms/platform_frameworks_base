@@ -206,6 +206,7 @@ import android.widget.RemoteViews.RemoteView;
 
 import com.android.internal.accessibility.util.AccessibilityUtils;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.graphics.fonts.DynamicMetrics;
 import com.android.internal.inputmethod.EditableInputConnection;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
@@ -4268,6 +4269,11 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
 
         if (attributes.mHasLetterSpacing) {
             setLetterSpacing(attributes.mLetterSpacing);
+        }
+
+        if ((!attributes.mHasLetterSpacing || attributes.mLetterSpacing == 0.0f) &&
+                DynamicMetrics.shouldModifyFont(mTextPaint.getTypeface())) {
+            setLetterSpacing(DynamicMetrics.calcTracking(mTextPaint.getTextSize()));
         }
 
         if (attributes.mFontFeatureSettings != null) {
