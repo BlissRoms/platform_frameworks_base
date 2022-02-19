@@ -120,6 +120,10 @@ public class ThemeOverlayApplier implements Dumpable {
     static final String OVERLAY_BRIGHTNESS_SLIDER_THIN =
             "com.android.systemui.brightness_slider.thin";
 
+    @VisibleForTesting
+    static final String OVERLAY_CATEGORY_NAVBAR =
+            "android.theme.customization.navbar";
+
     /*
      * All theme customization categories used by the system, in order that they should be applied,
      * starts with launcher and grouped by target package.
@@ -133,7 +137,8 @@ public class ThemeOverlayApplier implements Dumpable {
             OVERLAY_CATEGORY_ICON_ANDROID,
             OVERLAY_CATEGORY_ICON_SYSUI,
             OVERLAY_CATEGORY_ICON_SETTINGS,
-            OVERLAY_CATEGORY_ICON_THEME_PICKER);
+            OVERLAY_CATEGORY_ICON_THEME_PICKER,
+            OVERLAY_CATEGORY_NAVBAR);
 
     /* Categories that need to be applied to the current user as well as the system user. */
     @VisibleForTesting
@@ -143,7 +148,8 @@ public class ThemeOverlayApplier implements Dumpable {
             OVERLAY_CATEGORY_FONT,
             OVERLAY_CATEGORY_SHAPE,
             OVERLAY_CATEGORY_ICON_ANDROID,
-            OVERLAY_CATEGORY_ICON_SYSUI);
+            OVERLAY_CATEGORY_ICON_SYSUI,
+            OVERLAY_CATEGORY_NAVBAR);
 
     /* Brightness slider overlays */
     static final List<String> BRIGHTNESS_SLIDER_OVERLAYS = Lists.newArrayList(
@@ -191,6 +197,7 @@ public class ThemeOverlayApplier implements Dumpable {
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_ICON_SETTINGS, SETTINGS_PACKAGE);
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_ICON_LAUNCHER, mLauncherPackage);
         mCategoryToTargetPackage.put(OVERLAY_CATEGORY_ICON_THEME_PICKER, mThemePickerPackage);
+        mCategoryToTargetPackage.put(OVERLAY_CATEGORY_NAVBAR, SYSUI_PACKAGE);
 
         dumpManager.registerDumpable(TAG, this);
     }
