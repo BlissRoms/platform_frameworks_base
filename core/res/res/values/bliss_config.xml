@@ -69,5 +69,9 @@
         <item>com.qualcomm.qti.cne</item>
         <item>com.shannon.imsservice</item>
         <item>org.pixelexperience.faceunlock</item>
-  </string-array>
+    </string-array>
+
+    <!-- Whether to cleanup fingerprints upon connection to the daemon and when
+         user switches -->
+    <bool name="config_cleanupUnusedFingerprints">true</bool>
 </resources>
