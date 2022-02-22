@@ -65,4 +65,7 @@
     <string name="quick_settings_tiles_extra" translatable="false">
         refresh_rate
     </string>
+
+    <!-- Whether show refresh rate QS tile -->
+    <bool name="config_showRefreshRateQsTile">false</bool>
 </resources>
