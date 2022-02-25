@@ -615,6 +615,16 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
                 } catch (RemoteException ex) { }
             }
         }
+
+        @Override
+        public void leftInLandscapeChanged(boolean isLeft) {
+            if (mBar != null) {
+                try {
+                    mBar.leftInLandscapeChanged(isLeft);
+                } catch (RemoteException ex) {
+                }
+            }
+        }
     };
 
     private final GlobalActionsProvider mGlobalActionsProvider = new GlobalActionsProvider() {
@@ -947,7 +957,6 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
         return mTracingEnabled;
     }
 
-    // TODO(b/117478341): make it aware of multi-display if needed.
     @Override
     public void toggleCameraFlash() {
         if (mBar != null) {
@@ -968,6 +977,18 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
         }
     }
 
+    @Override
+    public void setBlockedGesturalNavigation(boolean blocked) {
+        if (mBar != null) {
+            try {
+                mBar.setBlockedGesturalNavigation(blocked);
+            } catch (RemoteException ex) {
+                // do nothing
+            }
+        }
+    }
+
+    // TODO(b/117478341): make it aware of multi-display if needed.
     @Override
     public void disable(int what, IBinder token, String pkg) {
         disableForUser(what, token, pkg, mCurrentUserId);
@@ -1157,6 +1178,23 @@ public class StatusBarManagerService extends IStatusBarService.Stub implements D
                             isMultiClientImeEnabled);
                 } catch (RemoteException ex) { }
             });
+        }
+    }
+
+    /**
+     * Let systemui know screen pinning state change. This is independent of the
+     * showScreenPinningRequest() call as it does not reflect state
+     *
+     * @hide
+     */
+    @Override
+    public void screenPinningStateChanged(boolean enabled) {
+        enforceStatusBar();
+        if (mBar != null) {
+            try {
+                mBar.screenPinningStateChanged(enabled);
+            } catch (RemoteException ex) {
+            }
         }
     }
 

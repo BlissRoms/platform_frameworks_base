@@ -467,7 +467,7 @@
     <!-- The width of the panel that holds the quick settings. -->
     <dimen name="qs_panel_width">@dimen/notification_panel_width</dimen>
 
-    <dimen name="volume_dialog_panel_transparent_padding_right">8dp</dimen>
+    <dimen name="volume_dialog_panel_transparent_padding_horizontal">8dp</dimen>
 
     <dimen name="volume_dialog_panel_transparent_padding">20dp</dimen>
 
@@ -981,7 +981,7 @@
     <dimen name="signal_cluster_margin_start">2.5dp</dimen>
 
     <!-- Padding between signal cluster and battery icon -->
-    <dimen name="signal_cluster_battery_padding">6dp</dimen>
+    <dimen name="signal_cluster_battery_padding">4dp</dimen>
 
     <!-- Padding for signal cluster and battery icon when there are not icons in signal cluster -->
     <dimen name="no_signal_cluster_battery_padding">3dp</dimen>
@@ -1265,9 +1265,9 @@
     <dimen name="ongoing_appops_chip_min_width">56dp</dimen>
     <!--  Three privacy items. This value must not be exceeded  -->
     <dimen name="ongoing_appops_chip_max_width">76dp</dimen>
-    <dimen name="ongoing_appops_dot_diameter">6dp</dimen>
+    <dimen name="ongoing_appops_dot_diameter">5dp</dimen>
     <!--  Total minimum padding to enforce to ensure that the dot can always show  -->
-    <dimen name="ongoing_appops_dot_min_padding">20dp</dimen>
+    <dimen name="ongoing_appops_dot_min_padding">15dp</dimen>
 
     <dimen name="ongoing_appops_dialog_side_margins">@dimen/notification_shade_content_margin_horizontal</dimen>
 

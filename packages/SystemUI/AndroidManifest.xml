@@ -94,10 +94,6 @@
     <uses-permission android:name="android.permission.MANAGE_SENSOR_PRIVACY" />
     <uses-permission android:name="android.permission.OBSERVE_SENSOR_PRIVACY" />
 
-    <!-- Visualizer -->
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <!-- ActivityManager -->
     <uses-permission android:name="android.permission.REAL_GET_TASKS" />
     <uses-permission android:name="android.permission.GET_DETAILED_TASKS" />
@@ -295,9 +291,13 @@
 
     <uses-permission android:name="android.permission.READ_PEOPLE_DATA" />
 
+    <!-- Pulse -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <protected-broadcast android:name="com.android.settingslib.action.REGISTER_SLICE_RECEIVER" />
     <protected-broadcast android:name="com.android.settingslib.action.UNREGISTER_SLICE_RECEIVER" />
     <protected-broadcast android:name="com.android.settings.flashlight.action.FLASHLIGHT_CHANGED" />
+    <protected-broadcast android:name="com.android.systemui.doze.pulse" />
 
     <protected-broadcast android:name="com.android.systemui.doze.pulse" />
 
@@ -317,8 +317,7 @@
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.PREVENT_POWER_KEY" />
-
-    <protected-broadcast android:name="com.android.systemui.doze.pulse" />
+    <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS"/>
 
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
 
@@ -391,6 +390,12 @@
             android:showForAllUsers="true"
             android:excludeFromRecents="true" />
         <service android:name=".screenrecord.RecordingService" />
+
+        <!-- started from PhoneWindowManager
+             TODO: Should have an android:permission attribute -->
+        <service android:name=".bliss.onthego.OnTheGoService"
+            android:process=":onthego"
+            android:exported="false" />
 
         <receiver android:name=".SysuiRestartReceiver"
             android:exported="false">
@@ -903,12 +908,7 @@
                 android:resource="@xml/fileprovider" />
         </provider>
 
-        <provider android:name="com.google.android.systemui.keyguard.KeyguardSliceProvider"
-                  android:authorities="com.android.systemui.keyguard.disabled"
-                  android:enabled="false">
-        </provider>
-
-        <provider android:name="com.google.android.systemui.keyguard.KeyguardSliceProviderGoogle"
+        <provider android:name=".keyguard.KeyguardSliceProvider"
                   android:authorities="com.android.systemui.keyguard"
                   android:grantUriPermissions="true"
                   android:exported="true">
@@ -953,5 +953,58 @@
         <!-- FPS Info -->
         <service android:name=".FPSInfoService"
                 android:exported="false" />
+
+        <!-- Wifi Timeout -->
+        <receiver android:name="com.android.settingslib.wifi.WifiTimeoutReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.wifi.intent.TIMEOUT" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.android.systemui.statusbar.phone.LeftBackSwipeCustomApp"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.MinWidth"
+            android:label="@string/app_picker_dialog_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.systemui.statusbar.phone.LeftBackSwipeCustomApp" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.systemui.statusbar.phone.RightBackSwipeCustomApp"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.MinWidth"
+            android:label="@string/app_picker_dialog_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.systemui.statusbar.phone.RightBackSwipeCustomApp" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.systemui.statusbar.phone.LeftBackVerticalSwipeCustomApp"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.MinWidth"
+            android:label="@string/app_picker_dialog_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.systemui.statusbar.phone.LeftBackVerticalSwipeCustomApp" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.systemui.statusbar.phone.RightBackVerticalSwipeCustomApp"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.MinWidth"
+            android:label="@string/app_picker_dialog_title"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.android.systemui.statusbar.phone.RightBackVerticalSwipeCustomApp" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>

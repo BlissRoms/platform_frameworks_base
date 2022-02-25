@@ -41,6 +41,7 @@ import android.os.UserHandle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.NotificationStats;
 import android.service.notification.StatusBarNotification;
+import android.text.TextUtils;
 import android.provider.Settings;
 import android.util.ArraySet;
 import android.util.Log;
@@ -76,8 +77,6 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.DeviceConfigProxy;
 import com.android.systemui.util.Utils;
 import com.android.systemui.util.concurrency.DelayableExecutor;
-import com.android.systemui.statusbar.phone.StatusBar;
-import com.android.systemui.statusbar.VisualizerView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -99,6 +98,7 @@ public class NotificationMediaManager implements Dumpable {
     private static final String TAG = "NotificationMediaManager";
     public static final boolean DEBUG_MEDIA = false;
 
+    private static final String NOWPLAYING_SERVICE = "com.google.android.as";
     private final StatusBarStateController mStatusBarStateController
             = Dependency.get(StatusBarStateController.class);
     private final SysuiColorExtractor mColorExtractor = Dependency.get(SysuiColorExtractor.class);
@@ -147,6 +147,9 @@ public class NotificationMediaManager implements Dumpable {
     private String mMediaNotificationKey;
     private MediaMetadata mMediaMetadata;
 
+    private String mNowPlayingNotificationKey;
+    private String mNowPlayingTrack;
+
     private BackDropView mBackdrop;
     private ImageView mBackdropFront;
     private ImageView mBackdropBack;
@@ -161,11 +164,6 @@ public class NotificationMediaManager implements Dumpable {
             if (state != null) {
                 if (!isPlaybackActive(state.getState())) {
                     clearCurrentMediaNotification();
-                }
-                StatusBar statusBar = mStatusBarLazy.get();
-                if (statusBar != null) {
-                    statusBar.getVisualizer().setPlaying(state.getState()
-                            == PlaybackState.STATE_PLAYING);
                 }
                 findAndUpdateMediaNotifications();
             }
@@ -398,6 +396,10 @@ public class NotificationMediaManager implements Dumpable {
             clearCurrentMediaNotification();
             dispatchUpdateMediaMetaData(true /* changed */, true /* allowEnterAnimation */);
         }
+        if (key.equals(mNowPlayingNotificationKey)) {
+            mNowPlayingNotificationKey = null;
+            dispatchUpdateMediaMetaData(true /* changed */, true /* allowEnterAnimation */);
+        }
     }
 
     public String getMediaNotificationKey() {
@@ -475,6 +477,18 @@ public class NotificationMediaManager implements Dumpable {
         NotificationEntry mediaNotification = null;
         MediaController controller = null;
         for (NotificationEntry entry : allNotifications) {
+            if (entry.getSbn().getPackageName().toLowerCase().equals(NOWPLAYING_SERVICE)) {
+                mNowPlayingNotificationKey = entry.getSbn().getKey();
+                String notificationText = null;
+                final String title = entry.getSbn().getNotification()
+                        .extras.getString(Notification.EXTRA_TITLE);
+                if (!TextUtils.isEmpty(title)) {
+                    mNowPlayingTrack = title;
+                }
+                break;
+            }
+        }
+        for (NotificationEntry entry : allNotifications) {
             if (entry.isMediaNotification()) {
                 final MediaSession.Token token =
                         entry.getSbn().getNotification().extras.getParcelable(
@@ -548,6 +562,13 @@ public class NotificationMediaManager implements Dumpable {
         }
 
         return metaDataChanged;
+    }
+
+    public String getNowPlayingTrack() {
+        if (mNowPlayingNotificationKey == null) {
+            mNowPlayingTrack = null;
+        }
+        return mNowPlayingTrack;
     }
 
     public void clearCurrentMediaNotification() {
@@ -711,22 +732,6 @@ public class NotificationMediaManager implements Dumpable {
         mColorExtractor.setHasMediaArtwork(hasMediaArtwork);
         if (mScrimController != null) {
             mScrimController.setHasBackdrop(hasArtwork);
-        }
-
-        StatusBar statusBar = mStatusBarLazy.get();
-        if (statusBar != null &&
-                mStatusBarStateController.getState() != StatusBarState.SHADE) {
-            VisualizerView visualizerView = statusBar.getVisualizer();
-            if (!mKeyguardStateController.isKeyguardFadingAway()) {
-                // ensure visualizer is visible
-                visualizerView.setPlaying(getMediaControllerPlaybackState(mMediaController) ==
-                        PlaybackState.STATE_PLAYING);
-            }
-
-            if (hasMediaArtwork && (artworkDrawable instanceof BitmapDrawable)) {
-                // always use current backdrop to color eq
-                visualizerView.setBitmap(((BitmapDrawable)artworkDrawable).getBitmap());
-            }
         }
 
         if ((hasArtwork || DEBUG_MEDIA_FAKE_ARTWORK)

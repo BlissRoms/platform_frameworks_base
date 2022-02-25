@@ -39,12 +39,16 @@ import android.annotation.Nullable;
 import android.app.StatusBarManager;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -81,6 +85,7 @@ import com.android.systemui.navigationbar.buttons.NearestTouchFrame;
 import com.android.systemui.navigationbar.buttons.RotationContextButton;
 import com.android.systemui.navigationbar.gestural.EdgeBackGestureHandler;
 import com.android.systemui.navigationbar.gestural.FloatingRotationButton;
+import com.android.systemui.navigationbar.gestural.NavigationHandle;
 import com.android.systemui.navigationbar.gestural.RegionSamplingHelper;
 import com.android.systemui.recents.OverviewProxyService;
 import com.android.systemui.recents.Recents;
@@ -140,6 +145,9 @@ public class NavigationBarView extends FrameLayout implements
     private Context mLightContext;
     private int mLightIconColor;
     private int mDarkIconColor;
+    private KeyButtonDrawable mPowerButton;
+    private KeyButtonDrawable mVolumePlusButton;
+    private KeyButtonDrawable mVolumeMinusButton;
 
     private EdgeBackGestureHandler mEdgeBackGestureHandler;
     private final DeadZone mDeadZone;
@@ -159,6 +167,7 @@ public class NavigationBarView extends FrameLayout implements
     private boolean mDockedStackExists;
     private boolean mImeVisible;
     private boolean mScreenOn = true;
+    private boolean mIsUserEnabled = true;
 
     private final SparseArray<ButtonDispatcher> mButtonDispatchers = new SparseArray<>();
     private final ContextualButtonGroup mContextualButtonGroup;
@@ -171,6 +180,8 @@ public class NavigationBarView extends FrameLayout implements
     private FloatingRotationButton mFloatingRotationButton;
     private RotationButtonController mRotationButtonController;
     private NavigationBarOverlayController mNavBarOverlayController;
+
+    private boolean mHomeHandleForceHidden;
 
     /**
      * Helper that is responsible for showing the right toast when a disallowed activity operation
@@ -194,6 +205,8 @@ public class NavigationBarView extends FrameLayout implements
     private int mBasePaddingTop;
 
     private ViewGroup mNavigationBarContents;
+
+    private boolean mBlockedGesturalNavigation;
 
     private class NavTransitionListener implements TransitionListener {
         private boolean mBackTransitioning;
@@ -346,6 +359,9 @@ public class NavigationBarView extends FrameLayout implements
         mButtonDispatchers.put(R.id.ime_switcher, imeSwitcherButton);
         mButtonDispatchers.put(R.id.accessibility_button, accessibilityButton);
         mButtonDispatchers.put(R.id.menu_container, mContextualButtonGroup);
+        mButtonDispatchers.put(R.id.power, new ButtonDispatcher(R.id.power));
+        mButtonDispatchers.put(R.id.volume_minus, new ButtonDispatcher(R.id.volume_minus));
+        mButtonDispatchers.put(R.id.volume_plus, new ButtonDispatcher(R.id.volume_plus));
         mDeadZone = new DeadZone(this);
 
         mNavColorSampleMargin = getResources()
@@ -530,6 +546,18 @@ public class NavigationBarView extends FrameLayout implements
         return mButtonDispatchers.get(R.id.home_handle);
     }
 
+    public ButtonDispatcher getPowerButton() {
+        return mButtonDispatchers.get(R.id.power);
+    }
+
+    public ButtonDispatcher getVolumePlusButton() {
+        return mButtonDispatchers.get(R.id.volume_plus);
+    }
+
+    public ButtonDispatcher getVolumeMinusButton() {
+        return mButtonDispatchers.get(R.id.volume_minus);
+    }
+
     public SparseArray<ButtonDispatcher> getButtonDispatchers() {
         return mButtonDispatchers;
     }
@@ -573,6 +601,9 @@ public class NavigationBarView extends FrameLayout implements
 
         mArrowLeftIcon = getDrawable(R.drawable.ic_navbar_chevron_left);
         mArrowRightIcon = getDrawable(R.drawable.ic_navbar_chevron_right);
+        mPowerButton = getDrawable(R.drawable.ic_sysbar_power);
+        mVolumePlusButton = getDrawable(R.drawable.ic_sysbar_volume_plus);
+        mVolumeMinusButton = getDrawable(R.drawable.ic_sysbar_volume_minus);
     }
 
     /**
@@ -705,7 +736,9 @@ public class NavigationBarView extends FrameLayout implements
             mTransitionListener.onBackAltCleared();
         }
         mImeVisible = visible;
-        mRotationButtonController.getRotationButton().setCanShowRotationButton(!mImeVisible);
+        mEdgeBackGestureHandler.setImeVisible(mImeVisible);
+        mRotationButtonController.getRotationButton().setCanShowRotationButton(
+                !mImeVisible && mIsUserEnabled);
         mFloatingRotationButton.setCanShowRotationButton(!mImeVisible);
         if (mNavBarOverlayController.isNavigationBarOverlayEnabled()) {
             mNavBarOverlayController.setCanShow(!mImeVisible);
@@ -761,6 +794,16 @@ public class NavigationBarView extends FrameLayout implements
             mContextualButtonGroup.setButtonVisibility(R.id.ime_switcher, false);
         }
 
+        if (getPowerButton() != null) {
+            getPowerButton().setImageDrawable(mPowerButton);
+        }
+        if (getVolumeMinusButton() != null) {
+            getVolumeMinusButton().setImageDrawable(mVolumeMinusButton);
+        }
+        if (getVolumePlusButton() != null) {
+            getVolumePlusButton().setImageDrawable(mVolumePlusButton);
+        }
+
         mBarTransitions.reapplyDarkIntensity();
 
         boolean disableHome = isGesturalMode(mNavBarMode)
@@ -803,8 +846,31 @@ public class NavigationBarView extends FrameLayout implements
         getBackButton().setVisibility(disableBack       ? View.INVISIBLE : View.VISIBLE);
         getHomeButton().setVisibility(disableHome       ? View.INVISIBLE : View.VISIBLE);
         getRecentsButton().setVisibility(disableRecent  ? View.INVISIBLE : View.VISIBLE);
-        getHomeHandle().setVisibility(disableHomeHandle ? View.INVISIBLE : View.VISIBLE);
+        getHomeHandle().setVisibility(disableHomeHandle || mHomeHandleForceHidden ? View.INVISIBLE : View.VISIBLE);
+
+        if (getPowerButton() != null) {
+            getPowerButton().setVisibility(View.VISIBLE);
+        }
+        if (getVolumeMinusButton() != null) {
+            getVolumeMinusButton().setVisibility(View.VISIBLE);
+        }
+        if (getVolumePlusButton() != null) {
+            getVolumePlusButton().setVisibility(View.VISIBLE);
+        }
+
         notifyActiveTouchRegions();
+    }
+
+    public void hideHomeHandle(boolean hide) {
+        mHomeHandleForceHidden = hide;
+        boolean disableRecent = isRecentsButtonDisabled() | !QuickStepContract.isLegacyMode(mNavBarMode);
+        boolean disableHomeHandle = disableRecent
+                && ((mDisabledFlags & View.STATUS_BAR_DISABLE_HOME) != 0);
+        getHomeHandle().setVisibility(disableHomeHandle || hide ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    public boolean isHomeHandleForceHidden() {
+        return mHomeHandleForceHidden;
     }
 
     @VisibleForTesting
@@ -875,10 +941,13 @@ public class NavigationBarView extends FrameLayout implements
         mSysUiFlagContainer.setFlag(SYSUI_STATE_SCREEN_PINNING,
                         ActivityManagerWrapper.getInstance().isScreenPinningActive())
                 .setFlag(SYSUI_STATE_OVERVIEW_DISABLED,
+                        mBlockedGesturalNavigation ||
                         (mDisabledFlags & View.STATUS_BAR_DISABLE_RECENT) != 0)
                 .setFlag(SYSUI_STATE_HOME_DISABLED,
+                        mBlockedGesturalNavigation ||
                         (mDisabledFlags & View.STATUS_BAR_DISABLE_HOME) != 0)
                 .setFlag(SYSUI_STATE_SEARCH_DISABLED,
+                        mBlockedGesturalNavigation ||
                         (mDisabledFlags & View.STATUS_BAR_DISABLE_SEARCH) != 0)
                 .commitUpdate(displayId);
     }
@@ -896,7 +965,7 @@ public class NavigationBarView extends FrameLayout implements
             mSysUiFlagContainer.setFlag(SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED,
                     mPanelView.isFullyExpanded() && !mPanelView.isInSettings())
                     .setFlag(SYSUI_STATE_QUICK_SETTINGS_EXPANDED,
-                            mPanelView.isInSettings())
+                            mBlockedGesturalNavigation || mPanelView.isInSettings())
                     .commitUpdate(displayId);
         }
     }
@@ -915,6 +984,13 @@ public class NavigationBarView extends FrameLayout implements
         WindowManagerWrapper.getInstance().setNavBarVirtualKeyHapticFeedbackEnabled(!showSwipeUpUI);
         getHomeButton().setAccessibilityDelegate(
                 showSwipeUpUI ? mQuickStepAccessibilityDelegate : null);
+    }
+
+    public void setBlockedGesturalNavigation(boolean blocked) {
+        mBlockedGesturalNavigation = blocked;
+        mEdgeBackGestureHandler.setBlockedGesturalNavigation(blocked);
+        updateDisabledSystemUiStateFlags();
+        updatePanelSystemUiStateFlags();
     }
 
     /**
@@ -975,15 +1051,23 @@ public class NavigationBarView extends FrameLayout implements
         mContextualButtonGroup.setButtonVisibility(R.id.accessibility_button, visible);
     }
 
-    public void swiftNavigationBarItems(int horizontalShift, int verticalShift) {
+    public void shiftNavigationBarItems(int horizontalShift, int verticalShift) {
         if (mNavigationBarContents == null) {
             return;
         }
-
-        mNavigationBarContents.setPaddingRelative(mBasePaddingLeft + horizontalShift,
-                                              mBasePaddingTop + verticalShift,
-                                              mBasePaddingRight + horizontalShift,
-                                              mBasePaddingBottom - verticalShift);
+        if (isGesturalMode(mNavBarMode)) {
+            final NavigationHandle handle = (NavigationHandle) getHomeHandle().getCurrentView();
+            if (handle != null) {
+                handle.shiftHandle(verticalShift);
+            }
+            return;
+        }
+        mNavigationBarContents.setPaddingRelative(
+            mBasePaddingLeft + horizontalShift,
+            mBasePaddingTop + verticalShift,
+            mBasePaddingRight + horizontalShift,
+            mBasePaddingBottom - verticalShift
+        );
         invalidate();
     }
 
@@ -1088,6 +1172,15 @@ public class NavigationBarView extends FrameLayout implements
             // Note: this button is floating so the nearest region doesn't apply
             updateButtonLocation(mNavBarOverlayController.getCurrentView(), inScreenSpace);
         }
+        if (getPowerButton() != null) {
+            updateButtonLocation(getPowerButton(), inScreenSpace, useNearestRegion);
+        }
+        if (getVolumeMinusButton() != null) {
+            updateButtonLocation(getVolumeMinusButton(), inScreenSpace, useNearestRegion);
+        }
+        if (getVolumePlusButton() != null) {
+            updateButtonLocation(getVolumePlusButton(), inScreenSpace, useNearestRegion);
+        }
         return mTmpRegion;
     }
 
@@ -1169,6 +1262,10 @@ public class NavigationBarView extends FrameLayout implements
 
     public boolean isVertical() {
         return mIsVertical;
+    }
+
+    public NavigationBarFrame getNavbarFrame() {
+        return ((NavigationBarFrame) getRootView());
     }
 
     public void reorient() {
@@ -1325,6 +1422,9 @@ public class NavigationBarView extends FrameLayout implements
 
         getViewTreeObserver().addOnComputeInternalInsetsListener(mOnComputeInternalInsetsListener);
         updateNavButtonIcons();
+
+        mCustomSettingsObserver.observe();
+        mCustomSettingsObserver.update();
     }
 
     @Override
@@ -1345,6 +1445,8 @@ public class NavigationBarView extends FrameLayout implements
         mEdgeBackGestureHandler.onNavBarDetached();
         getViewTreeObserver().removeOnComputeInternalInsetsListener(
                 mOnComputeInternalInsetsListener);
+
+        mCustomSettingsObserver.stop();
     }
 
     public void dump(PrintWriter pw) {
@@ -1474,5 +1576,38 @@ public class NavigationBarView extends FrameLayout implements
     private boolean showDpadArrowKeys() {
         return Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.NAVIGATION_BAR_ARROW_KEYS, 0, UserHandle.USER_CURRENT) != 0;
+    }
+
+    private CustomSettingsObserver mCustomSettingsObserver = new CustomSettingsObserver();
+    private class CustomSettingsObserver extends ContentObserver {
+        CustomSettingsObserver() {
+            super(new Handler(Looper.getMainLooper()));
+        }
+
+        void observe() {
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_FLOATING_ROTATION_BUTTON),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        void stop() {
+            mContext.getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        void update() {
+            boolean enabled = Settings.System.getInt(getContext().getContentResolver(),
+                    Settings.System.ENABLE_FLOATING_ROTATION_BUTTON, 1) == 1;
+            if (mIsUserEnabled != enabled) {
+                mIsUserEnabled = enabled;
+                if (mRotationButtonController == null) return;
+                mRotationButtonController.getRotationButton().setCanShowRotationButton(
+                        !mImeVisible && mIsUserEnabled);
+            }
+        }
     }
 }

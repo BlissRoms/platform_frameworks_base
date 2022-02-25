@@ -144,6 +144,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
         mDateView = findViewById(R.id.date);
         mClockDateView = findViewById(R.id.date_clock);
         mDateView.setOnClickListener(this);
+        mClockDateView.setVisibility(View.GONE);
         mSecurityHeaderView = findViewById(R.id.header_text_container);
         mClockIconsSeparator = findViewById(R.id.separator);
         mRightLayout = findViewById(R.id.rightLayout);
@@ -170,6 +171,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
         // QS will always show the estimate, and BatteryMeterView handles the case where
         // it's unavailable or charging
         mBatteryRemainingIcon.setPercentShowMode(BatteryMeterView.MODE_ESTIMATE);
+        setBatteryClickable(true);
 
         mIconsAlphaAnimatorFixed = new TouchAnimator.Builder()
                 .addFloat(mIconContainer, "alpha", 0, 1)
@@ -239,6 +241,9 @@ public class QuickStatusBarHeader extends FrameLayout implements
             builder.appendPath(Long.toString(System.currentTimeMillis()));
             Intent todayIntent = new Intent(Intent.ACTION_VIEW, builder.build());
             mActivityStarter.postStartActivityDismissingKeyguard(todayIntent, 0);
+        } else if (v == mBatteryRemainingIcon) {
+            mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
+                    Intent.ACTION_POWER_USAGE_SUMMARY),0);
         }
     }
 
@@ -344,9 +349,9 @@ public class QuickStatusBarHeader extends FrameLayout implements
                 mClockView.getPaddingBottom()
         );
 
-        MarginLayoutParams lp = (MarginLayoutParams) mClockDateView.getLayoutParams();
-        lp.setMarginStart(endPadding);
-        mClockDateView.setLayoutParams(lp);
+//        MarginLayoutParams lp = (MarginLayoutParams) mClockDateView.getLayoutParams();
+//        lp.setMarginStart(endPadding);
+//        mClockDateView.setLayoutParams(lp);
     }
 
     private void updateAnimators() {
@@ -365,8 +370,9 @@ public class QuickStatusBarHeader extends FrameLayout implements
         TouchAnimator.Builder builder = new TouchAnimator.Builder()
                 .addFloat(mSecurityHeaderView, "alpha", 0, 1)
                 // These views appear on expanding down
-                .addFloat(mDateView, "alpha", 0, 0, 1)
-                .addFloat(mClockDateView, "alpha", 1, 0, 0)
+//                .addFloat(mDateView, "alpha", 0, 0, 1)
+//                .addFloat(mClockDateView, "alpha", 1, 0, 0)
+                .addFloat(mClockView, "alpha", 0, 1)
                 .addFloat(mQSCarriers, "alpha", 0, 1)
                 .addFloat(mNetworkTraffic, "alpha", 0, 1)
                 .setListener(new TouchAnimator.ListenerAdapter() {
@@ -382,8 +388,8 @@ public class QuickStatusBarHeader extends FrameLayout implements
 
                     @Override
                     public void onAnimationStarted() {
-                        mClockDateView.setVisibility(View.VISIBLE);
-                        mClockDateView.setFreezeSwitching(true);
+//                        mClockDateView.setVisibility(View.VISIBLE);
+//                        mClockDateView.setFreezeSwitching(true);
                         setSeparatorVisibility(false);
                         if (!mIsSingleCarrier) {
                             mIconContainer.addIgnoredSlots(mRssiIgnoredSlots);
@@ -393,8 +399,8 @@ public class QuickStatusBarHeader extends FrameLayout implements
                     @Override
                     public void onAnimationAtStart() {
                         super.onAnimationAtStart();
-                        mClockDateView.setFreezeSwitching(false);
-                        mClockDateView.setVisibility(View.VISIBLE);
+//                        mClockDateView.setFreezeSwitching(false);
+//                        mClockDateView.setVisibility(View.VISIBLE);
                         setSeparatorVisibility(mShowClockIconsSeparator);
                         // In QQS we never ignore RSSI.
                         mIconContainer.removeIgnoredSlots(mRssiIgnoredSlots);
@@ -414,7 +420,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
             mIconContainer.setAlpha(1);
             mBatteryRemainingIcon.setAlpha(1);
         }
-
+        setBatteryClickable(mExpanded || !visibility);
     }
 
     /** */
@@ -424,6 +430,7 @@ public class QuickStatusBarHeader extends FrameLayout implements
         quickQSPanelController.setExpanded(expanded);
 	mDateView.setVisibility(mClockView.isClockDateEnabled() ? View.INVISIBLE : View.VISIBLE);
         updateEverything();
+        setBatteryClickable(mExpanded || mPrivacyChip.getVisibility() != View.VISIBLE);
     }
 
     /**
@@ -599,5 +606,10 @@ public class QuickStatusBarHeader extends FrameLayout implements
     public void setExpandedScrollAmount(int scrollY) {
         mClockIconsView.setScrollY(scrollY);
         mDatePrivacyView.setScrollY(scrollY);
+    }
+
+    private void setBatteryClickable(boolean clickable) {
+        mBatteryRemainingIcon.setOnClickListener(clickable ? this : null);
+        mBatteryRemainingIcon.setClickable(clickable);
     }
 }

@@ -35,10 +35,6 @@
     <!-- Navbar -->
     <string name="config_navBarLayoutHandleArrows" translatable="false">back[1.7WC];home_handle;ime_switcher[1.7WC]</string>
 
-    <!-- Burn in protection -->
-    <bool name="config_statusBarBurnInProtection">true</bool>
-    <integer name="config_shift_interval">60</integer>
-
     <!-- The battery current divider, some kernel report current value in mA other in µA.
          Leave 1 if you have mA, put 1000 if you have µA-->
     <integer name="config_battCurrentDivider" translatable="false">1000</integer>
@@ -46,14 +42,14 @@
     <!-- FPSInfoService FPS node file path -->
     <string name="config_fpsInfoSysNode" translatable="false"></string>
 
+    <!-- FPS measure interval in milliseconds, default 1000 -->
+    <integer name="config_fpsReadInterval">1000</integer>
+
     <!-- If not zero, limits the internal screen recorder's framerate to the set value. -->
     <integer name="config_screenRecorderMaxFramerate">0</integer>
 
     <!-- Whether to pulse onFingerDown actions while in AOD. -->
     <bool name="config_pulseOnFingerDownInAod">false</bool>
-
-    <!-- Whether device has hardware alertslider -->
-    <bool name="config_hasAlertSlider">false</bool>
 
     <!-- Whether alertslider is on the left edge of the device -->
     <bool name="config_alertSliderOnLeft">false</bool>

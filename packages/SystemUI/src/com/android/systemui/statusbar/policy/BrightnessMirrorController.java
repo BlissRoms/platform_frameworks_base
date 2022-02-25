@@ -81,6 +81,7 @@ public class BrightnessMirrorController
         if (!mAutoBrightnessConfigEnabled) {
             mIcon.setVisibility(View.GONE);
         }
+        updateResources();
     }
 
     public void showMirror() {
@@ -161,6 +162,7 @@ public class BrightnessMirrorController
     }
 
     private void reinflate() {
+        updateResources();
         int index = mStatusBarWindow.indexOfChild(mBrightnessMirror);
         mStatusBarWindow.removeView(mBrightnessMirror);
         mBrightnessMirror = (FrameLayout) LayoutInflater.from(mStatusBarWindow.getContext())
@@ -204,7 +206,7 @@ public class BrightnessMirrorController
                 Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL,
                 UserHandle.USER_CURRENT) == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
         mIcon.setImageResource(automatic ?
-                com.android.systemui.R.drawable.ic_qs_brightness_auto_on_new :
-                com.android.systemui.R.drawable.ic_qs_brightness_auto_off_new);
+                com.android.systemui.R.drawable.ic_qs_brightness_auto_on :
+                com.android.systemui.R.drawable.ic_qs_brightness_auto_off);
     }
 }

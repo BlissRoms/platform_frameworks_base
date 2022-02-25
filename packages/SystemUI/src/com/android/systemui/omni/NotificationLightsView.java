@@ -82,36 +82,40 @@ public class NotificationLightsView extends RelativeLayout {
     }
 
     public int getNotificationLightsColor() {
+        int color = 0xFFFFFFFF;
         int colorMode = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_PULSE_COLOR_MODE,
                 0, UserHandle.USER_CURRENT);
-        int color = getDefaultNotificationLightsColor(); // custom color (fallback)
-        if (colorMode == 0) { // accent
-            color = Utils.getColorAccentDefaultColor(getContext());
-        } else if (colorMode == 1) { // wallpapper
-            try {
-                WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
-                WallpaperInfo wallpaperInfo = wallpaperManager.getWallpaperInfo();
-                if (wallpaperInfo == null) { // if not a live wallpaper
-                    Drawable wallpaperDrawable = wallpaperManager.getDrawable();
-                    Bitmap bitmap = ((BitmapDrawable)wallpaperDrawable).getBitmap();
-                    if (bitmap != null) { // if wallpaper is not blank
-                        Palette p = Palette.from(bitmap).generate();
-                        int wallColor = p.getDominantColor(color);
-                        if (color != wallColor)
-                            color = wallColor;
+        int customColor = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.NOTIFICATION_PULSE_COLOR, 0xFFFFFFFF,
+                UserHandle.USER_CURRENT);
+        switch (colorMode) {
+            case 1: // Wallpaper
+                try {
+                    WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
+                    WallpaperInfo wallpaperInfo = wallpaperManager.getWallpaperInfo();
+                    if (wallpaperInfo == null) { // if not a live wallpaper
+                        Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+                        Bitmap bitmap = ((BitmapDrawable)wallpaperDrawable).getBitmap();
+                        if (bitmap != null) { // if wallpaper is not blank
+                            Palette p = Palette.from(bitmap).generate();
+                            int wallColor = p.getDominantColor(color);
+                            if (color != wallColor)
+                                color = wallColor;
+                        }
                     }
-                }
-            } catch (Exception e) { /* nothing to do, will use fallback */ }
+                } catch (Exception e) { /* nothing to do, will use fallback */ }
+                break;
+            case 2: // Accent
+                color = Utils.getColorAccentDefaultColor(getContext());
+                break;
+            case 3: // Custom
+                color = customColor;
+                break;
+            default: // White
+                color = 0xFFFFFFFF;
         }
         return color;
-    }
-
-    public int getDefaultNotificationLightsColor() {
-        int defaultColor = Utils.getColorAccentDefaultColor(getContext());
-        return Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.NOTIFICATION_PULSE_COLOR, defaultColor,
-                    UserHandle.USER_CURRENT);
     }
 
     public void animateNotificationWithColor(int color) {
@@ -122,16 +126,64 @@ public class NotificationLightsView extends RelativeLayout {
         int repeats = Settings.System.getIntForUser(resolver,
                 Settings.System.NOTIFICATION_PULSE_REPEATS, 0,
                 UserHandle.USER_CURRENT);
+        boolean directionIsRestart = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.AMBIENT_LIGHT_REPEAT_DIRECTION, 0,
+                UserHandle.USER_CURRENT) != 1;
+        int style = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.AMBIENT_LIGHT_LAYOUT, 0,
+                UserHandle.USER_CURRENT);
+        int width = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.PULSE_AMBIENT_LIGHT_WIDTH, 125,
+                UserHandle.USER_CURRENT);
+        int layoutStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.PULSE_LIGHT_LAYOUT_STYLE, 0,
+                UserHandle.USER_CURRENT);
 
-        ImageView leftView = (ImageView) findViewById(R.id.notification_animation_left);
-        ImageView rightView = (ImageView) findViewById(R.id.notification_animation_right);
-        leftView.setColorFilter(color);
-        rightView.setColorFilter(color);
+        ImageView leftViewFaded = (ImageView) findViewById(R.id.notification_animation_left_faded);
+        ImageView topViewFaded = (ImageView) findViewById(R.id.notification_animation_top_faded);
+        ImageView rightViewFaded = (ImageView) findViewById(R.id.notification_animation_right_faded);
+        ImageView bottomViewFaded = (ImageView) findViewById(R.id.notification_animation_bottom_faded);
+        ImageView leftViewSolid = (ImageView) findViewById(R.id.notification_animation_left_solid);
+        ImageView topViewSolid = (ImageView) findViewById(R.id.notification_animation_top_solid);
+        ImageView rightViewSolid = (ImageView) findViewById(R.id.notification_animation_right_solid);
+        ImageView bottomViewSolid = (ImageView) findViewById(R.id.notification_animation_bottom_solid);
+        leftViewFaded.setColorFilter(color);
+        topViewFaded.setColorFilter(color);
+        rightViewFaded.setColorFilter(color);
+        bottomViewFaded.setColorFilter(color);
+        leftViewFaded.setVisibility(style == 0 && layoutStyle != 1 ? View.VISIBLE : View.GONE);
+        topViewFaded.setVisibility(style == 0 && layoutStyle != 2 ? View.VISIBLE : View.GONE);
+        rightViewFaded.setVisibility(style == 0 && layoutStyle != 1 ? View.VISIBLE : View.GONE);
+        bottomViewFaded.setVisibility(style == 0 && layoutStyle != 2 ? View.VISIBLE : View.GONE);
+        leftViewSolid.setColorFilter(color);
+        topViewSolid.setColorFilter(color);
+        rightViewSolid.setColorFilter(color);
+        bottomViewSolid.setColorFilter(color);
+        leftViewSolid.setVisibility(style == 1 && layoutStyle != 1 ? View.VISIBLE : View.GONE);
+        topViewSolid.setVisibility(style == 1 && layoutStyle != 2 ? View.VISIBLE : View.GONE);
+        rightViewSolid.setVisibility(style == 1 && layoutStyle != 1 ? View.VISIBLE : View.GONE);
+        bottomViewSolid.setVisibility(style == 1 && layoutStyle != 2 ? View.VISIBLE : View.GONE);
+        if (leftViewSolid != null && rightViewSolid != null) {
+            leftViewSolid.getLayoutParams().width = width;
+            rightViewSolid.getLayoutParams().width = width;
+        }
+        if (leftViewFaded != null && rightViewFaded != null) {
+            leftViewFaded.getLayoutParams().width = width;
+            rightViewFaded.getLayoutParams().width = width;
+        }
+        if (topViewSolid != null && bottomViewSolid != null) {
+            topViewSolid.getLayoutParams().height = width;
+            bottomViewSolid.getLayoutParams().height = width;
+        }
+        if (topViewFaded != null && bottomViewFaded != null) {
+            topViewFaded.getLayoutParams().height = width;
+            bottomViewFaded.getLayoutParams().height = width;
+        }
         mLightAnimator = ValueAnimator.ofFloat(new float[]{0.0f, 2.0f});
         mLightAnimator.setDuration(duration);
         mLightAnimator.setRepeatCount(repeats == 0 ?
-                ValueAnimator.INFINITE : repeats);
-        mLightAnimator.setRepeatMode(ValueAnimator.RESTART);
+                ValueAnimator.INFINITE : repeats - 1);
+        mLightAnimator.setRepeatMode(directionIsRestart ? ValueAnimator.RESTART : ValueAnimator.REVERSE);
         if (repeats != 0) {
             mLightAnimator.addListener(new AnimatorListener() {
                 @Override
@@ -155,16 +207,28 @@ public class NotificationLightsView extends RelativeLayout {
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (DEBUG) Log.d(TAG, "onAnimationUpdate");
                 float progress = ((Float) animation.getAnimatedValue()).floatValue();
-                leftView.setScaleY(progress);
-                rightView.setScaleY(progress);
+                leftViewFaded.setScaleY(progress);
+                topViewFaded.setScaleX(progress);
+                rightViewFaded.setScaleY(progress);
+                bottomViewFaded.setScaleX(progress);
+                leftViewSolid.setScaleY(progress);
+                topViewSolid.setScaleX(progress);
+                rightViewSolid.setScaleY(progress);
+                bottomViewSolid.setScaleX(progress);
                 float alpha = 1.0f;
                 if (progress <= 0.3f) {
                     alpha = progress / 0.3f;
                 } else if (progress >= 1.0f) {
                     alpha = 2.0f - progress;
                 }
-                leftView.setAlpha(alpha);
-                rightView.setAlpha(alpha);
+                leftViewFaded.setAlpha(alpha);
+                topViewFaded.setAlpha(alpha);
+                rightViewFaded.setAlpha(alpha);
+                bottomViewFaded.setAlpha(alpha);
+                leftViewSolid.setAlpha(alpha);
+                topViewSolid.setAlpha(alpha);
+                rightViewSolid.setAlpha(alpha);
+                bottomViewSolid.setAlpha(alpha);
             }
         });
         if (DEBUG) Log.d(TAG, "start");

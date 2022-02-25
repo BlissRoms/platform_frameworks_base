@@ -3828,7 +3828,9 @@ public class NotificationPanelViewController extends PanelViewController {
         int ambientLightsTimeout = Settings.System.getIntForUser(resolver,
                 Settings.System.AOD_NOTIFICATION_PULSE_TIMEOUT, 0, UserHandle.USER_CURRENT);
         boolean pulseColorAutomatic = Settings.System.getIntForUser(resolver,
-                Settings.System.NOTIFICATION_PULSE_COLOR_MODE, 0, UserHandle.USER_CURRENT) == 2;
+                Settings.System.NOTIFICATION_PULSE_COLOR_MODE, 0, UserHandle.USER_CURRENT) == 0;
+        boolean pulseForAll = Settings.System.getIntForUser(resolver,
+                Settings.System.AMBIENT_LIGHT_PULSE_FOR_ALL, 0, UserHandle.USER_CURRENT) == 1;
         int repeats = Settings.System.getIntForUser(resolver,
                 Settings.System.NOTIFICATION_PULSE_REPEATS, 0, UserHandle.USER_CURRENT);
         if (animatePulse) {
@@ -3861,32 +3863,30 @@ public class NotificationPanelViewController extends PanelViewController {
                 }
             }
             if (mPulsing) {
-                if (pulseReasonNotification) {
-                    if (activeNotif) {
-                        // show the bars if we have to
-                        if (pulseLights) {
-                            mPulseLightsView.animateNotificationWithColor(pulseColor);
-                            mPulseLightsView.setVisibility(View.VISIBLE);
-                        } else if (!mAmbientPulseLightRunning) {
-                            // bars can still be visible as leftover
-                            // but we dont want them here
-                            mPulseLightsView.setVisibility(View.GONE);
-                        }
-                        if (ambientLights && aodEnabled) {
-                            mPulseLightHandled = false;
-                            // tell power manager that we want to enable aod
-                            // must do that here already not on pulsing = false
-                            Settings.System.putIntForUser(mView.getContext().getContentResolver(),
-                                    Settings.System.AOD_NOTIFICATION_PULSE_TRIGGER, 1,
-                                    UserHandle.USER_CURRENT);
-                        }
+                if ((activeNotif && pulseReasonNotification) || pulseForAll) {
+                    // show the bars if we have to
+                    if (pulseLights) {
+                        mPulseLightsView.animateNotificationWithColor(pulseColor);
+                        mPulseLightsView.setVisibility(View.VISIBLE);
+                    } else if (!mAmbientPulseLightRunning) {
+                        // bars can still be visible as leftover
+                        // but we dont want them here
+                        mPulseLightsView.setVisibility(View.GONE);
+                    }
+                    if (ambientLights) {
+                        mPulseLightHandled = false;
+                        // tell power manager that we want to enable aod
+                        // must do that here already not on pulsing = false
+                        Settings.System.putIntForUser(mView.getContext().getContentResolver(),
+                                Settings.System.AOD_NOTIFICATION_PULSE_TRIGGER, 1,
+                                UserHandle.USER_CURRENT);
                     }
                 } else {
                     showAodContent(true);
                 }
             } else {
                 // continue to pulse - if not screen was turned on in the meantime
-                if (activeNotif && ambientLights && aodEnabled && mDozing && !mPulseLightHandled) {
+                if (activeNotif && ambientLights && mDozing && !mPulseLightHandled) {
                     // no-op if pulseLights is also enabled
                     if (ambientLightsHideAod) {
                         showAodContent(false);
@@ -4315,6 +4315,11 @@ public class NotificationPanelViewController extends PanelViewController {
                 /* notifyForDescendants */ false,
                 mSettingsChangeObserver
         );
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.LOCKSCREEN_SMALL_CLOCK),
+                /* notifyForDescendants */ false,
+                mSettingsChangeObserver
+        );
     }
 
     private void unregisterSettingsChangeListener() {
@@ -4683,6 +4688,8 @@ public class NotificationPanelViewController extends PanelViewController {
 
             // Can affect multi-user switcher visibility
             reInflateViews();
+            // To update forcing small clock on keyguard
+            positionClockAndNotifications();
         }
     }
 

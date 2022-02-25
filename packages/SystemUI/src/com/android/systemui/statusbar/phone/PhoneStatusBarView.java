@@ -131,7 +131,7 @@ public class PhoneStatusBarView extends PanelBar implements Callbacks, TunerServ
         mScrimController = scrimController;
     }
 
-    public void swiftStatusBarItems(int horizontalShift, int verticalShift) {
+    public void shiftStatusBarItems(int horizontalShift, int verticalShift) {
         if (mStatusBarContents == null) {
             return;
         }

@@ -47,6 +47,7 @@
         <item>settings</item>
         <item>lockdown</item>
         <item>torch</item>
+        <item>onthego</item>
     </string-array>
 
     <!-- Whether device supports an alt. ambient display -->
@@ -110,5 +111,23 @@
     <string name="config_lightFontFamily" translatable="false">sans-serif-light</string>
     <!-- Name of a font family to use as regular font. For theming purpose. -->
     <string name="config_regularFontFamily" translatable="false">sans-serif-regular</string>
+
+    <!-- Default FOD pressed color -->
+    <integer name="config_fod_pressed_color">0</integer>
+
+    <!-- Whether device has hardware alertslider -->
+    <bool name="config_hasAlertSlider">false</bool>
+
+    <!-- NightLight FOD -->
+    <bool name="disable_fod_night_light">false</bool>
+
+    <!-- Whether to force enable multi resolution configuration for camera -->
+    <bool name="config_forceMultiResolution">false</bool>
+
+    <!-- Whether device supports gestures on fingerprint sensor -->
+    <bool name="config_supportsGesturesOnFingerprintSensor">false</bool>
+
+    <!-- Whether device supports gaming mode profiles -->
+    <bool name="config_gamingmode_performance">false</bool>
 
 </resources>

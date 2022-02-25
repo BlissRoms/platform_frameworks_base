@@ -36,8 +36,8 @@
     <dimen name="keyguard_indication_margin_bottom_fingerprint_in_display">@dimen/keyguard_indication_margin_bottom</dimen>
 
     <!-- Burn-in protection -->
-    <dimen name="horizontal_max_swift">3.0dp</dimen>
-    <dimen name="vertical_max_swift">1.0dp</dimen>
+    <dimen name="horizontal_max_shift">3.0dp</dimen>
+    <dimen name="vertical_max_shift">2.0dp</dimen>
 
     <!-- QQS Brightness slider -->
     <dimen name="quick_qs_brightness_margin_top">24dp</dimen>
@@ -65,5 +65,11 @@
     <dimen name="alertslider_dialog_minheight">48dp</dimen>
     <dimen name="alertslider_dialog_minwidth">108dp</dimen>
     <dimen name="alertslider_padding">15dp</dimen>
+
+    <!-- Recognizing fingerprint animation -->
+    <dimen name="udfps_animation_size">280dp</dimen>
+    <dimen name="udfps_animation_offset">0dp</dimen>
+
+    <dimen name="fps_info_text_padding">4dp</dimen>
 
 </resources>

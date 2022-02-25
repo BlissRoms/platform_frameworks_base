@@ -209,6 +209,7 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.QQS_SHOW_BRIGHTNESS, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.QS_BRIGHTNESS_POSITION_BOTTOM, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.QS_SHOW_AUTO_BRIGHTNESS_BUTTON, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.SCREEN_OFF_FOD, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.CUSTOM_RINGTONE_VIBRATION_PATTERN,
                 new Validator() {
                     @Override
@@ -241,5 +242,19 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.ALERTSLIDER_MODE_POSITION_BOTTOM, ANY_STRING_VALIDATOR);
         VALIDATORS.put(System.ALERTSLIDER_MODE_POSITION_MIDDLE, ANY_STRING_VALIDATOR);
         VALIDATORS.put(System.ALERTSLIDER_MODE_POSITION_TOP, ANY_STRING_VALIDATOR);
+        VALIDATORS.put(System.ENABLE_FLOATING_ROTATION_BUTTON, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.STATUS_BAR_NOTIF_COUNT, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.LOCKSCREEN_SMALL_CLOCK, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(
+                System.COLOR_BUCKET_OVERLAY,
+                new Validator() {
+                    @Override
+                    public boolean validate(String value) {
+                        if (value == null && value.isEmpty()) {
+                            return false;
+                        }
+                        return true;
+                    }
+                });
     }
 }

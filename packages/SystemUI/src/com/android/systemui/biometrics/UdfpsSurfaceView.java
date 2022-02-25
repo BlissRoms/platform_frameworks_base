@@ -19,18 +19,24 @@ package com.android.systemui.biometrics;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.RectF;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
+import com.android.internal.util.bliss.BlissUtils;
+import android.provider.Settings;
+import android.content.pm.PackageManager;
+import com.android.systemui.Dependency;
 import com.android.systemui.R;
+import com.android.systemui.tuner.TunerService;
 
 /**
  * Surface View for providing the Global High-Brightness Mode (GHBM) illumination for UDFPS.
@@ -57,10 +63,19 @@ public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     boolean mAwaitingSurfaceToStartIllumination;
     boolean mHasValidSurface;
 
-    private Drawable mUdfpsIconPressed;
+    Drawable mUdfpsIconPressed;
+
+    static final String FOD_COLOR = "system:" + Settings.System.FOD_COLOR;
+
+    String udfpsResourcesPackage = "org.bliss.udfps.resources";
+    Resources udfpsRes;
+    String[] mUdfpsPressedIcons;
+    int mSelectedIcon = 0;
 
     public UdfpsSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        Resources res = context.getResources();
 
         // Make this SurfaceView draw on top of everything else in this window. This allows us to
         // 1) Always show the HBM circle on top of everything else, and
@@ -76,8 +91,41 @@ public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mSensorPaint.setAntiAlias(true);
         mSensorPaint.setColor(context.getColor(R.color.config_udfpsColor));
         mSensorPaint.setStyle(Paint.Style.FILL);
+        init();
+        if (mUdfpsIconPressed == null) {
+         mUdfpsIconPressed = context.getDrawable(R.drawable.udfps_icon_pressed);
+        }  
+    }
 
-        mUdfpsIconPressed = context.getDrawable(R.drawable.udfps_icon_pressed);
+   void init() {
+        if (BlissUtils.isPackageInstalled(mContext, udfpsResourcesPackage)) {
+            try {
+                PackageManager pm = mContext.getPackageManager();
+                udfpsRes = pm.getResourcesForApplication(udfpsResourcesPackage);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            int res = udfpsRes.getIdentifier("udfps_pressedicons",
+                    "array", udfpsResourcesPackage);
+            mUdfpsPressedIcons = udfpsRes.getStringArray(res);
+
+            TunerService.Tunable tunable = (key, newValue) -> {
+                if (FOD_COLOR.equals(key)) {
+                    mSelectedIcon = newValue == null ? 0 : Integer.parseInt(newValue);
+                    mUdfpsIconPressed = mSelectedIcon == 0 ? null :
+                            loadDrawable(udfpsRes,
+                                    mUdfpsPressedIcons[mSelectedIcon]);
+                }
+            };
+            Dependency.get(TunerService.class).addTunable(tunable, FOD_COLOR);
+        }
+    }
+
+    Drawable loadDrawable(Resources res, String resName) {
+        int resId = res.getIdentifier(resName,
+                "drawable", udfpsResourcesPackage);
+        return res.getDrawable(resId);
     }
 
     @Override public void surfaceCreated(SurfaceHolder holder) {

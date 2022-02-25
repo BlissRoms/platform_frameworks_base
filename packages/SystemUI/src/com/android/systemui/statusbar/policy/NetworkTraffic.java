@@ -43,7 +43,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.systemui.Dependency;
 import com.android.systemui.R;
+import com.android.systemui.plugins.DarkIconDispatcher;
+import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
 
 /*
 *
@@ -51,7 +54,7 @@ import com.android.systemui.R;
 * to only use it for a single boolean. 32-bits is plenty of room for what we need it to do.
 *
 */
-public class NetworkTraffic extends TextView {
+public class NetworkTraffic extends TextView implements DarkReceiver {
 
     private static final int INTERVAL = 1500; //ms
     private static final int BOTH = 0;
@@ -83,7 +86,6 @@ public class NetworkTraffic extends TextView {
     private int mNetTrafSize;
     private int mTintColor;
     private boolean mTrafficVisible = false;
-    private boolean mScreenOn = true;
     private boolean iBytes;
     private boolean oBytes;
 
@@ -300,20 +302,21 @@ public class NetworkTraffic extends TextView {
             mAttached = true;
             IntentFilter filter = new IntentFilter();
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-            filter.addAction(Intent.ACTION_SCREEN_OFF);
-            filter.addAction(Intent.ACTION_SCREEN_ON);
             mContext.registerReceiver(mIntentReceiver, filter, null, getHandler());
         }
+        Dependency.get(DarkIconDispatcher.class).addDarkReceiver(this);
         updateSettings();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        clearHandlerCallbacks();
         if (mAttached) {
             mContext.unregisterReceiver(mIntentReceiver);
             mAttached = false;
         }
+        Dependency.get(DarkIconDispatcher.class).removeDarkReceiver(this);
     }
 
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
@@ -322,14 +325,8 @@ public class NetworkTraffic extends TextView {
             String action = intent.getAction();
             if (action == null) return;
 
-            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION) && mScreenOn) {
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 updateSettings();
-            } else if (action.equals(Intent.ACTION_SCREEN_ON)) {
-                mScreenOn = true;
-                updateSettings();
-            } else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
-                mScreenOn = false;
-                clearHandlerCallbacks();
             }
         }
     };
@@ -454,8 +451,8 @@ public class NetworkTraffic extends TextView {
             setVisibility(View.GONE);
         }
     }
-	
-	public void setTintColor(int color) {
+
+    public void setTintColor(int color) {
         mTintColor = color;
         updateTrafficDrawable();
     }
@@ -469,6 +466,13 @@ public class NetworkTraffic extends TextView {
         setTextSize(TypedValue.COMPLEX_UNIT_PX, (float)txtSize);
         setCompoundDrawablePadding(txtImgPadding);
         updateTextSize();
+    }
+
+    @Override
+    public void onDarkChanged(Rect area, float darkIntensity, int tint) {
+        mTintColor = DarkIconDispatcher.getTint(area, this, tint);
+        setTextColor(mTintColor);
+        updateTrafficDrawable();
     }
 }
 

@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.PointF
 import android.hardware.biometrics.BiometricSourceType
+import android.provider.Settings
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.android.keyguard.KeyguardUpdateMonitor
@@ -75,7 +76,7 @@ class AuthRippleController @Inject constructor(
     internal var startLightRevealScrimOnKeyguardFadingAway = false
     var fingerprintSensorLocation: PointF? = null
     private var faceSensorLocation: PointF? = null
-    private var circleReveal: LightRevealEffect? = null
+    private var circleReveal: CircleReveal? = null
 
     private var udfpsController: UdfpsController? = null
 
@@ -165,6 +166,10 @@ class AuthRippleController @Inject constructor(
                     addUpdateListener { animator ->
                         if (lightRevealScrim.revealEffect != circleReveal) {
                             // if the something else took over the reveal, let's do nothing.
+                            // When the animator is almost done, fully reveal the scrim.
+                            if (animator.animatedValue as Float >= 0.9999f) {
+                                lightRevealScrim.revealAmount = 1f
+                            }
                             return@addUpdateListener
                         }
                         lightRevealScrim.revealAmount = animator.animatedValue as Float
@@ -185,15 +190,17 @@ class AuthRippleController @Inject constructor(
         fingerprintSensorLocation = authController.fingerprintSensorLocation
         faceSensorLocation = authController.faceAuthSensorLocation
         fingerprintSensorLocation?.let {
-            circleReveal = CircleReveal(
-                it.x,
-                it.y,
-                0f,
-                Math.max(
-                    Math.max(it.x, statusBar.displayWidth - it.x),
-                    Math.max(it.y, statusBar.displayHeight - it.y)
+            if (circleReveal == null || circleReveal!!.centerX != it.x || circleReveal!!.centerY != it.y) {
+                circleReveal = CircleReveal(
+                    it.x,
+                    it.y,
+                    0f,
+                    Math.max(
+                        Math.max(it.x, statusBar.displayWidth - it.x),
+                        Math.max(it.y, statusBar.displayHeight - it.y)
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -259,11 +266,17 @@ class AuthRippleController @Inject constructor(
                 }
 
                 mView.setSensorLocation(fingerprintSensorLocation!!)
-                showDwellRipple()
+                if (Settings.System.getInt(sysuiContext.contentResolver,
+                       Settings.System.UDFPS_ANIM, 0) == 0) {
+                    showDwellRipple()
+                }
             }
 
             override fun onFingerUp() {
-                mView.retractRipple()
+                if (Settings.System.getInt(sysuiContext.contentResolver,
+                        Settings.System.UDFPS_ANIM, 0) == 0) {
+                    mView.retractRipple()
+                }
             }
         }
 

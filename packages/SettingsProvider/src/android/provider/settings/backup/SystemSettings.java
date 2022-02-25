@@ -105,5 +105,10 @@ public class SystemSettings {
         Settings.System.QQS_SHOW_BRIGHTNESS,
         Settings.System.QS_BRIGHTNESS_POSITION_BOTTOM,
         Settings.System.QS_SHOW_AUTO_BRIGHTNESS_BUTTON,
+        Settings.System.SCREEN_OFF_FOD,
+        Settings.System.ENABLE_FLOATING_ROTATION_BUTTON,
+        Settings.System.STATUS_BAR_NOTIF_COUNT,
+        Settings.System.LOCKSCREEN_SMALL_CLOCK,
+        Settings.System.COLOR_BUCKET_OVERLAY,
     };
 }

@@ -29,23 +29,28 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.hardware.display.ColorDisplayManager;
 import android.hardware.display.DisplayManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
 import android.hardware.fingerprint.IUdfpsOverlayController;
 import android.hardware.fingerprint.IUdfpsOverlayControllerCallback;
 import android.media.AudioAttributes;
+import android.net.Uri;
+import android.os.Looper;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -57,6 +62,7 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.util.bliss.BlissUtils;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.systemui.R;
 import com.android.systemui.biometrics.UdfpsHbmTypes.HbmType;
@@ -77,6 +83,7 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.concurrency.Execution;
 import com.android.systemui.util.time.SystemClock;
+import com.android.systemui.util.settings.SystemSettings;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -120,6 +127,7 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
     @NonNull private final DumpManager mDumpManager;
     @NonNull private final KeyguardUpdateMonitor mKeyguardUpdateMonitor;
     @Nullable private final Vibrator mVibrator;
+    @NonNull private final Handler mMainHandler;
     @NonNull private final FalsingManager mFalsingManager;
     @NonNull private final PowerManager mPowerManager;
     @NonNull private final AccessibilityManager mAccessibilityManager;
@@ -165,6 +173,13 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
     private Set<Callback> mCallbacks = new HashSet<>();
 
     private final int mUdfpsVendorCode;
+    private final SystemSettings mSystemSettings;
+    private boolean mScreenOffFod;
+    private boolean mDisableNightMode;
+    private boolean mNightModeActive;
+    private int mAutoModeState;
+
+    private UdfpsAnimation mUdfpsAnimation;
 
     @VisibleForTesting
     public static final AudioAttributes VIBRATION_SONIFICATION_ATTRIBUTES =
@@ -245,6 +260,9 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
         @Override
         public void showUdfpsOverlay(int sensorId, int reason,
                 @NonNull IUdfpsOverlayControllerCallback callback) {
+            if (mDisableNightMode && isNightLightEnabled()) {
+                disableNightMode();
+            }
             mFgExecutor.execute(() -> {
                 final UdfpsEnrollHelper enrollHelper;
                 if (reason == IUdfpsOverlayController.REASON_ENROLL_FIND_SENSOR
@@ -260,6 +278,9 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
 
         @Override
         public void hideUdfpsOverlay(int sensorId) {
+            if (mDisableNightMode && isNightLightEnabled()) {
+                setNightMode(mNightModeActive, mAutoModeState);
+            }
             mFgExecutor.execute(() -> {
                 mServerRequest = null;
                 updateOverlay();
@@ -318,8 +339,10 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
         @Override
         public void onAcquired(int sensorId, int acquiredInfo, int vendorCode) {
             mFgExecutor.execute(() -> {
-                if (acquiredInfo == 6 && (mStatusBarStateController.isDozing() || !mScreenOn)) {
-                    if (vendorCode == mUdfpsVendorCode) {
+                final boolean isDozing = mStatusBarStateController.isDozing() || !mScreenOn;
+                if (acquiredInfo == 6 && vendorCode == mUdfpsVendorCode) {;
+                    if ((mScreenOffFod && isDozing) /** Screen off and dozing */ ||
+                            (mKeyguardUpdateMonitor.isDreaming() && mScreenOn) /** AOD or pulse */) {
                         if (mContext.getResources().getBoolean(R.bool.config_pulseOnFingerDownInAod)) {
                             mContext.sendBroadcastAsUser(new Intent(PULSE_ACTION),
                                     new UserHandle(UserHandle.USER_CURRENT));
@@ -327,7 +350,7 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
                             mPowerManager.wakeUp(mSystemClock.uptimeMillis(),
                                     PowerManager.WAKE_REASON_GESTURE, TAG);
                         }
-                        onAodInterrupt(0, 0, 0, 0); // To-Do pass proper values
+                        onAodInterrupt(0, 0, 0, 0);
                     }
                 }
             });
@@ -560,6 +583,7 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
             @Main Handler mainHandler,
             @NonNull ConfigurationController configurationController,
             @NonNull SystemClock systemClock,
+            @NonNull SystemSettings systemSettings,
             @NonNull UnlockedScreenOffAnimationController unlockedScreenOffAnimationController) {
         mContext = context;
         mExecution = execution;
@@ -584,6 +608,7 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
         mHbmProvider = hbmProvider.orElse(null);
         screenLifecycle.addObserver(mScreenObserver);
         mScreenOn = screenLifecycle.getScreenState() == ScreenLifecycle.SCREEN_ON;
+        mMainHandler = new Handler(Looper.getMainLooper());
         mOrientationListener = new BiometricOrientationEventListener(
                 context,
                 () -> {
@@ -620,6 +645,48 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
 
         udfpsHapticsSimulator.setUdfpsController(this);
         mUdfpsVendorCode = mContext.getResources().getInteger(R.integer.config_udfps_vendor_code);
+        if (BlissUtils.isPackageInstalled(mContext, "org.bliss.udfps.resources")) {
+            mUdfpsAnimation = new UdfpsAnimation(mContext, mWindowManager, mSensorProps);
+        }
+        mDisableNightMode = mContext.getResources().getBoolean(com.android.internal.R.bool.disable_fod_night_light);
+        mSystemSettings = systemSettings;
+        updateScreenOffFodState();
+        mSystemSettings.registerContentObserver(Settings.System.SCREEN_OFF_FOD,
+            new ContentObserver(mMainHandler) {
+                @Override
+                public void onChange(boolean selfChange, Uri uri) {
+                    if (uri.getLastPathSegment().equals(Settings.System.SCREEN_OFF_FOD)) {
+                        updateScreenOffFodState();
+                    }
+                }
+            }
+        );
+    }
+
+    private void updateScreenOffFodState() {
+        mScreenOffFod = mSystemSettings.getInt(Settings.System.SCREEN_OFF_FOD, 1) == 1;
+    }
+
+    private boolean isNightLightEnabled() {
+       return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.FOD_NIGHT_LIGHT, 1) == 1;
+    }
+
+    private void disableNightMode() {
+        ColorDisplayManager colorDisplayManager = mContext.getSystemService(ColorDisplayManager.class);
+        mAutoModeState = colorDisplayManager.getNightDisplayAutoMode();
+        mNightModeActive = colorDisplayManager.isNightDisplayActivated();
+        colorDisplayManager.setNightDisplayActivated(false);
+    }
+
+    private void setNightMode(boolean activated, int autoMode) {
+        ColorDisplayManager colorDisplayManager = mContext.getSystemService(ColorDisplayManager.class);
+        colorDisplayManager.setNightDisplayAutoMode(0);
+        if (autoMode == 0) {
+            colorDisplayManager.setNightDisplayActivated(activated);
+        } else if (autoMode == 1 || autoMode == 2) {
+            colorDisplayManager.setNightDisplayAutoMode(autoMode);
+        }
     }
 
     /**
@@ -627,7 +694,9 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
      */
     @VisibleForTesting
     public void playStartHaptic() {
-        if (mVibrator != null) {
+        boolean vibrate = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.UDFPS_HAPTIC_FEEDBACK, 1) == 1;
+        if (mVibrator != null && vibrate) {
             mVibrator.vibrate(
                     Process.myUid(),
                     mContext.getOpPackageName(),
@@ -778,6 +847,12 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
         mExecution.assertIsMainThread();
 
         final int reason = request.mRequestReason;
+
+        if (mUdfpsAnimation != null) {
+            mUdfpsAnimation.setIsKeyguard(reason ==
+                    IUdfpsOverlayController.REASON_AUTH_FPM_KEYGUARD);
+        }
+
         if (mView == null) {
             try {
                 Log.v(TAG, "showUdfpsOverlay | adding window reason=" + reason);
@@ -1001,6 +1076,9 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
         for (Callback cb : mCallbacks) {
             cb.onFingerDown();
         }
+        if (mUdfpsAnimation != null) {
+            mUdfpsAnimation.show();
+        }
     }
 
     private void onFingerUp() {
@@ -1016,6 +1094,9 @@ public class UdfpsController implements DozeReceiver, UdfpsHbmProvider {
             for (Callback cb : mCallbacks) {
                 cb.onFingerUp();
             }
+        }
+        if (mUdfpsAnimation != null) {
+            mUdfpsAnimation.hide();
         }
         mOnFingerDown = false;
         if (mView.isIlluminationRequested()) {
