@@ -17,7 +17,6 @@ package com.android.systemui.qs.tiles
 
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.view.View
 import com.android.systemui.plugins.qs.QSTile
 import com.android.systemui.qs.QSHost
@@ -43,9 +42,7 @@ internal abstract class SecureQSTile<TState : QSTile.State> protected constructo
     protected abstract fun handleClick(view: View?, keyguardShowing: Boolean)
 
     override fun handleClick(view: View?) {
-        val disable = Settings.System.getInt(mContext.contentResolver,
-                Settings.System.USE_TILES_ON_SECURE_KEYGUARD, 1) == 0
-        handleClick(view, mKeyguard.isMethodSecure && mKeyguard.isShowing && !disable)
+        handleClick(view, mKeyguard.isMethodSecure && mKeyguard.isShowing)
     }
 
     protected fun checkKeyguard(view: View?, keyguardShowing: Boolean): Boolean {
