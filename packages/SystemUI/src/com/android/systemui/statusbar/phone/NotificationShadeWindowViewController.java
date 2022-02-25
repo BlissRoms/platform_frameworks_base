@@ -127,9 +127,6 @@ public class NotificationShadeWindowViewController {
     private RectF mTempRect = new RectF();
     private boolean mIsTrackingBarGesture = false;
 
-    // custom additions start
-    private boolean mDoubleTapEnabledNative;
-
     @Inject
     public NotificationShadeWindowViewController(
             InjectionInflationController injectionInflationController,
@@ -222,10 +219,6 @@ public class NotificationShadeWindowViewController {
                     case Settings.System.QS_SHOW_AUTO_BRIGHTNESS_BUTTON:
                         updateAutoBrightnessIconVisibility();
                         break;
-                    case Settings.Secure.DOUBLE_TAP_TO_WAKE:
-                         mDoubleTapEnabledNative = Settings.Secure.getIntForUser(mView.getContext().getContentResolver(),
-                            Settings.Secure.DOUBLE_TAP_TO_WAKE, 0, UserHandle.USER_CURRENT) == 1;
-                    break;
                 }
             }
         };
@@ -242,9 +235,6 @@ public class NotificationShadeWindowViewController {
                 Settings.System.QS_SHOW_AUTO_BRIGHTNESS_BUTTON,
                 contentObserver, UserHandle.USER_ALL);
         }
-        mSecureSettings.registerContentObserverForUser(
-            Settings.Secure.DOUBLE_TAP_TO_WAKE,
-            contentObserver, UserHandle.USER_ALL);
 
         GestureDetector.SimpleOnGestureListener gestureListener =
                 new GestureDetector.SimpleOnGestureListener() {
@@ -260,7 +250,7 @@ public class NotificationShadeWindowViewController {
 
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
-                        if (mDoubleTapEnabled || mSingleTapEnabled || mDoubleTapEnabledNative) {
+                        if (mDoubleTapEnabled || mSingleTapEnabled) {
                             mService.wakeUpIfDozing(
                                     SystemClock.uptimeMillis(), mView, "DOUBLE_TAP");
                             return true;
