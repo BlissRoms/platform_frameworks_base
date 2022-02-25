@@ -133,6 +133,10 @@ import com.android.systemui.animation.DialogTransitionAnimator;
 import com.android.systemui.animation.Expandable;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
+import com.android.systemui.controls.dagger.ControlsComponent;
+import com.android.systemui.controls.management.ControlsListingController;
+import com.android.systemui.controls.ui.ControlsActivity;
+import com.android.systemui.controls.ui.ControlsUiController;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.globalactions.domain.interactor.GlobalActionsInteractor;
@@ -278,6 +282,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     private final KeyguardUpdateMonitor mKeyguardUpdateMonitor;
     private final DialogTransitionAnimator mDialogTransitionAnimator;
     private final GlobalActionsInteractor mInteractor;
+    private final ControlsComponent mControlsComponent;
 
     @VisibleForTesting
     public enum GlobalActionsEvent implements UiEventLogger.UiEventEnum {
@@ -389,7 +394,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             KeyguardUpdateMonitor keyguardUpdateMonitor,
             DialogTransitionAnimator dialogTransitionAnimator,
             SelectedUserInteractor selectedUserInteractor,
-            GlobalActionsInteractor interactor) {
+            GlobalActionsInteractor interactor,
+            ControlsComponent controlsComponent) {
         mContext = context;
         mWindowManagerFuncs = windowManagerFuncs;
         mAudioManager = audioManager;
@@ -409,6 +415,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         mTelecomManager = telecomManager;
         mMetricsLogger = metricsLogger;
         mUiEventLogger = uiEventLogger;
+        mControlsComponent = controlsComponent;
         mSysuiColorExtractor = colorExtractor;
         mStatusBarService = statusBarService;
         mLightBarController = lightBarController;
@@ -698,6 +705,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 if (shouldDisplayEmergency()) {
                     addIfShouldShowAction(tempActions, new EmergencyDialerAction());
                 }
+            } else if (GLOBAL_ACTION_KEY_DEVICECONTROLS.equals(actionKey)) {
+                addIfShouldShowAction(tempActions, new DeviceControlsAction());
             } else {
                 Log.e(TAG, "Invalid global action key " + actionKey);
             }
@@ -2410,6 +2419,37 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             int index = (Integer) v.getTag();
             mAudioManager.setRingerMode(indexToRingerMode(index));
             mHandler.sendEmptyMessageDelayed(MESSAGE_DISMISS, DIALOG_DISMISS_DELAY);
+        }
+    }
+
+    private final class DeviceControlsAction extends SinglePressAction {
+        private DeviceControlsAction() {
+            super(com.android.systemui.R.drawable.controls_icon,
+                    com.android.systemui.R.string.quick_controls_title);
+        }
+
+        @Override
+        public boolean showDuringKeyguard() {
+            return true;
+        }
+
+        @Override
+        public boolean showBeforeProvisioning() {
+            return false;
+        }
+
+        @Override
+        public void onPress() {
+            Intent intent = new Intent(mContext, ControlsActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra(ControlsUiController.EXTRA_ANIMATE, true);
+            mContext.startActivity(intent);
+        }
+
+        @Override
+        public boolean shouldShow() {
+            return super.shouldShow() &&
+                    mControlsComponent.getControlsListingController().isPresent();
         }
     }
 
