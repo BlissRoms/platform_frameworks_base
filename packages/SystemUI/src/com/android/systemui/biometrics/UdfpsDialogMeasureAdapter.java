@@ -183,7 +183,6 @@ public class UdfpsDialogMeasureAdapter {
         final int topSpacerHeight = getViewHeightPx(R.id.space_above_icon);
         final int textIndicatorHeight = getViewHeightPx(R.id.indicator);
         final int buttonBarHeight = getViewHeightPx(R.id.button_bar);
-
         final int bottomSpacerHeight = calculateBottomSpacerHeightForLandscape(titleHeight,
                 subtitleHeight, descriptionHeight, topSpacerHeight, textIndicatorHeight,
                 buttonBarHeight);
