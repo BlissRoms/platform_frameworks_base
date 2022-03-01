@@ -224,5 +224,6 @@ public class SecureSettings {
 	// Bliss Additions
 	Settings.Secure.QUICK_SETTINGS_TILES_VIBRATE,
         Settings.Secure.LOCKSCREEN_PIN_SCRAMBLE_LAYOUT,
+        Settings.Secure.IGNORE_AUTH_CONFIRMATION,
     };
 }
