@@ -221,5 +221,6 @@ public class SecureSettings {
         Settings.Secure.TETHERING_ALLOW_VPN_UPSTREAMS,
 	// Bliss Additions
 	Settings.Secure.QUICK_SETTINGS_TILES_VIBRATE,
+        Settings.Secure.IGNORE_AUTH_CONFIRMATION,
     };
 }
