@@ -143,7 +143,7 @@ public final class VolumeKeyHandler {
     public void onSkipTrackEvent(KeyEvent ev) {
         if (mMediaSessionManager != null) {
             final List<MediaController> sessions = mMediaSessionManager.getActiveSessionsForUser(
-                    null, UserHandle.USER_ALL);
+                    null, UserHandle.ALL);
             for (MediaController mediaController : sessions) {
                 if (PlaybackState.STATE_PLAYING ==
                         getMediaControllerPlaybackState(mediaController)) {
