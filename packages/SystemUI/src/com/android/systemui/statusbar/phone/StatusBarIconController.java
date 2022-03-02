@@ -396,10 +396,7 @@ public interface StatusBarIconController {
 
         private static final String SHOW_WIFI_STANDARD_ICON = Settings.Secure.SHOW_WIFI_STANDARD_ICON;
 
-        private boolean mOldStyleType;
-
-        private static final String USE_OLD_MOBILETYPE =
-            "system:" + Settings.System.USE_OLD_MOBILETYPE;
+        private boolean mIsOldSignalStyle = false;
 
         public IconManager(
                 ViewGroup group,
@@ -556,7 +553,7 @@ public interface StatusBarIconController {
             StatusBarMobileView mobileView = onCreateStatusBarMobileView(state.subId, slot);
             mobileView.applyMobileState(state);
             mGroup.addView(mobileView, index, onCreateLayoutParams());
-            Dependency.get(TunerService.class).addTunable(this, USE_OLD_MOBILETYPE);
+            mobileView.updateDisplayType(mIsOldSignalStyle);
 
             if (mIsInDemoMode) {
                 Context mobileContext = mMobileContextProvider
@@ -652,7 +649,6 @@ public interface StatusBarIconController {
 
         protected void destroy() {
             mGroup.removeAllViews();
-            Dependency.get(TunerService.class).removeTunable(this);
         }
 
         protected void onDensityOrFontScaleChanged() {
@@ -803,11 +799,6 @@ public interface StatusBarIconController {
                         TunerService.parseIntegerSwitch(newValue, false);
                     updateShowWifiStandard();
                     break;
-                case USE_OLD_MOBILETYPE:
-                    mOldStyleType =
-                        TunerService.parseIntegerSwitch(newValue, true);
-                    updateOldStyleMobileDataIcons();
-                    break;
                 default:
                     break;
             }
@@ -823,11 +814,15 @@ public interface StatusBarIconController {
             }
         }
 
-        private void updateOldStyleMobileDataIcons() {
+        protected void setMobileSignalStyle(boolean isOldSignalStyle) {
+            mIsOldSignalStyle = isOldSignalStyle;
+        }
+
+        protected void updateMobileIconStyle() {
             for (int i = 0; i < mGroup.getChildCount(); i++) {
-                View child = mGroup.getChildAt(i);
+                final View child = mGroup.getChildAt(i);
                 if (child instanceof StatusBarMobileView) {
-                    ((StatusBarMobileView) child).updateDisplayType(mOldStyleType);
+                    ((StatusBarMobileView) child).updateDisplayType(mIsOldSignalStyle);
                 }
             }
         }
