@@ -4063,6 +4063,10 @@ public class CentralSurfacesImpl extends CoreStartable implements
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LESS_BORING_HEADS_UP))) {
+                setUseLessBoringHeadsUp();
+            }
 	    update();
         }
 
