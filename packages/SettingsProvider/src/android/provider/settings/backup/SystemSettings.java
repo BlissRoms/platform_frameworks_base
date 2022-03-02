@@ -89,5 +89,6 @@ public class SystemSettings {
         Settings.System.NOTIFICATION_LIGHT_PULSE,
         Settings.System.FULLSCREEN_GESTURES,
         Settings.System.TORCH_POWER_BUTTON_GESTURE,
+        Settings.System.USE_OLD_MOBILETYPE,
     };
 }
