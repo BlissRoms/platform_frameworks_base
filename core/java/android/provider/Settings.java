@@ -6150,6 +6150,12 @@ public final class Settings {
         public static final String ANIM_TILE_STYLE = "anim_tile_style";
 
         /**
+         * Whether do haptic feedback on changed slider value
+         * @hide
+         */
+        public static final String HAPTIC_ON_SLIDER = "haptic_on_slider";
+
+        /**
          * Change quick settings tiles animation duration
          *
          * @hide

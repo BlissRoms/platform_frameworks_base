@@ -102,5 +102,6 @@ public class SystemSettings {
         Settings.System.AICP_LOCKSCREEN_WEATHER_STYLE,
         Settings.System.USE_OLD_MOBILETYPE,
         Settings.System.STATUSBAR_NOTIF_COUNT,
+        Settings.System.HAPTIC_ON_SLIDER,
     };
 }
