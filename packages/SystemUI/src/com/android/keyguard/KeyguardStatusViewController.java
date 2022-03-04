@@ -222,13 +222,13 @@ public class KeyguardStatusViewController extends ViewController<KeyguardStatusV
             if (visible) {
                 if (DEBUG) Slog.v(TAG, "refresh statusview visible:true");
                 refreshTime();
-                mView.updateSettings();
+                mView.updateWeatherView();
             }
         }
 
         @Override
         public void onUserSwitchComplete(int userId) {
-            mView.updateSettings();
+            mView.updateWeatherView();
         }
     };
 
