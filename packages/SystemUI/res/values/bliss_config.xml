@@ -55,5 +55,5 @@
     <bool name="config_alertSliderOnLeft">false</bool>
 
     <!-- Udfps HBM provider class name -->
-    <string name="config_udfpsHbmProviderComponent">com.android.systemui.biometrics.DummyUdfpsHbmProvider</string>
+    <string name="config_udfpsHbmProviderComponent">com.android.systemui.biometrics.AsusUdfpsHbmProvider</string>
 </resources>
