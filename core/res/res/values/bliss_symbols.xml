@@ -122,4 +122,9 @@
 
     <java-symbol type="bool" name="config_filterDisplayModes" />
     <java-symbol type="array" name="config_displayModeMappings" />
+
+    <!-- Notification light mappings -->
+    <java-symbol type="array" name="notification_light_package_mapping" />
+    <!-- On-device lights (LED) capabilities -->
+    <java-symbol type="integer" name="config_deviceLightCapabilities" />
 </resources>
