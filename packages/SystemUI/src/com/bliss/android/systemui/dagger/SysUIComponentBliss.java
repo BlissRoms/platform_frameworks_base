@@ -18,7 +18,7 @@ import dagger.Subcomponent;
         DependencyProvider.class,
         SystemUIBinder.class,
         SystemUIModule.class,
-        SystemUIBlissModule.class})
+        SystemUIBlissModule.class })
 public interface SysUIComponentBliss extends SysUIComponent {
     @SysUISingleton
     @Subcomponent.Builder
