@@ -33,7 +33,6 @@ import static android.view.WindowInsetsController.APPEARANCE_OPAQUE_NAVIGATION_B
 import static android.view.WindowInsetsController.APPEARANCE_SEMI_TRANSPARENT_NAVIGATION_BARS;
 import static android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_3BUTTON;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL;
 
@@ -317,11 +316,6 @@ public class NavigationBar implements View.OnAttachStateChangeListener,
 
             // Hide the notifications panel when quick step starts
             mShadeController.collapsePanel(true /* animate */);
-        }
-
-        @Override
-        public void onPrioritizedRotation(@Surface.Rotation int rotation) {
-            // nothing
         }
 
         @Override

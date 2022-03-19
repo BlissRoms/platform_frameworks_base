@@ -36,12 +36,12 @@ import com.android.systemui.navigationbar.buttons.ButtonInterface;
 
 public class NavigationHandle extends View implements ButtonInterface {
 
-    protected final Paint mPaint = new Paint();
+    private final Paint mPaint = new Paint();
     private @ColorInt final int mLightColor;
     private @ColorInt final int mDarkColor;
-    protected final int mRadius;
-    protected final int mBottom;
     private int mVerticalShift;
+    private final int mRadius;
+    private final int mBottom;
     private boolean mIsDreaming = false;
     private boolean mIsKeyguard = false;
     private boolean mRequiresInvalidate;
