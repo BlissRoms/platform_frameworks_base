@@ -7,7 +7,7 @@ import com.android.systemui.dagger.SystemUIBinder;
 import com.android.systemui.dagger.SysUIComponent;
 import com.android.systemui.dagger.SystemUIModule;
 
-import com.bliss.android.systemui.keyguard.KeyguardSliceProviderBliss;
+import com.bliss.android.systemui.keyguard.BlissKeyguardSliceProvider;
 import com.bliss.android.systemui.smartspace.KeyguardSmartspaceController;
 
 import dagger.Subcomponent;
@@ -29,7 +29,7 @@ public interface SysUIComponentBliss extends SysUIComponent {
     /**
      * Member injection into the supplied argument.
      */
-    void inject(KeyguardSliceProviderBliss keyguardSliceProviderBliss);
+    void inject(BlissKeyguardSliceProvider keyguardSliceProvider);
 
     @SysUISingleton
     KeyguardSmartspaceController createKeyguardSmartspaceController();
