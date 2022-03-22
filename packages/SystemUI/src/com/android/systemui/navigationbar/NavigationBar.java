@@ -708,7 +708,7 @@ public class NavigationBar extends ViewController<NavigationBarView> implements 
         }
         setDisabled2Flags(mDisabledFlags2);
 
-        initSecondaryHomeHandleForRotation();
+        //initSecondaryHomeHandleForRotation();
 
         // Unfortunately, we still need it because status bar needs LightBarController
         // before notifications creation. We cannot directly use getLightBarController()
@@ -1601,7 +1601,7 @@ public class NavigationBar extends ViewController<NavigationBarView> implements 
     }
 
     private boolean canShowSecondaryHandle() {
-        return mNavBarMode == NAV_BAR_MODE_GESTURAL && mOrientationHandle != null;
+        return false;
     }
 
     private final Consumer<Integer> mRotationWatcher = rotation -> {
