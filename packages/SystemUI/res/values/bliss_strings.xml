@@ -79,4 +79,7 @@
 
     <!-- Name of the roaming status bar icon. -->
     <string name="status_bar_roaming">Roaming indicator</string>
+
+    <!-- Name of the data saver status bar icon. -->
+    <string name="status_bar_data_saver">Data saver</string>
 </resources>
