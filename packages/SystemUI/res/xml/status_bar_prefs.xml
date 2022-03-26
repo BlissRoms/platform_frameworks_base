@@ -80,6 +80,10 @@
         android:title="@string/status_bar_vpn" />
 
     <com.android.systemui.tuner.StatusBarSwitch
+        android:key="data_saver"
+        android:title="@string/status_bar_data_saver" />
+
+    <com.android.systemui.tuner.StatusBarSwitch
         android:key="alarm_clock"
         android:title="@string/status_bar_alarm" />
 
