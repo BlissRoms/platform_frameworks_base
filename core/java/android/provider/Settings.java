@@ -5819,12 +5819,6 @@ public final class Settings {
         public static final String TOAST_ICON = "toast_icon";
 
         /**
-         * media artwork wallpaper blur level on lockscreen
-         * @hide
-         */
-        public static final String LOCKSCREEN_MEDIA_BLUR = "lockscreen_media_blur";
-
-        /**
          * Whether to show qs footer text
          * @hide
          */
