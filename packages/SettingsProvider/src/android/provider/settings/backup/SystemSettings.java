@@ -114,5 +114,8 @@ public class SystemSettings {
         Settings.System.NOTIFICATION_PULSE_REPEATS,
         Settings.System.AOD_NOTIFICATION_PULSE_TIMEOUT,
         Settings.System.NOTIFICATION_PULSE_DURATION,
+        Settings.System.QQS_SHOW_BRIGHTNESS,
+        Settings.System.SHOW_AUTO_BRIGHTNESS_BUTTON,
+        Settings.System.BRIGHTNESS_SLIDER_POSITION,
     };
 }

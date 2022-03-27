@@ -1344,15 +1344,15 @@ public class StatusBar extends SystemUI implements
                     mNotificationPanelViewController,
                     mNotificationShadeDepthControllerLazy.get(),
                     mBrightnessSliderFactory,
-                    (visible) -> {
+                    visible -> {
                         mBrightnessMirrorVisible = visible;
                         updateScrimController();
                     });
             fragmentHostManager.addTagListener(QS.TAG, (tag, f) -> {
-                QS qs = (QS) f;
-                if (qs instanceof QSFragment) {
-                    mQSPanelController = ((QSFragment) qs).getQSPanelController();
-                    ((QSFragment) qs).setBrightnessMirrorController(mBrightnessMirrorController);
+                if (f instanceof QSFragment) {
+                    final QSFragment qsf = (QSFragment) f;
+                    mQSPanelController = qsf.getQSPanelController();
+                    qsf.setBrightnessMirrorController(mBrightnessMirrorController);
                 }
             });
         }
