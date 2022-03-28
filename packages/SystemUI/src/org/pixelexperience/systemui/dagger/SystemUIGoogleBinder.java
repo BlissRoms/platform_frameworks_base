@@ -18,7 +18,6 @@ package org.pixelexperience.systemui.dagger;
 
 import android.app.Activity;
 import android.app.Service;
-
 import com.android.systemui.LatencyTester;
 import com.android.systemui.ScreenDecorations;
 import com.android.systemui.SliceBroadcastRelayHandler;
@@ -44,7 +43,7 @@ import com.android.systemui.toast.ToastUI;
 import com.android.systemui.util.leak.GarbageMonitor;
 import com.android.systemui.volume.VolumeUI;
 import com.android.systemui.wmshell.WMShell;
-import com.google.android.systemui.theme.ThemeOverlayControllerGoogle;
+import com.bliss.android.systemui.theme.BlissThemeOverlayController;
 
 import org.pixelexperience.systemui.GoogleServices;
 import org.pixelexperience.systemui.columbus.ColumbusTargetRequestServiceWrapper;
@@ -58,6 +57,7 @@ import dagger.multibindings.IntoMap;
 
 @Module(includes = {RecentsModule.class, StatusBarGoogleModule.class, KeyguardModule.class})
 public abstract class SystemUIGoogleBinder {
+
     /**
      * Inject into AuthController.
      */
@@ -168,7 +168,7 @@ public abstract class SystemUIGoogleBinder {
     @Binds
     @IntoMap
     @ClassKey(ThemeOverlayController.class)
-    public abstract SystemUI bindThemeOverlayController(ThemeOverlayControllerGoogle sysui);
+    public abstract SystemUI bindThemeOverlayController(BlissThemeOverlayController sysui);
 
     /**
      * Inject into ToastUI.
