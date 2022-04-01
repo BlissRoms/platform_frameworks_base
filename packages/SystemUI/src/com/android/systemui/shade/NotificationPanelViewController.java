@@ -5632,6 +5632,9 @@ public final class NotificationPanelViewController implements Dumpable {
         }
         if (mAccessibilityManager.isEnabled()) {
             mView.setAccessibilityPaneTitle(determineAccessibilityPaneTitle());
+            float qsExpansionFraction = computeQsExpansionFraction();
+            int qsPanelBottomY = calculateQsBottomPosition(qsExpansionFraction);
+            mScrimController.setQsPosition(qsExpansionFraction, qsPanelBottomY);
         }
         mNotificationStackScrollLayoutController.setMaxTopPadding(mQsMaxExpansionHeight);
     }
