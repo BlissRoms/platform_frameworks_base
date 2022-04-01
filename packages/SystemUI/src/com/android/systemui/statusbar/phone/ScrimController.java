@@ -31,6 +31,7 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.util.MathUtils;
 import android.util.Pair;
+import android.view.CrossWindowBlurListeners;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
@@ -178,6 +179,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
     public static final float BUSY_SCRIM_ALPHA = 1f;
 
     public static float mCustomScrimAlpha = 1f;
+    public static float QS_CLIP_SCRIM_ALPHA = 0.80f;
 
     /**
      * Scrim opacity that can have text on top.
@@ -280,6 +282,8 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             StatusBarKeyguardViewManager statusBarKeyguardViewManager) {
         mScrimStateListener = lightBarController::setScrimState;
         mDefaultScrimAlpha = BUSY_SCRIM_ALPHA;
+        CrossWindowBlurListeners mBlurSupport = CrossWindowBlurListeners.getInstance();
+        QS_CLIP_SCRIM_ALPHA = mBlurSupport.isCrossWindowBlurEnabled() ? 0.8f : 1.0f;
 
         mKeyguardStateController = keyguardStateController;
         mDarkenWhileDragging = !mKeyguardStateController.canDismissLockScreen();
@@ -342,6 +346,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             states[i].init(mScrimInFront, mScrimBehind, mDozeParameters, mDockManager);
             states[i].setScrimBehindAlphaKeyguard(mScrimBehindAlphaKeyguard);
             states[i].setDefaultScrimAlpha(mDefaultScrimAlpha);
+            states[i].setQSClipScrimAlpha(QS_CLIP_SCRIM_ALPHA);
         }
 
         mScrimBehind.setDefaultFocusHighlightEnabled(false);
@@ -790,6 +795,8 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
                 if (mClipsQsScrim) {
                     mBehindAlpha = mCustomScrimAlpha;
                     mNotificationsAlpha = behindFraction * mCustomScrimAlpha;
+                    mBehindAlpha = QS_CLIP_SCRIM_ALPHA;
+                    mNotificationsAlpha = behindFraction * QS_CLIP_SCRIM_ALPHA;
                 } else {
                     mBehindAlpha = behindFraction * mDefaultScrimAlpha;
                     // Delay fade-in of notification scrim a bit further, to coincide with the
@@ -840,6 +847,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
                 mNotificationsAlpha = behindAlpha;
                 mNotificationsTint = behindTint;
                 mBehindAlpha = mCustomScrimAlpha;
+                mBehindAlpha = QS_CLIP_SCRIM_ALPHA;
                 mBehindTint = Color.TRANSPARENT;
             } else {
                 mBehindAlpha = behindAlpha;
@@ -899,6 +907,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         int behindTint;
         if (mDarkenWhileDragging) {
             behindAlpha = MathUtils.lerp(mCustomScrimAlpha, stateBehind,
+            behindAlpha = MathUtils.lerp(QS_CLIP_SCRIM_ALPHA, stateBehind,
                     interpolatedFract);
         } else {
             behindAlpha = MathUtils.lerp(0 /* start */, stateBehind,
@@ -913,6 +922,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         }
         if (mQsExpansion > 0) {
             behindAlpha = MathUtils.lerp(behindAlpha, mCustomScrimAlpha, mQsExpansion);
+            behindAlpha = MathUtils.lerp(behindAlpha, QS_CLIP_SCRIM_ALPHA, mQsExpansion);
             float tintProgress = mQsExpansion;
             if (mStatusBarKeyguardViewManager.isBouncerInTransit()) {
                 // this is case of - on lockscreen - going from expanded QS to bouncer.
