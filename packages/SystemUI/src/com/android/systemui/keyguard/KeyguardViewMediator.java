@@ -2583,7 +2583,6 @@ public class KeyguardViewMediator extends SystemUI implements Dumpable,
 
             mKeyguardViewControllerLazy.get().onScreenTurningOn();
             if (callback != null) {
-                notifyDrawn(callback);
             }
         }
         Trace.endSection();
