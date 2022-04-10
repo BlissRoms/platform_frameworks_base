@@ -36,6 +36,7 @@ import android.graphics.RectF;
 import android.hardware.biometrics.BiometricOverlayConstants;
 import android.hardware.biometrics.SensorLocationInternal;
 import android.hardware.display.AmbientDisplayConfiguration;
+import android.hardware.display.ColorDisplayManager;
 import android.hardware.display.DisplayManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
@@ -118,6 +119,7 @@ public class UdfpsController implements DozeReceiver {
     private static final long MIN_TOUCH_LOG_INTERVAL = 50;
 
     private final Context mContext;
+    private final ColorDisplayManager mColorDisplayManager;
     private final Execution mExecution;
     private final FingerprintManager mFingerprintManager;
     @NonNull private final LayoutInflater mInflater;
@@ -175,6 +177,7 @@ public class UdfpsController implements DozeReceiver {
     private boolean mAttemptedToDismissKeyguard;
     private final int mUdfpsVendorCode;
     private Set<Callback> mCallbacks = new HashSet<>();
+    private boolean mNightDisplayEnabled;
 
     private UdfpsAnimation mUdfpsAnimation;
     private final AmbientDisplayConfiguration mAmbientDisplayConfiguration;
@@ -649,6 +652,7 @@ public class UdfpsController implements DozeReceiver {
         mConfigurationController = configurationController;
         mSystemClock = systemClock;
         mUnlockedScreenOffAnimationController = unlockedScreenOffAnimationController;
+        mColorDisplayManager = context.getSystemService(ColorDisplayManager.class);
 
         mSensorProps = findFirstUdfps();
         // At least one UDFPS sensor exists
@@ -856,6 +860,10 @@ public class UdfpsController implements DozeReceiver {
     }
 
     private void showUdfpsOverlay(@NonNull ServerRequest request) {
+        mNightDisplayEnabled = mColorDisplayManager.isNightDisplayActivated();
+        if (mNightDisplayEnabled) {
+            mColorDisplayManager.setNightDisplayActivated(false);
+        }
         mExecution.assertIsMainThread();
 
         final int reason = request.mRequestReason;
@@ -967,6 +975,9 @@ public class UdfpsController implements DozeReceiver {
     }
 
     private void hideUdfpsOverlay() {
+        if (mNightDisplayEnabled) {
+            mColorDisplayManager.setNightDisplayActivated(true);
+        }
         mExecution.assertIsMainThread();
 
         if (mView != null) {
