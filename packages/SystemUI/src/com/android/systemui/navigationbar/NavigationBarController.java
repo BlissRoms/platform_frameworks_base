@@ -87,6 +87,10 @@ public interface NavigationBarController {
         }
     }
 
+    private boolean shouldShowTaskbar() {
+        return mTaskbarShowing;
+    }
+
     /** @return {@link NavigationBar} on the default display. */
     @Nullable
     NavigationBar getDefaultNavigationBar();
