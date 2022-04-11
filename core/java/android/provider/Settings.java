@@ -6267,6 +6267,11 @@ public final class Settings {
         /**
          * @hide
          */
+        public static final String ENABLE_TASKBAR = "enable_taskbar";
+
+        /**
+         * @hide
+         */
         public static final String STATUSBAR_BATTERY_BAR_BLEND_COLOR = "statusbar_battery_bar_blend_color";
 
         /**
