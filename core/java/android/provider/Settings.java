@@ -6203,6 +6203,11 @@ public final class Settings {
         @Readable
         public static final String FLASHLIGHT_ON_CALL_RATE = "flashlight_on_call_rate";
 
+	/**
+         * @hide
+         */
+        public static final String ENABLE_TASKBAR = "enable_taskbar";
+
         /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
