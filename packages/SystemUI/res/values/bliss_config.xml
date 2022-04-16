@@ -19,4 +19,6 @@
     <integer name="quick_settings_onthego_dialog_short_timeout">3000</integer>
     <integer name="quick_settings_onthego_dialog_long_timeout">6000</integer>
 
+    <!-- Allow devices override audio panel location to the left side -->
+    <bool name="config_audioPanelOnLeftSide">false</bool>
 </resources>
