@@ -292,6 +292,7 @@ public class VolumeDialogImpl implements VolumeDialog,
     private View mODICaptionsTooltipView = null;
 
     private boolean mShowAppVolume;
+    private boolean mForceShowSettings;
 
     // Volume panel placement left or right
     private boolean mVolumePanelOnLeft;
@@ -2837,6 +2838,8 @@ public class VolumeDialogImpl implements VolumeDialog,
                 Settings.System.VOLUME_PANEL_ON_LEFT);
         private final Uri SHOW_APP_VOLUME_URI = Settings.System.getUriFor(
                 Settings.System.SHOW_APP_VOLUME);
+        private final Uri FORCE_SHOW_SETTINGS_URI = Settings.System.getUriFor(
+                Settings.System.VOLUME_DIALOG_FORCE_SHOW_SETTINGS);
 
         CustomSettingsObserver() {
             super(new Handler(Looper.getMainLooper()));
@@ -2847,6 +2850,8 @@ public class VolumeDialogImpl implements VolumeDialog,
             resolver.registerContentObserver(VOLUME_PANEL_ON_LEFT_URI,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(SHOW_APP_VOLUME_URI,
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(FORCE_SHOW_SETTINGS_URI,
                     false, this, UserHandle.USER_ALL);
             updateVolumeDialog();
         }
@@ -2864,6 +2869,10 @@ public class VolumeDialogImpl implements VolumeDialog,
                     mContext.getContentResolver(),
                     Settings.System.SHOW_APP_VOLUME,
                     1, UserHandle.USER_CURRENT) == 1;
+            mForceShowSettings = Settings.System.getIntForUser(
+                    mContext.getContentResolver(),
+                    Settings.System.VOLUME_DIALOG_FORCE_SHOW_SETTINGS,
+                    0, UserHandle.USER_CURRENT) == 1;
             mHandler.post(() -> {
                     mConfigChanged = true;
             });
@@ -2872,7 +2881,8 @@ public class VolumeDialogImpl implements VolumeDialog,
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(VOLUME_PANEL_ON_LEFT_URI) ||
-                    uri.equals(SHOW_APP_VOLUME_URI)) {
+                    uri.equals(SHOW_APP_VOLUME_URI) ||
+                    uri.equals(FORCE_SHOW_SETTINGS_URI)) {
                 updateVolumeDialog();
             }
         }
