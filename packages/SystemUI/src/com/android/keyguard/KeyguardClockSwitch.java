@@ -216,7 +216,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
         }
         boolean useLargeClock = false;
         if (plugin == null) {
-            this.mKeyguardStatusArea.setVisibility(View.VISIBLE);
+            this.mStatusArea.setVisibility(View.VISIBLE);
             this.mClockView.setVisibility(View.VISIBLE);
             this.mLargeClockView.setVisibility(View.VISIBLE);
             this.mClockFrame.setVisibility(View.VISIBLE);
@@ -236,15 +236,15 @@ public class KeyguardClockSwitch extends RelativeLayout {
             mLargeClockFrame.addView(bigClockView);
             mLargeClockView.setVisibility(View.GONE);
         }
-        mKeyguardStatusArea.setVisibility(plugin.shouldShowStatusArea() ? View.VISIBLE : View.GONE);
+        mStatusArea.setVisibility(plugin.shouldShowStatusArea() ? View.VISIBLE : View.GONE);
         // Initialize plugin parameters.
         mClockPlugin = plugin;
         mClockPlugin.setStyle(getPaint().getStyle());
         mClockPlugin.setTextColor(getCurrentTextColor());
         mClockPlugin.setDarkAmount(mDarkAmount);
-        Boolean bool = mHasVisibleNotifications;
-        if (bool != null) {
-            useLargeClock = bool.booleanValue();
+        Integer num = this.mDisplayedClockSize;
+        if (num != null && num.intValue() == 0) {
+            useLargeClock = true;
         }
         setupFrames("setPlugin", useLargeClock);
         if (mColorPalette != null) {

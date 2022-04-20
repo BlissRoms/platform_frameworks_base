@@ -111,4 +111,5 @@
     <dimen name="kg_pattern_bottom_margin">8dp</dimen>
     <dimen name="kg_pin_bottom_margin">8dp</dimen>
 
+    <dimen name="title_clock_padding">4dp</dimen>
 </resources>
