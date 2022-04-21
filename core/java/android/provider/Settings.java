@@ -6592,6 +6592,12 @@ public final class Settings {
         public static final String SCREEN_OFF_FOD = "screen_off_fod";
 
         /**
+         * Whether to show data usage in qs footer
+         * @hide
+         */
+        public static final String QS_FOOTER_DATA_USAGE = "qs_footer_data_usage";
+
+        /**
          * Whether to show material Dismiss All Button for notifications
          * @hide
          */
