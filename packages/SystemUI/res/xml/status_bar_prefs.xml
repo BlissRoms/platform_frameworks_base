@@ -111,11 +111,13 @@
 
     <com.android.systemui.tuner.StatusBarSwitch
         android:key="vpn"
-        android:title="@string/status_bar_vpn" />
+        android:title="@string/status_bar_vpn"
+        android:icon="@drawable/ic_statusbar_vpn" />
 
     <com.android.systemui.tuner.StatusBarSwitch
         android:key="data_saver"
-        android:title="@string/status_bar_data_saver" />
+        android:title="@string/status_bar_data_saver"
+        android:icon="@drawable/ic_statusbar_data_saver" />
 
     <com.android.systemui.tuner.StatusBarSwitch
         android:icon="@drawable/ic_statusbar_alarm"
