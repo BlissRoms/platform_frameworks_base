@@ -89,7 +89,6 @@ public class SystemSettings {
         Settings.System.NAVIGATION_BAR_INVERSE,
         Settings.System.SHOW_FOURG_ICON,
         Settings.System.USE_OLD_MOBILETYPE,
-        Settings.System.QS_SHOW_BATTERY_ESTIMATE,
         Settings.System.ENABLE_RIPPLE_EFFECT,
         Settings.System.DOZE_ON_CHARGE,
     };
