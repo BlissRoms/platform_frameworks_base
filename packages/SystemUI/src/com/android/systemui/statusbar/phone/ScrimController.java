@@ -62,6 +62,9 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.AlarmTimeout;
 import com.android.systemui.util.wakelock.DelayedWakeLock;
 import com.android.systemui.util.wakelock.WakeLock;
+import android.provider.Settings;
+import android.os.UserHandle;
+import android.content.ContentResolver;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
@@ -182,7 +185,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
      */
     public static final float BUSY_SCRIM_ALPHA = 1f;
 
-    public static float QS_CLIP_SCRIM_ALPHA = 0.80f;
+    public static float QS_CLIP_SCRIM_ALPHA = 1f;
 
     /**
      * Scrim opacity that can have text on top.
@@ -267,6 +270,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
     private final WakeLock mWakeLock;
     private boolean mWakeLockHeld;
     private boolean mKeyguardOccluded;
+    private ContentResolver mResolver;
 
     @Inject
     public ScrimController(
@@ -285,8 +289,6 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             StatusBarKeyguardViewManager statusBarKeyguardViewManager) {
         mScrimStateListener = lightBarController::setScrimState;
         mDefaultScrimAlpha = BUSY_SCRIM_ALPHA;
-        CrossWindowBlurListeners mBlurSupport = CrossWindowBlurListeners.getInstance();
-        QS_CLIP_SCRIM_ALPHA = mBlurSupport.isCrossWindowBlurEnabled() ? 0.8f : 1.0f;
 
         mKeyguardStateController = keyguardStateController;
         mDarkenWhileDragging = !mKeyguardStateController.canDismissLockScreen();
@@ -344,6 +346,13 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             mScrimBehindChangeRunnable = null;
         }
 
+        if (mScrimBehind != null) {
+        final ContentResolver resolver = mScrimBehind.getContext().getContentResolver();
+        CrossWindowBlurListeners mBlurSupport = CrossWindowBlurListeners.getInstance();
+        QS_CLIP_SCRIM_ALPHA = (Settings.System.getFloatForUser(resolver,
+                Settings.System.QS_TRANSPARENCY, 10,
+                UserHandle.USER_CURRENT) / 10);
+        }
         final ScrimState[] states = ScrimState.values();
         for (int i = 0; i < states.length; i++) {
             states[i].init(mScrimInFront, mScrimBehind, mDozeParameters, mDockManager);
