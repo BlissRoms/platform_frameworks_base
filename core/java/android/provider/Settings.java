@@ -6262,6 +6262,11 @@ public final class Settings {
         public static final String STATUSBAR_BATTERY_BAR_BLEND_COLOR_REVERSE =
                 "statusbar_battery_bar_blend_color_reverse";
 
+	/**
+         * @hide
+         */
+        public static final String QS_TRANSPARENCY = "qs_transparency";
+
         /**
          * These are all public system settings
          *
