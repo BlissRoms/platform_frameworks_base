@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.bliss.hardware;
+package com.android.internal.custom.hardware;
 
 parcelable TouchscreenGesture;
 
