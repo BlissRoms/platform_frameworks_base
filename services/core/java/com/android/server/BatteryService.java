@@ -79,6 +79,7 @@ import com.android.server.lights.LogicalLight;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -186,6 +187,9 @@ public final class BatteryService extends SystemService {
 
     private boolean mOemFastCharger;
     private boolean mLastOemFastCharger;
+
+    private boolean mDashCharger;
+    private boolean mLastDashCharger;
 
     private long mDischargeStartTime;
     private int mDischargeStartLevel;
@@ -691,6 +695,7 @@ public final class BatteryService extends SystemService {
         shutdownIfOverTempLocked();
 
         mOemFastCharger = isOemFastCharger();
+        mDashCharger = isDashCharger();
 
         if (force || (mHealthInfo.batteryStatus != mLastBatteryStatus ||
                 mHealthInfo.batteryHealth != mLastBatteryHealth ||
@@ -704,6 +709,7 @@ public final class BatteryService extends SystemService {
                 mHealthInfo.batteryChargeCounter != mLastChargeCounter ||
                 mInvalidCharger != mLastInvalidCharger ||
                 mOemFastCharger != mLastOemFastCharger ||
+                mDashCharger != mLastDashCharger ||
                 mBatteryModProps.modLevel != mLastModLevel ||
                 mBatteryModProps.modStatus != mLastModStatus ||
                 mBatteryModProps.modFlag != mLastModFlag ||
@@ -880,12 +886,12 @@ public final class BatteryService extends SystemService {
             mLastBatteryLevelCritical = mBatteryLevelCritical;
             mLastInvalidCharger = mInvalidCharger;
             mLastOemFastCharger = mOemFastCharger;
+            mLastDashCharger = mDashCharger;
             mLastModLevel = mBatteryModProps.modLevel;
             mLastModStatus = mBatteryModProps.modStatus;
             mLastModFlag = mBatteryModProps.modFlag;
             mLastModType = mBatteryModProps.modType;
             mLastModPowerSource = mBatteryModProps.modPowerSource;
-
         }
     }
 
@@ -914,6 +920,7 @@ public final class BatteryService extends SystemService {
         intent.putExtra(BatteryManager.EXTRA_MAX_CHARGING_VOLTAGE, mHealthInfo.maxChargingVoltage);
         intent.putExtra(BatteryManager.EXTRA_CHARGE_COUNTER, mHealthInfo.batteryChargeCounter);
         intent.putExtra(BatteryManager.EXTRA_OEM_FAST_CHARGER, mOemFastCharger);
+        intent.putExtra(BatteryManager.EXTRA_DASH_CHARGER, mDashCharger);
         intent.putExtra(BatteryManager.EXTRA_MOD_LEVEL, mBatteryModProps.modLevel);
         intent.putExtra(BatteryManager.EXTRA_MOD_STATUS, mBatteryModProps.modStatus);
         intent.putExtra(BatteryManager.EXTRA_MOD_FLAG, mBatteryModProps.modFlag);
@@ -991,6 +998,20 @@ public final class BatteryService extends SystemService {
             Slog.e(TAG, "Failed to read oem fast charger status path: " + path);
         }
 
+        return false;
+    }
+
+    private boolean isDashCharger() {
+        try {
+            FileReader file = new FileReader("/sys/class/power_supply/battery/fastchg_status");
+            BufferedReader br = new BufferedReader(file);
+            String state = br.readLine();
+            br.close();
+            file.close();
+            return "1".equals(state);
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        }
         return false;
     }
 
