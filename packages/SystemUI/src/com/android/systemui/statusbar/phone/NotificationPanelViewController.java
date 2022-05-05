@@ -123,7 +123,6 @@ import com.android.keyguard.dagger.KeyguardStatusViewComponent;
 import com.android.keyguard.dagger.KeyguardUserSwitcherComponent;
 import com.android.systemui.DejankUtils;
 import com.android.systemui.Dependency;
-import com.android.systemui.BlissSystemUIUtils;
 import com.android.systemui.R;
 import com.android.systemui.RetickerAnimations;
 import com.android.systemui.ScreenDecorations;
@@ -426,8 +425,6 @@ public class NotificationPanelViewController extends PanelViewController {
     private boolean mOnlyAffordanceInThisMotion;
     private ValueAnimator mQsSizeChangeAnimator;
 
-    private String[] mAppExceptions;
-
     private boolean mQsScrimEnabled = true;
     private boolean mQsTouchAboveFalsingThreshold;
     private int mQsFalsingThreshold;
@@ -660,6 +657,8 @@ public class NotificationPanelViewController extends PanelViewController {
     private KeyguardStatusView mKeyguardStatusView;
 
     private boolean mBlockedGesturalNavigation;
+
+    private String[] mAppExceptions;
 
     /*Reticker*/
     private LinearLayout mReTickerComeback;
@@ -947,6 +946,7 @@ public class NotificationPanelViewController extends PanelViewController {
         mReTickerComebackIcon = mView.findViewById(R.id.ticker_comeback_icon);
         mReTickerContentTV = mView.findViewById(R.id.ticker_content);
         mNotificationStackScroller = mView.findViewById(R.id.notification_stack_scroller);
+
         initBottomArea();
 
         mWakeUpCoordinator.setStackScroller(mNotificationStackScrollLayoutController);
@@ -5003,7 +5003,9 @@ public class NotificationPanelViewController extends PanelViewController {
     /* reTicker */
 
     public void reTickerView(boolean visibility) {
-        if (!BlissSystemUIUtils.settingStatusBoolean("reticker_status", mView.getContext())) return;
+        boolean reTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
+        if (!reTickerStatus) return;
         if (visibility && mReTickerComeback.getVisibility() == View.VISIBLE) {
             reTickerDismissal();
         }
@@ -5029,7 +5031,9 @@ public class NotificationPanelViewController extends PanelViewController {
             PendingIntent reTickerIntent = row.getEntry().getSbn().getNotification().contentIntent;
             String mergedContentText = reTickerAppName + " " + reTickerContent;
             mReTickerComebackIcon.setImageDrawable(icon);
-            if (BlissSystemUIUtils.settingStatusBoolean("reticker_colored", mView.getContext())) {
+            boolean reTickerColored = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                    Settings.System.RETICKER_COLORED, 0, UserHandle.USER_CURRENT) != 0;
+            if (reTickerColored) {
                 int col;
                 col = row.getEntry().getSbn().getNotification().color;
                 mAppExceptions = mView.getContext().getResources().getStringArray(R.array.app_exceptions);
@@ -5063,7 +5067,9 @@ public class NotificationPanelViewController extends PanelViewController {
     }
 
     private void reTickerViewVisibility() {
-        if (!BlissSystemUIUtils.settingStatusBoolean("reticker_status", mView.getContext())) {
+        boolean reTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
+        if (!reTickerStatus) {
             reTickerDismissal();
             return;
         }
@@ -5077,7 +5083,9 @@ public class NotificationPanelViewController extends PanelViewController {
     }
 
     public void reTickerViewUpdate() {
-        if (BlissSystemUIUtils.settingStatusBoolean("reticker_status", mView.getContext())) return;
+        boolean reTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
+        if (reTickerStatus) return;
         if (mReTickerComeback != null) mReTickerComeback.setBackground(mView.getContext().getDrawable(R.drawable.reticker_background));
         if (mReTickerContentTV != null) mReTickerContentTV.setTextAppearance(mView.getContext(), R.style.TextAppearance_Notifications_reTicker);
     }
