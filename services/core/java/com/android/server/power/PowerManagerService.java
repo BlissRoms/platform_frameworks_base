@@ -1493,7 +1493,9 @@ public final class PowerManagerService extends SystemService
         }
         // depends on AOD_NOTIFICATION_PULSE_ACTIVATED - so MUST be afterwards
         // no need to call us again
-        mAlwaysOnEnabled = mAmbientDisplayConfiguration.alwaysOnEnabled(UserHandle.USER_CURRENT);
+        mAlwaysOnEnabled = mAmbientDisplayConfiguration.alwaysOnEnabledSetting(UserHandle.USER_CURRENT)
+            || (mAmbientDisplayConfiguration.alwaysOnChargingEnabledSetting(
+                    UserHandle.USER_CURRENT) && mIsPowered);
         mSmartChargingEnabled = Settings.System.getInt(resolver,
                 Settings.System.SMART_CHARGING, 0) == 1;
         mSmartChargingLevel = Settings.System.getInt(resolver,
