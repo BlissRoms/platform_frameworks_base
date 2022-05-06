@@ -1974,7 +1974,11 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         }
 
         // Take a guess at initial SIM state, battery status and PLMN until we get an update
+<<<<<<< HEAD
         mBatteryStatus = new BatteryStatus(BATTERY_STATUS_UNKNOWN, 100, 0, 0, 0, false, false, false, false, true, 0, 0, 0);
+=======
+        mBatteryStatus = new BatteryStatus(BATTERY_STATUS_UNKNOWN, 100, 0, 0, 0, false, false, false, false, false, true, 0, 0, 0);
+>>>>>>> e266fb72649b (BatteryService: add Turbo power charging support)
 
         // Watch for interesting updates
         final IntentFilter filter = new IntentFilter();
@@ -3128,6 +3132,11 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
 
         // change in VOOC charging while plugged in
         if (nowPluggedIn && current.voocChargeStatus != old.voocChargeStatus) {
+            return true;
+        }
+
+        // change in turbo power charging while plugged in
+        if (nowPluggedIn && current.turboPowerStatus != old.turboPowerStatus) {
             return true;
         }
 
