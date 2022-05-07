@@ -68,6 +68,7 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.hardware.biometrics.SensorLocationInternal;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -702,6 +703,10 @@ public class NotificationPanelViewController extends PanelViewController {
     private ImageView mReTickerComebackIcon;
     private TextView mReTickerContentTV;
     private NotificationStackScrollLayout mNotificationStackScroller;
+
+    private boolean mReTickerStatus;
+    private boolean mReTickerColored;
+    private boolean mReTickerLandscapeOnly;
 
     private View.AccessibilityDelegate mAccessibilityDelegate = new View.AccessibilityDelegate() {
         @Override
@@ -3902,6 +3907,10 @@ public class NotificationPanelViewController extends PanelViewController {
         }
     }
 
+    private boolean isLandscape() {
+        return mView.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
     public void dozeTimeTick() {
         mLockIconViewController.dozeTimeTick();
         mKeyguardBottomArea.dozeTimeTick();
@@ -4412,6 +4421,25 @@ public class NotificationPanelViewController extends PanelViewController {
                 /* notifyForDescendants */ false,
                 mSettingsChangeObserver
         );
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.RETICKER_STATUS),
+                /* notifyForDescendants */ false,
+                mSettingsChangeObserver,
+                UserHandle.USER_ALL
+        );
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.RETICKER_COLORED),
+                /* notifyForDescendants */ false,
+                mSettingsChangeObserver,
+                UserHandle.USER_ALL
+        );
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.RETICKER_LANDSCAPE_ONLY),
+                /* notifyForDescendants */ false,
+                mSettingsChangeObserver,
+                UserHandle.USER_ALL
+        );
+        updateReticker();
     }
 
     private void unregisterSettingsChangeListener() {
@@ -4788,12 +4816,30 @@ public class NotificationPanelViewController extends PanelViewController {
         }
 
         @Override
-        public void onChange(boolean selfChange) {
+        public void onChange(boolean selfChange, Uri uri) {
             if (DEBUG_LOGCAT) Log.d(TAG, "onSettingsChanged");
 
-            // Can affect multi-user switcher visibility
-            reInflateViews();
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.RETICKER_STATUS))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.RETICKER_COLORED))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.RETICKER_LANDSCAPE_ONLY))) {
+                updateReticker();
+            } else {
+                // Can affect multi-user switcher visibility
+                reInflateViews();
+            }
         }
+    }
+
+    private void updateReticker() {
+        mReTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
+        mReTickerColored = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_COLORED, 0, UserHandle.USER_CURRENT) != 0;
+        mReTickerLandscapeOnly = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_LANDSCAPE_ONLY, 0, UserHandle.USER_CURRENT) != 0;
     }
 
     private class StatusBarStateListener implements StateListener {
@@ -5273,9 +5319,7 @@ public class NotificationPanelViewController extends PanelViewController {
     /* reTicker */
 
     public void reTickerView(boolean visibility) {
-        boolean reTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
-                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
-        if (!reTickerStatus) return;
+        if (!mReTickerStatus || mReTickerLandscapeOnly && !isLandscape()) return;
         if (visibility && mReTickerComeback.getVisibility() == View.VISIBLE) {
             reTickerDismissal();
         }
@@ -5302,9 +5346,7 @@ public class NotificationPanelViewController extends PanelViewController {
             String mergedContentText = reTickerAppName + " " + reTickerContent;
             mReTickerComebackIcon.setImageDrawable(icon);
             Drawable dw = mView.getContext().getDrawable(R.drawable.reticker_background);
-            boolean reTickerColored = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
-                    Settings.System.RETICKER_COLORED, 0, UserHandle.USER_CURRENT) != 0;
-            if (reTickerColored) {
+            if (mReTickerColored) {
                 int col;
                 col = row.getEntry().getSbn().getNotification().color;
                 mAppExceptions = mView.getContext().getResources().getStringArray(R.array.app_exceptions);
@@ -5340,9 +5382,7 @@ public class NotificationPanelViewController extends PanelViewController {
     }
 
     private void reTickerViewVisibility() {
-        boolean reTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
-                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
-        if (!reTickerStatus) {
+        if (!mReTickerStatus || mReTickerLandscapeOnly && !isLandscape()) {
             reTickerDismissal();
             return;
         }
