@@ -56,6 +56,7 @@ import android.annotation.Nullable;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
 import android.content.ContentResolver;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Color;
@@ -66,6 +67,7 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.hardware.biometrics.SensorLocationInternal;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -543,6 +545,10 @@ public final class NotificationPanelViewController implements Dumpable {
     private ImageView mReTickerComebackIcon;
     private TextView mReTickerContentTV;
     private NotificationStackScrollLayout mNotificationStackScroller;
+
+    private boolean mReTickerStatus;
+    private boolean mReTickerColored;
+    private boolean mReTickerLandscapeOnly;
 
     private final KeyguardMediaController mKeyguardMediaController;
 
@@ -3369,6 +3375,10 @@ public final class NotificationPanelViewController implements Dumpable {
         updateMaxDisplayedNotifications(true);
     }
 
+    private boolean isLandscape() {
+        return mView.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
     public void resetTranslation() {
         mView.setTranslationX(0f);
     }
@@ -3451,6 +3461,25 @@ public final class NotificationPanelViewController implements Dumpable {
                 /* notifyForDescendants */ false,
                 mSettingsChangeObserver
         );
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.RETICKER_STATUS),
+                /* notifyForDescendants */ false,
+                mSettingsChangeObserver,
+                UserHandle.USER_ALL
+        );
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.RETICKER_COLORED),
+                /* notifyForDescendants */ false,
+                mSettingsChangeObserver,
+                UserHandle.USER_ALL
+        );
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.RETICKER_LANDSCAPE_ONLY),
+                /* notifyForDescendants */ false,
+                mSettingsChangeObserver,
+                UserHandle.USER_ALL
+        );
+        updateReticker();
     }
 
     /** Updates notification panel-specific flags on {@link SysUiState}. */
@@ -4321,12 +4350,30 @@ public final class NotificationPanelViewController implements Dumpable {
         }
 
         @Override
-        public void onChange(boolean selfChange) {
+        public void onChange(boolean selfChange, Uri uri) {
             debugLog("onSettingsChanged");
 
-            // Can affect multi-user switcher visibility
-            reInflateViews();
+            if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.RETICKER_STATUS))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.RETICKER_COLORED))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.RETICKER_LANDSCAPE_ONLY))) {
+                updateReticker();
+            } else {
+                // Can affect multi-user switcher visibility
+                reInflateViews();
+            }
         }
+    }
+
+    private void updateReticker() {
+        mReTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
+        mReTickerColored = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_COLORED, 0, UserHandle.USER_CURRENT) != 0;
+        mReTickerLandscapeOnly = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
+                Settings.System.RETICKER_LANDSCAPE_ONLY, 0, UserHandle.USER_CURRENT) != 0;
     }
 
     private final class StatusBarStateListener implements StateListener {
@@ -5159,9 +5206,7 @@ public final class NotificationPanelViewController implements Dumpable {
     /* reTicker */
 
     public void reTickerView(boolean visibility) {
-        boolean reTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
-                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
-        if (!reTickerStatus) return;
+        if (!mReTickerStatus || mReTickerLandscapeOnly && !isLandscape()) return;
         if (visibility && mReTickerComeback.getVisibility() == View.VISIBLE) {
             reTickerDismissal();
         }
@@ -5188,9 +5233,7 @@ public final class NotificationPanelViewController implements Dumpable {
             String mergedContentText = reTickerAppName + " " + reTickerContent;
             mReTickerComebackIcon.setImageDrawable(icon);
             Drawable dw = mView.getContext().getDrawable(R.drawable.reticker_background);
-            boolean reTickerColored = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
-                    Settings.System.RETICKER_COLORED, 0, UserHandle.USER_CURRENT) != 0;
-            if (reTickerColored) {
+            if (mReTickerColored) {
                 int col;
                 col = row.getEntry().getSbn().getNotification().color;
                 mAppExceptions = mView.getContext().getResources().getStringArray(R.array.app_exceptions);
@@ -5226,9 +5269,7 @@ public final class NotificationPanelViewController implements Dumpable {
     }
 
     private void reTickerViewVisibility() {
-        boolean reTickerStatus = Settings.System.getIntForUser(mView.getContext().getContentResolver(),
-                Settings.System.RETICKER_STATUS, 0, UserHandle.USER_CURRENT) != 0;
-        if (!reTickerStatus) {
+        if (!mReTickerStatus || mReTickerLandscapeOnly && !isLandscape()) {
             reTickerDismissal();
             return;
         }
