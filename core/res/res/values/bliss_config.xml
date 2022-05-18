@@ -59,9 +59,6 @@
     <!-- Switch USB controller on Asus ROG devices-->
     <bool name="config_switchUsbController">false</bool>
 
-    <!-- Whether device supports gaming mode profiles -->
-    <bool name="config_gamingmode_performance">false</bool>
-
     <!-- Path to fast charging status file to detect whether an oem fast charger is active -->
     <string name="config_oemFastChargerStatusPath" translatable="false"></string>
 
