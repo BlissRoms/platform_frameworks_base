@@ -35,7 +35,7 @@
         android:id="@+id/pattern_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/kg_pattern_bottom_margin"
         android:layout_weight="1"
         android:layoutDirection="ltr">
         <androidx.constraintlayout.widget.Guideline
