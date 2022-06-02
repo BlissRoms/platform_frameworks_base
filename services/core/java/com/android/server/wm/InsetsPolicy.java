@@ -44,6 +44,8 @@ import android.content.ComponentName;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.SparseArray;
 import android.view.DisplayCutout;
 import android.util.proto.ProtoOutputStream;
@@ -63,6 +65,7 @@ import android.view.WindowInsetsController.Behavior;
 import android.view.WindowManager;
 import android.view.inputmethod.ImeTracker;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.android.internal.R;
 import com.android.internal.annotations.VisibleForTesting;
@@ -158,6 +161,10 @@ class InsetsPolicy {
 
     private final boolean mHideNavBarForKeyboard;
 
+    private long mLastSwipeTime;
+    private long mLastUnlockedTime;
+    private boolean mLockedGesture = false;
+
     InsetsPolicy(@NonNull InsetsStateController stateController,
             @NonNull DisplayContent displayContent) {
         mStateController = stateController;
@@ -247,9 +254,14 @@ class InsetsPolicy {
     }
 
     void showTransient(@InsetsType int types, boolean isGestureOnSystemBar) {
+        showTransient(types, isGestureOnSystemBar, false);
+    }
+
+    void showTransient(@InsetsType int types, boolean isGestureOnSystemBar, boolean swipeOnStatusBar) {
         @InsetsType
         int showingTransientTypes = mShowingTransientTypes;
         final InsetsState rawState = mStateController.getRawInsetsState();
+        final boolean isGestureLocked = isGestureLocked(!swipeOnStatusBar);
         for (int i = rawState.sourceSize() - 1; i >= 0; i--) {
             final InsetsSource source = rawState.sourceAt(i);
             if (source.isVisible()) {
@@ -260,7 +272,16 @@ class InsetsPolicy {
             if ((source.getType() & types) == 0) {
                 continue;
             }
+            if (isGestureLocked && (
+                    ((type & Type.statusBars()) != 0 && !swipeOnStatusBar) ||
+                    ((type & Type.navigationBars()) != 0)
+                    )) {
+                continue;
+            }
             showingTransientTypes |= type;
+        }
+        if (isGestureLocked && !swipeOnStatusBar) {
+            warnGestureLocked();
         }
         if (mShowingTransientTypes != showingTransientTypes) {
             mShowingTransientTypes = showingTransientTypes;
@@ -1194,5 +1215,35 @@ class InsetsPolicy {
         public IBinder getWindowToken() {
             return null;
         }
+    }
+
+    void updateLockedStatus() {
+        mLastSwipeTime = 0L;
+        mLastUnlockedTime = 0L;
+        mLockedGesture = Settings.System.getInt(mPolicy.getContext().getContentResolver(),
+                Settings.System.LOCK_GESTURE_STATUS, 0) == 1;
+    }
+
+    void warnGestureLocked() {
+        Toast.makeText(mPolicy.getUiContext(), R.string.gesture_locked_warning, Toast.LENGTH_SHORT).show();
+    }
+
+    boolean isGestureLocked(boolean updateSwipeTime) {
+        if (!mLockedGesture) {
+            return false;
+        }
+        final long now = SystemClock.uptimeMillis();
+        if (now - mLastUnlockedTime <= 3500) {
+            mLastUnlockedTime = now;
+            return false;
+        }
+        if (now - mLastSwipeTime > 2500) {
+            if (updateSwipeTime) {
+                mLastSwipeTime = now;
+            }
+            return true;
+        }
+        mLastUnlockedTime = now;
+        return false;
     }
 }
