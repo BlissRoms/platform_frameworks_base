@@ -5689,18 +5689,6 @@ public final class Settings {
         public static final String USE_OLD_MOBILETYPE = "use_old_mobiletype";
 
         /**
-         * Whether to show VoLTE icon or not
-         * @hide
-         */
-        public static final String SHOW_VOLTE_ICON = "show_volte_icon";
-
-        /**
-         * VoLTE icon style
-         * @hide
-         */
-        public static final String VOLTE_ICON_STYLE = "volte_icon_style";
-
-        /**
          * Whether to display cross sign for a data disabled connection
          * @hide
          */
@@ -5710,18 +5698,6 @@ public final class Settings {
          * @hide
          */
         public static final String ROAMING_INDICATOR_ICON = "roaming_indicator_icon";
-
-        /**
-         * Whether to show VoWiFi icon or not
-         * @hide
-         */
-        public static final String VOWIFI_ICON = "vowifi_icon";
-
-        /**
-         * VoWiFi icon style
-         * @hide
-         */
-        public static final String VOWIFI_ICON_STYLE = "vowifi_icon_style";
 
         /**
          * Use doubletap as doze pulse triggers
@@ -6664,7 +6640,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DOUBLE_TAP_SLEEP_LOCKSCREEN);
             PRIVATE_SETTINGS.add(DOUBLE_TAP_SLEEP_GESTURE);
             PRIVATE_SETTINGS.add(HEADSET_CONNECT_PLAYER);
-            PRIVATE_SETTINGS.add(VOLTE_ICON_STYLE);
             PRIVATE_SETTINGS.add(SCREENSHOT_TYPE);
             PRIVATE_SETTINGS.add(VOLUME_KEY_CURSOR_CONTROL);
             PRIVATE_SETTINGS.add(BATTERY_LIGHT_ENABLED);
