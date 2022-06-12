@@ -253,6 +253,10 @@ import com.android.internal.os.IDropBoxManagerService;
 import com.android.internal.policy.PhoneLayoutInflater;
 import com.android.internal.util.Preconditions;
 
+import com.android.internal.bliss.app.LineageContextConstants;
+import com.android.internal.bliss.app.LineageGlobalActions;
+import com.android.internal.bliss.app.ILineageGlobalActions;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -942,6 +946,19 @@ public final class SystemServiceRegistry {
                         final IAuthService service =
                                 IAuthService.Stub.asInterface(binder);
                         return new BiometricManager(ctx.getOuterContext(), service);
+                    }
+                });
+
+        registerService(LineageContextConstants.LINEAGE_GLOBAL_ACTIONS_SERVICE, LineageGlobalActions.class,
+                new CachedServiceFetcher<LineageGlobalActions>() {
+                    @Override
+                    public LineageGlobalActions createService(ContextImpl ctx)
+                            throws ServiceNotFoundException {
+                        final IBinder binder =
+                                ServiceManager.getServiceOrThrow(LineageContextConstants.LINEAGE_GLOBAL_ACTIONS_SERVICE);
+                        final ILineageGlobalActions service =
+                                ILineageGlobalActions.Stub.asInterface(binder);
+                        return new LineageGlobalActions(service);
                     }
                 });
 
