@@ -491,6 +491,10 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
         return getCurrentIconId();
     }
 
+    private boolean isVolteSwitchOn() {
+        return mImsManager != null && mImsManager.isEnhanced4gLteModeSettingEnabledByUser();
+    }
+
     private int getVolteVowifiResId() {
         int resId = 0;
 
@@ -532,7 +536,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
                         break;
                 }
             }
-        } else if (mImsManager != null && mVoLTEicon > 0 && isVolteAvailable()) {
+        } else if (mVoLTEicon > 0 && isVolteAvailable()) {
             switch (mVoLTEicon) {
                 // OnePlus
                 case 1:
@@ -782,7 +786,6 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
                         mCurrentState.enabled && !mCurrentState.airplaneMode? statusIcon.icon : -1,
                         statusIcon.contentDescription);
             }
-
             showTriangle = mCurrentState.enabled && !mCurrentState.airplaneMode;
         }
 
@@ -1083,7 +1086,7 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
         mCurrentState.roaming = isRoaming() && mRoamingIconAllowed;
         if (isCarrierNetworkChangeActive()) {
             mCurrentState.iconGroup = TelephonyIcons.CARRIER_NETWORK_CHANGE;
-        } else if (isDataDisabled() && mDataDisabledIcon/*!mConfig.alwaysShowDataRatIcon*/) {
+        } else if (isDataDisabled() && mDataDisabledIcon) {
             if (mSubscriptionInfo.getSubscriptionId() != mDefaults.getDefaultDataSubId()) {
                 mCurrentState.iconGroup = TelephonyIcons.NOT_DEFAULT_DATA;
             } else {
@@ -1159,13 +1162,13 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     }
 
     private boolean isVolteAvailable() {
-        return (mCurrentState.voiceCapable || mCurrentState.videoCapable) && mCurrentState.imsRegistered;
+        return isVolteSwitchOn()
+                && (mCurrentState.voiceCapable || mCurrentState.videoCapable) &&  mCurrentState.imsRegistered;
     }
 
     public boolean isVowifiAvailable() {
-        return (isVolteAvailable()
-                && getDataNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN)
-                || mIsVowifiAvailable;
+        return isVolteAvailable()
+                && getDataNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN;
     }
 
     private MobileIconGroup getVowifiIconGroup() {
@@ -1270,7 +1273,9 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     private final BroadcastReceiver mVolteSwitchObserver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Log.d(mTag, "action=" + intent.getAction());
-            notifyListeners();
+            if (isVolteSwitchOn()) {
+                notifyListeners();
+            }
         }
     };
 }
