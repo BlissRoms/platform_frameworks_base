@@ -5750,6 +5750,11 @@ public final class Settings {
         @Readable
         public static final String BATTERY_LIGHT_REALLYFULL_COLOR = "battery_light_reallyfull_color";
 
+        /**
+         * Whether to combine wifi and signal icons
+         * @hide
+         */
+        public static final String COMBINED_STATUS_BAR_SIGNAL_ICONS = "combined_status_bar_signal_icons";
 
         /**
          * Whether to show brightness slider in qqs.
@@ -12127,11 +12132,6 @@ public final class Settings {
          * @hide
          */
         public static final String ENABLE_CAMERA_PRIVACY_INDICATOR = "enable_camera_privacy_indicator";
-
-        /**
-         * @hide
-         */
-        public static final String SHOW_COMBINED_STATUS_BAR_SIGNAL_ICONS = "show_combined_status_bar_signal_icons";
 
         /**
          * Whether to disable qs on secure lockscreen.
