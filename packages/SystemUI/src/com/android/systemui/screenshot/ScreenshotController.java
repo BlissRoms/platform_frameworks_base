@@ -103,6 +103,7 @@ import androidx.concurrent.futures.CallbackToFutureAdapter;
 import com.android.internal.app.ChooserActivity;
 import com.android.internal.logging.UiEventLogger;
 import com.android.internal.policy.PhoneWindow;
+import com.android.internal.statusbar.IStatusBarService;
 import com.android.settingslib.applications.InterestingConfigChanges;
 import com.android.systemui.R;
 import com.android.systemui.broadcast.BroadcastSender;
@@ -299,6 +300,7 @@ public class ScreenshotController {
     private final DisplayManager mDisplayManager;
     private final DisplayTracker mDisplayTracker;
     private final ScrollCaptureController mScrollCaptureController;
+    private final IStatusBarService mStatusBarService;
     private final LongScreenshotData mLongScreenshotHolder;
     private final boolean mIsLowRamDevice;
     private final ScreenshotNotificationSmartActionsProvider
@@ -379,6 +381,7 @@ public class ScreenshotController {
             ImageCapture imageCapture,
             @Main Executor mainExecutor,
             ScrollCaptureController scrollCaptureController,
+            IStatusBarService statusBarService,
             LongScreenshotData longScreenshotHolder,
             ActivityManager activityManager,
             TimeoutHandler timeoutHandler,
@@ -398,6 +401,7 @@ public class ScreenshotController {
         mImageCapture = imageCapture;
         mMainExecutor = mainExecutor;
         mScrollCaptureController = scrollCaptureController;
+        mStatusBarService = statusBarService;
         mLongScreenshotHolder = longScreenshotHolder;
         mIsLowRamDevice = activityManager.isLowRamDevice();
         mScreenshotNotificationSmartActionsProvider = screenshotNotificationSmartActionsProvider;
@@ -837,6 +841,12 @@ public class ScreenshotController {
                             mDisplayTracker.getDefaultDisplayId());
         } catch (Exception e) {
             Log.e(TAG, "Error overriding screenshot app transition", e);
+        }
+
+        try {
+            mStatusBarService.collapsePanels();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error during collapsing panels", e);
         }
     }
 
