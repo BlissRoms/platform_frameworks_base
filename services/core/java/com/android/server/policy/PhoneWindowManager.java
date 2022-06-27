@@ -211,7 +211,7 @@ import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.ScreenshotHelper;
 import com.android.internal.util.bliss.BlissUtils;
-import com.android.internal.bliss.hardware.LineageHardwareManager;
+import com.android.internal.custom.hardware.LineageHardwareManager;
 import com.android.internal.util.hwkeys.ActionHandler;
 import com.android.internal.util.hwkeys.ActionUtils;
 import com.android.internal.util.ScreenshotHelper;
