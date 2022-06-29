@@ -82,6 +82,7 @@ import android.app.trust.TrustManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -381,6 +382,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     private int mActiveMobileDataSubscription = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
     private int mPostureState = DEVICE_POSTURE_UNKNOWN;
     private FingerprintInteractiveToAuthProvider mFingerprintInteractiveToAuthProvider;
+    private boolean mFingerprintWakeAndUnlock;
 
     /**
      * Short delay before restarting fingerprint authentication after a successful try. This should
@@ -493,6 +495,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     SparseArray<BiometricAuthenticated> mUserFaceAuthenticated = new SparseArray<>();
 
     private static int sCurrentUser;
+    
+    SettingsObserver mSettingsObserver;
 
     private final boolean mFaceAuthOnlyOnSecurityView;
     public static final int FACE_UNLOCK_BEHAVIOR_DEFAULT = 0;
@@ -2185,6 +2189,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         mTelephonyListenerManager = telephonyListenerManager;
         mDeviceProvisioned = isDeviceProvisionedInSettingsDb();
         mStrongAuthTracker = new StrongAuthTracker(context);
+        mFingerprintWakeAndUnlock = mContext.getResources().getBoolean(
+                com.android.systemui.R.bool.config_fingerprintWakeAndUnlock);
         mBackgroundExecutor = backgroundExecutor;
         mBroadcastDispatcher = broadcastDispatcher;
         mInteractionJankMonitor = interactionJankMonitor;
@@ -2221,6 +2227,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         mConfigFaceAuthSupportedPosture = mContext.getResources().getInteger(
                 R.integer.config_face_auth_supported_posture);
         mFaceWakeUpTriggersConfig = faceWakeUpTriggersConfig;
+
+        updateFingerprintSettings();
 
         mPocketManager = (PocketManager) context.getSystemService(Context.POCKET_SERVICE);
         if (mPocketManager != null) {
@@ -2454,6 +2462,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.TIME_12_24),
                 false, mTimeFormatChangeObserver, UserHandle.USER_ALL);
+
+                mSettingsObserver = new SettingsObserver(mHandler);
+                mSettingsObserver.observe();
 
         mFingerprintInteractiveToAuthProvider = interactiveToAuthProvider.orElse(null);
 
@@ -4125,6 +4136,53 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         return BIOMETRIC_LOCKOUT_RESET_DELAY_MS;
     }
 
+    class SettingsObserver extends ContentObserver {
+        private ContentResolver mContentResolver;
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            mContentResolver = mContext.getContentResolver();
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.FINGERPRINT_WAKE_UNLOCK), false, this,
+                    UserHandle.USER_ALL);
+            updateSettings();
+        }
+
+        void unobserve(){
+            if (mContentResolver != null){
+                mContentResolver.unregisterContentObserver(this);
+            }
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    private void updateSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+        updateFingerprintSettings();
+    }
+
+    private void updateFingerprintSettings() {
+        boolean defFingerprintSettings = mContext.getResources().getBoolean(
+                com.android.systemui.R.bool.config_fingerprintWakeAndUnlock);
+        if (defFingerprintSettings) {
+            mFingerprintWakeAndUnlock = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.FINGERPRINT_WAKE_UNLOCK,
+                    1, UserHandle.USER_CURRENT) == 1;
+        } else {
+            mFingerprintWakeAndUnlock = defFingerprintSettings;
+            // if its false, the device meant to be used like that, disable toggle with 2.
+            Settings.System.putIntForUser(mContext.getContentResolver(),
+                    Settings.System.FINGERPRINT_WAKE_UNLOCK,
+                    2, UserHandle.USER_CURRENT);
+        }
+    }
+
     /**
      * Unregister all listeners.
      */
@@ -4141,12 +4199,20 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
             mContext.getContentResolver().unregisterContentObserver(mTimeFormatChangeObserver);
         }
 
+        if (mSettingsObserver != null) {
+            mSettingsObserver.unobserve();
+        }
+
         if (mFaceUnlockPrefObserver != null) {
             mContext.getContentResolver().unregisterContentObserver(
                     mFaceUnlockPrefObserver);
         }
 
         mUserTracker.removeCallback(mUserChangedCallback);
+
+        if (mSettingsObserver != null) {
+            mSettingsObserver.unobserve();
+        }
 
         TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
 
