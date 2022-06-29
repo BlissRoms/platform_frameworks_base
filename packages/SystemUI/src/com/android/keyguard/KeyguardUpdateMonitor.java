@@ -366,7 +366,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     private final PowerManager mPowerManager;
     private final boolean mWakeOnFingerprintAcquiredStart;
 
-    private final boolean mFingerprintWakeAndUnlock;
+    private boolean mFingerprintWakeAndUnlock;
 
     /**
      * Short delay before restarting fingerprint authentication after a successful try. This should
@@ -1937,8 +1937,6 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         mStrongAuthTracker = new StrongAuthTracker(context, this::notifyStrongAuthStateChanged);
         mFaceAuthOnlyOnSecurityView = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_faceAuthOnlyOnSecurityView);
-        mFingerprintWakeAndUnlock = mContext.getResources().getBoolean(
-                com.android.systemui.R.bool.config_fingerprintWakeAndUnlock);
         mBackgroundExecutor = backgroundExecutor;
         mBroadcastDispatcher = broadcastDispatcher;
         mInteractionJankMonitor = interactionJankMonitor;
@@ -1963,6 +1961,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
                         R.array.config_face_acquire_device_entry_ignorelist))
                 .boxed()
                 .collect(Collectors.toSet());
+
+        updateFingerprintSettings();
 
         mHandler = new Handler(mainLooper) {
             @Override
@@ -3765,6 +3765,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         }
         void observe() {
             mContentResolver = mContext.getContentResolver();
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.FINGERPRINT_WAKE_UNLOCK), false, this,
+                    UserHandle.USER_ALL);
             mContentResolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.FACE_UNLOCK_METHOD), false, this,
                     UserHandle.USER_ALL);
@@ -3783,7 +3786,24 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     }
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
+        updateFingerprintSettings();
         updateFaceUnlockBehavior();
+    }
+
+    private void updateFingerprintSettings() {
+        boolean defFingerprintSettings = mContext.getResources().getBoolean(
+                com.android.systemui.R.bool.config_fingerprintWakeAndUnlock);
+        if (defFingerprintSettings) {
+            mFingerprintWakeAndUnlock = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.FINGERPRINT_WAKE_UNLOCK,
+                    1, UserHandle.USER_CURRENT) == 1;
+        } else {
+            mFingerprintWakeAndUnlock = defFingerprintSettings;
+            // if its false, the device meant to be used like that, disable toggle with 2.
+            Settings.System.putIntForUser(mContext.getContentResolver(),
+                    Settings.System.FINGERPRINT_WAKE_UNLOCK,
+                    2, UserHandle.USER_CURRENT);
+        }
     }
 
     private void updateFaceUnlockBehavior() {
