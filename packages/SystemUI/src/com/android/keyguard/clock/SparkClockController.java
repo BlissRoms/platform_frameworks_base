@@ -118,7 +118,7 @@ public class SparkClockController implements ClockPlugin {
 
     
     public int getPreferredY(int totalheight) {
-        return totalheight / 4;
+        return totalheight / 6;
     }
 
     

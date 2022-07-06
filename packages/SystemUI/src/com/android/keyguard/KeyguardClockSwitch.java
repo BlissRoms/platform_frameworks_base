@@ -452,9 +452,16 @@ public class KeyguardClockSwitch extends RelativeLayout {
 
     private void setupFrames(String str, boolean useLargeClock) {
         int i = 0;
+        int largeClockTopMargin = getContext().getResources().getDimensionPixelSize(
+            R.dimen.keyguard_large_clock_top_margin);
         if (useLargeClock) {
             this.mClockFrame.setVisibility(View.VISIBLE);
-            setMargins(this.mLargeClockFrame, 0, 0, 0, 0);
+            if (mClockPlugin == null) {
+                setMargins(this.mLargeClockFrame, 0, largeClockTopMargin, 0, 0);
+            } else {
+                setMargins(this.mLargeClockFrame, 0, 0, 0, 0);
+
+            }
         } else if (hasCustomClock()) {
                 int dimensionPixelSize = mContext.getResources().getDisplayMetrics().heightPixels - mContext.getResources().getDimensionPixelSize(R.dimen.status_bar_height);
                 mClockFrame.setVisibility(!mClockPlugin.shouldShowClockFrame() ? View.GONE : View.VISIBLE);
@@ -469,7 +476,11 @@ public class KeyguardClockSwitch extends RelativeLayout {
                 }
             } else {
                 mClockFrame.setVisibility(View.VISIBLE);
-                setMargins(mLargeClockFrame, 0, 0, 0, 0);
+                if (mClockPlugin == null) {
+                    setMargins(mLargeClockFrame, 0, largeClockTopMargin, 0, 0);
+                } else {
+                    setMargins(mLargeClockFrame, 0, 0, 0, 0);
+                }
             }
             refresh();
     }

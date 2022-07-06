@@ -44,7 +44,7 @@ public class OOSClockController implements ClockPlugin {
 
     
     public boolean usesPreferredY() {
-        return true;
+        return false;
     }
 
     
@@ -117,7 +117,7 @@ public class OOSClockController implements ClockPlugin {
 
     
     public int getPreferredY(int totalHeight) {
-        return totalHeight / 5;
+        return totalHeight / 6;
     }
 
     

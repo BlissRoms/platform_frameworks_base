@@ -72,6 +72,10 @@ public class DefaultClockController implements ClockPlugin {
      */
     private TextView mTextDate;
 
+    public boolean usesPreferredY() {
+        return true;
+    }
+
     /**
      * Create a DefaultClockController instance.
      *
