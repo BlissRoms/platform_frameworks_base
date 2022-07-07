@@ -6005,13 +6005,6 @@ public final class Settings {
         public static final String FLASHLIGHT_ON_CALL_RATE = "flashlight_on_call_rate";
 
         /**
-         * Whether auto brightness is applied one shot when screen is turned on.
-         * Default 0
-         * @hide
-         */
-        public static final String AUTO_BRIGHTNESS_ONE_SHOT = "auto_brightness_one_shot";
-
-        /**
          * @hide
          */
         public static final String UDFPS_ANIM = "udfps_anim";
