@@ -40,7 +40,7 @@ class BrightnessMirrorHandler(private val brightnessController: MirroredBrightne
         updateBrightnessMirror()
     }
 
-    fun updateBrightnessMirror() {
+    private fun updateBrightnessMirror() {
         mirrorController?.let { brightnessController.setMirror(it) }
     }
 }
