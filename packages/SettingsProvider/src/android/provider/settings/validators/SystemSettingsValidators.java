@@ -245,7 +245,6 @@ public class SystemSettingsValidators {
                         return true;
                     }
                 });
-        VALIDATORS.put(System.SCREEN_OFF_FOD, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.STATUS_BAR_BRIGHTNESS_CONTROL, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.BATTERY_LEVEL_COLORS, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK, BOOLEAN_VALIDATOR);
