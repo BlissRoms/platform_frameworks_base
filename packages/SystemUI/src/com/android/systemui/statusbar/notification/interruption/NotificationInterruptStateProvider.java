@@ -60,4 +60,9 @@ public interface NotificationInterruptStateProvider {
     void setHeadsUpStoplist();
     void setHeadsUpBlacklist();
     void setUseLessBoringHeadsUp(boolean lessBoring);
+
+    /**
+     * Whether reTicker mode is active; then disable Less Boring heads up
+     */
+    void setUseReticker(boolean reTicker);
 }

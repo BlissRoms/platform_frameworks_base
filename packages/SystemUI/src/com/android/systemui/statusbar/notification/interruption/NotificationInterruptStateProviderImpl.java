@@ -87,6 +87,7 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
     private ArrayList<String> mStoplist = new ArrayList<String>();
     private ArrayList<String> mBlacklist = new ArrayList<String>();
     private boolean mLessBoringHeadsUp;
+    private boolean mReTicker = false;
 
     @Inject
     public NotificationInterruptStateProviderImpl(
@@ -285,7 +286,7 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
             return false;
         }
 
-        if (shouldSkipHeadsUp(sbn)) {
+        if (!mReTicker && shouldSkipHeadsUp(sbn)) {
             if (DEBUG_HEADS_UP) {
                 Log.d(TAG, "No alerting: boring apps");
             }
@@ -419,6 +420,11 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
     @Override
     public void setUseLessBoringHeadsUp(boolean lessBoring) {
         mLessBoringHeadsUp = lessBoring;
+    }
+
+    @Override
+    public void setUseReticker(boolean reTicker) {
+        mReTicker = reTicker;
     }
 
     public boolean shouldSkipHeadsUp(StatusBarNotification sbn) {

@@ -4069,6 +4069,9 @@ public class CentralSurfacesImpl extends CoreStartable implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.BURN_IN_PROTECTION_INTERVAL),
                     false, this, UserHandle.USER_ALL);
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RETICKER_STATUS),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -4086,6 +4089,9 @@ public class CentralSurfacesImpl extends CoreStartable implements
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.BURN_IN_PROTECTION)) ||
                 uri.equals(Settings.System.getUriFor(Settings.System.BURN_IN_PROTECTION_INTERVAL))) {
                 updateBurnInSets();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.RETICKER_STATUS))) {
+                setUseReTicker();
             }
         }
 
@@ -4094,6 +4100,7 @@ public class CentralSurfacesImpl extends CoreStartable implements
             setHeadsUpBlacklist();
             setUseLessBoringHeadsUp();
             updateBurnInSets();
+            setUseReTicker();
         }
     }
 
@@ -4118,6 +4125,13 @@ public class CentralSurfacesImpl extends CoreStartable implements
         if (mBurnInProtectionController != null) {
             mBurnInProtectionController.updateSettings();
         }
+    }
+
+    private void setUseReTicker() {
+        boolean reTicker = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.RETICKER_STATUS, 0,
+                UserHandle.USER_CURRENT) == 1;
+        mNotificationInterruptStateProvider.setUseReticker(reTicker);
     }
 
     private final BroadcastReceiver mBannerActionBroadcastReceiver = new BroadcastReceiver() {
