@@ -50,4 +50,11 @@ public final class LineageContextConstants {
      */
     public static final String LINEAGE_GLOBAL_ACTIONS_SERVICE = "lineageglobalactions";
 
+    /**
+     * Manages display color adjustments
+     *
+     * @hide
+     */
+    public static final String LINEAGE_LIVEDISPLAY_SERVICE = "lineagelivedisplay";
+
 }
