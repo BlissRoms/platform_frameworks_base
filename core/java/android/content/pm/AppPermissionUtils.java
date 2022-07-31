@@ -27,6 +27,13 @@ public class AppPermissionUtils {
     //
     // android.permission.PermissionManager#checkPermissionUncached
     public static boolean shouldSpoofSelfCheck(String permName) {
+        if (Manifest.permission.INTERNET.equals(permName)
+                && SpecialRuntimePermAppUtils.requestsInternetPermission()
+                && !SpecialRuntimePermAppUtils.awareOfRuntimeInternetPermission())
+        {
+            return true;
+        }
+
         return false;
     }
 
