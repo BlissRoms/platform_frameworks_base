@@ -7690,10 +7690,10 @@
 
     <!-- @hide -->
     <permission android:name="lineageos.permission.HARDWARE_ABSTRACTION_ACCESS"
-                android:protectionLevel="signature|privileged" />
+                android:protectionLevel="signature" />
     <!-- @hide -->
     <permission android:name="lineageos.permission.MANAGE_LIVEDISPLAY"
-                android:protectionLevel="signature|privileged" />
+                android:protectionLevel="normal" />
 
     <application android:process="system"
                  android:persistent="true"
