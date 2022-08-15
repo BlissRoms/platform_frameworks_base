@@ -386,7 +386,8 @@ public class ImageExporter {
             return String.format(FILENAME_PATTERN, time, fileExtension(format));
         }
         if (foregroundAppName != null) {
-            return String.format(FILENAME_WITH_APP_NAME_PATTERN, time, foregroundAppName,
+            return String.format(FILENAME_WITH_APP_NAME_PATTERN, time,
+                    foregroundAppName.replaceAll("[\\\\/:*?\"<>|\\s]+", "_"),
                     fileExtension(format));
         }
         return String.format(CONNECTED_DISPLAY_FILENAME_PATTERN, time, displayId,
