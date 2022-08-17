@@ -18,4 +18,7 @@
     <!-- Whitelist of package names to bypass broadcast reciever validation -->
     <java-symbol type="array" name="config_broadcaseReceiverValidationBypassPackages"/>
 
+    <!-- Whether to cancel fingerprint operation if not idle -->
+    <java-symbol type="bool" name="config_fpCancelIfNotIdle" />
+
 </resources>
