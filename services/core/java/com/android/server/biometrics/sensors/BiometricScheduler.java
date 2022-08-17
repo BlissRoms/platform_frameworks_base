@@ -21,6 +21,7 @@ import android.annotation.MainThread;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
+import android.content.res.Resources;
 import android.hardware.biometrics.IBiometricService;
 import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
 import android.os.Handler;
@@ -60,6 +61,7 @@ import java.util.function.Consumer;
 public class BiometricScheduler {
 
     private static final String BASE_TAG = "BiometricScheduler";
+
     // Number of recent operations to keep in our logs for dumpsys
     protected static final int LOG_NUM_RECENT_OPERATIONS = 50;
 
@@ -157,6 +159,9 @@ public class BiometricScheduler {
     private final int mRecentOperationsLimit;
     @NonNull private final List<Integer> mRecentOperations;
     @NonNull private final CoexCoordinator mCoexCoordinator;
+
+    private final boolean mCancelIfNotIdle = Resources.getSystem().getBoolean(
+            com.android.internal.R.bool.config_fpCancelIfNotIdle);;
 
     // Internal callback, notified when an operation is complete. Notifies the requester
     // that the operation is complete, before performing internal scheduler work (such as
@@ -258,8 +263,13 @@ public class BiometricScheduler {
 
     protected void startNextOperationIfIdle() {
         if (mCurrentOperation != null) {
-            Slog.v(getTag(), "Not idle, current operation: " + mCurrentOperation);
-            return;
+            if (mCancelIfNotIdle && !mCurrentOperation.isFinished()) {
+                Slog.v(getTag(), "Not idle, cancelling current operation: " + mCurrentOperation);
+                mCurrentOperation.cancel(mHandler, mInternalCallback);
+            } else {
+                Slog.v(getTag(), "Not idle, current operation: " + mCurrentOperation);
+                return;
+            }
         }
         if (mPendingOperations.isEmpty()) {
             Slog.d(getTag(), "No operations, returning to idle");
