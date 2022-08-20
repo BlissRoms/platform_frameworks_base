@@ -235,6 +235,8 @@ import com.android.server.bliss.health.HealthInterfaceService;
 
 import dalvik.system.VMRuntime;
 
+import ink.kaleidoscope.server.ParallelSpaceManagerService;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -421,6 +423,9 @@ public final class SystemServer implements Dumpable {
             "com.android.server.compat.overrides.AppCompatOverridesService$Lifecycle";
     private static final String HEALTHCONNECT_MANAGER_SERVICE_CLASS =
             "com.android.server.healthconnect.HealthConnectManagerService";
+    private static final String PARALLEL_SPACE_SERVICE_CLASS =
+            "ink.kaleidoscope.server.ParallelSpaceManagerService";
+
     private static final String ROLE_SERVICE_CLASS = "com.android.role.RoleService";
     private static final String GAME_MANAGER_SERVICE_CLASS =
             "com.android.server.app.GameManagerService$Lifecycle";
@@ -2934,6 +2939,10 @@ public final class SystemServer implements Dumpable {
                     DEVICE_LOCK_APEX_PATH);
             t.traceEnd();
         }
+
+        t.traceBegin("StartParallelSpaceManagerService");
+        mSystemServiceManager.startService(PARALLEL_SPACE_SERVICE_CLASS);
+        t.traceEnd();
 
         // These are needed to propagate to the runnable below.
         final NetworkManagementService networkManagementF = networkManagement;

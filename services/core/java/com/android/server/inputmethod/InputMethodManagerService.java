@@ -190,6 +190,7 @@ import com.android.server.utils.PriorityDump;
 import com.android.server.wm.WindowManagerInternal;
 
 import com.android.internal.bliss.hardware.LineageHardwareManager;
+import ink.kaleidoscope.server.ParallelSpaceManagerService;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -3822,6 +3823,9 @@ public final class InputMethodManagerService extends IInputMethodManager.Stub
             }
         }
 
+        int uid = ParallelSpaceManagerService
+                .convertToParallelOwnerIfPossible(userId);
+
         if (windowToken == null) {
             Slog.e(TAG, "windowToken cannot be null.");
             return InputBindResult.NULL;
@@ -3838,7 +3842,7 @@ public final class InputMethodManagerService extends IInputMethodManager.Stub
                     result = startInputOrWindowGainedFocusInternalLocked(startInputReason,
                             client, windowToken, startInputFlags, softInputMode, windowFlags,
                             editorInfo, inputConnection, remoteAccessibilityInputConnection,
-                            unverifiedTargetSdkVersion, userId, imeDispatcher);
+                            unverifiedTargetSdkVersion, uid, imeDispatcher);
                 } finally {
                     Binder.restoreCallingIdentity(ident);
                 }

@@ -4208,6 +4208,13 @@ public class Intent implements Parcelable, Cloneable {
     public static final String ACTION_PROFILE_ADDED =
             "android.intent.action.PROFILE_ADDED";
 
+     /**
+     * Broadcast sent to the parallel owner user when parallel space info has been refreshed.
+     * @hide
+     */
+    public static final String ACTION_PARALLEL_SPACE_CHANGED =
+            "android.intent.action.PARALLEL_SPACE_CHANGED";
+
     /**
      * Broadcast sent to the system user when the 'device locked' state changes for any user.
      * Carries an extra {@link #EXTRA_USER_HANDLE} that specifies the ID of the user for which

@@ -334,6 +334,7 @@ import com.android.server.power.ShutdownThread;
 import com.android.server.utils.PriorityDump;
 
 import dalvik.annotation.optimization.NeverCompile;
+import ink.kaleidoscope.server.ParallelSpaceManagerService;
 
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -3601,7 +3602,8 @@ public class WindowManagerService extends IWindowManager.Stub
 
     /* Called by WindowState */
     boolean isUserVisible(@UserIdInt int userId) {
-        return mUmInternal.isUserVisible(userId);
+        return mUmInternal.isUserVisible(userId)
+                || ParallelSpaceManagerService.isCurrentParallelUser(userId);
     }
 
     @UserIdInt int getUserAssignedToDisplay(int displayId) {
