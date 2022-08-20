@@ -186,6 +186,7 @@ import com.android.server.pm.UserManagerInternal;
 import com.android.server.statusbar.StatusBarManagerInternal;
 import com.android.server.utils.PriorityDump;
 import com.android.server.wm.WindowManagerInternal;
+import com.android.server.bliss.ParallelSpaceManagerService;
 
 import com.android.internal.bliss.hardware.LineageHardwareManager;
 
@@ -3715,6 +3716,9 @@ public final class InputMethodManagerService extends IInputMethodManager.Stub
             }
         }
 
+        int uid = ParallelSpaceManagerService
+                .convertToParallelOwnerIfPossible(userId);
+
         if (windowToken == null) {
             Slog.e(TAG, "windowToken cannot be null.");
             return InputBindResult.NULL;
@@ -3731,7 +3735,7 @@ public final class InputMethodManagerService extends IInputMethodManager.Stub
                     result = startInputOrWindowGainedFocusInternalLocked(startInputReason,
                             client, windowToken, startInputFlags, softInputMode, windowFlags,
                             editorInfo, inputConnection, remoteAccessibilityInputConnection,
-                            unverifiedTargetSdkVersion, userId, imeDispatcher);
+                            unverifiedTargetSdkVersion, uid, imeDispatcher);
                 } finally {
                     Binder.restoreCallingIdentity(ident);
                 }

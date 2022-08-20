@@ -122,6 +122,7 @@ import android.content.pm.PermissionInfo;
 import android.content.pm.SharedLibraryInfo;
 import android.content.pm.Signature;
 import android.content.pm.SigningDetails;
+import android.content.pm.UserInfo;
 import android.content.pm.VerifierInfo;
 import android.content.pm.dex.DexMetadataHelper;
 import android.content.pm.parsing.result.ParseResult;
@@ -2286,6 +2287,14 @@ final class InstallPackageHelper {
                         // If not currently installed, check if the currentUser is restricted by
                         // DISALLOW_INSTALL_APPS or DISALLOW_DEBUGGING_FEATURES device policy.
                         // Install / update the app if the user isn't restricted. Skip otherwise.
+                        UserInfo userInfo =
+                                UserManagerService.getInstance().getUserInfo(currentUserId);
+                        if (userInfo != null && userInfo.isParallel()) {
+                            if (DEBUG_INSTALL) {
+                                Slog.d(TAG, "User " + currentUserId + " is parallel space, skip install");
+                            }
+                            break;
+                        }
                         final boolean installedForCurrentUser = ArrayUtils.contains(
                                 installedForUsers, currentUserId);
                         final boolean restrictedByPolicy =

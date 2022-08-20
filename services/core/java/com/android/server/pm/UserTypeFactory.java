@@ -23,6 +23,7 @@ import static android.content.pm.UserInfo.FLAG_FULL;
 import static android.content.pm.UserInfo.FLAG_GUEST;
 import static android.content.pm.UserInfo.FLAG_MAIN;
 import static android.content.pm.UserInfo.FLAG_MANAGED_PROFILE;
+import static android.content.pm.UserInfo.FLAG_PARALLEL;
 import static android.content.pm.UserInfo.FLAG_PRIMARY;
 import static android.content.pm.UserInfo.FLAG_PROFILE;
 import static android.content.pm.UserInfo.FLAG_RESTRICTED;
@@ -32,6 +33,8 @@ import static android.os.UserManager.USER_TYPE_FULL_GUEST;
 import static android.os.UserManager.USER_TYPE_FULL_RESTRICTED;
 import static android.os.UserManager.USER_TYPE_FULL_SECONDARY;
 import static android.os.UserManager.USER_TYPE_FULL_SYSTEM;
+import static android.os.UserManager.USER_TYPE_PARALLEL_DEFAULT;
+import static android.os.UserManager.USER_TYPE_PARALLEL_SHARE;
 import static android.os.UserManager.USER_TYPE_PROFILE_CLONE;
 import static android.os.UserManager.USER_TYPE_PROFILE_COMMUNAL;
 import static android.os.UserManager.USER_TYPE_PROFILE_MANAGED;
@@ -111,11 +114,69 @@ public final class UserTypeFactory {
         builders.put(USER_TYPE_PROFILE_CLONE, getDefaultTypeProfileClone());
         builders.put(USER_TYPE_PROFILE_COMMUNAL, getDefaultTypeProfileCommunal());
         builders.put(USER_TYPE_PROFILE_PRIVATE, getDefaultTypeProfilePrivate());
+        builders.put(USER_TYPE_PARALLEL_DEFAULT, getDefaultTypeParallelDefault());
+        builders.put(USER_TYPE_PARALLEL_SHARE, getDefaultTypeParallelShare());
         if (Build.IS_DEBUGGABLE) {
             builders.put(USER_TYPE_PROFILE_TEST, getDefaultTypeProfileTest());
         }
 
         return builders;
+    }
+
+    /**
+     * Returns the Builder for the default {@link UserManager#USER_TYPE_PARALLEL_DEFAULT}
+     * configuration.
+     */
+    private static UserTypeDetails.Builder getDefaultTypeParallelDefault() {
+        return new UserTypeDetails.Builder()
+                .setName(USER_TYPE_PARALLEL_DEFAULT)
+                .setBaseType(FLAG_FULL)
+                .setDefaultUserInfoPropertyFlags(FLAG_PARALLEL)
+                .setMaxAllowed(UNLIMITED_NUMBER_OF_USERS)
+                .setDefaultRestrictions(getDefaultParallelRestrictions())
+                .setIconBadge(com.android.internal.R.drawable.ic_parallel_icon_badge)
+                .setBadgePlain(com.android.internal.R.drawable.ic_parallel_badge)
+                .setBadgeNoBackground(com.android.internal.R.drawable.ic_parallel_badge)
+                .setBadgeLabels(com.android.internal.R.string.parallel_space_badge_label)
+                .setBadgeColors(
+                        com.android.internal.R.color.parallel_badge_1,
+                        com.android.internal.R.color.parallel_badge_2,
+                        com.android.internal.R.color.parallel_badge_3,
+                        com.android.internal.R.color.parallel_badge_4,
+                        com.android.internal.R.color.parallel_badge_5,
+                        com.android.internal.R.color.parallel_badge_6,
+                        com.android.internal.R.color.parallel_badge_7,
+                        com.android.internal.R.color.parallel_badge_8,
+                        com.android.internal.R.color.parallel_badge_9);
+    }
+
+    /**
+     * Returns the Builder for the default {@link UserManager#USER_TYPE_PARALLEL_SHARE}
+     * configuration.
+     */
+    private static UserTypeDetails.Builder getDefaultTypeParallelShare() {
+        return new UserTypeDetails.Builder()
+                .setName(USER_TYPE_PARALLEL_SHARE)
+                .setBaseType(FLAG_FULL)
+                .setDefaultUserInfoPropertyFlags(FLAG_PARALLEL)
+                .setMaxAllowed(UNLIMITED_NUMBER_OF_USERS)
+                .setDefaultRestrictions(getDefaultParallelRestrictions())
+                .setDefaultUserProperties(new UserProperties.Builder()
+                        .setMediaSharedWithParent(true))
+                .setIconBadge(com.android.internal.R.drawable.ic_parallel_icon_badge)
+                .setBadgePlain(com.android.internal.R.drawable.ic_parallel_badge)
+                .setBadgeNoBackground(com.android.internal.R.drawable.ic_parallel_badge)
+                .setBadgeLabels(com.android.internal.R.string.parallel_space_badge_label)
+                .setBadgeColors(
+                        com.android.internal.R.color.parallel_badge_1,
+                        com.android.internal.R.color.parallel_badge_2,
+                        com.android.internal.R.color.parallel_badge_3,
+                        com.android.internal.R.color.parallel_badge_4,
+                        com.android.internal.R.color.parallel_badge_5,
+                        com.android.internal.R.color.parallel_badge_6,
+                        com.android.internal.R.color.parallel_badge_7,
+                        com.android.internal.R.color.parallel_badge_8,
+                        com.android.internal.R.color.parallel_badge_9);
     }
 
     /**
@@ -421,6 +482,13 @@ public final class UserTypeFactory {
     private static Bundle getDefaultProfileRestrictions() {
         final Bundle restrictions = new Bundle();
         restrictions.putBoolean(UserManager.DISALLOW_WALLPAPER, true);
+        return restrictions;
+    }
+
+    private static Bundle getDefaultParallelRestrictions() {
+        final Bundle restrictions = new Bundle();
+        restrictions.putBoolean(UserManager.DISALLOW_WALLPAPER, true);
+        restrictions.putBoolean(UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES, true);
         return restrictions;
     }
 

@@ -203,6 +203,7 @@ public class UserManagerServiceShellCommand extends ShellCommand {
             for (int i = 0; i < size; i++) {
                 final UserInfo user = users.get(i);
                 final boolean running = am.isUserRunning(user.id, 0);
+                final boolean isParallel = user.isParallel();
                 if (verbose) {
                     final DevicePolicyManagerInternal dpm = LocalServices
                             .getService(DevicePolicyManagerInternal.class);
@@ -226,13 +227,15 @@ public class UserManagerServiceShellCommand extends ShellCommand {
                     final boolean hasParent = user.profileGroupId != user.id
                             && user.profileGroupId != UserInfo.NO_PROFILE_GROUP_ID;
                     final boolean visible = mService.isUserVisible(user.id);
-                    pw.printf("%d: id=%d, name=%s, type=%s, flags=%s%s%s%s%s%s%s%s%s%s\n",
+                    pw.printf("%d: id=%d, name=%s, type=%s, flags=%s%s%s%s%s%s%s%s%s%s%s\n",
                             i,
                             user.id,
                             user.name,
+                            user.userType,
                             user.userType.replace("android.os.usertype.", ""),
                             UserInfo.flagsToString(user.flags),
                             hasParent ? " (parentId=" + user.profileGroupId + ")" : "",
+                            isParallel ? " (parallelParentId=" + user.parallelParentId + ")" : "",
                             running ? " (running)" : "",
                             user.partial ? " (partial)" : "",
                             user.preCreated ? " (pre-created)" : "",

@@ -193,6 +193,18 @@ public class UserManager {
     public static final String USER_TYPE_SYSTEM_HEADLESS = "android.os.usertype.system.HEADLESS";
 
     /**
+     * User type representing a parallel space without the ability of sharing media.
+     * @hide
+     */
+    public static final String USER_TYPE_PARALLEL_DEFAULT = "android.os.usertype.parallel.DEFAULT";
+
+    /**
+     * User type representing a parallel space with the ability of sharing media.
+     * @hide
+     */
+    public static final String USER_TYPE_PARALLEL_SHARE = "android.os.usertype.parallel.SHARE";
+
+    /**
      * Flag passed to {@link #requestQuietModeEnabled} to request disabling quiet mode only if
      * there is no need to confirm the user credentials. If credentials are required to disable
      * quiet mode, {@link #requestQuietModeEnabled} will do nothing and return {@code false}.
@@ -4917,7 +4929,7 @@ public class UserManager {
         int aliveUserCount = 0;
         for (int i = 0; i < totalUserCount; i++) {
             UserInfo user = users.get(i);
-            if (!user.isGuest()) {
+            if (!user.isGuest() && !user.isParallel()) {
                 aliveUserCount++;
             }
         }
@@ -5467,10 +5479,6 @@ public class UserManager {
      * @hide
      */
     public boolean hasBadge(@UserIdInt int userId) {
-        if (!isProfile(userId)) {
-            // Since currently only profiles actually have badges, we can do this optimization.
-            return false;
-        }
         try {
             return mService.hasBadge(userId);
         } catch (RemoteException re) {
