@@ -127,4 +127,8 @@
          For example, a device with notification and battery lights that supports
          pulsating and RGB control would set this config to 75. -->
     <integer name="config_deviceLightCapabilities">8</integer>
+
+    <!-- Parallel space max count. Should overlay according to device
+         performance. -->
+    <integer name="config_parallelSpaceMaxCount">9</integer>
 </resources>

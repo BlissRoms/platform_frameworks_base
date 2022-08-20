@@ -344,6 +344,9 @@
     <protected-broadcast android:name="com.android.settingslib.action.UNREGISTER_SLICE_RECEIVER" />
     <protected-broadcast android:name="com.android.settings.flashlight.action.FLASHLIGHT_CHANGED" />
 
+    <!-- Parallel spaces -->
+    <uses-permission android:name="android.permission.MANAGE_PARALLEL_SPACES" />
+
     <application
         android:name=".SystemUIApplication"
         android:persistent="true"
