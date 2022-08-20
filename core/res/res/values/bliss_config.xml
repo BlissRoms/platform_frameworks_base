@@ -312,4 +312,7 @@
           Use with extreme caution. -->
     <string-array name="config_appLockAllowedSystemApps" translatable="false" />
 
+    <!-- Parallel space max count. Should overlay according to device performance. -->
+    <integer name="config_parallelSpaceMaxCount">9</integer>
+
 </resources>

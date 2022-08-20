@@ -84,6 +84,7 @@ import com.android.server.LocalServices;
 import com.android.server.ServiceThread;
 import com.android.server.SystemService;
 import com.android.server.wm.WindowManagerInternal;
+import com.android.server.bliss.ParallelSpaceManagerService;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -358,6 +359,7 @@ public class CameraServiceProxy extends SystemService
                 case Intent.ACTION_USER_INFO_CHANGED:
                 case Intent.ACTION_MANAGED_PROFILE_ADDED:
                 case Intent.ACTION_MANAGED_PROFILE_REMOVED:
+                case Intent.ACTION_PARALLEL_SPACE_CHANGED:
                     synchronized(mLock) {
                         // Return immediately if we haven't seen any users start yet
                         if (mEnabledCameraUsers == null) return;
@@ -736,6 +738,7 @@ public class CameraServiceProxy extends SystemService
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_REMOVED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        filter.addAction(Intent.ACTION_PARALLEL_SPACE_CHANGED);
         mContext.registerReceiver(mIntentReceiver, filter);
 
         publishBinderService(CAMERA_SERVICE_PROXY_BINDER_NAME, mCameraServiceProxy);
@@ -1031,6 +1034,7 @@ public class CameraServiceProxy extends SystemService
         for (int id : userProfiles) {
             handles.add(id);
         }
+        handles.addAll(ParallelSpaceManagerService.getCurrentParallelUserIds());
 
         if (Flags.cameraHsumPermission()) {
             // If the device is running in headless system user mode then allow

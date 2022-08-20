@@ -47,6 +47,7 @@ applications that come with the platform
         <permission name="android.permission.WRITE_MEDIA_STORAGE"/>
         <permission name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
         <permission name="android.permission.READ_SYSTEM_GRAMMATICAL_GENDER"/>
+        <permission name="com.android.permission.MANAGE_PARALLEL_SPACES"/>
     </privapp-permissions>
 
     <privapp-permissions package="com.android.imsserviceentitlement">

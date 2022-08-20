@@ -56,6 +56,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
+import com.android.internal.bliss.app.ParallelSpaceManager;
 import com.android.internal.statusbar.NotificationVisibility;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.systemui.Dumpable;
@@ -247,6 +248,8 @@ public class NotificationLockscreenUserManagerImpl implements
                             .obtain(notificationKey, true);
                     mClickNotifier.onNotificationClick(notificationKey, nv);
                 }
+            } else if (Objects.equals(action, Intent.ACTION_PARALLEL_SPACE_CHANGED)) {
+                updateCurrentProfilesCache();
             }
         }
     };
@@ -420,6 +423,7 @@ public class NotificationLockscreenUserManagerImpl implements
         filter.addAction(Intent.ACTION_USER_UNLOCKED);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
+        filter.addAction(Intent.ACTION_PARALLEL_SPACE_CHANGED);
         if (allowPrivateProfile()){
             filter.addAction(Intent.ACTION_PROFILE_AVAILABLE);
             filter.addAction(Intent.ACTION_PROFILE_UNAVAILABLE);
@@ -693,6 +697,7 @@ public class NotificationLockscreenUserManagerImpl implements
                 List<UserInfo> profiles = android.multiuser.Flags.supportCommunalProfile()
                         ? mUserManager.getProfilesIncludingCommunal(mCurrentUserId)
                         : mUserManager.getProfiles(mCurrentUserId);
+                profiles.addAll(ParallelSpaceManager.getInstance().getParallelUsers());
                 for (UserInfo user : profiles) {
                     mCurrentProfiles.put(user.id, user);
                     if (UserManager.USER_TYPE_PROFILE_MANAGED.equals(user.userType)) {

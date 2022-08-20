@@ -139,6 +139,7 @@ import com.android.server.wm.BackgroundActivityStartController.BalCode;
 import com.android.server.wm.BackgroundActivityStartController.BalVerdict;
 import com.android.server.wm.LaunchParamsController.LaunchParams;
 import com.android.server.wm.TaskFragment.EmbeddingCheckResult;
+import com.android.server.bliss.ParallelSpaceManagerService;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
@@ -715,6 +716,12 @@ class ActivityStarter {
     int execute() {
         try {
             onExecutionStarted();
+
+            if (ParallelSpaceManagerService.isCurrentParallelUser(mRequest.userId) &&
+                    Intent.ACTION_MAIN.equals(mRequest.intent.getAction()) &&
+                    mRequest.intent.hasCategory(Intent.CATEGORY_HOME)) {
+                mRequest.userId = ParallelSpaceManagerService.getCurrentParallelOwnerId();
+            }
 
             if (mRequest.intent != null) {
                 // Refuse possible leaked file descriptors
