@@ -11,5 +11,7 @@
     <!-- Udfps display mode provider class name -->
     <string name="config_udfpsDisplayModeProviderComponent">com.android.systemui.biometrics.DummyUdfpsDisplayModeProvider</string>
 
-</resources>
+    <!-- Udfps vendor code -->
+    <integer name="config_udfpsVendorCode">0</integer>
 
+</resources>
