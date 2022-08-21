@@ -39,6 +39,9 @@ public interface NavigationEdgeBackPlugin extends Plugin {
     /** Specifies if the haptic feedback is enabled for back gesture. */
     void setEdgeHapticEnabled(boolean edgeHapticEnabled);
 
+    /** Specifies if the arrow animation is shown for back gesture. */
+    void setBackArrowVisibility(boolean backArrowVisibility);
+
     /** Sets the insets for the gesture handling area. */
     void setInsets(int leftInset, int rightInset);
 
