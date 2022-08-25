@@ -18,7 +18,6 @@ package com.android.systemui.qs.tiles;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.service.quicksettings.Tile;
 import android.view.View;
@@ -123,7 +122,7 @@ public class BatterySaverTile extends QSTileImpl<BooleanState> implements
 
     @Override
     public Intent getLongClickIntent() {
-        return new Intent(Settings.ACTION_BATTERY_SAVER_SETTINGS);
+        return new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
     }
 
     @Override
