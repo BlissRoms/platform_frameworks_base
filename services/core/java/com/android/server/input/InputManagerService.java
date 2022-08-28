@@ -41,6 +41,7 @@ import android.hardware.SensorPrivacyManagerInternal;
 import android.hardware.display.DisplayManagerInternal;
 import android.hardware.display.DisplayViewport;
 import android.hardware.input.HostUsiVersion;
+import android.hardware.input.ICursorCallback;
 import android.hardware.input.IInputDeviceBatteryListener;
 import android.hardware.input.IInputDeviceBatteryState;
 import android.hardware.input.IInputDevicesChangedListener;
@@ -236,6 +237,12 @@ public class InputManagerService extends IInputManager.Stub
     private final Object mLidSwitchLock = new Object();
     @GuardedBy("mLidSwitchLock")
     private final List<LidSwitchCallback> mLidSwitchCallbacks = new ArrayList<>();
+
+    private final Object mCursorCbLock = new Object();
+    @GuardedBy("mCursorCbLock")
+    private final SparseArray<CursorCallbackRecord> mCursorCallbacks = new SparseArray<>();
+    private final List<CursorCallbackRecord> mTempCursorCallbacksToNotify =
+            new ArrayList<>();
 
     // State for the currently installed input filter.
     final Object mInputFilterLock = new Object();
@@ -517,6 +524,75 @@ public class InputManagerService extends IInputManager.Stub
     void unregisterLidSwitchCallbackInternal(@NonNull LidSwitchCallback callback) {
         synchronized (mLidSwitchLock) {
             mLidSwitchCallbacks.remove(callback);
+        }
+    }
+
+    @Override // Binder call
+    public void registerCursorCallback(ICursorCallback listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("listener must not be null");
+        }
+
+        synchronized (mCursorCbLock) {
+            final int callingPid = Binder.getCallingPid();
+            if (mCursorCallbacks.get(callingPid) != null) {
+                throw new IllegalStateException("The calling process has already registered "
+                        + "a CursorCallback.");
+            }
+            CursorCallbackRecord record =
+                    new CursorCallbackRecord(callingPid, listener);
+            try {
+                IBinder binder = listener.asBinder();
+                binder.linkToDeath(record, 0);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+            mCursorCallbacks.put(callingPid, record);
+        }
+    }
+
+    @Override // Binder call
+    public void unregisterCursorCallback(ICursorCallback listener) {
+        if (DEBUG) {
+            Slog.d(TAG, "unregisterCursorCallback: listener=" + listener + " callingPid="
+                    + Binder.getCallingPid());
+        }
+
+        if (listener == null) {
+            throw new IllegalArgumentException("listener must not be null");
+        }
+
+        synchronized (mCursorCbLock) {
+            int callingPid = Binder.getCallingPid();
+            if (mCursorCallbacks.get(callingPid) != null) {
+                CursorCallbackRecord record = mCursorCallbacks.get(callingPid);
+                if (record.getListener().asBinder() != listener.asBinder()) {
+                    throw new IllegalArgumentException("listener is not registered");
+                }
+                mCursorCallbacks.remove(callingPid);
+            }
+        }
+    }
+
+    private void onCursorCallbackDied(int pid) {
+        synchronized (mCursorCbLock) {
+            mCursorCallbacks.remove(pid);
+        }
+    }
+
+    // Must be called on handler
+    private void deliverCursorChanged(int iconId, PointerIcon icon) {
+        mTempCursorCallbacksToNotify.clear();
+        final int numListeners;
+        synchronized (mCursorCbLock) {
+            numListeners = mCursorCallbacks.size();
+            for (int i = 0; i < numListeners; i++) {
+                mTempCursorCallbacksToNotify.add(
+                        mCursorCallbacks.valueAt(i));
+            }
+        }
+        for (int i = 0; i < numListeners; i++) {
+            mTempCursorCallbacksToNotify.get(i).notifyCursorChanged(iconId, icon);
         }
     }
 
@@ -1753,6 +1829,8 @@ public class InputManagerService extends IInputManager.Stub
             mPointerIcon = null;
             mPointerIconType = iconType;
 
+            deliverCursorChanged(iconType, null);
+
             if (!mCurrentDisplayProperties.pointerIconVisible) return;
 
             mNative.setPointerIconType(mPointerIconType);
@@ -1766,6 +1844,8 @@ public class InputManagerService extends IInputManager.Stub
         synchronized (mAdditionalDisplayInputPropertiesLock) {
             mPointerIconType = PointerIcon.TYPE_CUSTOM;
             mPointerIcon = icon;
+
+            deliverCursorChanged(PointerIcon.TYPE_CUSTOM, icon);
 
             if (!mCurrentDisplayProperties.pointerIconVisible) return;
 
@@ -3126,6 +3206,38 @@ public class InputManagerService extends IInputManager.Stub
             } catch (RemoteException ex) {
                 Slog.w(TAG, "Failed to notify process " + mPid +
                         " that tablet mode changed, assuming it died.", ex);
+                binderDied();
+            }
+        }
+    }
+
+    private final class CursorCallbackRecord implements DeathRecipient {
+        private final int mPid;
+        private final ICursorCallback mListener;
+
+        public CursorCallbackRecord(int pid, ICursorCallback listener) {
+            mPid = pid;
+            mListener = listener;
+        }
+
+        @Override
+        public void binderDied() {
+            if (DEBUG) {
+                Slog.d(TAG, "Cursor listener for pid " + mPid + " died.");
+            }
+            onCursorCallbackDied(mPid);
+        }
+
+        public ICursorCallback getListener() {
+            return mListener;
+        }
+
+        public void notifyCursorChanged(int iconId, PointerIcon icon) {
+            try {
+                mListener.onCursorChanged(iconId, icon);
+            } catch (RemoteException ex) {
+                Slog.w(TAG, "Failed to notify process " + mPid +
+                        " that cursor changed, assuming it died.", ex);
                 binderDied();
             }
         }

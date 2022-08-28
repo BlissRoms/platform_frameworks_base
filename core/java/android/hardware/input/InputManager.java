@@ -1118,6 +1118,24 @@ public final class InputManager {
         return mIsStylusPointerIconEnabled;
     }
 
+    /** @hide */
+    public void registerCursorCallback(ICursorCallback callback) {
+        try {
+            mIm.registerCursorCallback(callback);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
+    /** @hide */
+    public void unregisterCursorCallback(ICursorCallback callback) {
+        try {
+            mIm.unregisterCursorCallback(callback);
+        } catch (RemoteException ex) {
+            throw ex.rethrowFromSystemServer();
+        }
+    }
+
     /**
      * Request or release pointer capture.
      * <p>
