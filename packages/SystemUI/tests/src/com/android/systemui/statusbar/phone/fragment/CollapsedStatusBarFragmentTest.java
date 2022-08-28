@@ -22,8 +22,6 @@ import static com.android.systemui.statusbar.events.SystemStatusAnimationSchedul
 import static com.android.systemui.statusbar.events.SystemStatusAnimationSchedulerKt.RUNNING_CHIP_ANIM;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
@@ -36,7 +34,6 @@ import android.app.StatusBarManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.UserHandle;
-import android.provider.Settings;
 import android.testing.AndroidTestingRunner;
 import android.testing.TestableLooper.RunWithLooper;
 import android.view.View;
@@ -69,8 +66,6 @@ import com.android.systemui.statusbar.phone.fragment.dagger.StatusBarFragmentCom
 import com.android.systemui.statusbar.phone.ongoingcall.OngoingCallController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.CarrierConfigTracker;
-import com.android.systemui.util.concurrency.FakeExecutor;
-import com.android.systemui.util.settings.SecureSettings;
 import com.android.systemui.util.time.FakeSystemClock;
 
 import org.junit.Before;
@@ -98,8 +93,6 @@ public class CollapsedStatusBarFragmentTest extends SysuiBaseFragmentTest {
     private final CommandQueue mCommandQueue = mock(CommandQueue.class);
     private OperatorNameViewController.Factory mOperatorNameViewControllerFactory;
     private OperatorNameViewController mOperatorNameViewController;
-    private SecureSettings mSecureSettings;
-    private FakeExecutor mExecutor = new FakeExecutor(new FakeSystemClock());
     private final CarrierConfigTracker mCarrierConfigTracker = mock(CarrierConfigTracker.class);
 
     @Mock
@@ -381,41 +374,6 @@ public class CollapsedStatusBarFragmentTest extends SysuiBaseFragmentTest {
         assertEquals(mStatusBarFragmentComponent, fragment.getStatusBarFragmentComponent());
     }
 
-    @Test
-    public void testBlockedIcons_obeysSettingForVibrateIcon_settingOff() {
-        CollapsedStatusBarFragment fragment = resumeAndGetFragment();
-        String str = mContext.getString(com.android.internal.R.string.status_bar_volume);
-
-        // GIVEN the setting is off
-        when(mSecureSettings.getInt(Settings.Secure.STATUS_BAR_SHOW_VIBRATE_ICON, 0))
-                .thenReturn(0);
-
-        // WHEN CollapsedStatusBarFragment builds the blocklist
-        fragment.updateBlockedIcons();
-
-        // THEN status_bar_volume SHOULD be present in the list
-        boolean contains = fragment.getBlockedIcons().contains(str);
-        assertTrue(contains);
-    }
-
-    @Test
-    public void testBlockedIcons_obeysSettingForVibrateIcon_settingOn() {
-        CollapsedStatusBarFragment fragment = resumeAndGetFragment();
-        String str = mContext.getString(com.android.internal.R.string.status_bar_volume);
-
-        // GIVEN the setting is ON
-        when(mSecureSettings.getIntForUser(Settings.Secure.STATUS_BAR_SHOW_VIBRATE_ICON, 0,
-                UserHandle.USER_CURRENT))
-                .thenReturn(1);
-
-        // WHEN CollapsedStatusBarFragment builds the blocklist
-        fragment.updateBlockedIcons();
-
-        // THEN status_bar_volume SHOULD NOT be present in the list
-        boolean contains = fragment.getBlockedIcons().contains(str);
-        assertFalse(contains);
-    }
-
     @Override
     protected Fragment instantiate(Context context, String className, Bundle arguments) {
         MockitoAnnotations.initMocks(this);
@@ -432,7 +390,6 @@ public class CollapsedStatusBarFragmentTest extends SysuiBaseFragmentTest {
         when(mOperatorNameViewControllerFactory.create(any()))
                 .thenReturn(mOperatorNameViewController);
         when(mIconManagerFactory.create(any(), any())).thenReturn(mIconManager);
-        mSecureSettings = mock(SecureSettings.class);
 
         setUpNotificationIconAreaController();
         return new CollapsedStatusBarFragment(
@@ -457,8 +414,6 @@ public class CollapsedStatusBarFragmentTest extends SysuiBaseFragmentTest {
                         new DisableFlagsLogger()
                         ),
                 mOperatorNameViewControllerFactory,
-                mSecureSettings,
-                mExecutor,
                 mDumpManager);
     }
 
