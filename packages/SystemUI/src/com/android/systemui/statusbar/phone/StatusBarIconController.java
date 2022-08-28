@@ -62,7 +62,6 @@ import com.android.systemui.statusbar.pipeline.wifi.ui.WifiUiAdapter;
 import com.android.systemui.statusbar.pipeline.wifi.ui.view.ModernStatusBarWifiView;
 import com.android.systemui.statusbar.pipeline.wifi.ui.viewmodel.LocationBasedWifiViewModel;
 import com.android.systemui.statusbar.policy.NetworkTrafficSB;
-import com.android.systemui.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +80,6 @@ public interface StatusBarIconController {
     void addIconGroup(IconManager iconManager);
     /** */
     void removeIconGroup(IconManager iconManager);
-
-    /** Refresh the state of an IconManager by recreating the views */
-    void refreshIconGroup(IconManager iconManager);
 
     /**
      * Adds or updates an icon that comes from an active tile service.
@@ -381,7 +377,6 @@ public interface StatusBarIconController {
         protected final int mIconSize;
         // Whether or not these icons show up in dumpsys
         protected boolean mShouldLog = false;
-        private StatusBarIconController mController;
         private final StatusBarLocation mLocation;
 
         // Enables SystemUI demo mode to take effect in this group
@@ -433,17 +428,13 @@ public interface StatusBarIconController {
             mDemoable = demoable;
         }
 
-        void setController(StatusBarIconController controller) {
-            mController = controller;
-        }
-
         public void setBlockList(@Nullable List<String> blockList) {
-            Assert.isMainThread();
             mBlockList.clear();
-            mBlockList.addAll(blockList);
-            if (mController != null) {
-                mController.refreshIconGroup(this);
+            if (blockList == null || blockList.isEmpty()) {
+                return;
             }
+
+            mBlockList.addAll(blockList);
         }
 
         public void setShouldLog(boolean should) {
