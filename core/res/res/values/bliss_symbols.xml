@@ -87,4 +87,7 @@
   <java-symbol type="bool" name="config_intrusiveBatteryLed" />
   <java-symbol type="bool" name="config_multiColorBatteryLed" />
   <java-symbol type="bool" name="config_ledCanPulse" />
+
+  <!-- Cycle through ringer modes -->
+  <java-symbol type="string" name="volume_dialog_ringer_guidance_normal" />
 </resources>
