@@ -117,4 +117,7 @@
 
     <!-- Parallel space max count. -->
     <java-symbol type="integer" name="config_parallelSpaceMaxCount" />
+
+  <!-- Wether to handle audio direction changes between major call states -->
+  <java-symbol type="bool" name="config_handleAudioDirectionChangesBetweenCallStateChanges" />
 </resources>

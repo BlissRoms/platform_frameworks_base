@@ -113,4 +113,7 @@
 
     <!-- Parallel space max count. Should overlay according to device performance. -->
     <integer name="config_parallelSpaceMaxCount">9</integer>
+
+  <!-- Wether to handle audio direction changes between major call states -->
+  <bool name="config_handleAudioDirectionChangesBetweenCallStateChanges">true</bool>
 </resources>
