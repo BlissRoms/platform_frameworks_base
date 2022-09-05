@@ -69,6 +69,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RotateDrawable;
+import android.media.AppVolume;
 import android.media.AudioManager;
 import android.media.AudioSystem;
 import android.media.session.MediaController;
@@ -124,6 +125,7 @@ import com.android.internal.graphics.drawable.BackgroundBlurDrawable;
 import com.android.internal.jank.InteractionJankMonitor;
 import com.android.internal.view.RotationPolicy;
 import com.android.settingslib.Utils;
+import com.android.systemui.Dependency;
 import com.android.systemui.Prefs;
 import com.android.systemui.R;
 import com.android.systemui.animation.Interpolators;
@@ -253,6 +255,7 @@ public class VolumeDialogImpl implements VolumeDialog,
     private CaptionsToggleImageButton mODICaptionsIcon;
     private View mSettingsView;
     private ImageButton mSettingsIcon;
+    private View mAppVolumeView;
     private ImageButton mAppVolumeIcon;
     private View mExpandRowsView;
     private ExpandableIndicator mExpandRows;
@@ -287,6 +290,8 @@ public class VolumeDialogImpl implements VolumeDialog,
     private boolean mHasSeenODICaptionsTooltip;
     private ViewStub mODICaptionsTooltipViewStub;
     private View mODICaptionsTooltipView = null;
+
+    private boolean mShowAppVolume;
 
     // Volume panel placement left or right
     private boolean mVolumePanelOnLeft;
@@ -682,6 +687,9 @@ public class VolumeDialogImpl implements VolumeDialog,
             mExpandRows.setRotation(-90);
         }
 
+        mAppVolumeView = mDialog.findViewById(R.id.app_volume_container);
+        mAppVolumeIcon = mDialog.findViewById(R.id.app_volume);
+
         if (mRows.isEmpty()) {
             if (!AudioSystem.isSingleVolume(mContext)) {
                 addRow(STREAM_ACCESSIBILITY, R.drawable.ic_volume_accessibility,
@@ -714,6 +722,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         updateRowsH(getActiveRow());
         initRingerH();
         initSettingsH(lockTaskModeState);
+        initAppVolumeH();
         initODICaptionsH();
     }
 
@@ -1300,6 +1309,34 @@ public class VolumeDialogImpl implements VolumeDialog,
         }
     }
 
+    private boolean shouldShowAppVolume() {
+        if (mShowAppVolume) {
+            AudioManager audioManager = mController.getAudioManager();
+            for (AppVolume av : audioManager.listAppVolumes()) {
+                if (av.isActive()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void initAppVolumeH() {
+        if (mAppVolumeView != null) {
+            mAppVolumeView.setVisibility(shouldShowAppVolume() ? VISIBLE : GONE);
+        }
+        if (mAppVolumeIcon != null) {
+            mAppVolumeIcon.setOnClickListener(v -> {
+                Events.writeEvent(Events.EVENT_SETTINGS_CLICK);
+                Intent intent = new Intent(Settings.Panel.ACTION_APP_VOLUME);
+                dismissH(DISMISS_REASON_SETTINGS_CLICKED);
+                Dependency.get(MediaOutputDialogFactory.class).dismiss();
+                Dependency.get(ActivityStarter.class).startActivity(intent,
+                        true /* dismissShade */);
+            });
+        }
+    }
+
     public void initRingerH() {
         if (mRingerIcon != null) {
             mRingerIcon.setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_POLITE);
@@ -1562,6 +1599,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         }
 
         initSettingsH(lockTaskModeState);
+        initAppVolumeH();
         mShowing = true;
         mIsAnimatingDismiss = false;
         mDialog.show();
@@ -2797,6 +2835,8 @@ public class VolumeDialogImpl implements VolumeDialog,
 
         private final Uri VOLUME_PANEL_ON_LEFT_URI = Settings.System.getUriFor(
                 Settings.System.VOLUME_PANEL_ON_LEFT);
+        private final Uri SHOW_APP_VOLUME_URI = Settings.System.getUriFor(
+                Settings.System.SHOW_APP_VOLUME);
 
         CustomSettingsObserver() {
             super(new Handler(Looper.getMainLooper()));
@@ -2805,6 +2845,8 @@ public class VolumeDialogImpl implements VolumeDialog,
         void observe() {
             final ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(VOLUME_PANEL_ON_LEFT_URI,
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(SHOW_APP_VOLUME_URI,
                     false, this, UserHandle.USER_ALL);
             updateVolumeDialog();
         }
@@ -2818,6 +2860,10 @@ public class VolumeDialogImpl implements VolumeDialog,
                     mContext.getContentResolver(),
                     Settings.System.VOLUME_PANEL_ON_LEFT,
                     1, UserHandle.USER_CURRENT) == 1;
+            mShowAppVolume = Settings.System.getIntForUser(
+                    mContext.getContentResolver(),
+                    Settings.System.SHOW_APP_VOLUME,
+                    1, UserHandle.USER_CURRENT) == 1;
             mHandler.post(() -> {
                     mConfigChanged = true;
             });
@@ -2825,7 +2871,8 @@ public class VolumeDialogImpl implements VolumeDialog,
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(VOLUME_PANEL_ON_LEFT_URI)) {
+            if (uri.equals(VOLUME_PANEL_ON_LEFT_URI) ||
+                    uri.equals(SHOW_APP_VOLUME_URI)) {
                 updateVolumeDialog();
             }
         }
