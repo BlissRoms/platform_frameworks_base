@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import com.android.internal.util.bliss.PixelPropsUtils;
+import com.android.internal.util.bliss.AttestationHooks;
 
 /**
  * Base class for implementing application instrumentation code.  When running
@@ -1244,6 +1245,7 @@ public class Instrumentation {
         Application app = getFactory(context.getPackageName())
                 .instantiateApplication(cl, className);
         app.attach(context);
+        AttestationHooks.initApplicationBeforeOnCreate(app);
         String packageName = app.getPackageName();
         PixelPropsUtils.setProps(packageName);
         return app;
@@ -1263,6 +1265,7 @@ public class Instrumentation {
             ClassNotFoundException {
         Application app = (Application)clazz.newInstance();
         app.attach(context);
+        AttestationHooks.initApplicationBeforeOnCreate(app);
         String packageName = app.getPackageName();
         PixelPropsUtils.setProps(packageName);
         return app;
