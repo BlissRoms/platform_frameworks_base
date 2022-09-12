@@ -89,6 +89,7 @@ public class SystemSettings {
         Settings.System.DISPLAY_COLOR_MODE,
         Settings.System.ALARM_ALERT,
         Settings.System.NOTIFICATION_LIGHT_PULSE,
-        Settings.System.ENABLE_RIPPLE_EFFECT,
+	Settings.System.SCREEN_OFF_FOD,
+	Settings.System.ENABLE_RIPPLE_EFFECT,
     };
 }
