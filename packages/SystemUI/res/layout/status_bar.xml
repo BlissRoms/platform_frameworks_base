@@ -103,7 +103,8 @@
                     android:gravity="center_vertical|start"
                     android:clipChildren="false"/>
 
-                <include layout="@layout/ongoing_call_chip" />
+                <include layout="@layout/ongoing_call_chip"
+                   android:visibility="gone" />
 
             </LinearLayout>
         </FrameLayout>
