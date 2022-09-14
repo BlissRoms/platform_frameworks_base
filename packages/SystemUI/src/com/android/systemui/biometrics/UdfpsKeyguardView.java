@@ -102,8 +102,6 @@ public class UdfpsKeyguardView extends UdfpsAnimationView {
         AsyncLayoutInflater inflater = new AsyncLayoutInflater(mContext);
         inflater.inflate(R.layout.udfps_keyguard_view_internal, this,
                 mLayoutInflaterFinishListener);
-
-        updateIcon();
     }
 
     @Override
@@ -320,6 +318,7 @@ public class UdfpsKeyguardView extends UdfpsAnimationView {
             updateColor();
             updateAlpha();
             parent.addView(view);
+            updateIcon();
 
             // requires call to invalidate to update the color
             mLockScreenFp.addValueCallback(
