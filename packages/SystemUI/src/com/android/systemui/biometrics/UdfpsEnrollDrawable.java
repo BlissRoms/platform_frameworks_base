@@ -86,7 +86,7 @@ public class UdfpsEnrollDrawable extends UdfpsDrawable {
         mMovingTargetFpIcon.setTint(context.getColor(R.color.udfps_enroll_icon));
         mMovingTargetFpIcon.mutate();
 
-        getFingerprintDrawable().setTint(context.getColor(R.color.udfps_enroll_icon));
+        mFingerprintDrawable.setTint(context.getColor(R.color.udfps_enroll_icon));
 
         mTargetAnimListener = new Animator.AnimatorListener() {
             @Override
@@ -218,8 +218,8 @@ public class UdfpsEnrollDrawable extends UdfpsDrawable {
             if (mSensorRect != null) {
                 canvas.drawOval(mSensorRect, mSensorOutlinePaint);
             }
-            getFingerprintDrawable().draw(canvas);
-            getFingerprintDrawable().setAlpha(getAlpha());
+            mFingerprintDrawable.draw(canvas);
+            mFingerprintDrawable.setAlpha(getAlpha());
             mSensorOutlinePaint.setAlpha(getAlpha());
         }
 
