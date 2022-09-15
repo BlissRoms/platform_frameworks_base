@@ -65,7 +65,6 @@ import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.VpnTile;
 import com.android.systemui.qs.tiles.VPNTetheringTile;
-import com.android.systemui.qs.tiles.WeatherTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
 import com.android.systemui.qs.tiles.DataSwitchTile;
@@ -122,7 +121,6 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<VPNTetheringTile> mVPNTetheringTileProvider;
     private final Provider<RebootTile> mRebootTileProvider;
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
-    private final Provider<WeatherTile> mWeatherTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
     private final Provider<CustomTile.Builder> mCustomTileBuilderProvider;
@@ -171,8 +169,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<VpnTile> vpnTileProvider,
             Provider<VPNTetheringTile> vpnTetheringTileProvider,
             Provider<RebootTile> rebootTileProvider,
-            Provider<DataSwitchTile> dataSwitchTileProvider),
-            Provider<WeatherTile> weatherTileProvider) {
+            Provider<DataSwitchTile> dataSwitchTileProvider) {
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
         mWifiTileProvider = wifiTileProvider;
@@ -216,7 +213,6 @@ public class QSFactoryImpl implements QSFactory {
         mVPNTetheringTileProvider = vpnTetheringTileProvider;
         mRebootTileProvider = rebootTileProvider;
         mDataSwitchTileProvider = dataSwitchTileProvider;
-        mWeatherTileProvider = weatherTileProvider;
     }
 
     /** Creates a tile with a type based on {@code tileSpec} */
@@ -315,8 +311,6 @@ public class QSFactoryImpl implements QSFactory {
                 return mRebootTileProvider.get();
             case "dataswitch":
                 return mDataSwitchTileProvider.get();
-            case "weather":
-                return mWeatherTileProvider.get();
         }
 
         // Custom tiles
