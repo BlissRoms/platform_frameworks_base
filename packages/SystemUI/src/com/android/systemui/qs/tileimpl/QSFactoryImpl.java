@@ -27,7 +27,6 @@ import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.plugins.qs.QSTileView;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.external.CustomTile;
-import com.android.systemui.qs.tiles.WeatherTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 
 import java.util.Map;
@@ -55,7 +54,6 @@ public class QSFactoryImpl implements QSFactory {
 
     protected final Map<String, Provider<QSTileImpl<?>>> mTileMap;
 
-    private final Provider<WeatherTile> mWeatherTileProvider;
     private final Lazy<QSHost> mQsHostLazy;
     private final Provider<CustomTile.Builder> mCustomTileBuilderProvider;
 
@@ -67,8 +65,6 @@ public class QSFactoryImpl implements QSFactory {
         mQsHostLazy = qsHostLazy;
         mCustomTileBuilderProvider = customTileBuilderProvider;
         mTileMap = tileMap;
-            Provider<WeatherTile> weatherTileProvider) {
-        mWeatherTileProvider = weatherTileProvider;
     }
 
     /** Creates a tile with a type based on {@code tileSpec} */
@@ -89,7 +85,6 @@ public class QSFactoryImpl implements QSFactory {
                 // We should not return a Garbage Monitory Tile if the build is not Debuggable
                 && (!tileSpec.equals(GarbageMonitor.MemoryTile.TILE_SPEC) || Build.IS_DEBUGGABLE)) {
             return mTileMap.get(tileSpec).get();
-                return mWeatherTileProvider.get();
         }
 
         // Custom tiles
