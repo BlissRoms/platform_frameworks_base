@@ -47,4 +47,7 @@
     <dimen name="right_tri_state_up_bottom_right_radius">0.0dip</dimen>
     <dimen name="right_tri_state_up_top_left_radius">24.0dip</dimen>
     <dimen name="right_tri_state_up_top_right_radius">24.0dip</dimen>
+
+    <!-- The height of the WiFi toggle layout in Internet panel -->
+    <dimen name="internet_dialog_wifi_toggle_height">56dp</dimen>
 </resources>
