@@ -212,7 +212,7 @@ public class MobileMappings {
         public boolean showAtLeast3G = false;
         public boolean show4gFor3g = false;
         public boolean alwaysShowCdmaRssi = false;
-        public boolean show4gForLte = false;
+        public boolean show4gForLte = true;
         public boolean show4glteForLte = false;
         public boolean hideLtePlus = false;
         public boolean hspaDataDistinguishable;
@@ -240,8 +240,6 @@ public class MobileMappings {
             if (b != null) {
                 config.alwaysShowDataRatIcon = b.getBoolean(
                         CarrierConfigManager.KEY_ALWAYS_SHOW_DATA_RAT_ICON_BOOL);
-                config.show4gForLte = b.getBoolean(
-                        CarrierConfigManager.KEY_SHOW_4G_FOR_LTE_DATA_ICON_BOOL);
                 config.show4glteForLte = b.getBoolean(
                         CarrierConfigManager.KEY_SHOW_4GLTE_FOR_LTE_DATA_ICON_BOOL);
                 config.show4gFor3g = b.getBoolean(
