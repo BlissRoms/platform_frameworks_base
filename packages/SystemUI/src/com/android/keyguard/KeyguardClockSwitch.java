@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.ContentResolver;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -157,6 +158,12 @@ public class KeyguardClockSwitch extends RelativeLayout {
     private int getLockClockFont() {
         return Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCK_CLOCK_FONTS, 28);
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        refreshLockFont();
     }
 
     void setClockPlugin(ClockPlugin plugin, int statusBarState) {
