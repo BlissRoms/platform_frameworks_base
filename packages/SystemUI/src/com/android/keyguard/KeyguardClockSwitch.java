@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.ContentResolver;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -104,6 +105,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        refreshLockFont();
 
         if (mDisplayedClockSize != null) {
             boolean landscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
