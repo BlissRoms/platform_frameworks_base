@@ -35,7 +35,11 @@ import com.android.internal.util.Preconditions;
 import com.android.server.LocalServices;
 import com.android.server.pm.UserManagerInternal;
 
+import ink.kaleidoscope.server.ParallelSpaceManagerService;
+
 import java.io.FileDescriptor;
+import java.lang.Integer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -123,7 +127,8 @@ public class SystemUserInfoHelper extends UserInfoHelper {
         if (activityManagerInternal != null) {
             final long identity = Binder.clearCallingIdentity();
             try {
-                return activityManagerInternal.isCurrentProfile(userId);
+                return activityManagerInternal.isCurrentProfile(userId) ||
+                        ParallelSpaceManagerService.isCurrentParallelUser(userId);
             } finally {
                 Binder.restoreCallingIdentity(identity);
             }
@@ -174,7 +179,10 @@ public class SystemUserInfoHelper extends UserInfoHelper {
 
         final long identity = Binder.clearCallingIdentity();
         try {
-            return userManager.getEnabledProfileIds(userId);
+            ArrayList profiles = new ArrayList<>(
+                    Arrays.asList(userManager.getEnabledProfileIds(userId)));
+            profiles.addAll(ParallelSpaceManagerService.getCurrentParallelUserIds());
+            return profiles.stream().mapToInt(i -> ((Integer) i).intValue()).toArray();
         } finally {
             Binder.restoreCallingIdentity(identity);
         }
