@@ -574,7 +574,7 @@ public class QSAnimator implements QSHost.Callback, PagedTileLayout.PageListener
         View qsBrightness = mQsPanelController.getBrightnessView();
         View qqsBrightness = mQuickQSPanelController.getBrightnessView();
 
-        if (mTunerService.getValue(QSPanel.QS_SHOW_BRIGHTNESS_SLIDER, 1) == 0) {
+        if (mTunerService.getValue(QSPanel.QS_SHOW_BRIGHTNESS_SLIDER, 2) == 0) {
             qsBrightness.setVisibility(View.GONE);
             qqsBrightness.setVisibility(View.GONE);
         }
