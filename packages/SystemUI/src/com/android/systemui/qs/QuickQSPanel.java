@@ -25,6 +25,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 
 import com.android.internal.logging.UiEventLogger;
+import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.plugins.qs.QSTile.SignalState;
@@ -75,6 +76,11 @@ public class QuickQSPanel extends QSPanel implements TunerService.Tunable {
         setBrightnessViewMargin(mTop);
         if (mBrightnessView != null) {
             addView(mBrightnessView);
+
+            TunerService tunerService = Dependency.get(TunerService.class);
+            if (tunerService.getValue(QS_SHOW_BRIGHTNESS_SLIDER, 2) > 1) {
+                mBrightnessView.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -179,7 +185,7 @@ public class QuickQSPanel extends QSPanel implements TunerService.Tunable {
         switch (key) {
             case QS_SHOW_BRIGHTNESS_SLIDER:
                 boolean value =
-                        TunerService.parseInteger(newValue, 1) > 1;
+                        TunerService.parseInteger(newValue, 2) > 1;
                 super.onTuningChanged(key, value ? newValue : "0");
                 break;
             default:
