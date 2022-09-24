@@ -159,7 +159,7 @@ public class QSPanel extends LinearLayout implements Tunable {
                 com.android.internal.R.bool.config_automatic_brightness_available);
 
         TunerService tunerService = Dependency.get(TunerService.class);
-        mTop = tunerService.getValue(QS_BRIGHTNESS_SLIDER_POSITION, 0) == 0;
+        mTop = tunerService.getValue(QS_BRIGHTNESS_SLIDER_POSITION, 1) == 0;
     }
 
     void initialize(QSLogger qsLogger) {
@@ -373,13 +373,13 @@ public class QSPanel extends LinearLayout implements Tunable {
         switch (key) {
             case QS_BRIGHTNESS_SLIDER:
                 boolean value =
-                       TunerService.parseInteger(newValue, 1) >= 1;
+                       TunerService.parseInteger(newValue, 2) >= 1;
                 if (mBrightnessView != null) {
                     mBrightnessView.setVisibility(value ? VISIBLE : GONE);
                 }
                 break;
             case QS_BRIGHTNESS_SLIDER_POSITION:
-                mTop = TunerService.parseInteger(newValue, 0) == 0;
+                mTop = TunerService.parseInteger(newValue, 1) == 0;
                 updateBrightnessSliderPosition();
                 break;
             case QS_AUTO_BRIGHTNESS:
