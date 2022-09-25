@@ -289,6 +289,8 @@ import com.android.internal.os.IBinaryTransparencyService;
 import com.android.internal.os.IDropBoxManagerService;
 import com.android.internal.policy.PhoneLayoutInflater;
 import com.android.internal.util.Preconditions;
+import com.oplus.os.ILinearmotorVibratorService;
+import com.oplus.os.LinearmotorVibrator;
 
 import java.time.InstantSource;
 import java.util.HashMap;
@@ -1081,6 +1083,15 @@ public final class SystemServiceRegistry {
                                 ITvAdManager.Stub.asInterface(iBinder);
                         return new TvAdManager(service, ctx.getUserId());
                     }});
+
+        registerService(Context.LINEARMOTOR_VIBRATOR_SERVICE, LinearmotorVibrator.class,
+                new CachedServiceFetcher<LinearmotorVibrator>() {
+            @Override
+            public LinearmotorVibrator createService(ContextImpl ctx) {
+                IBinder binder = ServiceManager.getService(Context.LINEARMOTOR_VIBRATOR_SERVICE);
+                ILinearmotorVibratorService service = ILinearmotorVibratorService.Stub.asInterface(binder);
+                return new LinearmotorVibrator(ctx.getOuterContext(), service);
+            }});
 
         registerService(Context.TV_INPUT_SERVICE, TvInputManager.class,
                 new CachedServiceFetcher<TvInputManager>() {
