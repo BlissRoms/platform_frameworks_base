@@ -23,16 +23,12 @@ import static com.android.systemui.statusbar.StatusBarState.KEYGUARD;
 
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.hardware.biometrics.BiometricSourceType;
-import android.os.UserHandle;
 import android.os.UserManager;
-import android.provider.Settings;
 import android.util.MathUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 import androidx.core.animation.Animator;
 import androidx.core.animation.AnimatorListenerAdapter;
 import androidx.core.animation.ValueAnimator;
@@ -44,7 +40,6 @@ import com.android.keyguard.logging.KeyguardLogger;
 import com.android.systemui.R;
 import com.android.systemui.animation.InterpolatorsAndroidX;
 import com.android.systemui.battery.BatteryMeterViewController;
-import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.log.LogLevel;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.shade.NotificationPanelViewController;
@@ -58,7 +53,6 @@ import com.android.systemui.statusbar.notification.AnimatableProperty;
 import com.android.systemui.statusbar.notification.PropertyAnimator;
 import com.android.systemui.statusbar.notification.stack.AnimationProperties;
 import com.android.systemui.statusbar.notification.stack.StackStateAnimator;
-import com.android.systemui.statusbar.phone.fragment.StatusBarIconBlocklistKt;
 import com.android.systemui.statusbar.phone.fragment.StatusBarSystemEventDefaultAnimator;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
@@ -66,12 +60,10 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.user.ui.viewmodel.StatusBarUserChipViewModel;
 import com.android.systemui.util.ViewController;
-import com.android.systemui.util.settings.SecureSettings;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
@@ -113,10 +105,7 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
     private final StatusBarContentInsetsProvider mInsetsProvider;
     private final UserManager mUserManager;
     private final StatusBarUserChipViewModel mStatusBarUserChipViewModel;
-    private final SecureSettings mSecureSettings;
     private final CommandQueue mCommandQueue;
-    private final Executor mMainExecutor;
-    private final Object mLock = new Object();
     private final KeyguardLogger mLogger;
 
     private final ConfigurationController.ConfigurationListener mConfigurationListener =
@@ -231,7 +220,8 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
 
     private final DisableStateTracker mDisableStateTracker;
 
-    private final List<String> mBlockedIcons = new ArrayList<>();
+    private final List<String> mBlockedIcons;
+
     private final int mNotificationsHeaderCollideDistance;
 
     private boolean mBatteryListening;
@@ -280,9 +270,7 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
             StatusBarContentInsetsProvider statusBarContentInsetsProvider,
             UserManager userManager,
             StatusBarUserChipViewModel userChipViewModel,
-            SecureSettings secureSettings,
             CommandQueue commandQueue,
-            @Main Executor mainExecutor,
             KeyguardLogger logger
     ) {
         super(view);
@@ -303,9 +291,7 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
         mInsetsProvider = statusBarContentInsetsProvider;
         mUserManager = userManager;
         mStatusBarUserChipViewModel = userChipViewModel;
-        mSecureSettings = secureSettings;
         mCommandQueue = commandQueue;
-        mMainExecutor = mainExecutor;
         mLogger = logger;
 
         mFirstBypassAttempt = mKeyguardBypassController.getBypassEnabled();
@@ -322,7 +308,8 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
         );
 
         Resources r = getResources();
-        updateBlockedIcons();
+        mBlockedIcons = Arrays.asList(r.getStringArray(
+                R.array.config_keyguard_statusbar_icon_blocklist));
         mNotificationsHeaderCollideDistance = r.getDimensionPixelSize(
                 R.dimen.header_notifications_collide_distance);
 
@@ -356,16 +343,11 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
         if (mTintedIconManager == null) {
             mTintedIconManager = mTintedIconManagerFactory.create(
                     mView.findViewById(R.id.statusIcons), StatusBarLocation.KEYGUARD);
-            mTintedIconManager.setBlockList(getBlockedIcons());
+            mTintedIconManager.setBlockList(mBlockedIcons);
             mStatusBarIconController.addIconGroup(mTintedIconManager);
         }
         mView.setOnApplyWindowInsetsListener(
                 (view, windowInsets) -> mView.updateWindowInsets(windowInsets, mInsetsProvider));
-        mSecureSettings.registerContentObserverForUser(
-                Settings.Secure.STATUS_BAR_SHOW_VIBRATE_ICON,
-                false,
-                mVolumeSettingObserver,
-                UserHandle.USER_ALL);
         updateUserSwitcher();
         onThemeChanged();
     }
@@ -378,7 +360,6 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
         mStatusBarStateController.removeCallback(mStatusBarStateListener);
         mKeyguardUpdateMonitor.removeCallback(mKeyguardUpdateMonitorCallback);
         mDisableStateTracker.stopTracking(mCommandQueue);
-        mSecureSettings.unregisterContentObserver(mVolumeSettingObserver);
         if (mTintedIconManager != null) {
             mStatusBarIconController.removeIconGroup(mTintedIconManager);
         }
@@ -542,32 +523,8 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
                 R.bool.qs_show_user_switcher_for_single_user)));
     }
 
-    @VisibleForTesting
-    void updateBlockedIcons() {
-        List<String> newBlockList = StatusBarIconBlocklistKt
-                .getStatusBarIconBlocklist(getResources(), mSecureSettings);
-
-        synchronized (mLock) {
-            mBlockedIcons.clear();
-            mBlockedIcons.addAll(newBlockList);
-        }
-
-        mMainExecutor.execute(() -> {
-            if (mTintedIconManager != null) {
-                mTintedIconManager.setBlockList(getBlockedIcons());
-            }
-        });
-    }
-
-    @VisibleForTesting
-    List<String> getBlockedIcons() {
-        synchronized (mLock) {
-            return new ArrayList<>(mBlockedIcons);
-        }
-    }
-
     /**
-      Update {@link KeyguardStatusBarView}'s visibility based on whether keyguard is showing and
+     * Update {@link KeyguardStatusBarView}'s visibility based on whether keyguard is showing and
      * whether heads up is visible.
      */
     public void updateForHeadsUp() {
@@ -615,13 +572,6 @@ public class KeyguardStatusBarViewController extends ViewController<KeyguardStat
         mExplicitAlpha = alpha;
         updateViewState();
     }
-
-    private final ContentObserver mVolumeSettingObserver = new ContentObserver(null) {
-        @Override
-        public void onChange(boolean selfChange) {
-            updateBlockedIcons();
-        }
-    };
 
     private StatusBarSystemEventDefaultAnimator getSystemEventAnimator(boolean isAnimationRunning) {
         return new StatusBarSystemEventDefaultAnimator(getResources(), (alpha) -> {
