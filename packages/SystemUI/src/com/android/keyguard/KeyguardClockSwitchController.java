@@ -256,7 +256,6 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
 
         mKeyguardUnlockAnimationController.addKeyguardUnlockAnimationListener(
                 mKeyguardUnlockAnimationListener);
-        mView.refreshLockFont();
     }
 
     int getNotificationIconAreaHeight() {
