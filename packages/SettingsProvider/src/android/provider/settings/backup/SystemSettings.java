@@ -90,7 +90,6 @@ public class SystemSettings {
         Settings.System.ALARM_ALERT,
         Settings.System.NOTIFICATION_LIGHT_PULSE,
         Settings.System.FULLSCREEN_GESTURES,
-        Settings.System.SHOW_FOURG_ICON,
         Settings.System.USE_OLD_MOBILETYPE,
         Settings.System.TORCH_POWER_BUTTON_GESTURE,
     };
