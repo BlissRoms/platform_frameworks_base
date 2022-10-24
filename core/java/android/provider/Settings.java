@@ -5830,7 +5830,13 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_BATTERY_TEXT_CHARGING = "status_bar_battery_text_charging";
-		
+
+        /**
+         * Whether to enable fingerprint wake-and-unlock.
+         * @hide
+         */
+        public static final String FINGERPRINT_WAKE_UNLOCK = "fingerprint_wake_unlock";
+
         /**
          * QS battery style
          * @hide
