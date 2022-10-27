@@ -124,4 +124,7 @@
     <!-- Enable face auth only when swiping security view -->
     <bool name="config_faceAuthOnlyOnSecurityView">false</bool>
 
+    <!-- Path to dash charging status file -->
+    <string name="config_DashChargerStatusPath">/sys/class/power_supply/battery/fastchg_status</string>
+
 </resources>

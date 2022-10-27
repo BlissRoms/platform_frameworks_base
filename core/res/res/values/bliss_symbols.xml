@@ -108,4 +108,7 @@
   <!-- Enable face auth only when swiping security view -->
   <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
 
+  <!-- Path to warp charging status file -->
+  <java-symbol type="string" name="config_DashChargerStatusPath" />
+
 </resources>
