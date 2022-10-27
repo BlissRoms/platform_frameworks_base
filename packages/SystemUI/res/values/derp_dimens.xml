@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2023 DerpFest
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Largest size an avatar might need to be drawn in the power menu user picker -->
+    <dimen name="global_actions_avatar_size">24dp</dimen>
+
+    <!-- Width of the battery icon in the status bar when set to circle style. -->
+    <dimen name="status_bar_battery_icon_circle_width">13.5dp</dimen>
+
+    <!-- QQS Brightness slider -->
+    <dimen name="qqs_top_brightness_margin_top">4dp</dimen>
+    <dimen name="qqs_top_brightness_margin_bottom">12dp</dimen>
+    <dimen name="qqs_bottom_brightness_margin_top">12dp</dimen>
+
+    <!-- QS Brightness slider -->
+    <dimen name="qs_top_brightness_margin_top">8dp</dimen>
+    <dimen name="qs_top_brightness_margin_bottom">10dp</dimen>
+    <dimen name="qs_bottom_brightness_margin_top">10dp</dimen>
+
+    <!-- Height of the landscape battery icon in the status bar. -->
+    <dimen name="status_bar_battery_icon_height_landscape">10.5dp</dimen>
+
+    <!-- Width of the landscape battery icon in the status bar. -->
+    <dimen name="status_bar_battery_icon_width_landscape">20dp</dimen>
+
+    <!-- Network traffic -->
+    <dimen name="network_traffic_width">25sp</dimen>
+    <dimen name="network_traffic_padding">1dp</dimen>
+
+    <!-- Clear all notifications button -->
+    <dimen name="dismiss_all_button_elevation">10dp</dimen>
+    <dimen name="dismiss_all_button_height">55dp</dimen>
+    <dimen name="dismiss_all_button_width">55dp</dimen>
+    <dimen name="dismiss_all_button_margin_bottom">48dp</dimen>
+
+    <!-- Screen Record -->
+    <dimen name="screenrecord_dot_size">48dp</dimen>
+
+    <!-- Bluetooth dialog -->
+    <dimen name="bluetooth_dialog_active_device_bottom_margin">4dp</dimen>
+</resources>
