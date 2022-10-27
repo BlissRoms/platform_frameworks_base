@@ -111,4 +111,7 @@
   <!-- Path to warp charging status file -->
   <java-symbol type="string" name="config_DashChargerStatusPath" />
 
+  <!-- Path to warp charging status file -->
+  <java-symbol type="string" name="config_WarpChargerStatusPath" />
+
 </resources>

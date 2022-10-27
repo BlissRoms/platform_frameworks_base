@@ -127,4 +127,7 @@
     <!-- Path to dash charging status file -->
     <string name="config_DashChargerStatusPath">/sys/class/power_supply/battery/fastchg_status</string>
 
+    <!-- Path to warp charging status file -->
+    <string name="config_WarpChargerStatusPath">/sys/class/power_supply/battery/fastchg_status</string>
+
 </resources>
