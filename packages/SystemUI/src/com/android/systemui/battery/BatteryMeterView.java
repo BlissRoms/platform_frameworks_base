@@ -60,8 +60,8 @@ import java.util.ArrayList;
 public class BatteryMeterView extends LinearLayout implements DarkReceiver {
 
     protected static final int BATTERY_STYLE_PORTRAIT = 0;
-    protected static final int BATTERY_STYLE_CIRCLE = 1;
-    protected static final int BATTERY_STYLE_DOTTED_CIRCLE = 2;
+    public static final int BATTERY_STYLE_CIRCLE = 1;
+    public static final int BATTERY_STYLE_DOTTED_CIRCLE = 2;
     protected static final int BATTERY_STYLE_TEXT = 3;
     protected static final int BATTERY_STYLE_HIDDEN = 4;
 
@@ -185,7 +185,7 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
     public int getBatteryStyle() {
         return mBatteryStyle;
     }
-    
+
     public void setBatteryStyle(int batteryStyle) {
         if (batteryStyle == mBatteryStyle) return;
         mBatteryStyle = batteryStyle;
