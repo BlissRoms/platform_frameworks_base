@@ -123,4 +123,11 @@
     <!-- List of system apps that are allowed to be locked with app lock.
          Use with extreme caution. -->
     <string-array name="config_appLockAllowedSystemApps" translatable="false" />
+
+    <!-- The list of package IDs that are allowed to use aux cameras.
+         NOTE: If this list is empty then all apps will be able to use aux cameras. -->
+    <string-array name="config_cameraAuxPackageAllowList" translatable="false" />
+
+    <!-- The list of package IDs that are not allowed to use aux cameras. -->
+    <string-array name="config_cameraAuxPackageBlackList" translatable="false" />
 </resources>

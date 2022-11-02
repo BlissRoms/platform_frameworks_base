@@ -31,6 +31,7 @@ import android.app.ActivityThread;
 import android.app.AppOpsManager;
 import android.compat.annotation.UnsupportedAppUsage;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -290,12 +291,19 @@ public class Camera {
          * if the package name does not falls in this bucket
          */
         String packageName = ActivityThread.currentOpPackageName();
-        List<String> packageList = Arrays.asList(
-                SystemProperties.get("vendor.camera.aux.packagelist", packageName).split(","));
-        List<String> packageBlacklist = Arrays.asList(
-                SystemProperties.get("vendor.camera.aux.packageexcludelist", "").split(","));
+        List<String> packageList = new ArrayList<>(Arrays.asList(
+                SystemProperties.get("vendor.camera.aux.packagelist", packageName).split(",")));
+        List<String> packageBlacklist = new ArrayList<>(Arrays.asList(
+                SystemProperties.get("vendor.camera.aux.packageblacklist", "").split(",")));
 
-        return packageList.contains(packageName) && !packageBlacklist.contains(packageName);
+        // Append packages from resources
+        Resources res = ActivityThread.currentApplication().getResources();
+        packageList.addAll(Arrays.asList(res.getStringArray(
+                com.android.internal.R.array.config_cameraAuxPackageAllowList)));
+        packageBlacklist.addAll(Arrays.asList(res.getStringArray(
+                com.android.internal.R.array.config_cameraAuxPackageBlackList)));
+
+        return (packageList.isEmpty() || packageList.contains(packageName)) && !packageBlacklist.contains(packageName);
     }
 
     /**
