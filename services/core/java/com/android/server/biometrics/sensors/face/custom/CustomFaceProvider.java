@@ -163,7 +163,7 @@ public class CustomFaceProvider implements ServiceProvider {
     }
 
     public CustomFaceProvider(Context context, FaceSensorPropertiesInternal sensorProps, LockoutResetDispatcher lockoutResetDispatcher) {
-        this(context, sensorProps, lockoutResetDispatcher, new BiometricScheduler(TAG, 0, null));
+        this(context, sensorProps, lockoutResetDispatcher, new BiometricScheduler(context, TAG, 0, null));
     }
 
     synchronized IFaceService getDaemon() {
