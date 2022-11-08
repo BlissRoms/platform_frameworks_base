@@ -44,11 +44,8 @@ class FaceGenerateChallengeClient extends GenerateChallengeClient<IFaceService> 
     private Long mChallengeResult;
     private List<IFaceServiceReceiver> mWaiting = new ArrayList();
 
-    FaceGenerateChallengeClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token,
-            ClientMonitorCallbackConverter listener, int userId, String owner, int sensorId, BiometricLogger logger,
-            BiometricContext biometricContext, long now) {
-        super(context, lazyDaemon, token, listener, userId, owner, sensorId, logger,
-        biometricContext);
+    FaceGenerateChallengeClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, ClientMonitorCallbackConverter listener, int userId, String owner, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext, long now) {
+        super(context, lazyDaemon, token, listener, userId, owner, sensorId, biometricLogger, biometricContext);
         mCreatedAt = now;
     }
 

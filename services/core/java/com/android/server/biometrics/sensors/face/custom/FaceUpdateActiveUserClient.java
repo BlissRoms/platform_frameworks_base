@@ -37,11 +37,8 @@ class FaceUpdateActiveUserClient extends HalClientMonitor<IFaceService> {
     private final int mCurrentUserId;
     private final boolean mHasEnrolledBiometrics;
 
-    FaceUpdateActiveUserClient(Context context, Supplier<IFaceService> lazyDaemon, int userId, String owner,
-            int sensorId, BiometricLogger logger,
-            BiometricContext biometricContext, int currentUserId, boolean hasEnrolledBIometrics,
-            Map<Integer, Long> authenticatorIds) {
-        super(context, lazyDaemon, null, null, userId, owner, 0, sensorId, logger, biometricContext);
+    FaceUpdateActiveUserClient(Context context, Supplier<IFaceService> lazyDaemon, int userId, String owner, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext, int currentUserId, boolean hasEnrolledBIometrics, Map<Integer, Long> authenticatorIds) {
+        super(context, lazyDaemon, null, null, userId, owner, 0, sensorId, biometricLogger, biometricContext);
         mCurrentUserId = currentUserId;
         mHasEnrolledBiometrics = hasEnrolledBIometrics;
         mAuthenticatorIds = authenticatorIds;

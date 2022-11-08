@@ -37,10 +37,8 @@ public class FaceGetFeatureClient extends HalClientMonitor<IFaceService> {
     private final int mFeature;
     private boolean mValue;
 
-    FaceGetFeatureClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token,
-            ClientMonitorCallbackConverter listener, int userId, String owner, int sensorId, BiometricLogger logger,
-            BiometricContext biometricContext, int feature, int faceId) {
-        super(context, lazyDaemon, token, listener, userId, owner, 0, sensorId, logger, biometricContext);
+    FaceGetFeatureClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, ClientMonitorCallbackConverter listener, int userId, String owner, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext, int feature, int faceId) {
+        super(context, lazyDaemon, token, listener, userId, owner, 0, sensorId, biometricLogger, biometricContext);
         mFeature = feature;
         mFaceId = faceId;
     }

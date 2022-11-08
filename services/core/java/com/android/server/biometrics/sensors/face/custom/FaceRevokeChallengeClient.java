@@ -31,10 +31,8 @@ import java.util.function.Supplier;
 class FaceRevokeChallengeClient extends RevokeChallengeClient<IFaceService> {
     private static final String TAG = "FaceRevokeChallengeClient";
 
-    FaceRevokeChallengeClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, int userId,
-            String owner, int sensorId, BiometricLogger logger,
-            BiometricContext biometricContext) {
-        super(context, lazyDaemon, token, userId, owner, sensorId, logger, biometricContext);
+    FaceRevokeChallengeClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, int userId, String owner, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext) {
+        super(context, lazyDaemon, token, userId, owner, sensorId, biometricLogger, biometricContext);
     }
 
     @Override

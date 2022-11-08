@@ -36,12 +36,8 @@ class FaceRemovalClient extends RemovalClient<Face, IFaceService> {
     private static final String TAG = "FaceRemovalClient";
     private final int mBiometricId;
 
-    FaceRemovalClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token,
-            ClientMonitorCallbackConverter listener, int biometricId, int userId, String owner,
-            BiometricUtils<Face> utils, int sensorId, BiometricLogger logger,
-            BiometricContext biometricContext, Map<Integer, Long> authenticatorIds) {
-        super(context, lazyDaemon, token, listener, userId, owner, utils, sensorId, logger,
-                biometricContext, authenticatorIds);
+    FaceRemovalClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, ClientMonitorCallbackConverter listener, int biometricId, int userId, String owner, BiometricUtils<Face> utils, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext, Map<Integer, Long> authenticatorIds) {
+        super(context, lazyDaemon, token, listener, userId, owner, utils, sensorId, biometricLogger, biometricContext, authenticatorIds);
         mBiometricId = biometricId;
     }
 

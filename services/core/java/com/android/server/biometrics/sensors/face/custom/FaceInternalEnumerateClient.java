@@ -34,10 +34,8 @@ import java.util.function.Supplier;
 class FaceInternalEnumerateClient extends InternalEnumerateClient<IFaceService> {
     private static final String TAG = "FaceInternalEnumerateClient";
 
-    FaceInternalEnumerateClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, int userId,
-            String owner, List<Face> enrolledList, BiometricUtils<Face> utils, int sensorId, BiometricLogger logger,
-            BiometricContext biometricContext) {
-        super(context, lazyDaemon, token, userId, owner, enrolledList, utils, sensorId, logger, biometricContext);
+    FaceInternalEnumerateClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, int userId, String owner, List<Face> enrolledList, BiometricUtils<Face> utils, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext) {
+        super(context, lazyDaemon, token, userId, owner, enrolledList, utils, sensorId, biometricLogger, biometricContext);
     }
 
     @Override

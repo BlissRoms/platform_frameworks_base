@@ -43,12 +43,8 @@ class FaceEnrollClient extends EnrollClient<IFaceService> {
     private final int[] mEnrollIgnoreListVendor = getContext().getResources().getIntArray(R.array.config_face_acquire_vendor_enroll_ignorelist);
     private final Surface mPreviewSurface;
 
-    FaceEnrollClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token,
-            ClientMonitorCallbackConverter listener, int userId, byte[] hardwareAuthToken, String owner,
-            BiometricUtils<Face> utils, int[] disabledFeatures, int timeoutSec, Surface previewSurface, int sensorId,
-            BiometricLogger logger, BiometricContext biometricContext) {
-        super(context, lazyDaemon, token, listener, userId, hardwareAuthToken, owner, utils, timeoutSec, sensorId,
-                false, logger, biometricContext);
+    FaceEnrollClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, ClientMonitorCallbackConverter listener, int userId, byte[] hardwareAuthToken, String owner, BiometricUtils<Face> utils, int[] disabledFeatures, int timeoutSec, Surface previewSurface, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext) {
+        super(context, lazyDaemon, token, listener, userId, hardwareAuthToken, owner, utils, timeoutSec, sensorId, false /* shouldVibrate */, biometricLogger, biometricContext);
         mDisabledFeatures = Arrays.copyOf(disabledFeatures, disabledFeatures.length);
         mPreviewSurface = previewSurface;
     }

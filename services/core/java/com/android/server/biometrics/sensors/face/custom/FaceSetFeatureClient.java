@@ -38,11 +38,8 @@ class FaceSetFeatureClient extends HalClientMonitor<IFaceService> {
     private final int mFeature;
     private final byte[] mHardwareAuthToken;
 
-    FaceSetFeatureClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token,
-            ClientMonitorCallbackConverter listener, int userId, String owner, int sensorId,
-            BiometricLogger logger,
-            BiometricContext biometricContext, int feature, boolean enabled, byte[] hardwareAuthToken, int faceId) {
-        super(context, lazyDaemon, token, listener, userId, owner, 0, sensorId, logger, biometricContext);
+    FaceSetFeatureClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, ClientMonitorCallbackConverter listener, int userId, String owner, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext, int feature, boolean enabled, byte[] hardwareAuthToken, int faceId) {
+        super(context, lazyDaemon, token, listener, userId, owner, 0, sensorId, biometricLogger, biometricContext);
         mFeature = feature;
         mEnabled = enabled;
         mFaceId = faceId;

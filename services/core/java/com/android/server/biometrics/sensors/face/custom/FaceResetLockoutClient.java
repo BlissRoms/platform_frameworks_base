@@ -33,10 +33,8 @@ class FaceResetLockoutClient extends HalClientMonitor<IFaceService> {
     private static final String TAG = "FaceResetLockoutClient";
     private final byte[] mHardwareAuthToken;
 
-    FaceResetLockoutClient(Context context, Supplier<IFaceService> lazyDaemon, int userId, String owner, int sensorId,
-            BiometricLogger logger,
-            BiometricContext biometricContext, byte[] hardwareAuthToken) {
-        super(context, lazyDaemon, null, null, userId, owner, 0, sensorId, logger, biometricContext);
+    FaceResetLockoutClient(Context context, Supplier<IFaceService> lazyDaemon, int userId, String owner, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext, byte[] hardwareAuthToken) {
+        super(context, lazyDaemon, null, null, userId, owner, 0, sensorId, biometricLogger, biometricContext);
         mHardwareAuthToken = hardwareAuthToken.clone();
     }
 
@@ -64,5 +62,10 @@ class FaceResetLockoutClient extends HalClientMonitor<IFaceService> {
     @Override
     public int getProtoEnum() {
         return 12;
+    }
+
+    @Override
+    public boolean interruptsPrecedingClients() {
+        return true;
     }
 }

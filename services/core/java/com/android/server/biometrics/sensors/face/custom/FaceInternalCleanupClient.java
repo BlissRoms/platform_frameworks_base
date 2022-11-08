@@ -33,18 +33,17 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 class FaceInternalCleanupClient extends InternalCleanupClient<Face, IFaceService> {
-    FaceInternalCleanupClient(Context context, Supplier<IFaceService> lazyDaemon, int userId, String owner, int sensorId, BiometricLogger logger,
-    BiometricContext biometricContext, List<Face> enrolledList, BiometricUtils<Face> utils, Map<Integer, Long> authenticatorIds) {
-        super(context, lazyDaemon, userId, owner, sensorId, logger, biometricContext, enrolledList, utils, authenticatorIds);
+    FaceInternalCleanupClient(Context context, Supplier<IFaceService> lazyDaemon, int userId, String owner, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext, List<Face> enrolledList, BiometricUtils<Face> utils, Map<Integer, Long> authenticatorIds) {
+        super(context, lazyDaemon, userId, owner, sensorId, biometricLogger, biometricContext, enrolledList, utils, authenticatorIds);
     }
 
     @Override
-    protected InternalEnumerateClient<IFaceService> getEnumerateClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, int userId, String owner, List<Face> enrolledList, BiometricUtils<Face> utils, int sensorId, BiometricLogger logger, BiometricContext biometricContext) {
-        return new FaceInternalEnumerateClient(context, lazyDaemon, token, userId, owner, enrolledList, utils, sensorId,  logger, biometricContext);
+    protected InternalEnumerateClient<IFaceService> getEnumerateClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, int userId, String owner, List<Face> enrolledList, BiometricUtils<Face> utils, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext) {
+        return new FaceInternalEnumerateClient(context, lazyDaemon, token, userId, owner, enrolledList, utils, sensorId, biometricLogger, biometricContext);
     }
 
     @Override
-    protected RemovalClient<Face, IFaceService> getRemovalClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, int biometricId, int userId, String owner, BiometricUtils<Face> utils, int sensorId, BiometricLogger logger, BiometricContext biometricContext, Map<Integer, Long> authenticatorIds) {
-        return new FaceRemovalClient(context, lazyDaemon, token, null, biometricId, userId, owner, utils, sensorId, logger, biometricContext, authenticatorIds);
+    protected RemovalClient<Face, IFaceService> getRemovalClient(Context context, Supplier<IFaceService> lazyDaemon, IBinder token, int biometricId, int userId, String owner, BiometricUtils<Face> utils, int sensorId, BiometricLogger biometricLogger, BiometricContext biometricContext, Map<Integer, Long> authenticatorIds) {
+        return new FaceRemovalClient(context, lazyDaemon, token, null, biometricId, userId, owner, utils, sensorId, biometricLogger, biometricContext, authenticatorIds);
     }
 }
