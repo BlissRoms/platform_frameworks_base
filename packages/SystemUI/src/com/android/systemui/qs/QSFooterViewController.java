@@ -17,6 +17,7 @@
 package com.android.systemui.qs;
 
 import static android.provider.Settings.Global.MULTI_SIM_DATA_CALL_SUBSCRIPTION;
+import static android.provider.Settings.Secure.QS_SHOW_DATA_USAGE;
 import static android.provider.Settings.Secure.QS_TILES;
 
 import android.content.BroadcastReceiver;
@@ -146,7 +147,7 @@ public class QSFooterViewController extends ViewController<QSFooterView>
         mWifiTracker.fetchInitialState();
         mWifiTracker.setListening(true);
         mNetworkController.addCallback(mSignalCallback);
-        mTunerService.addTunable(this, QS_TILES);
+        mTunerService.addTunable(this, QS_TILES, QS_SHOW_DATA_USAGE);
         mGlobalSettings.registerContentObserver(MULTI_SIM_DATA_CALL_SUBSCRIPTION,
                 mDataSwitchObserver);
 
@@ -175,6 +176,8 @@ public class QSFooterViewController extends ViewController<QSFooterView>
             mView.setShowSuffix(!Arrays.stream(newValue.split(","))
                                        .limit(rows * cols)
                                        .anyMatch(INTERNET_TILE::equals));
+         } else if (key.equals(QS_SHOW_DATA_USAGE)) {
+            mView.setHideDataUsage(!TunerService.parseIntegerSwitch(newValue, true));
          }
     }
 
