@@ -169,6 +169,7 @@ cc_defaults {
             },
         },
     },
+    whole_program_vtables: true, // Requires ThinLTO
 }
 
 // ------------------------

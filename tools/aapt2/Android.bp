@@ -71,6 +71,10 @@ cc_defaults {
         "libbuildversion",
         "libidmap2_policies",
     ],
+    lto: {
+        thin: true,
+    },
+    whole_program_vtables: true, // Requires LTO
     stl: "libc++_static",
 }
 
