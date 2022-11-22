@@ -65,6 +65,9 @@ cc_library_shared {
                 "libandroid",
             ],
             version_script: "libjnigraphics.map.txt",
+    	 lto: {
+      	     thin: true,
+  	 },
         },
         host: {
             header_libs: [
@@ -72,6 +75,7 @@ cc_library_shared {
             ],
         },
     },
+    whole_program_vtables: true, // Requires LTO
 }
 
 // The headers module is in frameworks/native/Android.bp.

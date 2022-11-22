@@ -22,6 +22,11 @@ cc_library_static {
         "-DGL_GLEXT_PROTOTYPES",
     ],
 
+    lto: {
+        thin: true,
+    },
+    whole_program_vtables: true, // Requires LTO
+
     srcs: [
         "BroadcastRadio/JavaRef.cpp",
         "BroadcastRadio/NativeCallbackThread.cpp",
