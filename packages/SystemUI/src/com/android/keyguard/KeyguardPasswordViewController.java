@@ -356,7 +356,7 @@ public class KeyguardPasswordViewController
     private void runQuickUnlock(Boolean matched) {
         if (matched) {
             mKeyguardSecurityCallback.reportUnlockAttempt(userId, true, 0);
-            mKeyguardSecurityCallback.dismiss(true, userId);
+            mKeyguardSecurityCallback.dismiss(true, userId, getSecurityMode());
             mView.resetPasswordText(true, true);
         }
     }
@@ -369,5 +369,10 @@ public class KeyguardPasswordViewController
             // do nothing
         }
         return pinPasswordLength >= 4 ? pinPasswordLength : -1;
+    }
+
+    @Override
+    public SecurityMode getSecurityMode() {
+        return SecurityMode.Password;
     }
 }
