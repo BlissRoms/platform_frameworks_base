@@ -915,9 +915,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             }
         } else {
 		switch(mLogoStyle) {
-		        // Bliss logo
+		        // BlissLabs logo
 		    case 1:
-		        logo = getContext().getDrawable(R.drawable.ic_bliss_logo);
+		        logo = getContext().getDrawable(R.drawable.ic_blisslabs_logo);
 		        break;
 		        // GZR Skull
 		    case 2:
