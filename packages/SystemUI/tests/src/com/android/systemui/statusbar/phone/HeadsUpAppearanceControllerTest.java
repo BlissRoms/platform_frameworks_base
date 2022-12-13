@@ -124,7 +124,8 @@ public class HeadsUpAppearanceControllerTest extends SysuiTestCase {
                 new Clock(mContext, null),
                 mFeatureFlags,
                 mock(HeadsUpNotificationIconInteractor.class),
-                Optional.of(mOperatorNameView));
+                Optional.of(mOperatorNameView),
+                new View(mContext));
         mHeadsUpAppearanceController.setAppearFraction(0.0f, 0.0f);
     }
 
@@ -209,7 +210,8 @@ public class HeadsUpAppearanceControllerTest extends SysuiTestCase {
                 mHeadsUpStatusBarView,
                 new Clock(mContext, null),
                 mFeatureFlags, mock(HeadsUpNotificationIconInteractor.class),
-                Optional.empty());
+                Optional.empty(),
+                new View(mContext));
 
         assertEquals(expandedHeight, newController.mExpandedHeight, 0.0f);
         assertEquals(appearFraction, newController.mAppearFraction, 0.0f);
