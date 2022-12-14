@@ -30,5 +30,6 @@
         &lt;b><xliff:g id="app_name" example="Gmail">%1$s</xliff:g>&lt;/b> to spoof package signature?</string>
 
     <!-- Parallel space badge -->
-    <string name="parallel_space_badge_label">%1$s</string>
+    <string name="parallel_space_badge_label" translatable="false">%1$s</string>
+
 </resources>
