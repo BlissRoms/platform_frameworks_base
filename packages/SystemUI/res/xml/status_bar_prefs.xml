@@ -109,7 +109,7 @@
         android:title="@string/quick_settings_camera_label"
         android:icon="@drawable/ic_statusbar_camera" />
 
-    <com.android.systemui.tuner.BatteryPreference
+    <!--<com.android.systemui.tuner.BatteryPreference
         android:title="@string/battery"
         android:icon="@*android:drawable/ic_battery"
         android:summary="%s"
@@ -119,6 +119,6 @@
         android:title="@string/tuner_time"
         android:icon="@drawable/ic_statusbar_clock"
         android:summary="%s"
-        android:entries="@array/clock_options" />
+        android:entries="@array/clock_options" /> -->
 
 </PreferenceScreen>
