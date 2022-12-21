@@ -544,6 +544,7 @@ public class CentralSurfacesImplTest extends SysuiTestCase {
                 mLockscreenTransitionController,
                 mFeatureFlags,
                 mKeyguardUnlockAnimationController,
+                new Handler(TestableLooper.get(this).getLooper()),
                 mMainExecutor,
                 new MessageRouterImpl(mMainExecutor),
                 mWallpaperManager,
