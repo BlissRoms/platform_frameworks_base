@@ -495,7 +495,8 @@
 
     <style name="TextAppearance.Volume.Header">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:fontFamily">@*android:string/config_headlineFontFamily</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
     </style>
 
     <style name="VolumeButtons" parent="@android:style/Widget.Material.Button.Borderless">

@@ -4554,6 +4554,7 @@
   <java-symbol type="bool" name="config_voice_data_sms_auto_fallback" />
 
   <java-symbol type="attr" name="colorAccentPrimary" />
+  <java-symbol type="attr" name="colorAccentCustom" />
   <java-symbol type="attr" name="colorAccentSecondary" />
   <java-symbol type="attr" name="colorAccentTertiary" />
   <java-symbol type="attr" name="colorAccentPrimaryVariant" />
