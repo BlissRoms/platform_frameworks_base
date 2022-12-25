@@ -509,9 +509,9 @@
     <!-- (volume_dialog_panel_width - rounded_slider_icon_size) / 2 -->
     <dimen name="volume_slider_icon_inset">11dp</dimen>
 
-    <dimen name="volume_dialog_track_width">4dp</dimen>
+    <dimen name="volume_dialog_track_width">42dp</dimen>
 
-    <dimen name="volume_dialog_track_corner_radius">2dp</dimen>
+    <dimen name="volume_dialog_track_corner_radius">21dp</dimen>
 
     <dimen name="volume_dialog_ringer_size">42dp</dimen>
 
@@ -1448,7 +1448,7 @@
     <dimen name="rounded_slider_track_inset">22dp</dimen>
     <dimen name="rounded_slider_track_width">4dp</dimen>
     <!-- rounded_slider_track_width / 2 -->
-    <dimen name="rounded_slider_track_corner_radius">2dp</dimen>
+    <dimen name="rounded_slider_track_corner_radius">24dp</dimen>
     <dimen name="rounded_slider_background_padding">8dp</dimen>
     <!-- rounded_slider_corner_radius + rounded_slider_background_padding -->
     <dimen name="rounded_slider_background_rounded_corner">32dp</dimen>
