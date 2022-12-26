@@ -1100,7 +1100,7 @@ public class ScreenshotController {
                 try {
                     MediaPlayer player = MediaPlayer.create(mContext,
                             Uri.fromFile(new File(mContext.getResources().getString(
-                                    com.android.internal.R.string.config_cameraShutterSound))),
+                                    com.android.internal.R.string.config_screenshotSound))),
                             null,
                             new AudioAttributes.Builder()
                                     .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
