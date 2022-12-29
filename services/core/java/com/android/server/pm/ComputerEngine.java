@@ -1613,7 +1613,7 @@ public class ComputerEngine implements Computer {
     private PackageInfo mayFakeSignature(AndroidPackage p, PackageInfo pi,
             Set<String> permissions) {
         try {
-            if (permissions.contains("android.permission.MICROG_SPOOF_SIGNATURE")) {
+            if (permissions.contains("android.permission.FAKE_PACKAGE_SIGNATURE")) {
                 if (DEBUG_PACKAGE_INFO) {
                     Log.v(TAG, "Spoofing signature for microG");
                 }
@@ -1623,7 +1623,7 @@ public class ComputerEngine implements Computer {
             }
         } catch (Throwable t) {
             // We should never die because of any failures, this is system code!
-            Log.w("PackageManagerService.MICROG_SPOOF_SIGNATURE", t);
+            Log.w("PackageManagerService.FAKE_PACKAGE_SIGNATURE", t);
         }
         return pi;
     }
