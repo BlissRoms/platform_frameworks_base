@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eef119eb_a9b62bc2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000142
+      },
+      "writtenOn": "2023-01-01T19:18:15Z",
+      "side": 1,
+      "message": "All the ThinLTO topic commits works fine on Dec patch, so i give my green signal just need a branch rebase",
+      "revId": "64712a9f91c23c72a398d503bad857185c15d860",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    }
+  ]
+}
