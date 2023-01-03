@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef27226f_0c0ce9bc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000142
+      },
+      "writtenOn": "2023-01-03T07:30:13Z",
+      "side": 1,
+      "message": "Latest edits that i have put out shows no build errors and it works upon tests",
+      "revId": "477c633735d06c477808595bdcdea0ce8dbaf8f9",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    }
+  ]
+}
