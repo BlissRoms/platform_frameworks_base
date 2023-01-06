@@ -16,6 +16,24 @@
       "message": "All the ThinLTO topic commits works fine on Dec patch, so i give my green signal just need a branch rebase",
       "revId": "64712a9f91c23c72a398d503bad857185c15d860",
       "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5575e6ea_d3a7dd42",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000140
+      },
+      "writtenOn": "2023-01-06T14:14:05Z",
+      "side": 1,
+      "message": "Hello, i rebase the commit on top of typhoon branch.",
+      "parentUuid": "eef119eb_a9b62bc2",
+      "revId": "64712a9f91c23c72a398d503bad857185c15d860",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
     }
   ]
 }
