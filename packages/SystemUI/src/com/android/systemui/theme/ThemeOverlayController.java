@@ -461,7 +461,28 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
             return;
         }
 
-        mUserTracker.addCallback(mUserTrackerCallback, mMainExecutor);
+         mSecureSettings.registerContentObserverForUser(
+                Settings.Secure.getUriFor(Settings.Secure.QS_TILE_SHAPE),
+                false,
+                new ContentObserver(mBgHandler) {
+                    @Override
+                    public void onChange(boolean selfChange, Collection<Uri> collection, int flags,
+                            int userId) {
+                        if (DEBUG) Log.d(TAG, "Overlay changed for user: " + userId);
+                        if (mUserTracker.getUserId() != userId) {
+                            return;
+                        }
+                        if (!mDeviceProvisionedController.isUserSetup(userId)) {
+                            Log.i(TAG, "Theme application deferred when setting changed.");
+                            mDeferredThemeEvaluation = true;
+                            return;
+                        }
+                        reevaluateSystemTheme(true /* forceReload */);
+                    }
+                },
+                UserHandle.USER_ALL);
+
+       mUserTracker.addCallback(mUserTrackerCallback, mMainExecutor);
 
         mDeviceProvisionedController.addCallback(mDeviceProvisionedListener);
 
