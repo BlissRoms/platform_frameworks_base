@@ -6,14 +6,14 @@
 <resources>
 
     <!-- QQS Brightness slider -->
-    <dimen name="qqs_top_brightness_margin_top">4dp</dimen>
-    <dimen name="qqs_top_brightness_margin_bottom">12dp</dimen>
-    <dimen name="qqs_bottom_brightness_margin_top">12dp</dimen>
+    <dimen name="qqs_top_brightness_margin_top">12dp</dimen>
+    <dimen name="qqs_top_brightness_margin_bottom">30dp</dimen>
+    <dimen name="qqs_bottom_brightness_margin_top">8dp</dimen>
 
     <!-- QS Brightness slider -->
     <dimen name="qs_top_brightness_margin_top">8dp</dimen>
-    <dimen name="qs_top_brightness_margin_bottom">10dp</dimen>
-    <dimen name="qs_bottom_brightness_margin_top">10dp</dimen>
+    <dimen name="qs_top_brightness_margin_bottom">25dp</dimen>
+    <dimen name="qs_bottom_brightness_margin_top">20dp</dimen>
 
     <!-- Maximum vertical offset of statusbar for burn-in protection -->
     <dimen name="status_bar_offset_max_y">4dp</dimen>
