@@ -129,10 +129,6 @@ public class RemoteDisplayChangeController {
                     mCallbacks.clear();
                 }
                 callback.onContinueRemoteDisplayChange(null /* transaction */);
-
-                if (Trace.isTagEnabled(Trace.TRACE_TAG_WINDOW_MANAGER)) {
-                    Trace.endAsyncSection(REMOTE_DISPLAY_CHANGE_TRACE_TAG, callback.hashCode());
-                }
             }
             onCompleted();
         }
