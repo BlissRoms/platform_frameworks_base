@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2022 Nameless-AOSP
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+
+    <!-- Enforce DisplayModeDirector to select user preferred resolution -->
+    <java-symbol type="bool" name="config_forceToUseSelectedResolution" />
+
+</resources>
