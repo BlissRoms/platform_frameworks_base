@@ -231,7 +231,6 @@ public class NavigationBarController implements
     /** @return {@code true} if taskbar is enabled, false otherwise */
     private boolean initializeTaskbarIfNecessary() {
         // Enable for tablet or (phone AND flag is set); assuming phone = !mIsTablet
-        boolean taskbarEnabled = mIsTablet || mFeatureFlags.isEnabled(Flags.HIDE_NAVBAR_WINDOW);
         if (shouldShowTaskbar()) {
             Trace.beginSection("NavigationBarController#initializeTaskbarIfNecessary");
             // Remove navigation bar when taskbar is showing
