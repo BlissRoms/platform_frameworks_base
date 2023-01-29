@@ -46,5 +46,13 @@
 
     <!-- Cycle through ringer modes -->
     <string name="volume_dialog_ringer_guidance_normal">Calls and notifications will ring</string>
+
+    <!-- Array containing custom error messages from vendor. -->
+    <string-array name="face_error_custom" translatable="false">
+        <item>@string/face_unlock_disabled_idle</item>
+    </string-array>
+
+    <!-- Face unlock -->
+    <string name="face_unlock_disabled_idle">Face unlock disabled due to inactivity</string>
 </resources>
 

@@ -796,7 +796,7 @@ public class FaceManager implements BiometricAuthenticator, BiometricFaceConstan
                         com.android.internal.R.string.face_recalibrate_notification_content);
             case FACE_ERROR_VENDOR: {
                 String[] msgArray = context.getResources().getStringArray(
-                        com.android.internal.R.array.face_error_vendor);
+                        com.android.internal.R.array.face_error_custom);
                 if (vendorCode < msgArray.length) {
                     return msgArray[vendorCode];
                 }
