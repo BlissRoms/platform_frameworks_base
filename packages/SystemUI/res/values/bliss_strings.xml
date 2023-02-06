@@ -80,6 +80,9 @@
     <string name="onthego_channel_name">Main</string>
     <string name="global_action_onthego">On-The-Go</string>
 
+    <!-- Button to restart SystemUI, within the Restart Options dialog -->
+    <string name="global_action_restart_systemui">SystemUI</string>
+
     <!-- Alert slide extras -->
     <string name="volume_ringer_priority_only">Priority</string>
     <string name="volume_ringer_alarms_only">Alarms</string>
