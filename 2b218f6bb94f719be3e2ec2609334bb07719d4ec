@@ -16,6 +16,23 @@
       "message": "Instead of doing this what we can do is just add shouldShowTaskbar() function in the or condition itself.        \n\nboolean taskbarEnabled \u003d shouldShowTaskbar()|| mIsTablet || mFeatureFlags.isEnabled(Flags.HIDE_NAVBAR_WINDOW); \n\nalso don\u0027t need to return again shouldShowTaskbar() since variable is already returning.",
       "revId": "2b218f6bb94f719be3e2ec2609334bb07719d4ec",
       "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed0f3ae8_2ac8b0e5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000142
+      },
+      "writtenOn": "2023-02-09T06:02:22Z",
+      "side": 1,
+      "message": "You can do the necessary changes to the patchset and reupload once u test the commits",
+      "revId": "2b218f6bb94f719be3e2ec2609334bb07719d4ec",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
     }
   ]
 }
