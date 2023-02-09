@@ -19,14 +19,6 @@
     <!-- Build fingerprint from the stock ROM -->
     <string name="config_stockFingerprint" translatable="false"></string>
 
-    <!-- Build properties from a GMS certified device against current platform SPL level -->
-    <string-array name="config_certifiedBuildProperties" translatable="false">
-        <item>marlin</item>   <!-- Build.DEVICE -->
-        <item>marlin</item>   <!-- Build.PRODUCT -->
-        <item>Pixel XL</item> <!-- Build.MODEL -->
-        <item>google/marlin/marlin:7.1.2/NJH47F/4146041:user/release-keys</item> <!-- Build.FINGERPRINT -->
-    </string-array>
-
     <!-- The list of package IDs that are allowed to use aux cameras.
          NOTE: If this list is empty then all apps will be able to use aux cameras. -->
     <string-array name="config_cameraAuxPackageAllowList" translatable="false" />
