@@ -90,4 +90,20 @@
     <string-array name="notification_light_package_mapping" translatable="false">
         <item>com.google.android.gsf|com.google.android.talk</item>
     </string-array>
+
+    <!-- Build properties from a GMS certified device -->
+    <string-array name="config_certifiedBuildProperties" translatable="false">
+      <!--
+        <item>Build.BRAND</item>
+        <item>Build.MANUFACTURER</item>
+        <item>Build.ID</item>
+        <item>Build.DEVICE</item>
+        <item>Build.PRODUCT</item>
+        <item>Build.MODEL</item>
+        <item>Build.FINGERPRINT</item>
+        <item>Build.TYPE</item>
+        <item>Build.TAGS</item>
+      -->
+    </string-array>
+
 </resources>
