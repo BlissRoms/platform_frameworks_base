@@ -201,4 +201,7 @@
 
     <!-- Mock Oplus LinearmotorVibratorService -->
     <bool name="config_mockOplusLinearmotorVibratorService">false</bool>
+
+    <!-- Boost Framework -->
+    <bool name="config_supportsBoostFramework">false</bool>
 </resources>

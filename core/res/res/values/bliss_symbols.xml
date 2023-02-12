@@ -152,4 +152,7 @@
 
     <!-- Mock Oplus LinearmotorVibratorService -->
     <java-symbol type="bool" name="config_mockOplusLinearmotorVibratorService" />
+
+    <!-- Boost Framework -->
+    <java-symbol type="bool" name="config_supportsBoostFramework" />
 </resources>
