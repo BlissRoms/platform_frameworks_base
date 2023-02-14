@@ -337,4 +337,6 @@
     <!-- Enforce DisplayModeDirector to select user preferred resolution -->
     <bool name="config_forceToUseSelectedResolution">false</bool>
 
+    <!-- Whether to use Richtap vibration -->
+    <bool name="config_usesRichtapVibration">false</bool>
 </resources>
