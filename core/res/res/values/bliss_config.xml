@@ -314,4 +314,6 @@
     <!-- Whether devices suports in-display fingerprint when screen is off -->
     <bool name="config_supportScreenOffUdfps">false</bool>
 
+    <!-- Whether to use Richtap vibration -->
+    <bool name="config_usesRichtapVibration">false</bool>
 </resources>
