@@ -266,4 +266,7 @@
     <!-- Defines custom OEM sensor for pocket detection. -->
     <string name="config_pocketJudgeVendorSensorName"></string>
     <string name="config_pocketJudgeVendorProximitySensorName"></string>
+
+    <!-- Whether to use Richtap vibration -->
+    <bool name="config_usesRichtapVibration">false</bool>
 </resources>
