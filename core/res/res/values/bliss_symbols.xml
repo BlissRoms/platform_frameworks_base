@@ -222,4 +222,7 @@
   <java-symbol type="string" name="config_batterymeterLandBoltPathMiUIPill" />
   <java-symbol type="string" name="config_batterymeterLandPowersavePathMiUIPill" />
   <java-symbol type="string" name="config_batterymeterLandErrorPerimeterPathMiUIPill" />
+
+  <!-- Whether to use Richtap vibration -->
+  <java-symbol type="bool" name="config_usesRichtapVibration" />
 </resources>
