@@ -17,6 +17,7 @@
 package com.android.internal.util.bliss;
 
 import android.Manifest;
+import android.content.Intent;
 import android.app.ActivityManager;
 import android.app.IActivityManager;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.content.res.Resources;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
@@ -48,6 +50,7 @@ import android.view.KeyEvent;
 import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,6 +58,24 @@ public class BlissUtils {
 
     public static void restartApp(String appName, Context context) {
         new RestartAppTask(appName, context).execute();
+    }
+
+    public static List<String> launchablePackages(Context context) {
+        List<String> list = new ArrayList<>();
+
+        Intent filter = new Intent(Intent.ACTION_MAIN, null);
+        filter.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        List<ResolveInfo> apps = context.getPackageManager().queryIntentActivities(filter,
+                PackageManager.GET_META_DATA);
+
+        int numPackages = apps.size();
+        for (int i = 0; i < numPackages; i++) {
+            ResolveInfo app = apps.get(i);
+            list.add(app.activityInfo.packageName);
+        }
+
+        return list;
     }
 
     private static class RestartAppTask extends AsyncTask<Void, Void, Void> {
