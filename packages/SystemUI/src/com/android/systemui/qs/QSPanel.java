@@ -324,6 +324,9 @@ public class QSPanel extends LinearLayout implements Tunable {
     }
 
     private void updateViewPositions() {
+        if (mTileLayout == null) {
+            return;
+        }
         // Adjust view positions based on tile squishing
         int tileHeightOffset = mTileLayout.getTilesHeight() - mTileLayout.getHeight();
 
