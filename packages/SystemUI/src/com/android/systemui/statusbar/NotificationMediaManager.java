@@ -103,6 +103,7 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
 
     private final StatusBarStateController mStatusBarStateController;
     private final SysuiColorExtractor mColorExtractor;
+    private final TunerService mTunerService;
     private final KeyguardStateController mKeyguardStateController;
     private final KeyguardBypassController mKeyguardBypassController;
     private static final HashSet<Integer> PAUSED_MEDIA_STATES = new HashSet<>();
@@ -203,7 +204,8 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
             SysuiColorExtractor colorExtractor,
             KeyguardStateController keyguardStateController,
             DumpManager dumpManager,
-            DisplayManager displayManager) {
+            DisplayManager displayManager,
+            TunerService tunerService) {
         mContext = context;
         mMediaArtworkProcessor = mediaArtworkProcessor;
         mKeyguardBypassController = keyguardBypassController;
@@ -225,8 +227,8 @@ public class NotificationMediaManager implements Dumpable, TunerService.Tunable 
 
         dumpManager.registerDumpable(this);
 
-        final TunerService tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(this, LOCKSCREEN_MEDIA_METADATA);
+        mTunerService = tunerService;
+        mTunerService.addTunable(this, LOCKSCREEN_MEDIA_METADATA);
     }
 
     @Override
