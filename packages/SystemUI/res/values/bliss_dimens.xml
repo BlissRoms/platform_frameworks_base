@@ -21,6 +21,9 @@
     <!-- Network traffic -->
     <dimen name="network_traffic_width">25sp</dimen>
 
+    <!-- Width of the battery icon in the status bar when set to circle style. -->
+    <dimen name="status_bar_battery_icon_circle_width">14.5dp</dimen>
+
     <!-- Alert Slider -->
     <dimen name="tri_state_down_dialog_position">0px</dimen>
     <dimen name="tri_state_down_dialog_position_l">0px</dimen>
