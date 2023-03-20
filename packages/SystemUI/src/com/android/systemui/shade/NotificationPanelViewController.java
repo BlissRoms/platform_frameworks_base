@@ -293,6 +293,8 @@ public final class NotificationPanelViewController implements Dumpable {
 
     private static final String DOUBLE_TAP_SLEEP_GESTURE =
             "system:" + Settings.System.DOUBLE_TAP_SLEEP_GESTURE;
+    private static final String DOUBLE_TAP_SLEEP_LOCKSCREEN =
+            "system:" + Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN;
 
     /**
      * Duration to use for the animator when the keyguard status view alignment changes, and a
@@ -555,6 +557,7 @@ public final class NotificationPanelViewController implements Dumpable {
     private final NavigationBarController mNavigationBarController;
     private final int mDisplayId;
     private boolean mDoubleTapToSleepEnabled;
+    private boolean mIsLockscreenDoubleTapEnabled;
     private GestureDetector mDoubleTapGesture;
 
     private final KeyguardIndicationController mKeyguardIndicationController;
@@ -5778,6 +5781,7 @@ public final class NotificationPanelViewController implements Dumpable {
             mStatusBarStateListener.onStateChanged(mStatusBarStateController.getState());
             mConfigurationController.addCallback(mConfigurationListener);
             mTunerService.addTunable(this, DOUBLE_TAP_SLEEP_GESTURE);
+            mTunerService.addTunable(this, DOUBLE_TAP_SLEEP_LOCKSCREEN);
             // Theme might have changed between inflating this view and attaching it to the
             // window, so
             // force a call to onThemeChanged
@@ -5803,6 +5807,10 @@ public final class NotificationPanelViewController implements Dumpable {
             switch (key) {
                 case DOUBLE_TAP_SLEEP_GESTURE:
                     mDoubleTapToSleepEnabled =
+                            TunerService.parseIntegerSwitch(newValue, true);
+                    break;
+                case DOUBLE_TAP_SLEEP_LOCKSCREEN:
+                    mIsLockscreenDoubleTapEnabled =
                             TunerService.parseIntegerSwitch(newValue, true);
                     break;
                 default:
@@ -6150,7 +6158,10 @@ public final class NotificationPanelViewController implements Dumpable {
                 return false;
             }
 
-            if (mDoubleTapToSleepEnabled && !mPulsing && !mDozing) {
+            if ((mIsLockscreenDoubleTapEnabled && !mPulsing && !mDozing
+                        && mBarState == StatusBarState.KEYGUARD) ||
+                        (!mQsExpanded && mDoubleTapToSleepEnabled
+                        && event.getY() < mStatusBarHeaderHeightKeyguard)) {
                 mDoubleTapGesture.onTouchEvent(event);
             }
 
