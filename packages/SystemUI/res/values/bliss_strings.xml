@@ -6,9 +6,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- QuickSettings: InternetDialog: Summary for how many devices are connected to the hotspot [CHAR LIMIT=NONE] -->
-    <plurals name="quick_settings_internet_hotspot_summary_num_devices">
-        <item quantity="one">%d device connected</item>
-        <item quantity="other">%d devices connected</item>
-    </plurals>
+     <string name="quick_settings_internet_hotspot_summary_num_devices">{count, plural,
+        =1 {# device connected}
+        other {# devices connected}
+    }</string>
 
 </resources>
