@@ -6334,6 +6334,12 @@ public final class Settings {
                 "statusbar_battery_bar_blend_color_reverse";
 
         /**
+         * Lockscreen clock format
+         * @hide
+         */
+        public static final String CLOCK_USE_CUSTOM_FORMAT = "clock_use_custom_format";
+
+        /**
          * Show app volume rows in volume panel
          * @hide
          */
