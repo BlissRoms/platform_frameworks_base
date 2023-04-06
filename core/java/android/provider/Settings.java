@@ -5649,11 +5649,6 @@ public final class Settings {
         public static final String TOAST_ICON = "toast_icon";
 
         /**
-         * @hide
-         */
-        public static final String QS_TRANSPARENCY = "qs_transparency";
-
-        /**
          * Enable statusbar double tap gesture to put device to sleep
          * @hide
          */
