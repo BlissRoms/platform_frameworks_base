@@ -321,10 +321,10 @@
     <dimen name="notification_header_icon_size">18dp</dimen>
 
     <!-- size (width and height) of the circle around the icon in the notification header -->
-    <dimen name="notification_icon_circle_size">20dp</dimen>
+    <dimen name="notification_icon_circle_size">22dp</dimen>
 
     <!-- padding between the notification icon and the circle containing it -->
-    <dimen name="notification_icon_circle_padding">0dp</dimen>
+    <dimen name="notification_icon_circle_padding">4dp</dimen>
 
     <!-- start margin of the icon circle in the notification view -->
     <dimen name="notification_icon_circle_start">16dp</dimen>
