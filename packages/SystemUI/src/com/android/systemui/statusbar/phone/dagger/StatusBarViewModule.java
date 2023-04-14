@@ -292,6 +292,7 @@ public abstract class StatusBarViewModule {
             CarrierConfigTracker carrierConfigTracker,
             CollapsedStatusBarFragmentLogger collapsedStatusBarFragmentLogger,
             OperatorNameViewController.Factory operatorNameViewControllerFactory,
+            TunerService tunerService,
             DumpManager dumpManager,
             StatusBarWindowStateController statusBarWindowStateController,
             KeyguardUpdateMonitor keyguardUpdateMonitor
@@ -313,6 +314,7 @@ public abstract class StatusBarViewModule {
                 carrierConfigTracker,
                 collapsedStatusBarFragmentLogger,
                 operatorNameViewControllerFactory,
+                tunerService,
                 dumpManager,
                 statusBarWindowStateController,
                 keyguardUpdateMonitor);
