@@ -408,9 +408,6 @@ public class BrightnessController implements ToggleSlider.Listener, MirroredBrig
             mIcon.setImageResource(mAutomatic ?
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_on:
                     com.android.systemui.R.drawable.ic_qs_brightness_auto_off);
-            mIcon.setBackgroundResource(mAutomatic ?
-                    com.android.systemui.R.drawable.bg_qs_brightness_auto_on :
-                    com.android.systemui.R.drawable.bg_qs_brightness_auto_off);
         }
     }
 
