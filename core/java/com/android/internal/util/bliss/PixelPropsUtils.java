@@ -52,6 +52,7 @@ public class PixelPropsUtils {
 
     private static final String[] packagesToChangePixelXL = {
             "com.google.android.apps.photos",
+            "com.snapchat.android",
             "com.google.android.inputmethod.latin"
     };
 
