@@ -49,7 +49,6 @@ public class GamesPropsUtils extends PixelPropsUtils {
     );
 
     private static final Set<String> sXp5Packages = Set.of(
-        "com.activision.callofduty.shooter",
         "com.tencent.tmgp.kr.codm",
         "com.garena.game.codm",
         "com.vng.codmvn"
@@ -76,7 +75,6 @@ public class GamesPropsUtils extends PixelPropsUtils {
     private static final Set<String> sMi11Packages = Set.of(
         "com.ea.gp.apexlegendsmobilefps",
         "com.levelinfinite.hotta.gp",
-        "com.mobile.legends",
         "com.tencent.tmgp.sgame"
     );
 
