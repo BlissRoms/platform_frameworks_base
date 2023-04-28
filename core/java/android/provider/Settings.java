@@ -7286,6 +7286,16 @@ public final class Settings {
         public static final String VIBRATE_ON_CONNECT = "vibrate_on_connect";
 
         /**
+         * @hide
+         */
+        public static final String LOCKSCREEN_WEATHER_ENABLED = "lockscreen_weather_enabled";
+
+        /**
+         * @hide
+         */
+        public static final String LOCKSCREEN_WEATHER_LOCATION = "lockscreen_weather_location";
+
+        /**
          * Whether the phone vibrates on call waiting
          * @hide
          */
