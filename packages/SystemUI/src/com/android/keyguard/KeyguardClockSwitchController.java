@@ -243,7 +243,6 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
             mLargeClockFrame = mView
                 .findViewById(com.android.systemui.customization.R.id.lockscreen_clock_view_large);
         }
-        mCurrentWeatherView = mView.findViewById(R.id.weather_container);
 
         if (!mOnlyClock) {
             mDumpManager.unregisterDumpable(getClass().getSimpleName()); // unregister previous
