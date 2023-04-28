@@ -4,5 +4,7 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
-
+    <!-- Weather -->
+    <dimen name="weather_image_max_size">24dp</dimen>
+    <dimen name="weather_humidity_margin_start">16dp</dimen>
 </resources>
