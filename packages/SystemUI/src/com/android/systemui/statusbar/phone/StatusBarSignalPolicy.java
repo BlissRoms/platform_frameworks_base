@@ -29,6 +29,7 @@ import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.flags.Flags;
 import com.android.systemui.statusbar.connectivity.IconState;
+import com.android.systemui.statusbar.connectivity.ImsIconState;
 import com.android.systemui.statusbar.connectivity.MobileDataIndicators;
 import com.android.systemui.statusbar.connectivity.NetworkController;
 import com.android.systemui.statusbar.connectivity.SignalCallback;
@@ -51,6 +52,8 @@ public class StatusBarSignalPolicy implements SignalCallback,
     private static final String TAG = "StatusBarSignalPolicy";
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
+    private static final String HIDE_QS_CALL_STRENGTH = "hide_qs_call_strength";
+
     private final String mSlotAirplane;
     private final String mSlotMobile;
     private final String mSlotWifi;
@@ -59,6 +62,7 @@ public class StatusBarSignalPolicy implements SignalCallback,
     private final String mSlotNoCalling;
     private final String mSlotCallStrength;
     private final String mSlotRoaming = "roaming";
+    private final String mSlotIms;
 
     private final Context mContext;
     private final StatusBarIconController mIconController;
@@ -76,6 +80,7 @@ public class StatusBarSignalPolicy implements SignalCallback,
     private boolean mActivityEnabled;
     private boolean mHideRoaming;
     private boolean mHideVpn;
+    private boolean mHideIms;
 
     // Track as little state as possible, and only for padding purposes
     private boolean mIsAirplaneMode = false;
@@ -114,6 +119,7 @@ public class StatusBarSignalPolicy implements SignalCallback,
         mSlotCallStrength =
                 mContext.getString(com.android.internal.R.string.status_bar_call_strength);
         mActivityEnabled = mContext.getResources().getBoolean(R.bool.config_showActivity);
+        mSlotIms = mContext.getString(com.android.internal.R.string.status_bar_ims);
     }
 
     /** Call to initilaize and register this classw with the system. */
@@ -122,7 +128,8 @@ public class StatusBarSignalPolicy implements SignalCallback,
             return;
         }
         mInitialized = true;
-        mTunerService.addTunable(this, StatusBarIconController.ICON_HIDE_LIST);
+        mTunerService.addTunable(this, StatusBarIconController.ICON_HIDE_LIST,
+                HIDE_QS_CALL_STRENGTH);
         mNetworkController.addCallback(this);
         mSecurityController.addCallback(this);
     }
@@ -166,15 +173,18 @@ public class StatusBarSignalPolicy implements SignalCallback,
         boolean hideEthernet = hideList.contains(mSlotEthernet);
         boolean hideRoaming = hideList.contains(mSlotRoaming);
         boolean hideVpn = hideList.contains(mSlotVpn);
+        boolean hideIms = hideList.contains(mSlotIms);
 
         if (hideAirplane != mHideAirplane || hideMobile != mHideMobile
-                || hideEthernet != mHideEthernet || hideWifi != mHideWifi || hideRoaming != mHideRoaming || hideVpn != mHideVpn) {
+                || hideEthernet != mHideEthernet || hideWifi != mHideWifi || hideRoaming != mHideRoaming || hideVpn != mHideVpn
+                || hideIms != mHideIms) {
             mHideAirplane = hideAirplane;
             mHideMobile = hideMobile;
             mHideEthernet = hideEthernet;
             mHideWifi = hideWifi;
             mHideRoaming = hideRoaming;
 	    mHideVpn = hideVpn;
+            mHideIms = hideIms;
             // Re-register to get new callbacks.
             mNetworkController.removeCallback(this);
             mNetworkController.addCallback(this);
@@ -249,14 +259,19 @@ public class StatusBarSignalPolicy implements SignalCallback,
             state.callStrengthResId = statusIcon.icon;
             state.callStrengthDescription = statusIcon.contentDescription;
         }
-        if (mCarrierConfigTracker.getCallStrengthConfig(subId)) {
+        boolean hideCallStrength = mTunerService.getValue(HIDE_QS_CALL_STRENGTH, 0) == 0;
+        if (mCarrierConfigTracker.getCallStrengthConfig(subId) && !hideCallStrength) {
             mIconController.setCallStrengthIcons(mSlotCallStrength,
                     CallIndicatorIconState.copyStates(mCallIndicatorStates));
         } else {
             mIconController.removeIcon(mSlotCallStrength, subId);
         }
-        mIconController.setNoCallingIcons(mSlotNoCalling,
+        if (!hideCallStrength) {
+            mIconController.setNoCallingIcons(mSlotNoCalling,
                 CallIndicatorIconState.copyStates(mCallIndicatorStates));
+        } else {
+            mIconController.removeIcon(mSlotNoCalling, subId);
+        }
     }
 
     @Override
@@ -456,6 +471,16 @@ public class StatusBarSignalPolicy implements SignalCallback,
     @Override
     public void setMobileDataEnabled(boolean enabled) {
         // Don't care.
+    }
+
+    @Override
+    public void setImsIcon(ImsIconState icon) {
+        if (icon.visible && !mHideIms) {
+            mIconController.setImsIcon(mSlotIms, icon);
+            mIconController.setIconVisibility(mSlotIms, true);
+        } else {
+            mIconController.setIconVisibility(mSlotIms, false);
+        }
     }
 
     /**

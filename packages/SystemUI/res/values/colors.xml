@@ -17,7 +17,7 @@
  */
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <drawable name="notification_number_text_color">#ffffffff</drawable>
+    <drawable name="notification_number_text_color">#ff000000</drawable>
     <drawable name="system_bar_background">@color/system_bar_background_opaque</drawable>
     <color name="system_bar_background_opaque">#ff000000</color>
     <color name="system_bar_background_transparent">#00000000</color>
@@ -219,7 +219,7 @@
     <color name="screenrecord_status_color">#E94235</color>
     <color name="screenrecord_icon_color">#D93025</color><!-- red 600 -->
 
-    <color name="privacy_chip_background">#3ddc84</color>
+    <color name="privacy_chip_background">?android:attr/colorAccent</color>
 
     <!-- Accessibility floating menu -->
     <color name="accessibility_floating_menu_background">#CCFFFFFF</color> <!-- 80% -->
