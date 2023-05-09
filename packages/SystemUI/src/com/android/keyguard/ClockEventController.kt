@@ -220,6 +220,7 @@ constructor(
         object : ConfigurationController.ConfigurationListener {
             override fun onThemeChanged() {
                 clock?.events?.onColorPaletteChanged(resources)
+                updateFontSizes()
                 updateColors()
             }
 
@@ -254,6 +255,7 @@ constructor(
                         clock?.animations?.doze(if (isDozing) 1f else 0f)
                     }
                 }
+                updateFontSizes()
 
                 smallTimeListener?.update(shouldTimeListenerRun)
                 largeTimeListener?.update(shouldTimeListenerRun)
@@ -351,6 +353,10 @@ constructor(
             ?.onFontSettingChanged(
                 resources.getDimensionPixelSize(R.dimen.large_clock_text_size).toFloat()
             )
+    }
+
+    public fun updateAll() {
+        updateFontSizes()
     }
 
     private fun handleDoze(doze: Float) {
