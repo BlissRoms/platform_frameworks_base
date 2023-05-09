@@ -94,7 +94,7 @@ public class NavigationBarInflaterView extends FrameLayout
     private static final String KEY_NAVIGATION_HINT =
             Settings.Secure.NAVIGATION_BAR_HINT;
     private static final String OVERLAY_NAVIGATION_HIDE_HINT =
-            "org.blissroms.overlay.navbar.nohint";
+            "org.blissroms.overlay.systemui.gestural.hidden";
     private static final String OVERLAY_LAUNCHER3_HIDE_HINT =
             "org.blissroms.overlay.launcher3.nohint";
 
