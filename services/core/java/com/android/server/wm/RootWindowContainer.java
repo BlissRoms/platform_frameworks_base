@@ -190,7 +190,8 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
     private boolean mUpdateRotation = false;
     // Only set while traversing the default display based on its content.
     // Affects the behavior of mirroring on secondary displays.
-    private boolean mObscureApplicationContentOnSecondaryDisplays = false;
+    private boolean mObscureApplicationContentOnSecondaryDisplaysDueToKeyguard = false;
+    private boolean mObscureApplicationContentOnSecondaryDisplaysDueToDream = false;
 
     private boolean mSustainedPerformanceModeEnabled = false;
     private boolean mSustainedPerformanceModeCurrent = false;
@@ -767,7 +768,8 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
         mButtonBrightnessOverride = PowerManager.BRIGHTNESS_INVALID_FLOAT;
         mScreenBrightnessOverride = PowerManager.BRIGHTNESS_INVALID_FLOAT;
         mUserActivityTimeout = -1;
-        mObscureApplicationContentOnSecondaryDisplays = false;
+        mObscureApplicationContentOnSecondaryDisplaysDueToKeyguard = false;
+        mObscureApplicationContentOnSecondaryDisplaysDueToDream = false;
         mSustainedPerformanceModeCurrent = false;
         mWmService.mTransactionSequence++;
 
@@ -983,9 +985,11 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
                     defaultDc.getRotation(), t);
         }
 
+        defaultDc.applySurfaceChangesTransaction();
         final int count = mChildren.size();
         for (int j = 0; j < count; ++j) {
             final DisplayContent dc = mChildren.get(j);
+            if (dc == defaultDc) continue;
             dc.applySurfaceChangesTransaction();
             mDisplayTransactions.append(dc.mDisplayId, dc.getSyncTransaction());
         }
@@ -1064,12 +1068,16 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
                 // While a dream or keyguard is showing, obscure ordinary application content on
                 // secondary displays (by forcibly enabling mirroring unless there is other content
                 // we want to show) but still allow opaque keyguard dialogs to be shown.
-                if (w.isDreamWindow() || mWmService.mPolicy.isKeyguardShowing()) {
-                    mObscureApplicationContentOnSecondaryDisplays = true;
+                if (mWmService.mPolicy.isKeyguardShowing()) {
+                    mObscureApplicationContentOnSecondaryDisplaysDueToKeyguard = true;
+                }
+                if (w.isDreamWindow()) {
+                    mObscureApplicationContentOnSecondaryDisplaysDueToDream = true;
                 }
                 displayHasContent = true;
             } else if (displayContent != null &&
-                    (!mObscureApplicationContentOnSecondaryDisplays
+                    !mObscureApplicationContentOnSecondaryDisplaysDueToDream &&
+                    (!mObscureApplicationContentOnSecondaryDisplaysDueToKeyguard
                             || displayContent.isKeyguardAlwaysUnlocked()
                             || (obscured && w.mAttrs.type == TYPE_KEYGUARD_DIALOG))) {
                 // Allow full screen keyguard presentation dialogs to be seen, or simply ignore the
