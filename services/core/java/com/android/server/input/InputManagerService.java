@@ -606,6 +606,22 @@ public class InputManagerService extends IInputManager.Stub
         }
     }
 
+    // Must be called on handler
+    private void deliverCaptureChanged(boolean enabled) {
+        mTempCursorCallbacksToNotify.clear();
+        final int numListeners;
+        synchronized (mCursorCbLock) {
+            numListeners = mCursorCallbacks.size();
+            for (int i = 0; i < numListeners; i++) {
+                mTempCursorCallbacksToNotify.add(
+                        mCursorCallbacks.valueAt(i));
+            }
+        }
+        for (int i = 0; i < numListeners; i++) {
+            mTempCursorCallbacksToNotify.get(i).notifyCaptureChanged(enabled);
+        }
+    }
+
     public void start() {
         Slog.i(TAG, "Starting input manager");
         mNative.start();
@@ -1382,6 +1398,7 @@ public class InputManagerService extends IInputManager.Stub
     public void requestPointerCapture(IBinder inputChannelToken, boolean enabled) {
         Objects.requireNonNull(inputChannelToken, "event must not be null");
 
+        deliverCaptureChanged(enabled);
         mNative.requestPointerCapture(inputChannelToken, enabled);
     }
 
@@ -3257,6 +3274,16 @@ public class InputManagerService extends IInputManager.Stub
             } catch (RemoteException ex) {
                 Slog.w(TAG, "Failed to notify process " + mPid +
                         " that cursor changed, assuming it died.", ex);
+                binderDied();
+            }
+        }
+
+        public void notifyCaptureChanged(boolean enabled) {
+            try {
+                mListener.onCaptureChanged(enabled);
+            } catch (RemoteException ex) {
+                Slog.w(TAG, "Failed to notify process " + mPid +
+                        " that capture changed, assuming it died.", ex);
                 binderDied();
             }
         }
