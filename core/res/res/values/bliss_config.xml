@@ -202,4 +202,7 @@
 
     <!-- Whether to use old mobile type icons as default -->
     <bool name="config_useOldMobileIcons">false</bool>
+
+    <!-- Mock Oplus LinearmotorVibratorService -->
+    <bool name="config_mockOplusLinearmotorVibratorService">false</bool>
 </resources>
