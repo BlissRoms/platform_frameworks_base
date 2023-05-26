@@ -34,6 +34,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Trace;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.MathUtils;
 import android.util.Pair;
@@ -62,6 +63,7 @@ import com.android.systemui.bouncer.shared.constants.KeyguardBouncerConstants;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.dock.DockManager;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.keyguard.KeyguardUnlockAnimationController;
 import com.android.systemui.keyguard.domain.interactor.KeyguardInteractor;
 import com.android.systemui.keyguard.domain.interactor.KeyguardTransitionInteractor;
@@ -100,13 +102,16 @@ import kotlinx.coroutines.CoroutineDispatcher;
  */
 @SysUISingleton
 public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dumpable,
-        CoreStartable {
+        CoreStartable, TunerService.Tunable {
 
     static final String TAG = "ScrimController";
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
     // debug mode colors scrims with below debug colors, irrespectively of which state they're in
     public static final boolean DEBUG_MODE = false;
+
+    private static final String QS_DUAL_TONE =
+            "system:" + Settings.System.QS_DUAL_TONE;
 
     public static final int DEBUG_NOTIFICATIONS_TINT = Color.RED;
     public static final int DEBUG_FRONT_TINT = Color.GREEN;
@@ -274,6 +279,9 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
     private boolean mWakeLockHeld;
     private boolean mKeyguardOccluded;
 
+    private final TunerService mTunerService;
+    private boolean mUseDualToneColor;
+
     private KeyguardTransitionInteractor mKeyguardTransitionInteractor;
     private final WallpaperRepository mWallpaperRepository;
     private CoroutineDispatcher mMainDispatcher;
@@ -340,7 +348,8 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             KeyguardInteractor keyguardInteractor,
             WallpaperRepository wallpaperRepository,
             @Main CoroutineDispatcher mainDispatcher,
-            LargeScreenShadeInterpolator largeScreenShadeInterpolator) {
+            LargeScreenShadeInterpolator largeScreenShadeInterpolator,
+            TunerService tunerService) {
         mScrimStateListener = lightBarController::setScrimState;
         mLargeScreenShadeInterpolator = largeScreenShadeInterpolator;
         mDefaultScrimAlpha = BUSY_SCRIM_ALPHA;
@@ -387,6 +396,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         mKeyguardInteractor = keyguardInteractor;
         mWallpaperRepository = wallpaperRepository;
         mMainDispatcher = mainDispatcher;
+        mTunerService = tunerService;
     }
 
     @Override
@@ -476,6 +486,21 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         collectFlow(behindScrim,
                 mKeyguardTransitionInteractor.transition(GLANCEABLE_HUB, LOCKSCREEN),
                 mGlanceableHubConsumer, mMainDispatcher);
+
+        mTunerService.addTunable(this, QS_DUAL_TONE);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case QS_DUAL_TONE:
+            	mUseDualToneColor =
+                    TunerService.parseIntegerSwitch(newValue, true);
+                ScrimController.this.onThemeChanged();
+                break;
+            default:
+                break;
+         }
     }
 
     // TODO(b/270984686) recompute scrim height accurately, based on shade contents.
