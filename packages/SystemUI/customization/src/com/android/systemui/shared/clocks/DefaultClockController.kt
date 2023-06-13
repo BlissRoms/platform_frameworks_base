@@ -17,6 +17,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.icu.text.NumberFormat
 import android.os.UserHandle
 import android.util.TypedValue
@@ -143,7 +144,10 @@ class DefaultClockController(
                  		Secure.KG_LARGE_CLOCK_TEXT_SIZE, 180, UserHandle.USER_CURRENT)
            		    val finalSmallTextSize = smallClockTextSize.dp
            		    val finalLargeClockTextSize = largeClockTextSize.dp
-            	    view.setTypeface(Typeface.create(resources.getString(com.android.internal.R.string.config_clockFontFamily), Typeface.NORMAL))
+            	    val fontFamily = Secure.getStringForUser(ctx.getContentResolver(),
+             		    Secure.KG_FONT_TYPE, UserHandle.USER_CURRENT)
+                    val typeface = Typeface.create(fontFamily?.takeIf { it.isNotBlank() } ?: "google-sans-clock", Typeface.NORMAL)
+                    view?.typeface = typeface
             	    setClockFontSize(smallClock.view, finalSmallTextSize.px.toFloat() *  2.5f)
             	    setClockFontSize(largeClock.view, finalLargeClockTextSize.px.toFloat() * 2.5f)
                     recomputePadding(targetRegion)
