@@ -6620,6 +6620,11 @@ public final class Settings {
          * @hide
          */
         public static final String ALERT_SLIDER_NOTIFICATIONS = "alert_slider_notifications";
+	/**
+         * Whether to enable smart 5G mode
+         * @hide
+         */
+        public static final String SMART_5G = "smart_5g";
 
         /**
          * Whether to display cross sign for a data disabled connection
