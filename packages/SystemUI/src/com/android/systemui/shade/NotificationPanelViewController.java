@@ -56,6 +56,7 @@ import android.annotation.Nullable;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
+import android.content.Context;
 import android.content.ContentResolver;
 import android.content.res.Configuration;
 import android.content.res.Resources;
