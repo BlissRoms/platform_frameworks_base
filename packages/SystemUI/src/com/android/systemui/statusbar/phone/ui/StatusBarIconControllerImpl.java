@@ -518,6 +518,15 @@ public class StatusBarIconControllerImpl implements Tunable,
         return s;
     }
 
+    @Override
+    public void onThemeChanged() {
+        for (int i = mIconGroups.size() - 1; i >= 0; --i) {
+            IconManager group = mIconGroups.get(i);
+            removeIconGroup(group);
+            addIconGroup(group);
+        }
+    }
+
     private String createExternalSlotName(String slot) {
         if (slot.endsWith(EXTERNAL_SLOT_SUFFIX)) {
             return slot;
