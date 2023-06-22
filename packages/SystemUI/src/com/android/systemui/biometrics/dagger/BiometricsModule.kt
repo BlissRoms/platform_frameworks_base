@@ -16,6 +16,8 @@
 
 package com.android.systemui.biometrics.dagger
 
+import android.content.Context
+
 import android.content.res.Resources
 import com.android.internal.R
 import com.android.systemui.CoreStartable
@@ -40,6 +42,8 @@ import com.android.systemui.biometrics.udfps.OverlapDetector
 import com.android.systemui.biometrics.ui.binder.SideFpsOverlayViewBinder
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.statusbar.policy.ConfigurationController.ConfigurationListener
+import com.android.systemui.biometrics.FingerprintInteractiveToAuthProvider
+import com.android.systemui.biometrics.FingerprintInteractiveToAuthProviderImpl
 import com.android.systemui.util.concurrency.ThreadFactory
 import dagger.Binds
 import dagger.Module
@@ -103,6 +107,10 @@ interface BiometricsModule {
             threadFactory.buildExecutorOnNewThread("biometrics")
 
         @Provides fun providesUdfpsUtils(): UdfpsUtils = UdfpsUtils()
+
+        @Provides
+        fun providesFingerprintInteractiveToAuth(ctx: Context): FingerprintInteractiveToAuthProvider =
+            FingerprintInteractiveToAuthProviderImpl(ctx);
 
         @Provides
         @SysUISingleton
