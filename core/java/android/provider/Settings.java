@@ -7014,6 +7014,12 @@ public final class Settings {
         public static final String ISLAND_NOTIFICATION = "island_notification";
 
         /**
+         * Give haptic feedback on brightness slider changes.
+         * @hide
+         */
+        public static final String BRIGHTNESS_SLIDER_HAPTIC_ENABLED = "brightness_slider_haptic_enabled";
+
+        /**
          * @hide
          */
         public static final String ISLAND_NOTIFICATION_NOW_PLAYING = "island_notification_now_playing";
