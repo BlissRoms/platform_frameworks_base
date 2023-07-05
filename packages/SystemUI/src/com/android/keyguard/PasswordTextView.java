@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -322,6 +323,15 @@ public class PasswordTextView extends BasePasswordTextView {
             stringBuilder.append(charState.isCharVisibleForA11y() ? charState.whichChar : DOT);
         }
         return stringBuilder;
+    }
+
+    /**
+     * Controls whether the last entered digit is briefly shown after being entered
+     */
+    public void setShowPassword(boolean enabled) {
+        mShowPassword = enabled &&
+            Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.TEXT_SHOW_PASSWORD, 1) == 1;
     }
 
     private class CharState {
