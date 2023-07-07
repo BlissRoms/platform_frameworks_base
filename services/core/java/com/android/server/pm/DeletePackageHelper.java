@@ -882,6 +882,11 @@ final class DeletePackageHelper {
             return true;
         }
 
+        // Allow Panic app to silently uninstall.
+        if (callingUid == snapshot.getPackageUid("org.calyxos.panic", 0, callingUserId)) {
+            return true;
+        }
+
         // Allow caller having MANAGE_PROFILE_AND_DEVICE_OWNERS permission to silently
         // uninstall for device owner provisioning.
         return snapshot.checkUidPermission(MANAGE_PROFILE_AND_DEVICE_OWNERS, callingUid)
