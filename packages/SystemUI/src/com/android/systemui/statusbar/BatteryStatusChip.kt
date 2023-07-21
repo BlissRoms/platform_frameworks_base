@@ -23,6 +23,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.android.settingslib.flags.Flags.newStatusBarIcons
+import com.android.settingslib.Utils
 import com.android.systemui.battery.BatteryMeterView
 import com.android.systemui.battery.unified.BatteryColors
 import com.android.systemui.res.R
@@ -40,12 +41,8 @@ class BatteryStatusChip @JvmOverloads constructor(context: Context, attrs: Attri
         inflate(context, R.layout.battery_status_chip, this)
         roundedContainer = requireViewById(R.id.rounded_container)
         batteryMeterView = requireViewById(R.id.battery_meter_view)
-        batteryMeterView.setStaticColor(true)
         if (newStatusBarIcons()) {
             batteryMeterView.setUnifiedBatteryColors(BatteryColors.LightThemeColors)
-        } else {
-            val primaryColor = context.resources.getColor(android.R.color.black, context.theme)
-            batteryMeterView.updateColors(primaryColor, primaryColor, primaryColor)
         }
         updateResources()
     }
@@ -71,6 +68,11 @@ class BatteryStatusChip @JvmOverloads constructor(context: Context, attrs: Attri
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun updateResources() {
+        val primaryColor =
+            Utils.getColorAttrDefaultColor(mContext, com.android.internal.R.attr.textColorPrimaryInverse)
+        val textColorSecondary =
+            Utils.getColorAttrDefaultColor(mContext, android.R.attr.textColorSecondaryInverse)
+        batteryMeterView.updateColors(primaryColor, textColorSecondary, primaryColor)
         roundedContainer.background = mContext.getDrawable(R.drawable.statusbar_chip_bg)
     }
 }
