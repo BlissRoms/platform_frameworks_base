@@ -5930,14 +5930,6 @@ public final class Settings {
         public static final String RETICKER_LANDSCAPE_ONLY = "reticker_landscape_only";
 
         /**
-         * Whether to show battery estimates in QS
-         * @hide
-         */
-        @Readable
-        public static final String QS_SHOW_BATTERY_ESTIMATE = "qs_show_battery_estimate";
-
-
-        /**
          * Whether to show the battery info on the lockscreen while charging
          * @hide
          */
