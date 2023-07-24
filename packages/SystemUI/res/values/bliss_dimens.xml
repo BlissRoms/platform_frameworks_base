@@ -84,4 +84,7 @@
     <dimen name="status_bar_battery_icon_width_landscape_ios16">24.0dip</dimen>
     <dimen name="status_bar_battery_icon_width_landscape_origami">20.0dip</dimen>
     <dimen name="status_bar_battery_icon_width_landscape_miui_pill">24.0dip</dimen>
+
+    <!-- QS Header height full -->
+    <dimen name="qs_header_height_full">200dp</dimen>
 </resources>
