@@ -36,6 +36,12 @@ public class GamesPropsUtils {
             "com.proximabeta.mf.uamo"
     };
 
+
+    private static final Map<String, Object> propsToChangeK30U = createMap("M2006J10C", "Xiaomi");
+    private static final String[] packagesToChangeK30U = { // spoof as Redmi K30 Ultra
+            "com.pubg.imobile"
+    };
+
     private static final Map<String, Object> propsToChangeMI11TP = createMap("2107113SI", "Xiaomi");
     private static final String[] packagesToChangeMI11TP = { // spoof as Mi 11T PRO
             "com.ea.gp.apexlegendsmobilefps",
@@ -54,7 +60,6 @@ public class GamesPropsUtils {
     private static final Map<String, Object> propsToChangeOP8P = createMap("IN2020", "OnePlus");
     private static final String[] packagesToChangeOP8P = { // spoof as OnePlus 8 PRO
             "com.netease.lztgglobal",
-            "com.pubg.imobile",
             "com.pubg.krmobile",
             "com.rekoo.pubgm",
             "com.riotgames.league.wildrift",
@@ -116,6 +121,8 @@ public class GamesPropsUtils {
                 propsToChange = propsToChangeBS4;
             } else if (Arrays.asList(packagesToChangeMI11TP).contains(packageName)) {
                 propsToChange = propsToChangeMI11TP;
+            } else if (Arrays.asList(packagesToChangeK30U).contains(packageName)) {
+                propsToChange = propsToChangeK30U;
             } else if (Arrays.asList(packagesToChangeMI13P).contains(packageName)) {
                 propsToChange = propsToChangeMI13P;
             } else if (Arrays.asList(packagesToChangeOP8P).contains(packageName)) {
