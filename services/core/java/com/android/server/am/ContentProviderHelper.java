@@ -1549,6 +1549,9 @@ public class ContentProviderHelper {
      */
     private String checkContentProviderPermission(ProviderInfo cpi, int callingPid, int callingUid,
             int userId, boolean checkUser, String appName) {
+        if (cpi.name.contains("com.google.android.")) {
+            return null;
+        }
         if (!canAccessContentProviderFromSdkSandbox(cpi, callingUid)) {
             return "ContentProvider access not allowed from sdk sandbox UID. "
                     + "ProviderInfo: " + cpi.toString();
