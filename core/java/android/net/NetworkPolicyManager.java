@@ -96,6 +96,10 @@ public class NetworkPolicyManager {
      * @hide
      */
     public static final int POLICY_REJECT_WIFI = 0x8000;
+    /** Reject network usage on bluetooth and ethernet network
+     * @hide
+     */
+    public static final int POLICY_REJECT_BLUETOOTH_AND_ETHERNET = 0x6000;
     /** Reject network usage on all networks
      * Not used since 12, since we now use restricted-networking-mode
      * However, since this was present in earlier builds, keep it around
@@ -105,11 +109,12 @@ public class NetworkPolicyManager {
     public static final int POLICY_REJECT_ALL = 0x40000;
 
     /** @hide */
-    public static final int POLICY_LOCKDOWN_VPN = POLICY_REJECT_WIFI | POLICY_REJECT_CELLULAR;
+    public static final int POLICY_LOCKDOWN_VPN = POLICY_REJECT_WIFI | POLICY_REJECT_CELLULAR
+            | POLICY_REJECT_BLUETOOTH_AND_ETHERNET;
 
     /** @hide */
     public static final int POLICY_LOCKDOWN_VPN_MASK = POLICY_REJECT_WIFI | POLICY_REJECT_CELLULAR
-            | POLICY_REJECT_VPN;
+            | POLICY_REJECT_VPN | POLICY_REJECT_BLUETOOTH_AND_ETHERNET;
 
     /*
      * Rules defining whether an uid has access to a network given its type (metered / non-metered).

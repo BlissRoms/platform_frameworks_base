@@ -75,6 +75,8 @@ import static android.net.NetworkCapabilities.TRANSPORT_CELLULAR;
 import static android.net.NetworkCapabilities.TRANSPORT_USB;
 import static android.net.NetworkCapabilities.TRANSPORT_VPN;
 import static android.net.NetworkCapabilities.TRANSPORT_WIFI;
+import static android.net.NetworkCapabilities.TRANSPORT_BLUETOOTH;
+import static android.net.NetworkCapabilities.TRANSPORT_ETHERNET;
 import static android.net.NetworkPolicy.LIMIT_DISABLED;
 import static android.net.NetworkPolicy.SNOOZE_NEVER;
 import static android.net.NetworkPolicy.WARNING_DISABLED;
@@ -101,6 +103,7 @@ import static android.net.NetworkPolicyManager.POLICY_REJECT_CELLULAR;
 import static android.net.NetworkPolicyManager.POLICY_REJECT_METERED_BACKGROUND;
 import static android.net.NetworkPolicyManager.POLICY_REJECT_VPN;
 import static android.net.NetworkPolicyManager.POLICY_REJECT_WIFI;
+import static android.net.NetworkPolicyManager.POLICY_REJECT_BLUETOOTH_AND_ETHERNET;
 import static android.net.NetworkPolicyManager.RULE_ALLOW_ALL;
 import static android.net.NetworkPolicyManager.RULE_NONE;
 import static android.net.NetworkPolicyManager.RULE_REJECT_ALL;
@@ -1176,6 +1179,11 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         }
         if ((policy & POLICY_REJECT_CELLULAR) == POLICY_REJECT_CELLULAR) {
             allowedTransports &= ~(1 << TRANSPORT_CELLULAR);
+        }
+        if ((policy & POLICY_REJECT_BLUETOOTH_AND_ETHERNET) == POLICY_REJECT_BLUETOOTH_AND_ETHERNET) {
+            allowedTransports &= ~(1 << TRANSPORT_BLUETOOTH);
+            allowedTransports &= ~(1 << TRANSPORT_ETHERNET);
+            allowedTransports &= ~(1 << TRANSPORT_USB);
         }
         return allowedTransports;
     }
