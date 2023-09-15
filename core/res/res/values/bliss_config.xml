@@ -321,4 +321,7 @@
     <!-- Whether the device supports Smart Pixels -->
     <bool name="config_supportSmartPixels">false</bool>
 
+    <!-- Smart 5G -->
+    <bool name="config_supportSmart5G">false</bool>
+
 </resources>
