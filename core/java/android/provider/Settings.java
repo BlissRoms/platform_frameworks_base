@@ -12392,6 +12392,15 @@ public final class Settings {
         public static final String QUICK_SETTINGS_TILES_ANIM_DURATION =
                 "quick_settings_tiles_anim_duration";
 
+	/**
+         * Our GameSpace can't write to device_config directly [GTS]
+         * Use this as intermediate to pass device_config property
+         * from our GameSpace to com.android.server.app.GameManagerService
+         * so we can set the device_config property from there.
+         * @hide
+         */
+        public static final String GAME_OVERLAY = "game_overlay";
+
         /**
          * Change quick settings tiles interpolator
          *
