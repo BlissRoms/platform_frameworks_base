@@ -44,6 +44,11 @@ public class DesktopModeLaunchParamsModifier implements LaunchParamsModifier {
                     .getInt("persist.wm.debug.desktop_mode_initial_bounds_scale", 75) / 100f;
 
     private StringBuilder mLogBuilder;
+    private static final int OFFSET_X_DP = 100;
+    private static final int OFFSET_Y_DP = 100;
+
+    private int mLastOffsetX = 0;
+    private int mLastOffsetY = 0;
 
     @Override
     public int onCalculate(@Nullable Task task, @Nullable ActivityInfo.WindowLayout layout,
@@ -119,13 +124,20 @@ public class DesktopModeLaunchParamsModifier implements LaunchParamsModifier {
     private void calculateAndCentreInitialBounds(Task task,
             LaunchParamsController.LaunchParams outParams) {
         // TODO(b/319819547): Account for app constraints so apps do not become letterboxed
+        // Stagger the window position 
+        outParams.mBounds.offset(mLastOffsetX, mLastOffsetY);
+
         final Rect windowBounds = task.getDisplayArea().getBounds();
         final int width = (int) (windowBounds.width() * DESKTOP_MODE_INITIAL_BOUNDS_SCALE);
         final int height = (int) (windowBounds.height() * DESKTOP_MODE_INITIAL_BOUNDS_SCALE);
         outParams.mBounds.right = width;
         outParams.mBounds.bottom = height;
-        outParams.mBounds.offset(windowBounds.centerX() - outParams.mBounds.centerX(),
-                windowBounds.centerY() - outParams.mBounds.centerY());
+        if (outParams.mBounds.right > windowBounds.right) {
+            mLastOffsetX = 0;
+        }
+        if (outParams.mBounds.bottom > windowBounds.bottom) {
+            mLastOffsetY = 0;
+        }
     }
 
     private void initLogBuilder(Task task, ActivityRecord activity) {
