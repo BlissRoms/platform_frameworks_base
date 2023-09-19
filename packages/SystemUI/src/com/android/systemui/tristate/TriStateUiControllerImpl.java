@@ -72,7 +72,8 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     private static final int TRI_STATE_UI_POSITION_LEFT = 0;
     private static final int TRI_STATE_UI_POSITION_RIGHT = 1;
 
-    private static final int DIALOG_TIMEOUT = 2000;
+    private static final long DIALOG_TIMEOUT = 2000;
+    private static final long DIALOG_DELAY = 100;
 
     private Context mContext;
     private final VolumeDialogController mVolumeDialogController;
@@ -134,11 +135,30 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     private Window mWindow;
     private LayoutParams mWindowLayoutParams;
     private int mWindowType;
+    private String mIntentAction;
+    private boolean mIntentActionSupported;
+    private boolean mRingModeChanged, mSliderPositionChanged;
 
     private final BroadcastReceiver mRingerStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateRingerModeChanged();
+            String action = intent.getAction();
+            if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
+                mHandler.sendEmptyMessage(MSG_DIALOG_DISMISS);
+                mHandler.sendEmptyMessage(MSG_STATE_CHANGE);
+                mRingModeChanged = true;
+            }
+            if (!mIntentActionSupported || action.equals(mIntentAction)) {
+                mSliderPositionChanged = true;
+            }
+
+            if (mRingModeChanged && mSliderPositionChanged) {
+                mRingModeChanged = false;
+                mSliderPositionChanged = false;
+                if (mTriStateMode != -1) {
+                    mHandler.sendEmptyMessageDelayed(MSG_DIALOG_SHOW, (long) DIALOG_DELAY);
+               }
+            }
         }
     };
 
@@ -181,8 +201,14 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
         };
         mVolumeDialogController =
             (VolumeDialogController) Dependency.get(VolumeDialogController.class);
-        IntentFilter ringerChanged = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
-        mContext.registerReceiver(mRingerStateReceiver, ringerChanged);
+        mIntentAction = mContext.getResources().getString(com.android.internal.R.string.config_alertSliderIntent);
+        mIntentActionSupported = mIntentAction != null && !mIntentAction.isEmpty();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        if (mIntentActionSupported)
+            filter.addAction(mIntentAction);
+        mContext.registerReceiver(mRingerStateReceiver, filter);
     }
 
     private void checkOrientationType() {
@@ -244,10 +270,6 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
         mTriStateIcon = (ImageView) mDialog.findViewById(R.id.tri_state_icon);
         mTriStateText = (TextView) mDialog.findViewById(R.id.tri_state_text);
         updateTheme();
-    }
-
-    public void show() {
-        mHandler.obtainMessage(MSG_DIALOG_SHOW, 0, 0).sendToTarget();
     }
 
     private void registerOrientationListener(boolean enable) {
@@ -418,22 +440,13 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
                 mWindowLayoutParams.y = positionY2 - positionY;
                 mWindowLayoutParams.x = positionX - positionY;
                 mWindow.setAttributes(mWindowLayoutParams);
-                handleResetTimeout();
+                mHandler.sendEmptyMessageDelayed(MSG_RESET_SCHEDULE, DIALOG_TIMEOUT);
             }
-        }
-    }
-
-    private void updateRingerModeChanged() {
-        mHandler.obtainMessage(MSG_STATE_CHANGE, 0, 0).sendToTarget();
-        if (mTriStateMode != -1) {
-            show();
         }
     }
 
     private void handleShow() {
         mHandler.removeMessages(MSG_DIALOG_SHOW);
-        mHandler.removeMessages(MSG_DIALOG_DISMISS);
-        handleResetTimeout();
         if (!mShowing) {
             updateTheme();
             registerOrientationListener(true);
@@ -443,11 +456,11 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
             if (mListener != null) {
                 mListener.onTriStateUserActivity();
             }
+            mHandler.sendEmptyMessageDelayed(MSG_RESET_SCHEDULE, DIALOG_TIMEOUT);
         }
     }
 
     private void handleDismiss() {
-        mHandler.removeMessages(MSG_DIALOG_SHOW);
         mHandler.removeMessages(MSG_DIALOG_DISMISS);
         if (mShowing) {
             registerOrientationListener(false);
@@ -469,9 +482,8 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
     }
 
     public void handleResetTimeout() {
-        mHandler.removeMessages(MSG_DIALOG_DISMISS);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(
-                    MSG_DIALOG_DISMISS, MSG_RESET_SCHEDULE, 0), (long) DIALOG_TIMEOUT);
+        mHandler.removeMessages(MSG_RESET_SCHEDULE);
+        mHandler.sendEmptyMessage(MSG_DIALOG_DISMISS);
         if (mListener != null) {
             mListener.onTriStateUserActivity();
         }
@@ -479,7 +491,7 @@ public class TriStateUiControllerImpl implements ConfigurationListener, TriState
 
     @Override
     public void onDensityOrFontScaleChanged() {
-        handleDismiss();
+        mHandler.sendEmptyMessage(MSG_DIALOG_DISMISS);
         initDialog();
         updateTriStateLayout();
     }
