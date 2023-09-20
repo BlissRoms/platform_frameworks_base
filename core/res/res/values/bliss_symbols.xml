@@ -121,10 +121,6 @@
     <java-symbol type="string" name="config_lightFontFamily" />
     <java-symbol type="string" name="config_regularFontFamily" />
 
-    <!-- Alert Slider -->
-    <java-symbol type="bool" name="config_hasAlertSlider" />
-    <java-symbol type="integer" name="config_alertSliderLocation" />
-
     <!-- Whether device has dash charging support -->
     <java-symbol type="bool" name="config_hasDashCharger" />
     <!-- Path to warp charging status file -->
