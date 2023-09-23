@@ -30,6 +30,8 @@ import com.android.settingslib.applications.InterestingConfigChanges;
 import com.android.systemui.dagger.SysUISingleton;
 import com.android.systemui.demomode.DemoMode;
 import com.android.systemui.demomode.DemoModeController;
+import com.android.systemui.tristate.TriStateUiController;
+import com.android.systemui.tristate.TriStateUiControllerImpl;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.PluginDependencyProvider;
@@ -37,8 +39,6 @@ import com.android.systemui.plugins.VolumeDialog;
 import com.android.systemui.plugins.VolumeDialogController;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.statusbar.policy.ExtensionController;
-import com.android.systemui.tristate.TriStateUiController;
-import com.android.systemui.tristate.TriStateUiControllerImpl;
 import com.android.systemui.tuner.TunerService;
 
 import java.io.PrintWriter;

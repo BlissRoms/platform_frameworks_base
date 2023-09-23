@@ -77,7 +77,7 @@
     <java-symbol type="drawable" name="ic_parallel_badge" />
     <java-symbol type="drawable" name="ic_parallel_icon_badge" />
 
-    <!-- Parallel space badge colors --> 
+    <!-- Parallel space badge colors -->
     <java-symbol type="color" name="parallel_badge_1" />
     <java-symbol type="color" name="parallel_badge_2" />
     <java-symbol type="color" name="parallel_badge_3" />
@@ -120,10 +120,6 @@
     <!-- Light / Regular style fonts -->
     <java-symbol type="string" name="config_lightFontFamily" />
     <java-symbol type="string" name="config_regularFontFamily" />
-
-    <!-- Alert Slider -->
-    <java-symbol type="bool" name="config_hasAlertSlider" />
-    <java-symbol type="integer" name="config_alertSliderLocation" />
 
     <!-- Whether device has dash charging support -->
     <java-symbol type="bool" name="config_hasDashCharger" />
@@ -234,5 +230,14 @@
     <java-symbol type="string" name="config_SmartChargingSysfsNode" />
     <java-symbol type="string" name="config_SmartChargingSuspendValue" />
     <java-symbol type="string" name="config_SmartChargingResumeValue" />
+
+    <!-- Whether device has physical tri state switch -->
+    <java-symbol type="bool" name="config_hasAlertSlider" />
+
+    <!-- The location of the devices physical tri state switch -->
+    <java-symbol type="integer" name="config_alertSliderLocation" />
+
+    <!-- Whether key handler sends intent when changing slider position -->
+    <java-symbol type="string" name="config_alertSliderIntent" />
 
 </resources>

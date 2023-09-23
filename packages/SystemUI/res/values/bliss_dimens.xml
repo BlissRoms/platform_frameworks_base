@@ -24,31 +24,6 @@
     <!-- Width of the battery icon in the status bar when set to circle style. -->
     <dimen name="status_bar_battery_icon_circle_width">14.5dp</dimen>
 
-    <!-- Alert Slider -->
-    <dimen name="tri_state_down_dialog_position">0px</dimen>
-    <dimen name="tri_state_down_dialog_position_l">0px</dimen>
-    <dimen name="tri_state_middle_dialog_position">0px</dimen>
-    <dimen name="tri_state_middle_dialog_position_l">0px</dimen>
-    <dimen name="tri_state_up_dialog_position">0px</dimen>
-    <dimen name="tri_state_up_dialog_position_l">0px</dimen>
-    <dimen name="tri_state_up_dialog_position_deep">0px</dimen>
-    <dimen name="tri_state_up_dialog_position_deep_land">0px</dimen>
-    <dimen name="tri_state_dialog_elevation">4.0dip</dimen>
-    <dimen name="tri_state_dialog_icon_size">24.0dip</dimen>
-    <dimen name="tri_state_dialog_padding">8.0dip</dimen>
-    <dimen name="tri_state_down_bottom_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_down_bottom_right_radius">24.0dip</dimen>
-    <dimen name="tri_state_down_top_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_down_top_right_radius">0.0dip</dimen>
-    <dimen name="tri_state_mid_bottom_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_mid_bottom_right_radius">24.0dip</dimen>
-    <dimen name="tri_state_mid_top_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_mid_top_right_radius">24.0dip</dimen>
-    <dimen name="tri_state_up_bottom_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_up_bottom_right_radius">0.0dip</dimen>
-    <dimen name="tri_state_up_top_left_radius">24.0dip</dimen>
-    <dimen name="tri_state_up_top_right_radius">24.0dip</dimen>
-
     <!-- OmniWeather image size -->
     <dimen name="current_weather_image_size">30dp</dimen>
 
@@ -87,4 +62,37 @@
 
     <!-- QS Header height full -->
     <dimen name="qs_header_height_full">200dp</dimen>
+
+    <!-- Tri-state UI -->
+    <dimen name="tri_state_down_dialog_position">850.0px</dimen>
+    <dimen name="tri_state_down_dialog_position_l">650.0px</dimen>
+    <dimen name="tri_state_middle_dialog_position">650.0px</dimen>
+    <dimen name="tri_state_middle_dialog_position_l">650.0px</dimen>
+    <dimen name="tri_state_up_dialog_position">450.0px</dimen>
+    <dimen name="tri_state_up_dialog_position_l">650.0px</dimen>
+    <dimen name="tri_state_up_dialog_position_deep">21.0px</dimen>
+    <dimen name="tri_state_up_dialog_position_deep_land">21.0px</dimen>
+    <dimen name="tri_state_dialog_elevation">4.0dip</dimen>
+    <dimen name="tri_state_dialog_icon_size">24.0dip</dimen>
+    <dimen name="tri_state_dialog_padding">8.0dip</dimen>
+    <dimen name="tri_state_mid_bottom_left_radius">24.0dip</dimen>
+    <dimen name="tri_state_mid_bottom_right_radius">24.0dip</dimen>
+    <dimen name="tri_state_mid_top_left_radius">24.0dip</dimen>
+    <dimen name="tri_state_mid_top_right_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_down_bottom_left_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_down_bottom_right_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_down_top_left_radius">0.0dip</dimen>
+    <dimen name="left_tri_state_down_top_right_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_up_bottom_left_radius">0.0dip</dimen>
+    <dimen name="left_tri_state_up_bottom_right_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_up_top_left_radius">24.0dip</dimen>
+    <dimen name="left_tri_state_up_top_right_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_down_bottom_left_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_down_bottom_right_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_down_top_left_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_down_top_right_radius">0.0dip</dimen>
+    <dimen name="right_tri_state_up_bottom_left_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_up_bottom_right_radius">0.0dip</dimen>
+    <dimen name="right_tri_state_up_top_left_radius">24.0dip</dimen>
+    <dimen name="right_tri_state_up_top_right_radius">24.0dip</dimen>
 </resources>
