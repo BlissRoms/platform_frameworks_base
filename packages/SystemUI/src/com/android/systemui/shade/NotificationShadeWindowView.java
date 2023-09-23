@@ -94,6 +94,7 @@ public class NotificationShadeWindowView extends FrameLayout {
         if (getFitsSystemWindows()) {
             boolean paddingChanged = insets.top != getPaddingTop()
                     || insets.bottom != getPaddingBottom();
+
             // Drop top inset, and pass through bottom inset.
             if (paddingChanged) {
                 setPadding(0, 0, 0, 0);
@@ -113,15 +114,8 @@ public class NotificationShadeWindowView extends FrameLayout {
         DisplayCutout displayCutout = getRootWindowInsets().getDisplayCutout();
         Pair<Integer, Integer> pairInsets = mLayoutInsetProvider
                 .getinsets(windowInsets, displayCutout);
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            if (child.getLayoutParams() instanceof LayoutParams) {
-                LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                mLeftInset = lp.ignoreLeftInset ? 0 : pairInsets.first;
-                mRightInset = lp.ignoreRightInset ? 0 : pairInsets.second;
-            }
-        }
+        mLeftInset = pairInsets.first;
+        mRightInset = pairInsets.second;
         applyMargins();
         return windowInsets;
     }
@@ -132,10 +126,10 @@ public class NotificationShadeWindowView extends FrameLayout {
             View child = getChildAt(i);
             if (child.getLayoutParams() instanceof LayoutParams) {
                 LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                boolean marginChanged = lp.rightMargin != mRightInset || lp.leftMargin != mLeftInset;
-                if (marginChanged) {
-                    lp.leftMargin = lp.ignoreLeftInset ? 0 : mLeftInset;
-                    lp.rightMargin = lp.ignoreRightInset ? 0 : mRightInset;
+                if (!lp.ignoreRightInset
+                        && (lp.rightMargin != mRightInset || lp.leftMargin != mLeftInset)) {
+                    lp.rightMargin = mRightInset;
+                    lp.leftMargin = mLeftInset;
                     child.requestLayout();
                 }
             }
@@ -250,7 +244,6 @@ public class NotificationShadeWindowView extends FrameLayout {
     private static class LayoutParams extends FrameLayout.LayoutParams {
 
         public boolean ignoreRightInset;
-        public boolean ignoreLeftInset;
 
         LayoutParams(int width, int height) {
             super(width, height);
@@ -262,8 +255,6 @@ public class NotificationShadeWindowView extends FrameLayout {
             TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.StatusBarWindowView_Layout);
             ignoreRightInset = a.getBoolean(
                     R.styleable.StatusBarWindowView_Layout_ignoreRightInset, false);
-            ignoreLeftInset = a.getBoolean(
-                    R.styleable.StatusBarWindowView_Layout_ignoreLeftInset, false);
             a.recycle();
         }
     }
