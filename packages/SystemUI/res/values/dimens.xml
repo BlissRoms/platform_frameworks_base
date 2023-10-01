@@ -609,7 +609,6 @@
     -->
     <dimen name="qs_page_indicator_dot_width">6.4dp</dimen>
     <dimen name="qs_tile_text_size">14sp</dimen>
-    <dimen name="qs_tile_secondary_label_text_size">12sp</dimen>
     <dimen name="qs_panel_padding">16dp</dimen>
     <dimen name="qs_dual_tile_padding_horizontal">6dp</dimen>
     <dimen name="qs_panel_elevation">4dp</dimen>
