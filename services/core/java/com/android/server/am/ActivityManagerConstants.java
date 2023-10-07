@@ -1468,14 +1468,12 @@ final class ActivityManagerConstants extends ContentObserver {
                 .map(ComponentName::unflattenFromString).collect(Collectors.toSet()));
         mCustomizedMaxCachedProcesses = context.getResources().getInteger(
                 com.android.internal.R.integer.config_customizedMaxCachedProcesses);
-        CUR_MAX_CACHED_PROCESSES = mCustomizedMaxCachedProcesses;
+        CUR_MAX_CACHED_PROCESSES = Integer.min(mCustomizedMaxCachedProcesses, MAX_CACHED_PROCESSES);
         CUR_MAX_EMPTY_PROCESSES = computeEmptyProcessLimit(CUR_MAX_CACHED_PROCESSES);
 
-        final int rawMaxEmptyProcesses = computeEmptyProcessLimit(
-                Integer.min(CUR_MAX_CACHED_PROCESSES, MAX_CACHED_PROCESSES));
+        final int rawMaxEmptyProcesses = computeEmptyProcessLimit(CUR_MAX_CACHED_PROCESSES);
         CUR_TRIM_EMPTY_PROCESSES = rawMaxEmptyProcesses / 2;
-        CUR_TRIM_CACHED_PROCESSES = (Integer.min(CUR_MAX_CACHED_PROCESSES, MAX_CACHED_PROCESSES)
-                    - rawMaxEmptyProcesses) / 3;
+        CUR_TRIM_CACHED_PROCESSES = (CUR_MAX_CACHED_PROCESSES - rawMaxEmptyProcesses) / 3;
         mEnableBatchingOomAdj = getDeviceConfigBoolean(KEY_ENABLE_BATCHING_OOM_ADJ,
                 DEFAULT_ENABLE_BATCHING_OOM_ADJ);
         mDefaultDisableAppProfilerPssProfiling = context.getResources().getBoolean(
@@ -2085,13 +2083,13 @@ final class ActivityManagerConstants extends ContentObserver {
                     "Unable to parse flag for max_cached_processes: " + maxCachedProcessesFlag, e);
             CUR_MAX_CACHED_PROCESSES = mCustomizedMaxCachedProcesses;
         }
+        CUR_MAX_CACHED_PROCESSES = Integer.min(CUR_MAX_CACHED_PROCESSES, MAX_CACHED_PROCESSES);
+
         CUR_MAX_EMPTY_PROCESSES = computeEmptyProcessLimit(CUR_MAX_CACHED_PROCESSES);
 
-        final int rawMaxEmptyProcesses = computeEmptyProcessLimit(
-                Integer.min(CUR_MAX_CACHED_PROCESSES, MAX_CACHED_PROCESSES));
+        final int rawMaxEmptyProcesses = computeEmptyProcessLimit(CUR_MAX_CACHED_PROCESSES);
         CUR_TRIM_EMPTY_PROCESSES = rawMaxEmptyProcesses / 2;
-        CUR_TRIM_CACHED_PROCESSES = (Integer.min(CUR_MAX_CACHED_PROCESSES, MAX_CACHED_PROCESSES)
-                    - rawMaxEmptyProcesses) / 3;
+        CUR_TRIM_CACHED_PROCESSES = (CUR_MAX_CACHED_PROCESSES - rawMaxEmptyProcesses) / 3;
 
         mService.mProcessStateController.setCurMaxCachedProcesses(CUR_MAX_CACHED_PROCESSES);
         mService.mProcessStateController.setCurMaxEmptyProcesses(CUR_MAX_EMPTY_PROCESSES);
