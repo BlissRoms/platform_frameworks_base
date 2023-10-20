@@ -39,6 +39,7 @@
         <item name="iconSpaceReserved">@bool/settingslib_config_icon_space_reserved</item>
         <item name="allowDividerAbove">@bool/settingslib_config_allow_divider</item>
         <item name="allowDividerBelow">@bool/settingslib_config_allow_divider</item>
+        <item name="layout">@layout/settingslib_category_preference</item>
     </style>
 
     <style name="SettingsPreference.SettingsLib" parent="@style/Preference.Material">
