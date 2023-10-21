@@ -402,8 +402,9 @@ class HighBrightnessModeController {
             return mHbmData != null && mBrightness > mHbmData.transitionPoint;
         }
         return !mIsHdrLayerPresent
-                && (mIsAutoBrightnessEnabled && mIsTimeAvailable && mIsInAllowedAmbientRange
-                && !mIsBlockedByLowPowerMode);
+                && ((mIsAutoBrightnessEnabled && mIsTimeAvailable && mIsInAllowedAmbientRange)
+                    || (!mIsAutoBrightnessEnabled && mHbmData.timeWindowMillis == 0))
+                && !mIsBlockedByLowPowerMode;
     }
 
     /**
