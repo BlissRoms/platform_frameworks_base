@@ -968,7 +968,7 @@ public final class ActiveServices {
             final int allowed = mAm.getAppStartModeLOSP(appUid, appPackageName, appTargetSdkVersion,
                     callingPid, false, false, forcedStandby);
             if (allowed != ActivityManager.APP_START_MODE_NORMAL) {
-                Slog.w(TAG, "Background start not allowed: service "
+                Slog.v(TAG, "Background start not allowed: service "
                         + service + " to " + r.shortInstanceName
                         + " from pid=" + callingPid + " uid=" + callingUid
                         + " pkg=" + callingPackage + " startFg?=" + fgRequired);
