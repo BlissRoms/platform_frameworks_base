@@ -276,6 +276,7 @@ class PhoneStatusBarPolicyTest : SysuiTestCase() {
 
     private fun createStatusBarPolicy(): PhoneStatusBarPolicy {
         return PhoneStatusBarPolicy(
+            context,
             iconController,
             commandQueue,
             broadcastDispatcher,
