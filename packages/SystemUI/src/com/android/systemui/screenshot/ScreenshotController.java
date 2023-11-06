@@ -68,6 +68,7 @@ import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.os.VibrationAttributes;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
@@ -265,6 +266,12 @@ public class ScreenshotController {
 
     private static final int SCREENSHOT_CORNER_DEFAULT_TIMEOUT_MILLIS = 3000;
 
+    private static final VibrationEffect VIBRATION_EFFECT =
+            VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK);
+
+    private static final VibrationAttributes VIBRATION_ATTRS =
+            VibrationAttributes.createForUsage(VibrationAttributes.USAGE_TOUCH);
+
     private final WindowContext mContext;
     private final FeatureFlags mFlags;
     private final ScreenshotNotificationsController mNotificationsController;
@@ -282,8 +289,6 @@ public class ScreenshotController {
     private final ListenableFuture<MediaPlayer> mCameraSound;
     private final AudioManager mAudioManager;
     private final Vibrator mVibrator;
-    private final CameraManager mCameraManager;
-    private int mCamsInUse = 0;
     private final ScrollCaptureClient mScrollCaptureClient;
     private final PhoneWindow mWindow;
     private final DisplayManager mDisplayManager;
@@ -401,9 +406,6 @@ public class ScreenshotController {
         // Grab system services needed for screenshot sound
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-        mCameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
-        mCameraManager.registerAvailabilityCallback(mCamCallback,
-                new Handler(Looper.getMainLooper()));
 
         mCopyBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -1249,48 +1251,19 @@ public class ScreenshotController {
          }
     }
 
-
     private void playShutterSound() {
-       boolean playSound = readCameraSoundForced() && mCamsInUse > 0;
+        boolean playSound = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SCREENSHOT_SHUTTER_SOUND, 1, UserHandle.USER_CURRENT) == 1;
         switch (mAudioManager.getRingerMode()) {
             case AudioManager.RINGER_MODE_SILENT:
-                // do nothing
-                break;
             case AudioManager.RINGER_MODE_VIBRATE:
-                if (mVibrator != null && mVibrator.hasVibrator()) {
-                    mVibrator.vibrate(VibrationEffect.createOneShot(50,
-                            VibrationEffect.DEFAULT_AMPLITUDE));
-                }
-                break;
-            case AudioManager.RINGER_MODE_NORMAL:
-                // in this case we want to play sound even if not forced on
-                playSound = true;
+                playSound = false;
                 break;
         }
-        // We want to play the shutter sound when it's either forced or
-        // when we use normal ringer mode
-        if (playSound && Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.SCREENSHOT_SHUTTER_SOUND, 1, UserHandle.USER_CURRENT) == 1) {
+        if (playSound) {
             playCameraSound();
+        } else if (mVibrator != null && mVibrator.hasVibrator()) {
+            mVibrator.vibrate(VIBRATION_EFFECT, VIBRATION_ATTRS);
         }
-    }
-
-    private CameraManager.AvailabilityCallback mCamCallback =
-            new CameraManager.AvailabilityCallback() {
-        @Override
-        public void onCameraOpened(String cameraId, String packageId) {
-            mCamsInUse++;
-        }
-
-        @Override
-        public void onCameraClosed(String cameraId) {
-            mCamsInUse--;
-        }
-    };
-
-    private boolean readCameraSoundForced() {
-        return SystemProperties.getBoolean("audio.camerasound.force", false) ||
-                mContext.getResources().getBoolean(
-                        com.android.internal.R.bool.config_camera_sound_forced);
     }
 }
