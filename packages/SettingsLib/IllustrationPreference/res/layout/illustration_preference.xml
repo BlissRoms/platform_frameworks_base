@@ -38,7 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
-            android:src="@drawable/protection_background"/>
+            android:src="@drawable/protection_background"
+            />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_view"
@@ -47,6 +48,7 @@
             android:layout_gravity="center"
             android:maxWidth="@dimen/settingslib_illustration_width"
             android:maxHeight="@dimen/settingslib_illustration_height"
+            android:layout_marginBottom="20dp"
             android:adjustViewBounds="true"/>
 
         <FrameLayout
