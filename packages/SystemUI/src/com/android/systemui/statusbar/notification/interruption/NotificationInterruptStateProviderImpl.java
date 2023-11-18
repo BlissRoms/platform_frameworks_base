@@ -95,7 +95,7 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
     protected boolean mUseHeadsUp = false;
 
     private boolean mLessBoringHeadsUp = false;
-    private boolean mReTicker = false;
+    private boolean mIslandNotification = false;
     private TelecomManager mTm;
     private Context mContext;
 
@@ -176,9 +176,9 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
                         mContentResolver,
                         Settings.System.LESS_BORING_HEADS_UP,
                         0) == 1;
-                mReTicker = Settings.System.getInt(
+                mIslandNotification = Settings.System.getInt(
                         mContentResolver,
-                        Settings.System.RETICKER_STATUS,
+                        Settings.System.ISLAND_NOTIFICATION,
                         0) == 1;
                 mLogger.logHeadsUpFeatureChanged(mUseHeadsUp);
                 if (wasUsing != mUseHeadsUp) {
@@ -203,7 +203,7 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
                     true,
                     headsUpObserver);
             mContentResolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.RETICKER_STATUS),
+                    Settings.System.getUriFor(Settings.System.ISLAND_NOTIFICATION),
                     true,
                     headsUpObserver);
         }
@@ -450,7 +450,7 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
         }
 
         if (mLessBoringHeadsUp) {
-            if (!mReTicker) {
+            if (!mIslandNotification) {
                 if (shouldSkipHeadsUp(entry)) {
                     mLogger.logNoHeadsUpShouldSkipPackage(entry);
                     return false;
