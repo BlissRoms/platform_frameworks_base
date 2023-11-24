@@ -409,6 +409,9 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 
     @Override
     public void onTuningChanged(String key, String newValue) {
+        Context context = getContext();
+        if (context == null)
+            return;
         boolean wasClockBlacklisted = mIsClockBlacklisted;
         mIsClockBlacklisted = StatusBarIconController.getIconHideList(
                 getContext(), newValue).contains("clock");
