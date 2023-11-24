@@ -231,12 +231,14 @@ public class PixelPropsUtils {
                     Log.e(TAG, "Failed to register task stack listener!", e);
                 }
                 if (was) return true;
-                // Alter build parameters to Nexus 5X for avoiding hardware attestation enforcement
-                setPropValue("DEVICE", "bullhead");
-                setPropValue("FINGERPRINT", "google/bullhead/bullhead:8.0.0/OPR6.170623.013/4283548:user/release-keys");
-                setPropValue("MODEL", "Nexus 5X");
-                setPropValue("PRODUCT", "bullhead");
-                setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.N);
+                // Alter build parameters to avoid hardware attestation enforcement
+                setPropValue("DEVICE", "sailfish");
+                setPropValue("ID", "OPM2.171019.029");
+                setPropValue("FINGERPRINT", "google/sailfish/sailfish:8.1.0/OPM2.171019.029/4657601:user/release-keys");
+                setPropValue("MODEL", "Pixel");
+                setPropValue("PRODUCT", "sailfish");
+                setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.O_MR1);
+                setVersionFieldString("SECURITY_PATCH", "2018-04-05");
                 return true;
             }
         }
