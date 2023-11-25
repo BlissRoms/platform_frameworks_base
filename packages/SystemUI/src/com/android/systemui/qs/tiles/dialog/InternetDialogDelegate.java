@@ -403,6 +403,13 @@ public class InternetDialogDelegate implements
             }
             mInternetDialogController.connectCarrierNetwork();
         });
+        mMobileNetworkLayout.setOnLongClickListener(v -> {
+            if (!mInternetDialogController.isDeviceLocked()) {
+                mInternetDialogController.launchMobileNetworkSettings(v, mDefaultDataSubId);
+                return true;
+            }
+            return false;
+        });
         mMobileDataToggle.setOnClickListener(v -> {
             boolean isChecked = mMobileDataToggle.isChecked();
             if (!isChecked && shouldShowMobileDialog()) {
