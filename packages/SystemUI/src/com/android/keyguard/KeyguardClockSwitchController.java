@@ -121,7 +121,9 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
     private final ContentObserver mShowWeatherObserver = new ContentObserver(null) {
         @Override
         public void onChange(boolean change) {
-            setWeatherVisibility();
+            if (!mShowWeather) {
+                setWeatherVisibility();
+            }
         }
     };
 
@@ -205,8 +207,6 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
 
         mDumpManager.unregisterDumpable(getClass().toString()); // unregister previous clocks
         mDumpManager.registerDumpable(getClass().toString(), this);
-
-        mTunerService.addTunable(this, LOCKSCREEN_WEATHER_ENABLED);
     }
 
     @Override
@@ -221,8 +221,6 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
         mKeyguardDateWeatherViewInvisibility =
                 mView.getResources().getInteger(R.integer.keyguard_date_weather_view_invisibility);
 
-        updateWeatherView();
-
         if (mOnlyClock) {
             View ksv = mView.findViewById(R.id.keyguard_slice_view);
             ksv.setVisibility(View.GONE);
@@ -236,20 +234,9 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
 
         mStatusArea = mView.findViewById(R.id.keyguard_status_area);
 
-        if (mSmartspaceController.isEnabled()) {
-            View ksv = mView.findViewById(R.id.keyguard_slice_view);
-            int viewIndex = mStatusArea.indexOfChild(ksv);
-            ksv.setVisibility(View.GONE);
+        mTunerService.addTunable(this, LOCKSCREEN_WEATHER_ENABLED);
 
-            // TODO(b/261757708): add content observer for the Settings toggle and add/remove
-            //  weather according to the Settings.
-            if (mSmartspaceController.isDateWeatherDecoupled()) {
-                addDateWeatherView(viewIndex);
-                viewIndex += 1;
-            }
-
-            addSmartspaceView(viewIndex);
-        }
+        updateViews();
 
         mSecureSettings.registerContentObserverForUser(
                 Settings.Secure.LOCKSCREEN_USE_DOUBLE_LINE_CLOCK,
@@ -266,11 +253,38 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
         );
 
         updateDoubleLineClock();
-        setDateWeatherVisibility();
-        setWeatherVisibility();
 
         mKeyguardUnlockAnimationController.addKeyguardUnlockAnimationListener(
                 mKeyguardUnlockAnimationListener);
+    }
+
+    private void updateViews() {
+        if (mSmartspaceController.isEnabled()) {
+            View ksv = mView.findViewById(R.id.keyguard_slice_view);
+            int viewIndex = mStatusArea.indexOfChild(ksv);
+            ksv.setVisibility(mShowWeather ? View.VISIBLE : View.GONE);
+
+            if (mSmartspaceController.isDateWeatherDecoupled()) {
+                int index = mStatusArea.indexOfChild(mDateWeatherView);
+                if (index >= 0) {
+                    mDateWeatherView.removeView(mWeatherView);
+                    mStatusArea.removeView(mDateWeatherView);
+                }
+                if (!mShowWeather) {
+                    addDateWeatherView(viewIndex);
+                    setDateWeatherVisibility();
+                    setWeatherVisibility();
+                    viewIndex += 1;
+                }
+            }
+            int index = mStatusArea.indexOfChild(mSmartspaceView);
+            if (index >= 0) {
+                mStatusArea.removeView(mSmartspaceView);
+            }
+            if (!mShowWeather) {
+                addSmartspaceView(viewIndex);
+            }
+        }
     }
 
     int getNotificationIconAreaHeight() {
@@ -320,26 +334,11 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
                 }
             }
         });
+        updateViews();
     }
 
     void onLocaleListChanged() {
-        if (mSmartspaceController.isEnabled()) {
-            if (mSmartspaceController.isDateWeatherDecoupled()) {
-                mDateWeatherView.removeView(mWeatherView);
-                int index = mStatusArea.indexOfChild(mDateWeatherView);
-                if (index >= 0) {
-                    mStatusArea.removeView(mDateWeatherView);
-                    addDateWeatherView(index);
-                }
-                setDateWeatherVisibility();
-                setWeatherVisibility();
-            }
-            int index = mStatusArea.indexOfChild(mSmartspaceView);
-            if (index >= 0) {
-                mStatusArea.removeView(mSmartspaceView);
-                addSmartspaceView(index);
-            }
-        }
+        updateViews();
     }
 
     private void addDateWeatherView(int index) {
@@ -617,6 +616,6 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
         }
 
         return ((mCurrentClockSize == LARGE) ? clock.getLargeClock() : clock.getSmallClock())
-                .getConfig().getHasCustomWeatherDataDisplay();
+                .getConfig().getHasCustomWeatherDataDisplay() && !mShowWeather;
     }
 }
