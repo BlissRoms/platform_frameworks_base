@@ -3319,4 +3319,6 @@
     <string name="keyboard_backlight_dialog_title">Keyboard backlight</string>
     <!-- Content description for keyboard backlight brightness value [CHAR LIMIT=NONE] -->
     <string name="keyboard_backlight_value">Level %1$d of %2$d</string>
+    
+    <string name="face_unlock_recognizing">Recognizing face...</string>
 </resources>
