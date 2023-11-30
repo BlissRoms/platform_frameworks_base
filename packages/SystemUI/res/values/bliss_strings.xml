@@ -70,4 +70,7 @@
     <string name="weather_condition_wind">Windy</string>
     <string name="weather_condition_mist">Misty</string>
 
+    <!-- Text while recognizing face -->
+    <string name="face_unlock_recognizing">Recognizing face...</string>
+
 </resources>
