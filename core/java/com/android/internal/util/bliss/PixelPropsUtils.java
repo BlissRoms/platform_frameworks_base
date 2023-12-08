@@ -120,6 +120,7 @@ public class PixelPropsUtils {
 
     // Packages to Spoof as Meizu
     private static final String[] packagesToChangeMeizu = {
+            "com.hihonor.cloudmusic",
             "com.netease.cloudmusic",
             "com.tencent.qqmusic",
             "com.kugou.android",
