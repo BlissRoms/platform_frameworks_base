@@ -2347,7 +2347,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     final TelecomManager telecomManager = getTelecommService();
                     if (telecomManager != null && telecomManager.isRinging()) {
                         telecomManager.acceptRingingCall();
-                        return -1;
+                        return false;
                     }
                 }
 
@@ -2357,7 +2357,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // mHomeDoubleTapPending = true;
                     mHandler.postDelayed(mHomeDoubleTapTimeoutRunnable,
                             ViewConfiguration.getDoubleTapTimeout());
-                    return -1;
+                    return false;
                 }
 
                 // Post to main thread to avoid blocking input pipeline.
@@ -3924,6 +3924,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final int displayId = event.getDisplayId();
         final int deviceId = event.getDeviceId();
         final boolean firstDown = down && repeatCount == 0;
+        final boolean virtualKey = deviceId == KeyCharacterMap.VIRTUAL_KEYBOARD;
+        final boolean longPress = (event.getFlags() & KeyEvent.FLAG_LONG_PRESS) != 0;
 
         // Cancel any pending meta actions if we see any other keys being pressed between the
         // down of the meta key and its corresponding up.
@@ -3962,7 +3964,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             Intent intent = new Intent(Intent.ACTION_BUG_REPORT);
                             mContext.sendOrderedBroadcastAsUser(intent, UserHandle.CURRENT,
                                     null, null, null, 0, null, null);
-                            return key_consumed;
+                            return true;
                         }
                     } else if (longPress) {
                         if (!keyguardOn && mMenuLongPressAction != Action.NOTHING) {
@@ -3973,7 +3975,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                     "Menu - Long Press");
                             performKeyAction(mMenuLongPressAction, event);
                             mMenuPressed = false;
-                            return key_consumed;
+                            return true;
                         }
                     }
                 }
@@ -3987,7 +3989,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     }
                 }
 
-                return key_consumed;
+                return true;
             case KeyEvent.KEYCODE_RECENT_APPS:
                 if (firstDown) {
                     showRecentApps(false /* triggeredFromAltTab */);
@@ -4388,7 +4390,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Specific device key handling
         if (dispatchKeyToKeyHandlers(event)) {
-            return -1;
+            return true;
         }
 
         // Reserve all the META modifier combos for system behavior
