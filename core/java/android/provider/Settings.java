@@ -7234,6 +7234,16 @@ public final class Settings {
         /**
          * @hide
          */
+        public static final String QQS_LAYOUT_ROWS_LANDSCAPE = "qqs_layout_rows_landscape";
+
+        /**
+         * @hide
+         */
+        public static final String QQS_LAYOUT_ROWS = "qqs_layout_rows";
+
+        /**
+         * @hide
+         */
         public static final String ISLAND_NOTIFICATION_NOW_PLAYING = "island_notification_now_playing";
 
         /**
