@@ -31,6 +31,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -130,8 +131,12 @@ public class PackageUtil {
 
         private AppSnippet(Parcel in) {
             label = in.readString();
-            Bitmap bmp = in.readParcelable(getClass().getClassLoader(), Bitmap.class);
-            icon = new BitmapDrawable(Resources.getSystem(), bmp);
+            try {
+                Bitmap bmp = in.readParcelable(getClass().getClassLoader(), Bitmap.class);
+                icon = new BitmapDrawable(Resources.getSystem(), bmp);
+            } catch (BadParcelableException e) {
+                // normal, no icon
+            }
         }
 
         @Override
@@ -148,14 +153,19 @@ public class PackageUtil {
         public void writeToParcel(@NonNull Parcel dest, int flags) {
             dest.writeString(label.toString());
             Bitmap bmp = getBitmapFromDrawable(icon);
+            if (bmp == null || bmp.getByteCount() >= 1000000 /* 1 MB */) {
+                return;
+            }
             dest.writeParcelable(bmp, 0);
         }
 
         private Bitmap getBitmapFromDrawable(Drawable drawable) {
+            if (drawable == null) return null;
             // Create an empty bitmap with the dimensions of our drawable
-            final Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(),
-                    Bitmap.Config.ARGB_8888);
+            final int h = drawable.getIntrinsicHeight();
+            final int w = drawable.getIntrinsicWidth();
+            if (h == 0 || w == 0) return null;
+            final Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
             // Associate it with a canvas. This canvas will draw the icon on the bitmap
             final Canvas canvas = new Canvas(bmp);
             // Draw the drawable in the canvas. The canvas will ultimately paint the drawable in the
