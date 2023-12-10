@@ -70,6 +70,7 @@
     <!-- Expected value from fast charging status file -->
     <java-symbol type="string" name="config_oemFastChargerStatusValue" />
 
+<<<<<<< HEAD
     <!-- Whether devices suports in-display fingerprint when screen is off -->
     <java-symbol type="bool" name="config_supportScreenOffUdfps" />
 
@@ -112,5 +113,9 @@
 
     <!-- Cycle through ringer modes -->
     <java-symbol type="string" name="volume_dialog_ringer_guidance_normal" />
+=======
+    <!-- Mock Oplus LinearmotorVibratorService -->
+    <java-symbol type="bool" name="config_mockOplusLinearmotorVibratorService" />
+>>>>>>> 7e24c29076ea (base: Add overlay to mock oplus LinearmotorVibratorService)
 
 </resources>
