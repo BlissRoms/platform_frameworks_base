@@ -329,8 +329,11 @@ public final class DreamManagerService extends SystemService {
             pw.println("mWhenToDream=" + mWhenToDream);
             pw.println("mKeepDreamingWhenUnpluggingDefault=" + mKeepDreamingWhenUnpluggingDefault);
             pw.println("getDozeComponent()=" + getDozeComponent());
-            pw.println("mDreamOverlayServiceName="
-                    + ComponentName.flattenToShortString(mDreamOverlayServiceName));
+            if (mDreamOverlayServiceName != null) {
+                pw.println("mDreamOverlayServiceName=" + mDreamOverlayServiceName.flattenToString());
+            } else {
+                pw.println("mDreamOverlayServiceName=null");
+            }
             pw.println();
 
             DumpUtils.dumpAsync(mHandler, (pw1, prefix) -> mController.dump(pw1), pw, "", 200);
