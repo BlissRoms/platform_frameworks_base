@@ -115,4 +115,8 @@
 
     <!-- Album art max bitmap size -->
     <java-symbol type="integer" name="config_maxBitmapSizePx" />
+
+    <!-- Mock Oplus LinearmotorVibratorService -->
+    <java-symbol type="bool" name="config_mockOplusLinearmotorVibratorService" />
+
 </resources>
