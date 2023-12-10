@@ -294,4 +294,7 @@
     <!-- Spoof GMS as Pixel Tablet -->
     <bool name="config_spoofasTablet">false</bool>
 
+    <!-- Mock Oplus LinearmotorVibratorService -->
+    <bool name="config_mockOplusLinearmotorVibratorService">false</bool>
+
 </resources>
