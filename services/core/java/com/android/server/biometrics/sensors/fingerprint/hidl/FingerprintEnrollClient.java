@@ -187,6 +187,18 @@ public class FingerprintEnrollClient extends EnrollClient<IBiometricsFingerprint
 
     @Override
     public void onUiReady() {
-        // Unsupported in HIDL.
+        try {
+            switch (event) {
+                case FingerprintManager.UDFPS_UI_OVERLAY_SHOWN:
+                    getListener().onUdfpsOverlayShown();
+                    break;
+                case FingerprintManager.UDFPS_UI_READY:
+                    // Unsupported in HIDL.
+                default:
+                    Slog.w(TAG, "No matching event for onUdfpsUiEvent");
+            }
+        } catch (RemoteException e) {
+            Slog.e(TAG, "Unable to send onUdfpsUiEvent", e);
+        }
     }
 }
