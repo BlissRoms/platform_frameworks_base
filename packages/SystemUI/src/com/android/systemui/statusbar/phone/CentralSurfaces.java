@@ -20,6 +20,7 @@ import static com.android.wm.shell.transition.Transitions.ENABLE_SHELL_TRANSITIO
 
 import android.annotation.Nullable;
 import android.app.ActivityOptions;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -44,6 +45,8 @@ import com.android.systemui.display.data.repository.DisplayMetricsRepository;
 import com.android.systemui.navigationbar.NavigationBarView;
 import com.android.systemui.plugins.ActivityStarter.OnDismissAction;
 import com.android.systemui.qs.QSPanelController;
+import com.android.systemui.shade.NotificationShadeWindowView;
+import com.android.systemui.shade.ShadeViewController;
 import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow;
 import com.android.systemui.statusbar.policy.GameSpaceManager;
 import com.android.systemui.util.Compile;
@@ -343,4 +346,14 @@ public interface CentralSurfaces extends Dumpable, LifecycleOwner {
     void brightnessControl(MotionEvent event);
 
     void onBrightnessChanged(boolean upOrCancel);
+
+    void startActivity(Intent intent, boolean dismiss);
+
+    void startPendingIntentDismissingKeyguard(PendingIntent intent);
+
+    ShadeViewController getNotificationPanelViewController();
+
+    void wakeUpDeviceifDozing();
+
+    NotificationShadeWindowView getNotificationShadeWindowView();
 }

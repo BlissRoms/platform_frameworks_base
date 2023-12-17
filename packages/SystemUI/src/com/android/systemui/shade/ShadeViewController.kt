@@ -20,7 +20,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import com.android.systemui.power.shared.model.WakefulnessModel
 import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow
+import com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayoutController
 import com.android.systemui.statusbar.phone.HeadsUpAppearanceController
+import com.android.systemui.statusbar.phone.KeyguardBottomAreaView
 import com.android.systemui.statusbar.phone.KeyguardStatusBarView
 import com.android.systemui.statusbar.phone.KeyguardStatusBarViewController
 import java.util.function.Consumer
@@ -215,6 +217,10 @@ interface ShadeViewController {
         /** Fling until QS is completely hidden. */
         const val FLING_HIDE = 2
     }
+
+    fun getScrollerLayoutController(): NotificationStackScrollLayoutController?
+
+    fun getKeyguardBottomAreaView(): KeyguardBottomAreaView?
 }
 
 /** Manages listeners for when users begin expanding the shade from a HUN. */
