@@ -21,7 +21,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import com.android.systemui.shade.domain.interactor.ShadeBackActionInteractor
 import com.android.systemui.statusbar.notification.row.ExpandableNotificationRow
+import com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayoutController
 import com.android.systemui.statusbar.phone.HeadsUpAppearanceController
+import com.android.systemui.statusbar.phone.KeyguardBottomAreaView
 import java.util.function.Consumer
 import javax.inject.Inject
 
@@ -87,6 +89,9 @@ class ShadeViewControllerEmptyImpl @Inject constructor() :
     override val shadeHeadsUpTracker = ShadeHeadsUpTrackerEmptyImpl()
     override val shadeFoldAnimator = ShadeFoldAnimatorEmptyImpl()
     override fun showIsland(show: Boolean) {}
+
+    override fun getScrollerLayoutController(): NotificationStackScrollLayoutController? = null
+    override fun getKeyguardBottomAreaView(): KeyguardBottomAreaView? = null
 }
 
 class ShadeHeadsUpTrackerEmptyImpl : ShadeHeadsUpTracker {
