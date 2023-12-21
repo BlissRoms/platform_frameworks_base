@@ -13707,6 +13707,25 @@ public final class Settings {
         public static final String DOZE_SINGLE_TAP_GESTURE_AMBIENT = "doze_single_tap_gesture_ambient";
 
         /**
+         * Whether to turn off Private DNS {@link #PRIVATE_DNS_MODE}
+         * when a VPN is connected
+         * <p>
+         * Set to 1 for true and 0 for false. Default 0.
+         *
+         * @hide
+         */
+        public static final String VPN_ENFORCE_DNS = "vpn_enforce_dns";
+
+        /**
+         * A setting used to store the last mode of {@link #PRIVATE_DNS_MODE}
+         * used for {@link #VPN_ENFORCE_DNS}
+         * Not for backup!
+         *
+         * @hide
+         */
+        public static final String VPN_ENFORCE_DNS_STORE = "vpn_enforce_dns_store";
+
+        /**
          * These entries are considered common between the personal and the managed profile,
          * since the managed profile doesn't get to change them.
          */
