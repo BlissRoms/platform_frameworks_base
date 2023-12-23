@@ -86,7 +86,7 @@ public final class AttestationHooks {
         }
 
         if (packageName.equals(PACKAGE_GPHOTOS)) {
-            if (!SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", false)) {
+            if (!SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", true)) {
                 dlog("Photos spoofing disabled by system prop");
                 return;
             } else {
