@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2020 The Pixel Experience Project
- *               2022 StatiXOS
- *               2021-2022 crDroid Android Project
- *               2019-2023 Evolution X
+ *               2021-2023 crDroid Android Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +19,8 @@ package com.android.internal.util.bliss;
 
 import android.app.Application;
 import android.os.Build;
-import android.content.res.Resources;
 import android.os.SystemProperties;
 import android.util.Log;
-
-import com.android.internal.R;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -33,8 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 public class PixelPropsUtils {
 
@@ -42,12 +35,9 @@ public class PixelPropsUtils {
     private static final String DEVICE = "ro.product.device";
     private static final boolean DEBUG = false;
 
-    private static final String[] sCertifiedProps =
-            Resources.getSystem().getStringArray(R.array.config_certifiedBuildProperties);
-
     private static final Map<String, Object> propsToChangeGeneric;
     private static final Map<String, Object> propsToChangePixel5;
-    private static final Map<String, Object> propsToChangePixel7Pro;
+    private static final Map<String, Object> propsToChangePixel8Pro;
     private static final Map<String, Object> propsToChangePixelXL;
     private static final Map<String, Object> propsToChangeROG6;
     private static final Map<String, Object> propsToChangeXP5;
@@ -59,7 +49,7 @@ public class PixelPropsUtils {
     private static final Map<String, ArrayList<String>> propsToKeep;
 
     // Packages to Spoof as Pixel 7 Pro
-    private static final String[] packagesToChangePixel7Pro = {
+    private static final String[] packagesToChangePixel8Pro = {
             "com.google.android.apps.privacy.wildlife",
             "com.google.android.apps.wallpaper",
             "com.google.android.apps.wallpaper.pixel",
@@ -178,15 +168,15 @@ public class PixelPropsUtils {
         propsToChangeGeneric = new HashMap<>();
         propsToChangeGeneric.put("TYPE", "user");
         propsToChangeGeneric.put("TAGS", "release-keys");
-        propsToChangePixel7Pro = new HashMap<>();
-        propsToChangePixel7Pro.put("BRAND", "google");
-        propsToChangePixel7Pro.put("MANUFACTURER", "Google");
-        propsToChangePixel7Pro.put("DEVICE", "cheetah");
-        propsToChangePixel7Pro.put("PRODUCT", "cheetah");
-        propsToChangePixel7Pro.put("HARDWARE", "cheetah");
-        propsToChangePixel7Pro.put("MODEL", "Pixel 7 Pro");
-        propsToChangePixel7Pro.put("ID", "UP1A.231105.003");
-        propsToChangePixel7Pro.put("FINGERPRINT", "google/cheetah/cheetah:14/UP1A.231105.003/11010452:user/release-keys");
+        propsToChangePixel8Pro = new HashMap<>();
+        propsToChangePixel8Pro.put("BRAND", "google");
+        propsToChangePixel8Pro.put("MANUFACTURER", "Google");
+        propsToChangePixel8Pro.put("DEVICE", "husky");
+        propsToChangePixel8Pro.put("PRODUCT", "husky");
+        propsToChangePixel8Pro.put("HARDWARE", "husky");
+        propsToChangePixel8Pro.put("MODEL", "Pixel 8 Pro");
+        propsToChangePixel8Pro.put("ID", "UQ1A.231205.015");
+        propsToChangePixel8Pro.put("FINGERPRINT", "google/husky/husky:14/UQ1A.231205.015/11084887:user/release-keys");
         propsToChangePixel5 = new HashMap<>();
         propsToChangePixel5.put("BRAND", "google");
         propsToChangePixel5.put("MANUFACTURER", "Google");
@@ -231,24 +221,6 @@ public class PixelPropsUtils {
         propsToChangeF5.put("MANUFACTURER", "Xiaomi");
     }
 
-    private static String getBuildID(String fingerprint) {
-        Pattern pattern = Pattern.compile("([A-Za-z0-9]+\\.\\d+\\.\\d+\\.\\w+)");
-        Matcher matcher = pattern.matcher(fingerprint);
-
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return "";
-    }
-
-    private static String getDeviceName(String fingerprint) {
-        String[] parts = fingerprint.split("/");
-        if (parts.length >= 2) {
-            return parts[1];
-        }
-        return "";
-    }
-
     public static void setProps(String packageName) {
         propsToChangeGeneric.forEach((k, v) -> setPropValue(k, v));
 
@@ -279,8 +251,8 @@ public class PixelPropsUtils {
                 sIsFinsky = true;
                 return;
             } else {
-                if (Arrays.asList(packagesToChangePixel7Pro).contains(packageName)) {
-                    propsToChange.putAll(propsToChangePixel7Pro);
+                if (Arrays.asList(packagesToChangePixel8Pro).contains(packageName)) {
+                    propsToChange.putAll(propsToChangePixel8Pro);
                 } else if (Arrays.asList(packagesToChangePixelXL).contains(packageName)) {
                     propsToChange.putAll(propsToChangePixelXL);
                 } else {
@@ -408,17 +380,15 @@ public class PixelPropsUtils {
     }
 
     private static void spoofBuildGms() {
-        if (sCertifiedProps == null || sCertifiedProps.length == 0) return;
         // Alter build parameters to avoid hardware attestation enforcement
-        setPropValue("BRAND", sCertifiedProps[0]);
-        setPropValue("MANUFACTURER", sCertifiedProps[1]);
-        setPropValue("ID", sCertifiedProps[2].isEmpty() ? getBuildID(sCertifiedProps[6]) : sCertifiedProps[2]);
-        setPropValue("DEVICE", sCertifiedProps[3].isEmpty() ? getDeviceName(sCertifiedProps[6]) : sCertifiedProps[3]);
-        setPropValue("PRODUCT", sCertifiedProps[4].isEmpty() ? getDeviceName(sCertifiedProps[6]) : sCertifiedProps[4]);
-        setPropValue("MODEL", sCertifiedProps[5]);
-        setPropValue("FINGERPRINT", sCertifiedProps[6]);
-        setPropValue("TYPE", sCertifiedProps[7].isEmpty() ? "user" : sCertifiedProps[7]);
-        setPropValue("TAGS", sCertifiedProps[8].isEmpty() ? "release-keys" : sCertifiedProps[8]);
+        setPropValue("BRAND", "GIONEE");
+        setPropValue("MANUFACTURER", "GIONEE");
+        setPropValue("DEVICE", "GIONEE_SW17G12");
+        setPropValue("ID", "N6F26Q");
+        setPropValue("FINGERPRINT", "GIONEE/S11S/GIONEE_SW17G12:7.1.1/N6F26Q/1509594663:user/release-keys");
+        setPropValue("MODEL", "GIONEE S11S");
+        setPropValue("PRODUCT", "S11S");
+        setVersionFieldString("SECURITY_PATCH", "2017-11-05");
     }
 
     private static boolean isCallerSafetyNet() {
@@ -434,3 +404,4 @@ public class PixelPropsUtils {
         }
     }
 }
+
