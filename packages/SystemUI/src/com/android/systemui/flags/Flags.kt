@@ -540,7 +540,7 @@ object Flags {
     @Keep
     @JvmField
     val LOCKSCREEN_LIVE_WALLPAPER =
-        sysPropBooleanFlag("persist.wm.debug.lockscreen_live_wallpaper", default = true)
+        sysPropBooleanFlag("persist.wm.debug.lockscreen_live_wallpaper", default = false)
 
     // TODO(b/281648899): Tracking bug
     @Keep
