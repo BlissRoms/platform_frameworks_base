@@ -171,10 +171,10 @@ public class NotificationMediaManager implements Dumpable {
         public void onTuningChanged(String key, String newValue) {
             switch (key) {
                 case ISLAND_NOTIFICATION:
-                    mIslandEnabled = TunerService.parseIntegerSwitch(newValue, true);
+                    mIslandEnabled = TunerService.parseIntegerSwitch(newValue, false);
                     break;
                 case ISLAND_NOTIFICATION_NOW_PLAYING:
-                    mIslandNowPlayingEnabled = TunerService.parseIntegerSwitch(newValue, true);
+                    mIslandNowPlayingEnabled = TunerService.parseIntegerSwitch(newValue, false);
                     break;
                 default:
                     break;
