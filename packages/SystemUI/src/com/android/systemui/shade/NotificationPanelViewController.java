@@ -4682,7 +4682,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
                     break;
                 case ISLAND_NOTIFICATION:
                     mUseIslandNotification =
-                            TunerService.parseIntegerSwitch(newValue, true);
+                            TunerService.parseIntegerSwitch(newValue, false);
                     mNotifIsland.setIslandEnabled(mUseIslandNotification);
                     break;
                 default:
