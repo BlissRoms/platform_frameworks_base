@@ -291,4 +291,7 @@
     <!-- Expected value from fast charging status file  -->
     <string name="config_oemFastChargerStatusValue" translatable="false">1</string>
 
+    <!-- Spoof GMS as Pixel Tablet -->
+    <bool name="config_spoofasTablet">false</bool>
+
 </resources>
