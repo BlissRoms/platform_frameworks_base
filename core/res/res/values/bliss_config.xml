@@ -283,4 +283,8 @@
 
     <!-- Whether key handler sends intent when changing slider position -->
     <string name="config_alertSliderIntent"></string>
+
+    <!-- Spoof GMS as Pixel Tablet -->
+    <bool name="config_spoofasTablet">false</bool>
+
 </resources>
