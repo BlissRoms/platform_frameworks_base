@@ -6026,13 +6026,6 @@ public final class Settings {
         public static final String STATUS_BAR_QUICK_QS_PULLDOWN = "qs_quick_pulldown";
 
         /**
-         *  Enable statusbar double tap gesture on to put device to sleep
-         *  0 = 0ff, 1 = on
-         * @hide
-         */
-        public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
-
-        /**
          * Whether the HighTouchPollingRate is activated or not.
          * 0 = off, 1 = on
          * @hide

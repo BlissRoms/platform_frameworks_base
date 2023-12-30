@@ -654,9 +654,7 @@ public class NotificationPanelViewControllerBaseTest extends SysuiTestCase {
                 mActivityStarter,
                 mKeyguardViewConfigurator,
                 mKeyguardFaceAuthInteractor,
-                mKeyguardRootView,
-                mTunerService,
-                mContext);
+                mKeyguardRootView);
         mNotificationPanelViewController.initDependencies(
                 mCentralSurfaces,
                 null,
