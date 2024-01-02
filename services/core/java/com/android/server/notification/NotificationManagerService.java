@@ -6737,7 +6737,7 @@ public class NotificationManagerService extends SystemService {
         if (notificationUid == INVALID_UID) {
             Slog.w(TAG, opPkg + ":" + callingUid + " doesn't have permission to post notification "
                     + "for nonexistent pkg " + pkg + " in user " + userId);
-            return;
+            return false;
         }
 
         checkRestrictedCategories(notification);

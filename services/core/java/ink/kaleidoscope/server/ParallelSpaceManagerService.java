@@ -257,7 +257,7 @@ public final class ParallelSpaceManagerService extends SystemService {
             try {
                 mPackageManagerService.setComponentEnabledSetting(componentName,
                         PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                        PackageManager.DONT_KILL_APP, userId);
+                        PackageManager.DONT_KILL_APP, userId, null);
             } catch (RemoteException e) {
                 Slog.e(TAG, "Failed when disabling component: " + name);
             }

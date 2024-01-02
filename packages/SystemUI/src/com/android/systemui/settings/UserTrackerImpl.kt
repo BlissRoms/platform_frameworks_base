@@ -121,7 +121,8 @@ open class UserTrackerImpl internal constructor(
             addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED)
             addAction(Intent.ACTION_PARALLEL_SPACE_CHANGED)
         }
-        context.registerReceiverForAllUsers(this, filter, null /* permission */, backgroundHandler)
+        context.registerReceiverForAllUsers(this, filter, null /* permission */,
+                backgroundHandler, Context.RECEIVER_EXPORTED)
 
         registerUserSwitchObserver()
 
