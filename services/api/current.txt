@@ -18,7 +18,7 @@ package com.android.server {
     method public void onUserSwitching(@Nullable com.android.server.SystemService.TargetUser, @NonNull com.android.server.SystemService.TargetUser);
     method public void onUserUnlocked(@NonNull com.android.server.SystemService.TargetUser);
     method public void onUserUnlocking(@NonNull com.android.server.SystemService.TargetUser);
-    method protected final void publishBinderService(@NonNull String, @NonNull android.os.IBinder);
+    method public final void publishBinderService(@NonNull String, @NonNull android.os.IBinder);
     method protected final void publishBinderService(@NonNull String, @NonNull android.os.IBinder, boolean);
     field public static final int PHASE_ACTIVITY_MANAGER_READY = 550; // 0x226
     field public static final int PHASE_BOOT_COMPLETED = 1000; // 0x3e8

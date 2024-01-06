@@ -308,6 +308,9 @@ import com.android.internal.policy.PhoneLayoutInflater;
 import com.android.internal.util.Preconditions;
 import com.android.modules.utils.ravenwood.RavenwoodHelper;
 
+import com.bliss.display.IRefreshRateManagerService;
+import com.bliss.display.RefreshRateManager;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -1946,6 +1949,15 @@ public final class SystemServiceRegistry {
                         }
                     });
         }
+
+        registerService(Context.REFRESH_RATE_MANAGER_SERVICE, RefreshRateManager.class,
+                new CachedServiceFetcher<RefreshRateManager>() {
+            @Override
+            public RefreshRateManager createService(ContextImpl ctx) {
+                IBinder binder = ServiceManager.getService(Context.REFRESH_RATE_MANAGER_SERVICE);
+                IRefreshRateManagerService service = IRefreshRateManagerService.Stub.asInterface(binder);
+                return new RefreshRateManager(ctx.getOuterContext(), service);
+            }});
 
         sInitializing = true;
         try {
