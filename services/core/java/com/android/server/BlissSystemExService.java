@@ -37,6 +37,7 @@ import com.android.server.pm.UserManagerInternal;
 import java.util.List;
 
 import com.android.server.DisplayRefreshRateController;
+import com.android.server.DisplayResolutionController;
 
 public class BlissSystemExService extends SystemService {
 
@@ -91,6 +92,7 @@ public class BlissSystemExService extends SystemService {
         mHandler = new Handler(mWorker.getLooper());
 
         DisplayRefreshRateController.getInstance().initSystemExService(this);
+        DisplayResolutionController.getInstance().initSystemExService(this);
     }
 
     @Override
