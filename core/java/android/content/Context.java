@@ -7322,6 +7322,16 @@ public abstract class Context {
     public static final String MEDIA_QUALITY_SERVICE = "media_quality";
 
     /**
+     * Use with {@link #getSystemService} to retrieve a
+     * {@link com.bliss.view.DisplayResolutionManager} for managing display resolution.
+     *
+     * @hide
+     * @see #getSystemService
+     * @see com.bliss.view.DisplayResolutionManager
+     */
+    public static final String DISPLAY_RESOLUTION_MANAGER_SERVICE = "resolution_ext";
+
+    /**
      * Use with {@link #getSystemService(String)} to retrieve a
      * {@link com.bliss.display.RefreshRateManager} for managing display refresh rate.
      *

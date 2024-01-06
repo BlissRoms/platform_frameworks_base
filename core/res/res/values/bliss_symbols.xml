@@ -9,4 +9,7 @@
     <java-symbol type="string" name="config_lightFontFamily" />
     <java-symbol type="string" name="config_regularFontFamily" />
 
+    <!-- Overlays that to be enabled in FHD+ resolution -->
+    <java-symbol type="array" name="config_fhdResolutionOverlays" />
+
 </resources>

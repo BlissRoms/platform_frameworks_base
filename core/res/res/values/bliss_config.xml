@@ -11,4 +11,8 @@
     <!-- Name of a font family to use as regular font. For theming purpose. -->
     <string name="config_regularFontFamily" translatable="false">sans-serif-regular</string>
 
+    <!-- Overlays that to be enabled in FHD+ resolution -->
+    <string-array name="config_fhdResolutionOverlays" translatable="false">
+    </string-array>
+
 </resources>

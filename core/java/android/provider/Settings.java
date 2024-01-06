@@ -19605,6 +19605,13 @@ public final class Settings {
                 "uids_allowed_on_restricted_networks";
 
         /**
+         * Display width set by custom display resolution controller
+         *
+         * @hide
+         */
+        public static final String DISPLAY_WIDTH_CUSTOM = "display_width_custom";
+
+        /**
          * Whether refresh rate should be switched to 60Hz on power save mode.
          * @hide
          */
