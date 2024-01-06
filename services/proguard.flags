@@ -148,3 +148,6 @@
 -keep,allowoptimization,allowaccessmodification class lineageos.** { *; }
 -keep,allowoptimization,allowaccessmodification class org.lineageos.** { *; }
 -keep,allowoptimization,allowaccessmodification class vendor.lineage.** { *; }
+
+# Bliss
+-keep,allowoptimization,allowaccessmodification class com.android.server.BlissSystemExService { *; }
