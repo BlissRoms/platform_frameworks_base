@@ -659,7 +659,9 @@ public final class ParallelSpaceManagerService extends SystemService {
         }
 
         @Override
-        public List<String>getDefaultClonedApps() { return SPACE_WHITELIST_PACKAGES; }
+        public List<String> getDefaultClonedApps() { 
+            return SPACE_WHITELIST_PACKAGES; 
+        }
     }
 
     private final class UserReceiver extends BroadcastReceiver {
