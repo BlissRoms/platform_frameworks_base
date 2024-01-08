@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0cb3061_e227bde2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000096
+      },
+      "writtenOn": "2024-01-08T15:54:54Z",
+      "side": 1,
+      "message": "Please DO NOT MERGE THIS YET, I put in here to see if Google Translate is really broken on this signature spoofing patch as it is a part of CalyxOS. \n\nAgain, DO NOT MERGE",
+      "revId": "461a4eecfff3ae2d0316a18f0a7799321bc795d6",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    }
+  ]
+}
