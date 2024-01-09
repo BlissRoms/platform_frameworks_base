@@ -102,7 +102,10 @@ public class NotificationMediaManager implements Dumpable {
             }
             if (state != null) {
                 if (mIslandEnabled && mIslandNowPlayingEnabled) {
-                    if (PlaybackState.STATE_PLAYING == getMediaControllerPlaybackState(mMediaController) && mMediaMetadata != null) {
+                    if (mStatusBarStateController.getState() != KEYGUARD 
+                        && !mStatusBarStateController.isDozing() 
+                        && PlaybackState.STATE_PLAYING == getMediaControllerPlaybackState(mMediaController) 
+                        && mMediaMetadata != null) {
                         notifUtils.showNowPlayingNotification(mMediaMetadata);
                     } else {
                         notifUtils.cancelNowPlayingNotification();
@@ -123,8 +126,11 @@ public class NotificationMediaManager implements Dumpable {
             }
             mMediaMetadata = metadata;
             if (mIslandEnabled && mIslandNowPlayingEnabled) {
+                if (mStatusBarStateController.getState() != KEYGUARD 
+                        && !mStatusBarStateController.isDozing()) {
+                    notifUtils.showNowPlayingNotification(metadata);
+                }
                 notifUtils.cancelNowPlayingNotification();
-                notifUtils.showNowPlayingNotification(metadata);
             }
             dispatchUpdateMediaMetaData();
         }
