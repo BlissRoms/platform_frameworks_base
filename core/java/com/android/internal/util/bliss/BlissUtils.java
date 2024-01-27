@@ -17,6 +17,8 @@
 package com.android.internal.util.bliss;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.app.IActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.pm.PackageInfo;
@@ -32,6 +34,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -49,6 +52,39 @@ import java.util.List;
 import java.util.Locale;
 
 public class BlissUtils {
+
+    public static void restartApp(String appName, Context context) {
+        new RestartAppTask(appName, context).execute();
+    }
+
+    private static class RestartAppTask extends AsyncTask<Void, Void, Void> {
+        private Context mContext;
+        private String mApp;
+
+        public RestartAppTask(String appName, Context context) {
+            super();
+            mContext = context;
+            mApp = appName;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                ActivityManager am =
+                        (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+                IActivityManager ams = ActivityManager.getService();
+                for (ActivityManager.RunningAppProcessInfo app: am.getRunningAppProcesses()) {
+                    if (mApp.equals(app.processName)) {
+                        ams.killApplicationProcess(app.processName, app.uid);
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public static boolean isChineseLanguage() {
        return Resources.getSystem().getConfiguration().locale.getLanguage().startsWith(
