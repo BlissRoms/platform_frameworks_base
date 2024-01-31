@@ -60,6 +60,8 @@ class MobileIconStateKairos(
             viewModel.activityContainerVisible,
             false,
         )
+    override val showHd: Boolean by
+        builder.hydratedComposeStateOf("showHd", viewModel.showHd, false)
 
     override suspend fun onActivated() {
         builder.activateIn(kairosNetwork)

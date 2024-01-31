@@ -45,6 +45,7 @@ interface MobileIconState : Activatable {
     val activityInVisible: Boolean
     val activityOutVisible: Boolean
     val activityContainerVisible: Boolean
+    val showHd: Boolean
 
     interface Factory {
         val subscriptionId: Int

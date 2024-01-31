@@ -7,4 +7,7 @@
     <!-- Weather -->
     <dimen name="weather_image_max_size">24dp</dimen>
     <dimen name="weather_humidity_margin_start">16dp</dimen>
+
+    <!-- HD calling icon -->
+    <dimen name="signal_icon_viewport_size">24dp</dimen>
 </resources>

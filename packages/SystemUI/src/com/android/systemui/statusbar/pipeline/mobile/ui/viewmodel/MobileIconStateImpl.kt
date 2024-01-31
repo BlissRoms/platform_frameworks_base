@@ -37,4 +37,5 @@ class MobileIconStateImpl(viewModel: MobileIconViewModelCommon) :
     override val activityOutVisible: Boolean by viewModel.activityOutVisible.hydratedStateOf(false)
     override val activityContainerVisible: Boolean by
         viewModel.activityContainerVisible.hydratedStateOf(false)
+    override val showHd: Boolean by viewModel.showHd.hydratedStateOf(false)
 }

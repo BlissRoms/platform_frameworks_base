@@ -178,6 +178,10 @@ constructor(
                 latest(false) { isAllowedDuringAirplaneMode }
             override val carrierNetworkChangeActive: State<Boolean> =
                 latest(false) { carrierNetworkChangeActive }
+            override val isMobileHd: State<Boolean> = latest(false) { isMobileHd }
+            override val isMobileHdForceHidden: State<Boolean> = latest(true) { isMobileHdForceHidden }
+            override val isVoWifi: State<Boolean> = latest(false) { isVoWifi }
+            override val isVoWifiForceHidden: State<Boolean> = latest(true) { isVoWifiForceHidden }
         }
 
     private fun trackedCommonViewModel(subId: Int) =
@@ -203,6 +207,7 @@ constructor(
             override val activityOutVisible: State<Boolean> = latest(false) { activityOutVisible }
             override val activityContainerVisible: State<Boolean> =
                 latest(false) { activityContainerVisible }
+            override val showHd: State<Boolean> = latest(false) { showHd }
         }
 
     private fun BuildScope.commonViewModel(subId: Int, iconInteractor: MobileIconInteractorKairos) =
