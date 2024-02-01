@@ -52,6 +52,7 @@ public class PixelPropsUtils {
     private static final String PACKAGE_GMS = "com.google.android.gms";
     private static final String PROCESS_GMS_UNSTABLE = PACKAGE_GMS + ".unstable";
     private static final String PACKAGE_GPHOTOS = "com.google.android.apps.photos";
+    private static final String SPOOF_PIXEL_NETFLIX = "persist.sys.pixelprops.netflix";
     private static final String PACKAGE_SI = "com.google.android.settings.intelligence";
     private static final String SAMSUNG = "com.samsung.";
     private static final String SPOOF_MUSIC_APPS = "persist.sys.disguise_props_for_music_app";
@@ -91,6 +92,7 @@ public class PixelPropsUtils {
             "com.google.pixel.livewallpaper",
             "com.microsoft.android.smsorganizer",
             "com.nhs.online.nhsonline",
+            "com.netflix.mediaclient",
             "com.nothing.smartcenter",
             "in.startv.hotstar",
             "jp.id_credit_sp2.android"
@@ -354,6 +356,10 @@ public class PixelPropsUtils {
             } else {
                 propsToChange.putAll(propsToChangePixel5);
             }
+        } else if (packageName.equals("com.netflix.mediaclient") && 
+                    !SystemProperties.getBoolean(SPOOF_PIXEL_NETFLIX, false)) {
+                if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
+                return;
         } else if ((SystemProperties.getBoolean(SPOOF_MUSIC_APPS, false)) &&
                 (Arrays.asList(packagesToChangeMeizu).contains(packageName))) {
             propsToChange.putAll(propsToChangeMeizu);
