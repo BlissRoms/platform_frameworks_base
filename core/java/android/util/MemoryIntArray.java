@@ -79,6 +79,10 @@ public final class MemoryIntArray implements Parcelable, Closeable {
         // Note that we use the effective size after allocation, rather than the provided size,
         // preserving compat with the original behavior. In practice these should be equivalent.
         mSize = nativeSize(mFd);
+        if (mSize != size) {
+            throw new IllegalStateException(
+                    "Unexpected buffer size, expected " + size + ", got " + mSize);
+        }
         mCloseGuard.open("MemoryIntArray.close");
     }
 
