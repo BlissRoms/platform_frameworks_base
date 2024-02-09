@@ -142,8 +142,12 @@ public class KeyguardIndicationRotateTextViewController extends
             return;
         }
         long minShowDuration = getMinVisibilityMillis(mIndicationMessages.get(mCurrIndicationType));
+        final boolean hasPreviousIndication = mIndicationMessages.get(type) != null;
         final boolean hasNewIndication = newIndication != null
                 && !TextUtils.isEmpty(newIndication.getMessage());
+
+        mView.setAnimationsEnabled(!hasPreviousIndication);
+
         if (!hasNewIndication) {
             mIndicationMessages.remove(type);
             mIndicationQueue.removeIf(x -> x == type);
@@ -164,10 +168,10 @@ public class KeyguardIndicationRotateTextViewController extends
         boolean currMsgShownForMinTime = timeSinceLastIndicationSwitch >= minShowDuration;
         if (hasNewIndication) {
             if (mCurrIndicationType == INDICATION_TYPE_NONE || mCurrIndicationType == type) {
-                showIndication(type);
+                showIndication(type, showAsap);
             } else if (showAsap) {
                 if (currMsgShownForMinTime) {
-                    showIndication(type);
+                    showIndication(type, showAsap);
                 } else {
                     mIndicationQueue.removeIf(x -> x == type);
                     mIndicationQueue.add(0 /* index */, type /* type */);
@@ -178,7 +182,7 @@ public class KeyguardIndicationRotateTextViewController extends
                         getMinVisibilityMillis(mIndicationMessages.get(type)),
                         DEFAULT_INDICATION_SHOW_LENGTH);
                 if (timeSinceLastIndicationSwitch >= nextShowTime) {
-                    showIndication(type);
+                    showIndication(type, showAsap);
                 } else {
                     scheduleShowNextIndication(
                             nextShowTime - timeSinceLastIndicationSwitch);
@@ -195,7 +199,7 @@ public class KeyguardIndicationRotateTextViewController extends
                 if (mShowNextIndicationRunnable != null) {
                     mShowNextIndicationRunnable.runImmediately();
                 } else {
-                    showIndication(INDICATION_TYPE_NONE);
+                    showIndication(INDICATION_TYPE_NONE, true);
                 }
             } else {
                 scheduleShowNextIndication(minShowDuration - timeSinceLastIndicationSwitch);
@@ -261,7 +265,7 @@ public class KeyguardIndicationRotateTextViewController extends
      * Will re-add this indication to be re-shown after all other indications have been
      * rotated through.
      */
-    private void showIndication(@IndicationType int type) {
+    private void showIndication(@IndicationType int type, boolean showAsap) {
         cancelScheduledIndication();
 
         final CharSequence previousMessage = mCurrMessage;
@@ -281,7 +285,7 @@ public class KeyguardIndicationRotateTextViewController extends
                 || previousIndicationType != mCurrIndicationType) {
             mLogger.logKeyguardSwitchIndication(type,
                     mCurrMessage != null ? mCurrMessage.toString() : null);
-            mView.switchIndication(mIndicationMessages.get(type));
+            mView.switchIndication(mIndicationMessages.get(type), showAsap);
         }
 
         // only schedule next indication if there's more than just this indication in the queue
@@ -333,9 +337,9 @@ public class KeyguardIndicationRotateTextViewController extends
                     if (isDozing == mIsDozing) return;
                     mIsDozing = isDozing;
                     if (mIsDozing) {
-                        showIndication(INDICATION_TYPE_NONE);
+                        showIndication(INDICATION_TYPE_NONE, true);
                     } else if (mIndicationQueue.size() > 0) {
-                        showIndication(mIndicationQueue.get(0));
+                        showIndication(mIndicationQueue.remove(0), true);
                     }
                 }
             };
@@ -353,7 +357,7 @@ public class KeyguardIndicationRotateTextViewController extends
             mShowIndicationRunnable = () -> {
                 int type = mIndicationQueue.size() == 0
                         ? INDICATION_TYPE_NONE : mIndicationQueue.get(0);
-                showIndication(type);
+                showIndication(type, true);
             };
             mCancelDelayedRunnable = mExecutor.executeDelayed(mShowIndicationRunnable, delay);
         }

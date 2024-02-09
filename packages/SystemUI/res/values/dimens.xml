@@ -296,7 +296,7 @@
     <dimen name="keyguard_indication_bottom_padding">16sp</dimen>
 
     <!-- The padding at start and end of indication text shown on AOD -->
-    <dimen name="keyguard_indication_text_padding">16dp</dimen>
+    <dimen name="keyguard_indication_text_padding">12dp</dimen>
 
     <!-- The min height on the indication text shown on AOD -->
     <dimen name="keyguard_indication_text_min_height">48dp</dimen>
@@ -1056,6 +1056,9 @@
     <!-- Starting text size in sp of batteryLevel for wireless charging animation -->
     <item name="wireless_charging_anim_battery_level_text_size_start" format="float" type="dimen">
         0
+    </item>
+    <!-- padding size in sp of batteryIcon for wireless charging animation -->
+    <item name="wireless_charging_padding" format="float" type="dimen">8
     </item>
     <!-- Ending text size in sp of batteryLevel for wireless charging animation -->
     <item name="wireless_charging_anim_battery_level_text_size_end" format="float" type="dimen">48

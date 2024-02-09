@@ -1593,7 +1593,7 @@ public class WallpaperManagerService extends IWallpaperManager.Stub
                 mWallpaperCropper);
 
         mIsLockscreenLiveWallpaperEnabled =
-                SystemProperties.getBoolean("persist.wm.debug.lockscreen_live_wallpaper", true);
+                SystemProperties.getBoolean("persist.wm.debug.lockscreen_live_wallpaper", false);
         mIsMultiCropEnabled =
                 SystemProperties.getBoolean("persist.wm.debug.wallpaper_multi_crop", false);
         LocalServices.addService(WallpaperManagerInternal.class, new LocalService());

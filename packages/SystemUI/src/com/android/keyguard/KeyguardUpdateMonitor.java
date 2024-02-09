@@ -200,6 +200,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -398,6 +399,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     BatteryStatus mBatteryStatus;
     @VisibleForTesting
     boolean mIncompatibleCharger;
+
+    Date mLastBatteryUpdate;
 
     private StrongAuthTracker mStrongAuthTracker;
 
@@ -2584,8 +2587,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
 
         // Take a guess at initial SIM state, battery status and PLMN until we get an update
         mBatteryStatus = new BatteryStatus(BATTERY_STATUS_UNKNOWN, /* level= */ 100, /* plugged= */
-                0, CHARGING_POLICY_DEFAULT, /* maxChargingWattage= */0, /* present= */true);
-
+                0, CHARGING_POLICY_DEFAULT, /* maxChargingWattage= */0.0f, /* present= */true,
+                0.0f, 0.0f, 0.0f, false);
         // Watch for interesting updates
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
@@ -3501,7 +3504,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
      * @deprecated This is being migrated to use modern architecture.
      */
     @Deprecated
-    private boolean isUnlockWithFacePossible(int userId) {
+    public boolean isUnlockWithFacePossible(int userId) {
         if (isFaceAuthInteractorEnabled()) {
             return getFaceAuthInteractor().canFaceAuthRun();
         }
@@ -3783,6 +3786,15 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
      */
     private void handleBatteryUpdate(BatteryStatus status) {
         Assert.isMainThread();
+        if (mLastBatteryUpdate == null) {
+            mLastBatteryUpdate = new Date();
+        } else {
+            Date newDate = new Date();
+            if (mLastBatteryUpdate.getTime() + 2000 > newDate.getTime()) {
+                return;
+            }
+            mLastBatteryUpdate = newDate;
+        }
         final boolean batteryUpdateInteresting = isBatteryUpdateInteresting(mBatteryStatus, status);
         mBatteryStatus = status;
         if (batteryUpdateInteresting) {
@@ -4038,12 +4050,25 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         }
 
         // change in charging current while plugged in
-        if (nowPluggedIn && current.maxChargingWattage != old.maxChargingWattage) {
+        if (nowPluggedIn &&
+              (current.maxChargingWattage != old.maxChargingWattage ||
+               current.maxChargingCurrent != old.maxChargingCurrent ||
+               current.maxChargingVoltage != old.maxChargingVoltage)) {
+            return true;
+        }
+
+        // change in OEM charging while plugged in
+        if (nowPluggedIn && current.oemChargeStatus != old.oemChargeStatus) {
             return true;
         }
 
         // change in battery is present or not
         if (old.present != current.present) {
+            return true;
+        }
+
+        // change in battery temperature
+        if (old.temperature != current.temperature) {
             return true;
         }
 
