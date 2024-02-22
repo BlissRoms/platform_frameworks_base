@@ -26,20 +26,20 @@
         android:id="@+id/ims_group"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center_vertical">
+        android:paddingStart="2dp"
+        android:paddingEnd="2.5dp"
+        android:gravity="center_vertical|end">
 
         <ImageView
             android:id="@+id/volte_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/vowifi_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:visibility="gone" />
     </com.android.keyguard.AlphaOptimizedLinearLayout>
 </com.android.systemui.statusbar.StatusBarImsView>
