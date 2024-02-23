@@ -77,11 +77,6 @@
         android:title="@string/volume_ringer_status_vibrate" />
 
     <com.android.systemui.tuner.StatusBarSwitch
-        android:icon="@drawable/ic_statusbar_volte"
-        android:key="ims"
-        android:title="@string/status_bar_ims" />
-
-    <com.android.systemui.tuner.StatusBarSwitch
         android:icon="@drawable/ic_statusbar_wifi"
         android:key="wifi"
         android:title="@string/quick_settings_wifi_label" />
@@ -100,6 +95,21 @@
         android:icon="@drawable/ic_statusbar_airplanemode"
         android:key="airplane"
         android:title="@string/status_bar_airplane" />
+
+    <com.android.systemui.tuner.StatusBarSwitch
+        android:icon="@drawable/ic_statusbar_roaming"
+        android:key="roaming"
+        android:title="@string/status_bar_roaming" />
+
+    <com.android.systemui.tuner.StatusBarSwitch
+        android:icon="@drawable/ic_statusbar_hd_calling"
+        android:key="hd_calling"
+        android:title="@string/status_bar_hd_calling" />
+
+    <com.android.systemui.tuner.StatusBarSwitch
+        android:icon="@drawable/ic_statusbar_vowifi"
+        android:key="vowifi"
+        android:title="@string/status_bar_vowifi" />
 
     <!-- other weird signal stuff -->
 
