@@ -95,6 +95,7 @@ public class PixelPropsUtils {
             "com.nhs.online.nhsonline",
             "com.netflix.mediaclient",
             "com.nothing.smartcenter",
+            "com.realme.link",
             "in.startv.hotstar",
             "jp.id_credit_sp2.android"
     };
