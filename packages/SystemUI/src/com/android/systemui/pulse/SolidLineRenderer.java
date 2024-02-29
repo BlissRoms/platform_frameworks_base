@@ -286,6 +286,8 @@ public class SolidLineRenderer extends Renderer {
                     UserHandle.USER_CURRENT);
 
             mPaint.setColor(ColorUtils.setAlphaComponent(mColor, mUnitsOpacity));
+
+            onSizeChanged(0, 0, 0, 0);
         }
     }
 
