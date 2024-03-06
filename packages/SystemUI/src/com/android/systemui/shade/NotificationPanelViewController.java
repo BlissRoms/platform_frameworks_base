@@ -64,6 +64,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.os.Trace;
 import android.os.UserManager;
 import android.os.VibrationEffect;
@@ -335,6 +336,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private final NotificationStackScrollLayoutController mNotificationStackScrollLayoutController;
     private final LayoutInflater mLayoutInflater;
     private final FeatureFlags mFeatureFlags;
+    private final PowerManager mPowerManager;
     private final AccessibilityManager mAccessibilityManager;
     private final NotificationWakeUpCoordinator mWakeUpCoordinator;
     private final PulseExpansionHandler mPulseExpansionHandler;
@@ -730,6 +732,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             CommandQueue commandQueue,
             VibratorHelper vibratorHelper,
             LatencyTracker latencyTracker,
+            PowerManager powerManager,
             AccessibilityManager accessibilityManager,
             @DisplayId int displayId,
             KeyguardUpdateMonitor keyguardUpdateMonitor,
@@ -918,6 +921,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
         mAnimateBack = mFeatureFlags.isEnabled(Flags.WM_SHADE_ANIMATE_BACK_GESTURE);
         mTrackpadGestureFeaturesEnabled = mFeatureFlags.isEnabled(Flags.TRACKPAD_GESTURE_FEATURES);
         mFalsingCollector = falsingCollector;
+        mPowerManager = powerManager;
         mWakeUpCoordinator = coordinator;
         mMainDispatcher = mainDispatcher;
         mAccessibilityManager = accessibilityManager;
