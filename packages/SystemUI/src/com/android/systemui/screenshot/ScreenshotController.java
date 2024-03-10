@@ -840,7 +840,7 @@ public class ScreenshotController {
         try {
             WindowManagerGlobal.getWindowManagerService()
                     .overridePendingAppTransitionRemote(runner,
-                            mDisplayTracker.getDefaultDisplayId());
+                            mDisplayId);
         } catch (Exception e) {
             Log.e(TAG, "Error overriding screenshot app transition", e);
         }
@@ -854,9 +854,9 @@ public class ScreenshotController {
 
     private void startPartialScreenshotActivity(UserHandle owner) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        getDefaultDisplay().getRealMetrics(displayMetrics);
+        getDisplay().getRealMetrics(displayMetrics);
 
-        Bitmap newScreenshot = mImageCapture.captureDisplay(mDisplayTracker.getDefaultDisplayId(),
+        Bitmap newScreenshot = mImageCapture.captureDisplay(mDisplayId,
                 new Rect(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels));
         ScrollCaptureController.BitmapScreenshot bitmapScreenshot =
                 new ScrollCaptureController.BitmapScreenshot(mContext, newScreenshot);
