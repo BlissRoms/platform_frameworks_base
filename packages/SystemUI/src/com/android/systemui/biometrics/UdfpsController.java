@@ -342,8 +342,13 @@ public class UdfpsController implements DozeReceiver, Dumpable {
 
                 if (acquiredVendor && ((mScreenOffFod && !mScreenOn) || (isAodEnabled && isShowingAmbientDisplay))) {
                     if (vendorCode == mUdfpsVendorCode) {
+                    if (mContext.getResources().getBoolean(R.bool.config_pulseOnFingerDown)) {
+                        mContext.sendBroadcastAsUser(new Intent(PULSE_ACTION),
+                                new UserHandle(UserHandle.USER_CURRENT));
+                    } else {
                         mPowerManager.wakeUp(mSystemClock.uptimeMillis(),
                                 PowerManager.WAKE_REASON_GESTURE, TAG);
+                    }
                         onAodInterrupt(0, 0, 0, 0);
                     }
                 }
