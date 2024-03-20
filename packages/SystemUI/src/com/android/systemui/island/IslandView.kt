@@ -61,7 +61,7 @@ import android.view.ViewTreeObserver
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.android.systemui.R
-import com.android.systemui.statusbar.phone.HeadsUpManagerPhone
+import com.android.systemui.statusbar.policy.HeadsUpManager
 import com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
@@ -73,7 +73,7 @@ import java.util.Locale
 class IslandView : ExtendedFloatingActionButton {
 
     private var notificationStackScroller: NotificationStackScrollLayout? = null
-    private var headsUpManager: HeadsUpManagerPhone? = null
+    private var headsUpManager: HeadsUpManager? = null
 
     private var subtitleColor: Int = Color.parseColor("#66000000")
     private var titleSpannable: SpannableString = SpannableString("")
@@ -131,7 +131,7 @@ class IslandView : ExtendedFloatingActionButton {
         this.notificationStackScroller = scroller
     }
     
-    fun setHeadsupManager(headsUp: HeadsUpManagerPhone?) {
+    fun setHeadsupManager(headsUp: HeadsUpManager?) {
         this.headsUpManager = headsUp
     }
 
@@ -226,7 +226,7 @@ class IslandView : ExtendedFloatingActionButton {
     }
 
     private fun prepareIslandContent() {
-        val sbn = headsUpManager?.topEntry?.row?.entry?.sbn ?: return
+        val sbn = headsUpManager?.getTopEntry()?.row?.entry?.sbn ?: return
         val notification = sbn.notification
         val extraTitle = notification.extras.getCharSequence(Notification.EXTRA_TITLE)?.toString().orEmpty()
         val extraText = notification.extras.getCharSequence(Notification.EXTRA_TEXT)?.toString().orEmpty()

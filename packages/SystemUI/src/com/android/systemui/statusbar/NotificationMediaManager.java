@@ -15,6 +15,8 @@
  */
 package com.android.systemui.statusbar;
 
+import static com.android.systemui.statusbar.StatusBarState.KEYGUARD;
+
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Notification;
@@ -34,6 +36,7 @@ import com.android.systemui.dump.DumpManager;
 import com.android.systemui.media.controls.domain.pipeline.MediaDataManager;
 import com.android.systemui.media.controls.shared.model.MediaData;
 import com.android.systemui.media.controls.shared.model.SmartspaceMediaData;
+import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.dagger.CentralSurfacesModule;
 import com.android.systemui.statusbar.notification.collection.NotifCollection;
 import com.android.systemui.statusbar.notification.collection.NotifPipeline;
@@ -88,6 +91,8 @@ public class NotificationMediaManager implements Dumpable {
     private MediaController mMediaController;
     private String mMediaNotificationKey;
     private MediaMetadata mMediaMetadata;
+
+    private StatusBarStateController mStatusBarStateController;
 
     private boolean mIslandEnabled;
     private boolean mIslandNowPlayingEnabled;
@@ -145,7 +150,8 @@ public class NotificationMediaManager implements Dumpable {
             NotifPipeline notifPipeline,
             NotifCollection notifCollection,
             MediaDataManager mediaDataManager,
-            DumpManager dumpManager) {
+            DumpManager dumpManager,
+            TunerService tunerService) {
         mContext = context;
         mMediaListeners = new ArrayList<>();
         mVisibilityProvider = visibilityProvider;
@@ -159,28 +165,27 @@ public class NotificationMediaManager implements Dumpable {
 
         mTunerService = tunerService;
         mTunerService.addTunable(this, LOCKSCREEN_MEDIA_METADATA);
+        mStatusBarStateController = Dependency.get(StatusBarStateController.class);
+
         notifUtils = new NotificationUtils(mContext);
         tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(mTunable, 
-            ISLAND_NOTIFICATION,
-            ISLAND_NOTIFICATION_NOW_PLAYING);
+        mTunerService.addTunable(this, ISLAND_NOTIFICATION);
+        mTunerService.addTunable(this, ISLAND_NOTIFICATION_NOW_PLAYING);
     }
 
-    private final TunerService.Tunable mTunable = new TunerService.Tunable() {
-        @Override
-        public void onTuningChanged(String key, String newValue) {
-            switch (key) {
-                case ISLAND_NOTIFICATION:
-                    mIslandEnabled = TunerService.parseIntegerSwitch(newValue, false);
-                    break;
-                case ISLAND_NOTIFICATION_NOW_PLAYING:
-                    mIslandNowPlayingEnabled = TunerService.parseIntegerSwitch(newValue, false);
-                    break;
-                default:
-                    break;
-            }
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case ISLAND_NOTIFICATION:
+                mIslandEnabled = TunerService.parseIntegerSwitch(newValue, false);
+                break;
+            case ISLAND_NOTIFICATION_NOW_PLAYING:
+                mIslandNowPlayingEnabled = TunerService.parseIntegerSwitch(newValue, true);
+                break;
+            default:
+                break;
         }
-    };
+    }
 
     private void setupNotifPipeline() {
         mNotifPipeline.addCollectionListener(new NotifCollectionListener() {
