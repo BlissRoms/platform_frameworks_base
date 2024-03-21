@@ -73,6 +73,9 @@
     <color name="media_dialog_button_background">@color/material_dynamic_primary70</color>
     <color name="media_dialog_solid_button_text">@color/material_dynamic_secondary20</color>
 
+    <!-- QS Dialog -->
+    <color name="qs_dialog_bg">@*android:color/system_neutral1_900</color>
+
     <!-- Biometric dialog colors -->
     <color name="biometric_dialog_gray">#ffcccccc</color>
     <color name="biometric_dialog_accent">@color/material_dynamic_primary70</color>
