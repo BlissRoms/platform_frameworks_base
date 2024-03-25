@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.keyguard.dagger.ClockRegistryModule;
 import com.android.keyguard.dagger.KeyguardBouncerComponent;
+import com.android.systemui.bliss.BlissModule;
 import com.android.systemui.BootCompleteCache;
 import com.android.systemui.BootCompleteCacheImpl;
 import com.android.systemui.accessibility.AccessibilityModule;
@@ -172,6 +173,7 @@ import javax.inject.Named;
         AuthenticationModule.class,
         BiometricsModule.class,
         BiometricsDomainLayerModule.class,
+        BlissModule.class,
         BouncerInteractorModule.class,
         BouncerRepositoryModule.class,
         BouncerViewModule.class,
