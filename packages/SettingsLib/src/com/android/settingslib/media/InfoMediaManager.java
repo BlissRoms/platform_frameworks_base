@@ -106,7 +106,7 @@ public abstract class InfoMediaManager extends MediaManager {
         super(context, notification);
 
         mBluetoothManager = localBluetoothManager;
-        mPackageName = packageName;
+        mPackageName = (packageName == null) ? "" : packageName;
     }
 
     /** Creates an instance of InfoMediaManager. */
