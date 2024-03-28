@@ -1826,14 +1826,6 @@ public class UserManagerService extends IUserManager.Stub {
                 LocalServices.getService(ActivityManagerInternal.class)
                         .killForegroundAppsForUser(userId);
             } else {
-            if (!enableQuietMode) {
-                try {
-                    getPackageManagerInternal().setPackagesSuspendedForQuietMode(userId, false);
-                    setAppOpsRestrictedForQuietMode(userId, false);
-                } catch (Exception e) {
-                    Slog.d("UserManager", "", e);
-                }
-            }
                 IProgressListener callback = target != null
                         ? new DisableQuietModeUserUnlockedCallback(target)
                         : null;
