@@ -836,8 +836,8 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             );
         }
 
-        if (com.android.internal.util.apollo.ApolloUtils.isPackageInstalled(mContext,
-                "org.apollo.udfps.animations")) {
+        if (com.android.internal.util.bliss.BlissUtils.isPackageInstalled(mContext,
+                "org.bliss.udfps.animations")) {
             mUdfpsAnimation = new UdfpsAnimation(mContext, mWindowManager, mSensorProps);
 
         }

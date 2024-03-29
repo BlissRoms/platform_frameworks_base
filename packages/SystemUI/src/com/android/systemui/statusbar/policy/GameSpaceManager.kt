@@ -71,7 +71,7 @@ class GameSpaceManager @Inject constructor(
         }
     }
 
-    private inner class GameSpaceHandler(looper: Looper?) : Handler(looper, null, true) {
+    private inner class GameSpaceHandler(looper: Looper) : Handler(looper, null, true) {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 MSG_UPDATE_FOREGROUND_APP -> checkForegroundApp()
