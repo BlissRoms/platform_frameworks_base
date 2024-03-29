@@ -1013,7 +1013,6 @@ public class KeyguardIndicationController {
         if (mBiometricMessage != null && mBiometricMessage == faceUnlockMessage) {
             mBiometricMessage = null;
             hideBiometricMessage();
-            mFaceIconView.setState(FaceUnlockImageView.State.HIDDEN);
         }
     }
 
