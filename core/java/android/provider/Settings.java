@@ -7172,13 +7172,6 @@ public final class Settings {
         public static final String FLASHLIGHT_ON_CALL_RATE = "flashlight_on_call_rate";
 
         /**
-         * Whether keyguard will rotate
-         * 0 = false, 1 = true
-         */
-        @SuppressLint("NoSettingsProvider")
-        public static final String LOCKSCREEN_ROTATION = "lockscreen_rotation";
-
-        /**
          * These are all public system settings
          *
          * @hide
