@@ -2279,8 +2279,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
                         notifyAboutEnrollmentChange(msg.arg1);
                         break;
                     case MSG_POCKET_STATE_CHANGED:
-                        updateBiometricListeningState(BIOMETRIC_ACTION_UPDATE,
-                                FACE_AUTH_UPDATED_FP_AUTHENTICATED);
+                        updateFingerprintListeningState(BIOMETRIC_ACTION_UPDATE);
                         break;
                     default:
                         super.handleMessage(msg);

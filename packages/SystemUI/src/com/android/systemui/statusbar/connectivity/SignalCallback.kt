@@ -84,7 +84,6 @@ interface SignalCallback {
      */
     fun setMobileDataEnabled(enabled: Boolean) {}
 
-    @JvmDefault
     fun setImsIcon(icon: ImsIconState) {}
 
     /**

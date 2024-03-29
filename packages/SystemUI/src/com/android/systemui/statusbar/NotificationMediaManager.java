@@ -28,6 +28,7 @@ import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.service.notification.NotificationStats;
 import android.service.notification.StatusBarNotification;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.android.systemui.Dependency;
@@ -58,7 +59,7 @@ import java.util.Optional;
  * Handles tasks and state related to media notifications. For example, there is a 'current' media
  * notification, which this class keeps track of.
  */
-public class NotificationMediaManager implements Dumpable {
+public class NotificationMediaManager implements Dumpable, TunerService.Tunable {
     private static final String TAG = "NotificationMediaManager";
     public static final boolean DEBUG_MEDIA = false;
 
@@ -166,7 +167,6 @@ public class NotificationMediaManager implements Dumpable {
         dumpManager.registerDumpable(this);
 
         mTunerService = tunerService;
-        mTunerService.addTunable(this, LOCKSCREEN_MEDIA_METADATA);
         mStatusBarStateController = Dependency.get(StatusBarStateController.class);
 
         notifUtils = new NotificationUtils(mContext);
