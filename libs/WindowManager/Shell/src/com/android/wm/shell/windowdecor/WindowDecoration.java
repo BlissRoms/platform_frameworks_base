@@ -442,6 +442,15 @@ public abstract class WindowDecoration<T extends View & TaskFocusStateConsumer>
      * Checks if task has entered/exited immersive mode and requires a change in caption visibility.
      */
     private void updateCaptionVisibility(View rootView, int displayId) {
+        // Always show caption bar in external displays.
+        // In desktop mode, status bar won't be shown there
+        // so we don't have to bother about caption bar visibility based on
+        // status bar (immersive mode) there.
+        if (displayId != Display.DEFAULT_DISPLAY) {
+            mIsCaptionVisible = true;
+            setCaptionVisibility(rootView, true);
+            return;
+        }
         final InsetsState insetsState = mDisplayController.getInsetsState(displayId);
         for (int i = 0; i < insetsState.sourceSize(); i++) {
             final InsetsSource source = insetsState.sourceAt(i);
