@@ -361,6 +361,7 @@ public class DesktopModeWindowDecorViewModel implements WindowDecorViewModel {
         private final DragPositioningCallback mDragPositioningCallback;
         private final DragDetector mDragDetector;
         private final GestureDetector mGestureDetector;
+        private final int mDisplayId;
 
         /**
          * Whether to pilfer the next motion event to send cancellations to the windows below.
@@ -387,6 +388,7 @@ public class DesktopModeWindowDecorViewModel implements WindowDecorViewModel {
                 if (decoration == null) return;
                 decoration.closeMaximizeMenu();
             };
+            mDisplayId = taskInfo.displayId;
         }
 
         @Override
@@ -405,7 +407,7 @@ public class DesktopModeWindowDecorViewModel implements WindowDecorViewModel {
                     mTaskOperations.closeTask(mTaskToken);
                 }
             } else if (id == R.id.back_button) {
-                mTaskOperations.injectBackKey();
+                mTaskOperations.injectBackKey(mDisplayId);
             } else if (id == R.id.caption_handle || id == R.id.open_menu_button) {
                 if (!decoration.isHandleMenuActive()) {
                     moveTaskToFront(decoration.mTaskInfo);
