@@ -34,6 +34,5 @@ java_library_static {
         "android.hardware.usb-V1.2-java",
         "android.hardware.usb-V1.3-java",
         "android.hardware.usb-V3-java",
-        "vendor.lineage.trust-V1.0-java",
     ],
 }
