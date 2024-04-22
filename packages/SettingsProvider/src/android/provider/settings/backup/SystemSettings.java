@@ -109,5 +109,7 @@ public class SystemSettings {
         Settings.System.NOTIFICATION_COOLDOWN_VIBRATE_UNLOCKED,
         Settings.System.NAVIGATION_BAR_IME_SPACE,
         Settings.System.LOCKSCREEN_ROTATION,
+        Settings.System.QS_WIFI_AUTO_ON,
+        Settings.System.QS_BT_AUTO_ON,
     };
 }

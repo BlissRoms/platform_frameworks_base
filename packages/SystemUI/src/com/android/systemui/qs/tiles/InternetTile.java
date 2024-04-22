@@ -113,6 +113,11 @@ public class InternetTile extends SecureQSTile<QSTile.BooleanState> {
         mController.observe(getLifecycle(), mSignalCallback);
     }
 
+    private boolean getAutoOn() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QS_WIFI_AUTO_ON, 0) == 1;
+    }
+
     @Override
     public BooleanState newTileState() {
         BooleanState s = new BooleanState();
@@ -132,7 +137,7 @@ public class InternetTile extends SecureQSTile<QSTile.BooleanState> {
         }
         mHandler.post(() -> mInternetDialogFactory.create(true,
                 mAccessPointController.canConfigMobileData(),
-                mAccessPointController.canConfigWifi(), view));
+                mAccessPointController.canConfigWifi(), view, getAutoOn()));
     }
 
     @Override

@@ -7164,6 +7164,20 @@ public final class Settings {
         public static final String UDFPS_ICON = "udfps_icon";
 
         /**
+         * Whether to turn on WiFi automatically when showing the QS WiFi dialog
+         * @hide
+         */
+        @Readable
+        public static final String QS_WIFI_AUTO_ON = "qs_wifi_auto_on";
+
+        /**
+         * Whether to turn on Bluetooth automatically when showing the Bluetooth WiFi dialog
+         * @hide
+         */
+        @Readable
+        public static final String QS_BT_AUTO_ON = "qs_bt_auto_on";
+
+        /**
          * These are all public system settings
          *
          * @hide
