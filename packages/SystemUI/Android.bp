@@ -175,7 +175,7 @@ android_library {
     additional_manifests: ["BlissManifest.xml"],
 
     javacflags: [
-        "-Adagger.fastInit=enabled",
+        // "-Adagger.fastInit=enabled",
         "-Adagger.explicitBindingConflictsWithInject=ERROR",
         "-Adagger.strictMultibindingValidation=enabled",
         "-Aroom.schemaLocation=frameworks/base/packages/SystemUI/schemas",
