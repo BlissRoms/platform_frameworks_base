@@ -46,8 +46,7 @@
             app:expandedTitleTextAppearance="@style/CollapsingToolbarTitle.Expanded"
             app:expandedTitleMarginStart="@dimen/expanded_title_margin_start"
             app:expandedTitleMarginEnd="@dimen/expanded_title_margin_end"
-            app:toolbarId="@id/action_bar"
-            app:expandedTitleGravity="bottom|center_horizontal">
+            app:toolbarId="@id/action_bar" >
 
             <Toolbar
                 android:id="@+id/action_bar"
