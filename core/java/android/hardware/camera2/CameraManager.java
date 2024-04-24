@@ -2127,10 +2127,8 @@ public final class CameraManager {
         }
 
         private String[] extractCameraIdListLocked() {
-            String[] cameraIds = null;
             boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
             int size = exposeAuxCamera ? mDeviceStatus.size() : 2;
-            int idCount = 0;
             if (mDeviceStatus.size() < size) {
                 size = mDeviceStatus.size();
             }
@@ -2138,18 +2136,16 @@ public final class CameraManager {
             for (int i = 0; i < size; i++) {
                 int status = mDeviceStatus.valueAt(i);
                 if (status == ICameraServiceListener.STATUS_NOT_PRESENT
-                        || status == ICameraServiceListener.STATUS_ENUMERATING) continue;
-                idCount++;
+                        || status == ICameraServiceListener.STATUS_ENUMERATING) {
+                    continue;
+                }
+                String cameraId = mDeviceStatus.keyAt(i);
+                cameraIdList.add(cameraId);
             }
-            cameraIds = new String[idCount];
-            idCount = 0;
-            for (int i = 0; i < size; i++) {
-                int status = mDeviceStatus.valueAt(i);
-                if (status == ICameraServiceListener.STATUS_NOT_PRESENT
-                        || status == ICameraServiceListener.STATUS_ENUMERATING) continue;
-                cameraIds[idCount] = mDeviceStatus.keyAt(i);
-                idCount++;
+            if (cameraIdList.isEmpty()) {
+                return null;
             }
+            String[] cameraIds = cameraIdList.toArray(new String[0]);
             return cameraIds;
         }
 
