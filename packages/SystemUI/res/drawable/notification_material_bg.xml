@@ -23,9 +23,4 @@
             <solid android:color="?androidprv:attr/colorSurface" />
         </shape>
     </item>
-    <item>
-        <shape>
-            <solid android:color="@color/notification_state_color_default" />
-        </shape>
-    </item>
 </layer-list>
