@@ -211,7 +211,9 @@ constructor(
 
     override fun refreshUsers() {
         applicationScope.launch {
-            val result = withContext(backgroundDispatcher) { manager.aliveUsers }
+            val result = withContext(backgroundDispatcher) {
+                manager.aliveUsers.filter { !it.isParallel() } // Ignore parallel users
+            }
 
             if (result != null) {
                 _userInfos.value =
