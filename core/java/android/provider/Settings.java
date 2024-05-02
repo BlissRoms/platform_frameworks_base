@@ -13304,6 +13304,12 @@ public final class Settings {
         public static final String QUICK_SETTINGS_TILES_ANIM_DURATION =
                 "quick_settings_tiles_anim_duration";
 
+        /**
+         * Custom time when user is scheduled to deactivate
+         * @hide
+         */
+        public static final String USER_ACTIVITY_END_TIME = "user_activity_end_time";
+
 	/**
          * Our GameSpace can't write to device_config directly [GTS]
          * Use this as intermediate to pass device_config property
