@@ -131,6 +131,7 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
     private int mShowPercentMode = MODE_DEFAULT;
     private String mEstimateText = null;
     private boolean mCharging;
+    private boolean mPresent;
     private boolean mIsOverheated;
     private boolean mDisplayShieldEnabled;
     // Error state where we know nothing about the current battery state
@@ -419,6 +420,10 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
         mBatteryEstimateFetcher = fetcher;
     }
 
+    void setBatteryPresence(boolean isPresent) {
+        mPresent = isPresent;
+    }
+
     void setDisplayShieldEnabled(boolean displayShieldEnabled) {
         mDisplayShieldEnabled = displayShieldEnabled;
     }
@@ -593,7 +598,7 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
         mBatteryStateUnknown = isUnknown;
         updateContentDescription();
 
-        if (mBatteryStateUnknown) {
+        if (mBatteryStateUnknown && mPresent) {
             mBatteryIconView.setImageDrawable(getUnknownStateDrawable());
         } else {
             updateDrawable();
@@ -710,6 +715,10 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
     }
 
     private void updateDrawable() {
+        if (!mPresent) {
+            return;
+        }
+
         switch (mBatteryStyle) {
             case BATTERY_STYLE_PORTRAIT:
                 mBatteryIconView.setImageDrawable(mAccessorizedDrawable);
@@ -859,6 +868,7 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
         pw.println("    mBatteryStateUnknown: " + mBatteryStateUnknown);
         pw.println("    mLevel: " + mLevel);
         pw.println("    mMode: " + mShowPercentMode);
+        pw.println("    mPresent: " + mPresent);
     }
 
     @VisibleForTesting
