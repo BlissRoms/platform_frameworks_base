@@ -64,7 +64,7 @@ public final class AttestationHooks {
         "DEVICE", "husky",
         "PRODUCT", "husky",
         "MODEL", "Pixel 8 Pro",
-        "FINGERPRINT", "google/husky/husky:14/UQ1A.240205.004/11269751:user/release-keys"
+        "FINGERPRINT", "google/husky/husky:14/AP1A.240405.002/11480754:user/release-keys"
     );
 
     private static volatile String sProcessName;
