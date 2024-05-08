@@ -109,7 +109,6 @@ public class KeyguardStatusBarView extends RelativeLayout {
     private WindowInsets mPreviousInsets = null;
 
     private DisplayCutout mDisplayCutout;
-    private int mRoundedCornerPadding = 0;
     // right and left padding applied to this view to account for cutouts and rounded corners
     private Insets mPadding = Insets.of(0, 0, 0, 0);
 
@@ -229,8 +228,6 @@ public class KeyguardStatusBarView extends RelativeLayout {
                 R.dimen.display_cutout_margin_consumption);
         mShowPercentAvailable = getContext().getResources().getBoolean(
                 com.android.internal.R.bool.config_battery_percentage_setting_available);
-        mRoundedCornerPadding = res.getDimensionPixelSize(
-                R.dimen.rounded_corner_content_padding);
     }
 
     private void updateVisibilities() {
