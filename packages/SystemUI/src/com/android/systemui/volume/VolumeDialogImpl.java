@@ -84,6 +84,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.os.VibrationEffect;
 import static android.view.HapticFeedbackConstants.CLOCK_TICK;
 import android.provider.Settings;
@@ -1553,8 +1554,9 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
 
    private void initAppVolumes() {
         clearAppVolumes();
-        boolean showAppVolume = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SHOW_APP_VOLUME, 0) == 1;
+        boolean showAppVolume = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.SHOW_APP_VOLUME,
+                0, UserHandle.USER_CURRENT) == 1;
         if (!showAppVolume || mAppVolumeView == null) {
             return;
         }
