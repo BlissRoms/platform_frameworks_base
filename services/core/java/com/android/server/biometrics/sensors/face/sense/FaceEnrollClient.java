@@ -57,9 +57,10 @@ public class FaceEnrollClient extends EnrollClient<ISenseService> {
             @NonNull byte[] hardwareAuthToken, @NonNull String owner, long requestId,
             @NonNull BiometricUtils<Face> utils, @NonNull int[] disabledFeatures, int timeoutSec,
             @Nullable Surface previewSurface, int sensorId,
-            @NonNull BiometricLogger logger, @NonNull BiometricContext biometricContext) {
+            @NonNull BiometricLogger logger, @NonNull BiometricContext biometricContext,
+            int enrollReason) {
         super(context, lazyDaemon, token, listener, userId, hardwareAuthToken, owner, utils,
-                timeoutSec, sensorId, false /* shouldVibrate */, logger, biometricContext);
+                timeoutSec, sensorId, false /* shouldVibrate */, logger, biometricContext, enrollReason);
         setRequestId(requestId);
         mDisabledFeatures = Arrays.copyOf(disabledFeatures, disabledFeatures.length);
         mEnrollIgnoreList = getContext().getResources()

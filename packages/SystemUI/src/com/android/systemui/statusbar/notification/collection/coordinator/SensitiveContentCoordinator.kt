@@ -119,7 +119,7 @@ class SensitiveContentCoordinatorImpl @Inject constructor(
             val isSecure = entry.sbn.isContentSecure
             val needsRedaction = isSecure || lockscreenUserManager.needsRedaction(entry)
             val isSensitive = userPublic && needsRedaction
-            entry.setSensitive(isSensitive, isSecure || shouldProtectNotification, deviceSensitive)
+            entry.setSensitive(isSensitive, isSecure || deviceSensitive)
             entry.row.setForceHideContents(isSecure)
             if (screenshareNotificationHiding()) {
                 entry.row?.setPublicExpanderVisible(!shouldProtectNotification)

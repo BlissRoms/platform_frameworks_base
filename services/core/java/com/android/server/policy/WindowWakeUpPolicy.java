@@ -110,6 +110,10 @@ class WindowWakeUpPolicy {
      *      executed; {@code false} otherwise.
      */
     boolean wakeUpFromKey(long eventTime, int keyCode, boolean isDown) {
+        return wakeUpFromKey(eventTime, keyCode, isDown, false);
+    }
+
+    boolean wakeUpFromKey(long eventTime, int keyCode, boolean isDown, boolean withProximityCheck) {
         final boolean wakeAllowedDuringTheaterMode =
                 keyCode == KEYCODE_POWER
                         ? mAllowTheaterModeWakeFromPowerKey

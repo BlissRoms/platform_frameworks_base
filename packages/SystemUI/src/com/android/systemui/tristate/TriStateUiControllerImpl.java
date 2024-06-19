@@ -118,6 +118,9 @@ public class TriStateUiControllerImpl implements TriStateUiController,
 
     private final Callbacks mVolumeDialogCallback = new Callbacks() {
         @Override
+        public void onVolumeChangedFromKey() { }
+
+        @Override
         public void onShowRequested(int reason, boolean keyguardLocked, int lockTaskModeState) { }
 
         @Override

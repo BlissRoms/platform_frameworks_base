@@ -185,6 +185,7 @@ public class ScreenshotController {
         public Notification.Action lensAction;
         public List<Notification.Action> smartActions;
         public Notification.Action quickShareAction;
+        public Notification.Action deleteAction;
         public UserHandle owner;
         public String subject;  // Title for sharing
 

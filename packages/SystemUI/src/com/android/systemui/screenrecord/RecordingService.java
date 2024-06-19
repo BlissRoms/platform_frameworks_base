@@ -719,7 +719,7 @@ public class RecordingService extends Service implements ScreenMediaRecorderList
      * @return
      */
     protected Intent getNotificationIntent(Context context) {
-        return new Intent(context, this.getClass()).setAction(ACTION_STOP_NOTIF);
+        return new Intent(context, RecordingService.class).setAction(ACTION_STOP_NOTIF);
     }
 
     private Intent getShareIntent(Context context, String path) {

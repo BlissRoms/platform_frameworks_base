@@ -1406,7 +1406,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
             }
             LogicalLight keyboardLight = mLights.getLight(LightsManager.LIGHT_ID_KEYBOARD);
             if (keyboardLight != null) {
-                keyboardLight.setBrightness(brightnessState);
+                keyboardLight.setBrightness(PowerManager.BRIGHTNESS_OFF_FLOAT);
             }
         }
 

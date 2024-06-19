@@ -146,7 +146,7 @@ public class BiometricTestSessionImpl extends ITestSession.Stub {
 
         mSenseProvider.scheduleEnroll(mSensorId, new Binder(), new byte[69], userId, mReceiver,
                 mContext.getOpPackageName(), new int[0] /* disabledFeatures */,
-                null /* previewSurface */, false /* debugConsent */);
+                null /* previewSurface */, false /* debugConsent */, null);
     }
 
     @android.annotation.EnforcePermission(android.Manifest.permission.TEST_BIOMETRIC)
