@@ -19,7 +19,6 @@ package com.android.systemui.statusbar.pipeline.satellite.data.prod
 import android.os.OutcomeReceiver
 import android.telephony.satellite.NtnSignalStrengthCallback
 import android.telephony.satellite.SatelliteManager
-import android.telephony.satellite.SatelliteManager.SATELLITE_RESULT_SUCCESS
 import android.telephony.satellite.SatelliteModemStateCallback
 import androidx.annotation.VisibleForTesting
 import com.android.systemui.common.coroutine.ConflatedCallbackFlow.conflatedCallbackFlow
@@ -213,16 +212,9 @@ constructor(
                     trySend(SatelliteConnectionState.fromModemState(state))
                 }
 
-                var registered = false
+                sm.registerForSatelliteModemStateChanged(bgDispatcher.asExecutor(), cb)
 
-                try {
-                    val res = sm.registerForModemStateChanged(bgDispatcher.asExecutor(), cb)
-                    registered = res == SATELLITE_RESULT_SUCCESS
-                } catch (e: Exception) {
-                    logBuffer.e("error registering for modem state", e)
-                }
-
-                awaitClose { if (registered) sm.unregisterForModemStateChanged(cb) }
+                awaitClose { sm.unregisterForSatelliteModemStateChanged(cb) }
             }
             .flowOn(bgDispatcher)
 
@@ -239,15 +231,9 @@ constructor(
                     trySend(signalStrength.level)
                 }
 
-                var registered = false
-                try {
-                    sm.registerForNtnSignalStrengthChanged(bgDispatcher.asExecutor(), cb)
-                    registered = true
-                } catch (e: Exception) {
-                    logBuffer.e("error registering for signal strength", e)
-                }
+                sm.registerForNtnSignalStrengthChanged(bgDispatcher.asExecutor(), cb)
 
-                awaitClose { if (registered) sm.unregisterForNtnSignalStrengthChanged(cb) }
+                awaitClose { sm.unregisterForNtnSignalStrengthChanged(cb) }
             }
             .flowOn(bgDispatcher)
 
