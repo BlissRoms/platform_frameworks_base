@@ -70,13 +70,6 @@ constructor(
             .distinctUntilChanged()
             .flatMapLatest { shouldShow ->
                 if (shouldShow) {
-                    logBuffer.log(
-                        TAG,
-                        LogLevel.INFO,
-                        { long1 = DELAY_DURATION.inWholeSeconds },
-                        { "Waiting $long1 seconds before showing the satellite icon" }
-                    )
-                    delay(DELAY_DURATION)
                     flowOf(true)
                 } else {
                     flowOf(false)
@@ -84,22 +77,16 @@ constructor(
             }
             .stateIn(scope, SharingStarted.WhileSubscribed(), false)
 
-    val icon: StateFlow<Icon?> =
+    val icon: Flow<Icon?> =
         combine(
-                shouldActuallyShowIcon,
-                interactor.connectionState,
-                interactor.signalStrength,
-            ) { shouldShow, state, signalStrength ->
-                if (shouldShow) {
-                    SatelliteIconModel.fromConnectionState(state, signalStrength)
-                } else {
-                    null
-                }
+            shouldShowIcon,
+            interactor.connectionState,
+            interactor.signalStrength,
+        ) { shouldShow, state, signalStrength ->
+            if (shouldShow) {
+                SatelliteIconModel.fromConnectionState(state, signalStrength)
+            } else {
+                null
             }
-            .stateIn(scope, SharingStarted.WhileSubscribed(), null)
-
-    companion object {
-        private const val TAG = "DeviceBasedSatelliteViewModel"
-        private val DELAY_DURATION = 10.seconds
-    }
+        }
 }

@@ -212,9 +212,6 @@ constructor(
                     trySend(SatelliteConnectionState.fromModemState(state))
                 }
 
-                sm.registerForSatelliteModemStateChanged(bgDispatcher.asExecutor(), cb)
-
-                awaitClose { sm.unregisterForSatelliteModemStateChanged(cb) }
             }
             .flowOn(bgDispatcher)
 
