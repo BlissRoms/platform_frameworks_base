@@ -91,11 +91,6 @@ class BatteryPercentTextOnlyDrawable(font: Typeface) : Drawable() {
         )
     }
 
-    override fun setTint(tintColor: Int) {
-        textPaint.color = tintColor
-        super.setTint(tintColor)
-    }
-
     override fun getOpacity() = PixelFormat.OPAQUE
 
     override fun setAlpha(alpha: Int) {}
