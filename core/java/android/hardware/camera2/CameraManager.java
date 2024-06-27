@@ -640,8 +640,7 @@ public final class CameraManager {
      */
     @TestApi
     @NonNull
-    public CameraCharacteristics getCameraCharacteristics(@NonNull String cameraId,
-            boolean overrideToPortrait) throws CameraAccessException {
+    public CameraCharacteristics getCameraCharacteristics(@NonNull String cameraId, boolean overrideToPortrait) throws CameraAccessException {
         CameraCharacteristics characteristics = null;
         if (CameraManagerGlobal.sCameraServiceDisabled) {
             throw new IllegalArgumentException("No cameras available on device");
@@ -649,38 +648,42 @@ public final class CameraManager {
         synchronized (mLock) {
             ICameraService cameraService = CameraManagerGlobal.get().getCameraService();
             if (cameraService == null) {
-                throw new CameraAccessException(CameraAccessException.CAMERA_DISCONNECTED,
-                        "Camera service is currently unavailable");
+                throw new CameraAccessException(CameraAccessException.CAMERA_DISCONNECTED, "Camera service is currently unavailable");
             }
             try {
+                // Validate cameraId
+                if (cameraId == null || cameraId.isEmpty()) {
+                    throw new IllegalArgumentException("Invalid cameraId: " + cameraId);
+                }
+    
                 Size displaySize = getDisplaySize();
-
-                CameraMetadataNative info = cameraService.getCameraCharacteristics(cameraId,
-                        mContext.getApplicationInfo().targetSdkVersion, overrideToPortrait);
+    
+                CameraMetadataNative info = cameraService.getCameraCharacteristics(cameraId, mContext.getApplicationInfo().targetSdkVersion, overrideToPortrait);
                 try {
                     info.setCameraId(Integer.parseInt(cameraId));
                 } catch (NumberFormatException e) {
                     Log.v(TAG, "Failed to parse camera Id " + cameraId + " to integer");
                 }
-
-                boolean hasConcurrentStreams =
-                        CameraManagerGlobal.get().cameraIdHasConcurrentStreamsLocked(cameraId);
+    
+                boolean hasConcurrentStreams = CameraManagerGlobal.get().cameraIdHasConcurrentStreamsLocked(cameraId);
                 info.setHasMandatoryConcurrentStreams(hasConcurrentStreams);
                 info.setDisplaySize(displaySize);
-
-                Map<String, StreamConfiguration[]> multiResolutionSizeMap =
-                        getPhysicalCameraMultiResolutionConfigs(cameraId, info, cameraService);
+    
+                Map<String, StreamConfiguration[]> multiResolutionSizeMap = getPhysicalCameraMultiResolutionConfigs(cameraId, info, cameraService);
                 if (multiResolutionSizeMap.size() > 0) {
                     info.setMultiResolutionStreamConfigurationMap(multiResolutionSizeMap);
                 }
-
+    
                 characteristics = new CameraCharacteristics(info);
             } catch (ServiceSpecificException e) {
-                throw ExceptionUtils.throwAsPublicException(e);
+                if (e.errorCode == -2) { // No such file or directory
+                    throw new IllegalArgumentException("Unable to retrieve camera characteristics for unknown device " + cameraId + ": No such file or directory", e);
+                } else {
+                    throw ExceptionUtils.throwAsPublicException(e);
+                }
             } catch (RemoteException e) {
                 // Camera service died - act as if the camera was disconnected
-                throw new CameraAccessException(CameraAccessException.CAMERA_DISCONNECTED,
-                        "Camera service is currently unavailable", e);
+                throw new CameraAccessException(CameraAccessException.CAMERA_DISCONNECTED, "Camera service is currently unavailable", e);
             }
         }
         registerDeviceStateListener(characteristics);
