@@ -9735,7 +9735,7 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                         return KEY_EVENT_HANDLED;
                     }
                     if (hasFocus()) {
-                        clearFocus();
+                        clearFocusInternal(null, /* propagate */ true, /* refocus */ false);
                         InputMethodManager imm = getInputMethodManager();
                         if (imm != null) {
                             imm.hideSoftInputFromView(this, 0);

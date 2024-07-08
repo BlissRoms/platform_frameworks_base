@@ -5772,7 +5772,7 @@ class Task extends TaskFragment {
         // If we have a watcher, preflight the move before committing to it.  First check
         // for *other* available tasks, but if none are available, then try again allowing the
         // current task to be selected.
-        if (isTopRootTaskInDisplayArea() && mAtmService.mController != null) {
+        if (mAtmService.mController != null && isTopRootTaskInDisplayArea()) {
             ActivityRecord next = topRunningActivity(null, task.mTaskId);
             if (next == null) {
                 next = topRunningActivity(null, INVALID_TASK_ID);
@@ -5816,6 +5816,15 @@ class Task extends TaskFragment {
                 + tr.mTaskId);
 
         if (mTransitionController.isShellTransitionsEnabled()) {
+            // TODO(b/277838915): Consider to make it concurrent to eliminate the special case.
+            final Transition collecting = mTransitionController.getCollectingTransition();
+            if (collecting != null && collecting.mType == TRANSIT_OPEN) {
+                // It can be a CLOSING participate of an OPEN transition. This avoids the deferred
+                // transition from moving task to back after the task was moved to front.
+                collecting.collect(tr);
+                moveTaskToBackInner(tr, collecting);
+                return true;
+            }
             final Transition transition = new Transition(TRANSIT_TO_BACK, 0 /* flags */,
                     mTransitionController, mWmService.mSyncEngine);
             // Guarantee that this gets its own transition by queueing on SyncEngine
@@ -5844,7 +5853,7 @@ class Task extends TaskFragment {
         return true;
     }
 
-    private boolean moveTaskToBackInner(@NonNull Task task, @Nullable Transition transition) {
+    private void moveTaskToBackInner(@NonNull Task task, @Nullable Transition transition) {
         final Transition.ReadyCondition movedToBack =
                 new Transition.ReadyCondition("moved-to-back", task);
         if (transition != null) {
@@ -5859,7 +5868,7 @@ class Task extends TaskFragment {
 
             if (inPinnedWindowingMode()) {
                 mTaskSupervisor.removeRootTask(this);
-                return true;
+                return;
             }
 
             mRootWindowContainer.ensureVisibilityAndConfig(null /* starting */,
@@ -5882,7 +5891,6 @@ class Task extends TaskFragment {
         } else {
             mRootWindowContainer.resumeFocusedTasksTopActivities();
         }
-        return true;
     }
 
     boolean willActivityBeVisible(IBinder token) {
