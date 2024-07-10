@@ -3989,7 +3989,7 @@ public final class InputMethodManagerService extends IInputMethodManager.Stub
 
                     // Verify if caller is a background user.
                     final int currentUserId = mSettings.getUserId();
-                    if (userId != currentUserId) {
+                    if (uid != currentUserId) {
                         if (ArrayUtils.contains(
                                 mUserManagerInternal.getProfileIds(currentUserId, false), userId)) {
                             // cross-profile access is always allowed here to allow
