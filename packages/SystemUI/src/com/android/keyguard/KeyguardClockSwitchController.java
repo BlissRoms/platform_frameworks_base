@@ -328,8 +328,13 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
                 removeViewsFromStatusArea();
 
                 View ksv = mView.findViewById(R.id.keyguard_slice_view);
-                int viewIndex = mStatusArea.indexOfChild(ksv);
-                ksv.setVisibility(mShowWeather ? View.VISIBLE : View.GONE);
+                if (ksv != null) {
+                    ksv.setVisibility(mShowWeather ? View.VISIBLE : View.GONE);
+                }
+
+                if (mStatusArea == null) {
+                    return;
+                }
 
                 if (!mShowWeather) {
                     addSmartspaceView();
@@ -441,6 +446,10 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
         }
 
         if (smartspaceRelocateToBottom()) {
+            return;
+        }
+
+        if (mStatusArea == null) {
             return;
         }
 
