@@ -151,9 +151,15 @@ class CircleBatteryDrawable(private val context: Context, frameColor: Int) : Dra
 
     fun setColors(fgColor: Int, bgColor: Int, singleToneColor: Int) {
         val fillColor = if (dualTone) fgColor else singleToneColor
+        val fillColorObj = Color.valueOf(fillColor)
 
         iconTint = fillColor
-        framePaint.color = bgColor
+        framePaint.color = Color.argb(
+            0.35f * fillColorObj.alpha(),
+            fillColorObj.red(),
+            fillColorObj.green(),
+            fillColorObj.blue()
+        )
         boltPaint.color = fillColor
         chargeColor = fillColor
 
