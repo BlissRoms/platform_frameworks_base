@@ -205,10 +205,6 @@ final class InputManagerCallback implements InputManagerService.WindowManagerCal
     @Override
     public int getPointerDisplayId() {
         synchronized (mService.mGlobalLock) {
-            // If desktop mode is not enabled, show on the default display.
-            if (!mService.mForceDesktopModeOnExternalDisplays) {
-                return DEFAULT_DISPLAY;
-            }
 
             // Look for the topmost freeform display.
             int firstExternalDisplayId = DEFAULT_DISPLAY;
