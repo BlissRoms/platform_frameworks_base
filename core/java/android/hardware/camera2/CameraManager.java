@@ -76,6 +76,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -2127,6 +2128,10 @@ public final class CameraManager {
             boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
             int size = exposeAuxCamera ? mDeviceStatus.size() : 2;
             int idCount = 0;
+            if (mDeviceStatus.size() < size) {
+                size = mDeviceStatus.size();
+            }
+            List<String> cameraIdList = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 int status = mDeviceStatus.valueAt(i);
                 if (status == ICameraServiceListener.STATUS_NOT_PRESENT
