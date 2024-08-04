@@ -175,8 +175,9 @@ public class FlashlightControllerImpl implements FlashlightController {
 
     @WorkerThread
     private String getCameraId() throws CameraAccessException {
-        String[] ids = mCameraManager.getCameraIdList();
-        if (mCameraManager == null || ids == null) {
+        String[] ids = mCameraManager == null ? null : mCameraManager.getCameraIdList();
+        if (ids == null || ids.length == 0) {
+            Log.e(TAG, "Camera ID list is null or empty.");
             return null;
         }
         for (String id : ids) {
