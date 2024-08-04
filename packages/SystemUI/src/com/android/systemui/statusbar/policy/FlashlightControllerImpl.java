@@ -176,6 +176,9 @@ public class FlashlightControllerImpl implements FlashlightController {
     @WorkerThread
     private String getCameraId() throws CameraAccessException {
         String[] ids = mCameraManager.getCameraIdList();
+        if (mCameraManager == null || ids == null) {
+            return null;
+        }
         for (String id : ids) {
             CameraCharacteristics c = mCameraManager.getCameraCharacteristics(id);
             Boolean flashAvailable = c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
