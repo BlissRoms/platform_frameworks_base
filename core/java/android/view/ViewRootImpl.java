@@ -88,6 +88,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_STATUS_BAR_ADDITIONAL
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
 import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 import static android.view.WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 import static android.view.WindowManager.PROPERTY_COMPAT_ALLOW_SANDBOXING_VIEW_BOUNDS_APIS;
 import static android.view.WindowManagerGlobal.RELAYOUT_RES_CANCEL_AND_REDRAW;
 import static android.view.WindowManagerGlobal.RELAYOUT_RES_CONSUME_ALWAYS_SYSTEM_BARS;
@@ -3156,6 +3157,10 @@ public final class ViewRootImpl implements ViewParent,
         return (int) (displayMetrics.density * dip + 0.5f);
     }
 
+    private boolean isWindowType(int windowType) {
+        return mWindowAttributes.type == windowType;
+    }
+
     private void performTraversals() {
         mLastPerformTraversalsSkipDrawReason = null;
 
@@ -3499,8 +3504,17 @@ public final class ViewRootImpl implements ViewParent,
                         updateDisplayDecoration();
                     }
                     if (surfaceControlChanged
-                            && mWindowAttributes.type
-                            == WindowManager.LayoutParams.TYPE_STATUS_BAR) {
+                            && (isWindowType(WindowManager.LayoutParams.TYPE_STATUS_BAR) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_STATUS_BAR) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_TOAST) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_INPUT_METHOD) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_INPUT_METHOD_DIALOG) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_NAVIGATION_BAR) ||
+                            isWindowType(WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY) ||
+                            isWindowType(TYPE_NAVIGATION_BAR_PANEL))) {
                         mTransaction.setDefaultFrameRateCompatibility(mSurfaceControl,
                             Surface.FRAME_RATE_COMPATIBILITY_NO_VOTE).apply();
                     }
