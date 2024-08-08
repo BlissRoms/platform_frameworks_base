@@ -152,6 +152,7 @@ java_library_static {
         ":supplemental_security_patches_xsd",
         ":advanced-protection-config",
         ":device-state-config",
+        ":lmofreeform-display-adapter-java",
         ":memory-limiter-config",
         ":services-sources-telecom",
         "java/com/android/server/EventLogTags.logtags",
