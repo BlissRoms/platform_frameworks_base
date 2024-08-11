@@ -318,6 +318,4 @@
     <!-- Switch USB controller on Asus ROG devices-->
     <bool name="config_switchUsbController">false</bool>
 
-    <!-- Whether to use Richtap vibration -->
-    <bool name="config_usesRichtapVibration">false</bool>
 </resources>
