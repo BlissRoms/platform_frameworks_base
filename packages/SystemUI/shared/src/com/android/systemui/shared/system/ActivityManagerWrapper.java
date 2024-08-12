@@ -364,8 +364,7 @@ public class ActivityManagerWrapper {
      * Returns true if the system supports freeform multi-window.
      */
     public boolean supportsFreeformMultiWindow(Context context) {
-        final boolean freeformDevOption = Settings.Global.getInt(context.getContentResolver(),
-                Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 1) != 0;
+        final boolean freeformDevOption = true;
         return ActivityTaskManager.supportsMultiWindow(context)
                 && (context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)

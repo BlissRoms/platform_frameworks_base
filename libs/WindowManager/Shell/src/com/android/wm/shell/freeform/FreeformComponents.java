@@ -17,7 +17,6 @@
 package com.android.wm.shell.freeform;
 
 import static android.content.pm.PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT;
-import static android.provider.Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT;
 
 import android.content.Context;
 import android.provider.Settings;
@@ -52,8 +51,6 @@ public class FreeformComponents {
      * Returns if this device supports freeform.
      */
     public static boolean isFreeformEnabled(Context context) {
-        return context.getPackageManager().hasSystemFeature(FEATURE_FREEFORM_WINDOW_MANAGEMENT)
-                || Settings.Global.getInt(context.getContentResolver(),
-                DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 1) != 0;
+        return true;
     }
 }
