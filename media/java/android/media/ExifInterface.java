@@ -101,7 +101,7 @@ import java.util.zip.CRC32;
  */
 public class ExifInterface {
     private static final String TAG = "ExifInterface";
-    private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
+    private static final boolean DEBUG = false;
 
     // The Exif tag names. See Tiff 6.0 Section 3 and Section 8.
     /** Type is String. */
@@ -2037,9 +2037,11 @@ public class ExifInterface {
             // Ignore exceptions in order to keep the compatibility with the old versions of
             // ExifInterface.
             mIsSupportedFile = false;
-            Log.w(TAG, "Invalid image: ExifInterface got an unsupported image format file"
-                    + "(ExifInterface supports JPEG and some RAW image formats only) "
-                    + "or a corrupted JPEG file to ExifInterface.", e);
+            if (DEBUG) {
+                Log.w(TAG, "Invalid image: ExifInterface got an unsupported image format file"
+                        + "(ExifInterface supports JPEG and some RAW image formats only) "
+                        + "or a corrupted JPEG file to ExifInterface.", e);
+            }
         } finally {
             addDefaultValuesForCompatibility();
 
