@@ -308,8 +308,12 @@ class UserUsageStatsService {
 
         if (event.mEventType != Event.USER_INTERACTION
                 && event.mEventType != Event.APP_COMPONENT_USED) {
-            checkAndGetTimeLocked();
-            convertToSystemTimeLocked(event);
+            if (!event.mUntrackedEvent) {
+                checkAndGetTimeLocked();
+                convertToSystemTimeLocked(event);
+            } else {
+                event.mUntrackedEvent = false;
+            }
         }
 
         if (event.mTimeStamp >= mDailyExpiryDate.getTimeInMillis()) {

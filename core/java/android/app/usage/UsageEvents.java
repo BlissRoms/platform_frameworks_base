@@ -573,6 +573,9 @@ public final class UsageEvents implements Parcelable {
         @EventFlags
         public int mFlags;
 
+        /** @hide */
+        public boolean mUntrackedEvent = false;
+
         public Event() {
         }
 
@@ -778,6 +781,7 @@ public final class UsageEvents implements Parcelable {
             mContentType = orig.mContentType;
             mContentAnnotations = orig.mContentAnnotations;
             mFlags = orig.mFlags;
+            mUntrackedEvent = orig.mUntrackedEvent;
             mBucketAndReason = orig.mBucketAndReason;
             mNotificationChannelId = orig.mNotificationChannelId;
             mLocusId = orig.mLocusId;
@@ -1033,6 +1037,7 @@ public final class UsageEvents implements Parcelable {
                 break;
         }
         p.writeInt(event.mFlags);
+        p.writeBoolean(event.mUntrackedEvent);
     }
 
     /**
@@ -1111,6 +1116,7 @@ public final class UsageEvents implements Parcelable {
                 break;
         }
         eventOut.mFlags = p.readInt();
+        eventOut.mUntrackedEvent = p.readBoolean();
     }
 
     @Override

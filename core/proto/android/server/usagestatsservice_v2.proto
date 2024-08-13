@@ -131,6 +131,7 @@ message PendingEventProto {
   optional string task_root_class = 12;
   optional string locus_id = 13 [(.android.privacy).dest = DEST_EXPLICIT];
   optional bytes extras = 14;
+  optional bool untracked_event = 15;
 }
 
 /**

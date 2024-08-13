@@ -971,7 +971,9 @@ public class UsageStatsService extends SystemService implements
         FileOutputStream fos = null;
         try {
             fos = af.startWrite();
-            UsageStatsProtoV2.writePendingEvents(fos, pendingEvents);
+            checkAndGetTimeLocked();
+            UsageStatsProtoV2.writePendingEvents(fos, pendingEvents,
+                    mRealTimeSnapshot, mSystemTimeSnapshot);
             af.finishWrite(fos);
             fos = null;
             pendingEvents.clear();
@@ -1072,7 +1074,7 @@ public class UsageStatsService extends SystemService implements
      * convert it to a system wall time. System and real time snapshots are updated before
      * conversion.
      */
-    private void convertToSystemTimeLocked(Event event) {
+    private void checkAndGetTimeLocked() {
         final long actualSystemTime = System.currentTimeMillis();
         if (ENABLE_TIME_CHANGE_CORRECTION) {
             final long actualRealtime = SystemClock.elapsedRealtime();
@@ -1086,6 +1088,9 @@ public class UsageStatsService extends SystemService implements
                 mSystemTimeSnapshot = actualSystemTime;
             }
         }
+    }
+
+    private void convertToSystemTimeLocked(Event event) {
         event.mTimeStamp = Math.max(0, event.mTimeStamp - mRealTimeSnapshot) + mSystemTimeSnapshot;
     }
 
@@ -1232,6 +1237,7 @@ public class UsageStatsService extends SystemService implements
                     logAppUsageEventReportedAtomLocked(Event.USER_INTERACTION, uid, event.mPackage);
                     // Fall through.
                 case Event.APP_COMPONENT_USED:
+                    checkAndGetTimeLocked();
                     convertToSystemTimeLocked(event);
                     mLastTimeComponentUsedGlobal.put(event.mPackage, event.mTimeStamp);
                     break;
