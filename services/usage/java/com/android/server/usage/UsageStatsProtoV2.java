@@ -697,6 +697,9 @@ final class UsageStatsProtoV2 {
                 case (int) PendingEventProto.FLAGS:
                     event.mFlags = proto.readInt(PendingEventProto.FLAGS);
                     break;
+                case (int) PendingEventProto.UNTRACKED_EVENT:
+                    event.mUntrackedEvent = proto.readBoolean(PendingEventProto.UNTRACKED_EVENT);
+                    break;
                 case (int) PendingEventProto.TYPE:
                     event.mEventType = proto.readInt(PendingEventProto.TYPE);
                     break;
@@ -786,6 +789,7 @@ final class UsageStatsProtoV2 {
             proto.write(PendingEventProto.CLASS_NAME, event.mClass);
         }
         proto.write(PendingEventProto.TIME_MS, event.mTimeStamp);
+        proto.write(PendingEventProto.UNTRACKED_EVENT, event.mUntrackedEvent);
         proto.write(PendingEventProto.FLAGS, event.mFlags);
         proto.write(PendingEventProto.TYPE, event.mEventType);
         proto.write(PendingEventProto.INSTANCE_ID, event.mInstanceId);
@@ -831,14 +835,19 @@ final class UsageStatsProtoV2 {
      * @param out the output stream to which to write the pending events.
      * @param events the list of pending events.
      */
-    static void writePendingEvents(OutputStream out, LinkedList<UsageEvents.Event> events)
+    static void writePendingEvents(OutputStream out, LinkedList<UsageEvents.Event> events,
+                                   final long realTimeSnapshot, final long systemTimeSnapshot)
             throws IOException, IllegalArgumentException {
         final ProtoOutputStream proto = new ProtoOutputStream(out);
         final int eventCount = events.size();
         for (int i = 0; i < eventCount; i++) {
             try {
                 final long token = proto.start(IntervalStatsObfuscatedProto.PENDING_EVENTS);
-                writePendingEvent(proto, events.get(i));
+                final UsageEvents.Event event = events.get(i);
+                event.mTimeStamp = Math.max(0, event.mTimeStamp - realTimeSnapshot)
+                        + systemTimeSnapshot;
+                event.mUntrackedEvent = true;
+                writePendingEvent(proto, event);
                 proto.end(token);
             } catch (IllegalArgumentException e) {
                 Slog.e(TAG, "Unable to write some pending events to proto.", e);
