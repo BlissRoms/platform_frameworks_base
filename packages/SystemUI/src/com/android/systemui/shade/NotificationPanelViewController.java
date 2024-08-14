@@ -5374,10 +5374,8 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
         mNotifIsland.updateIslandVisibility(getExpandedFraction());
     }
 
-    
     private boolean useIslandNotification() {
-        return mUseIslandNotification || mView.getContext().getResources().getConfiguration().orientation 
-            == Configuration.ORIENTATION_LANDSCAPE;
+        return mUseIslandNotification;
     }
 
 }
