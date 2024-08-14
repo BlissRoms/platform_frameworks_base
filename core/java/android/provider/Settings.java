@@ -7021,16 +7021,6 @@ public final class Settings {
         public static final String LOCK_GESTURE_STATUS = "lock_gesture_status";
 
         /**
-         * @hide
-         */
-        public static final String LOCKSCREEN_WEATHER_ENABLED = "lockscreen_weather_enabled";
-
-        /**
-         * @hide
-         */
-        public static final String LOCKSCREEN_WEATHER_LOCATION = "lockscreen_weather_location";
-
-        /**
          * Whether to show the battery bar
          * @hide
          */
@@ -7084,11 +7074,6 @@ public final class Settings {
          */
         public static final String STATUSBAR_BATTERY_BAR_BLEND_COLOR_REVERSE =
                 "statusbar_battery_bar_blend_color_reverse";
-
-        /**
-         * @hide
-         */
-        public static final String LOCKSCREEN_WEATHER_TEXT = "lockscreen_weather_text";
 
 	/**
          * Whether to enable smart 5G mode
