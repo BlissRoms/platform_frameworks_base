@@ -5385,10 +5385,9 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     public int getAmbientIndicationBottomPadding() {
         return mAmbientIndicationBottomPadding;
     }
-    
+
     private boolean useIslandNotification() {
-        return mUseIslandNotification || mView.getContext().getResources().getConfiguration().orientation 
-            == Configuration.ORIENTATION_LANDSCAPE;
+        return mUseIslandNotification;
     }
 
     @Override
