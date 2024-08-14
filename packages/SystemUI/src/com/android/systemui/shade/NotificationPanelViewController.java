@@ -4690,7 +4690,6 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
                 case ISLAND_NOTIFICATION:
                     mUseIslandNotification =
                             TunerService.parseIntegerSwitch(newValue, false);
-                    mNotifIsland.setIslandEnabled(mUseIslandNotification);
                     break;
                 default:
                     break;
@@ -5367,7 +5366,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
 
     @Override
     public void showIsland(boolean show) {
-        if (!mUseIslandNotification) return;
+        if (useIslandNotification()) return;
         mNotifIsland.showIsland(show, getExpandedFraction());
     }
 
@@ -5385,6 +5384,11 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
 
     public int getAmbientIndicationBottomPadding() {
         return mAmbientIndicationBottomPadding;
+    }
+    
+    private boolean useIslandNotification() {
+        return mUseIslandNotification || mView.getContext().getResources().getConfiguration().orientation 
+            == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
