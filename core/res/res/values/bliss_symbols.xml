@@ -9,15 +9,6 @@
     <java-symbol type="array" name="config_deviceKeyHandlerLibs" />
     <java-symbol type="array" name="config_deviceKeyHandlerClasses" />
 
-    <!-- Device model (Build.MODEL) to spoof for netflix, if not empty -->
-    <java-symbol type="string" name="config_netflixSpoofModel" />
-
-    <!-- AttestationHooks -->
-    <java-symbol type="string" name="config_stockFingerprint" />
-
-    <!-- Whether Pixel props is enabled -->
-    <java-symbol type="bool" name="config_enablePixelProps" />
-
     <!-- Camera -->
     <java-symbol type="array" name="config_cameraAuxPackageAllowList" />
     <java-symbol type="array" name="config_cameraAuxPackageExcludeList" />
@@ -164,9 +155,6 @@
     <!-- Lock gesture -->
     <java-symbol type="string" name="gesture_locked_warning" />
 
-    <!-- Build properties from a GMS certified device -->
-    <java-symbol type="array" name="config_certifiedBuildProperties" />
-
     <!-- Whether device has dash charging support -->
     <java-symbol type="bool" name="config_hasDashCharger" />
 
@@ -187,9 +175,6 @@
 
     <!-- Expected value from fast charging status file -->
     <java-symbol type="string" name="config_oemFastChargerStatusValue" />
-
-    <!-- Spoof GMS as Pixel Tablet -->
-    <java-symbol type="bool" name="config_spoofasTablet" />
 
     <!-- Mock Oplus LinearmotorVibratorService -->
     <java-symbol type="bool" name="config_mockOplusLinearmotorVibratorService" />

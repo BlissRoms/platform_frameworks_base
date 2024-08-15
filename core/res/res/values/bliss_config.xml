@@ -13,15 +13,6 @@
     <string-array name="config_deviceKeyHandlerClasses" translatable="false">
     </string-array>
 
-    <!-- Device model (Build.MODEL) to spoof for netflix, if not empty -->
-    <string name="config_netflixSpoofModel" translatable="false"></string>
-
-    <!-- Build fingerprint from the stock ROM -->
-    <string name="config_stockFingerprint" translatable="false"></string>
-
-    <!-- Whether Pixel props is enabled -->
-    <bool name="config_enablePixelProps">true</bool>
-
     <!-- The list of package IDs that are allowed to use aux cameras.
          NOTE: If this list is empty then all apps will be able to use aux cameras. -->
     <string-array name="config_cameraAuxPackageAllowList" translatable="false" />
@@ -284,9 +275,6 @@
 
     <!-- Expected value from fast charging status file  -->
     <string name="config_oemFastChargerStatusValue" translatable="false">1</string>
-
-    <!-- Spoof GMS as Pixel Tablet -->
-    <bool name="config_spoofasTablet">false</bool>
 
     <!-- Mock Oplus LinearmotorVibratorService -->
     <bool name="config_mockOplusLinearmotorVibratorService">false</bool>
