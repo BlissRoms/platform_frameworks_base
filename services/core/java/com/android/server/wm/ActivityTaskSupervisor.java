@@ -28,6 +28,7 @@ import static android.app.ActivityManager.START_FLAG_NATIVE_DEBUGGING;
 import static android.app.ActivityManager.START_FLAG_TRACK_ALLOCATION;
 import static android.app.ActivityManager.START_TASK_TO_FRONT;
 import static android.app.ActivityOptions.ANIM_REMOTE_ANIMATION;
+import static android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED;
 import static android.app.ITaskStackListener.FORCED_RESIZEABLE_REASON_SECONDARY_DISPLAY;
 import static android.app.ITaskStackListener.FORCED_RESIZEABLE_REASON_SPLIT_SCREEN;
 import static android.app.WaitResult.INVALID_DELAY;
@@ -2809,6 +2810,10 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
             if (activityOptions != null) {
                 final int windowingMode = activityOptions.getLaunchWindowingMode();
                 if (windowingMode == WINDOWING_MODE_FREEFORM) {
+                    activityOptions.setTaskAlwaysOnTop(true);
+                    activityOptions.setPendingIntentBackgroundActivityStartMode(
+                            MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+                    activityOptions.setPendingIntentBackgroundActivityLaunchAllowedByPermission(true);
                     task.setBounds(activityOptions.getLaunchBounds());
                 }
             }
