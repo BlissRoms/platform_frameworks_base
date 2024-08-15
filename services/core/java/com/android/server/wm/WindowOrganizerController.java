@@ -1280,7 +1280,8 @@ class WindowOrganizerController extends IWindowOrganizerController.Stub
                             + container);
                     break;
                 }
-                if (container.asTask() == null && container.asDisplayArea() == null) {
+                if (container.asTask() == null 
+                    && !container.inFreeformWindowingMode() && container.asDisplayArea() == null) {
                     Slog.e(TAG, "Cannot set always-on-top on non-task or non-display area: "
                             + container);
                     break;
