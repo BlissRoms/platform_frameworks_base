@@ -3543,7 +3543,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void updateKeySwapper(){
-        if (!mLineageHardware.isSupported(LineageHardwareManager.FEATURE_KEY_SWAP)) {
+        if (mLineageHardware != null && mLineageHardware.isSupported(LineageHardwareManager.FEATURE_KEY_SWAP)) {
             return;
         }
         final boolean enabled = Settings.Secure.getInt(mContext.getContentResolver(),
