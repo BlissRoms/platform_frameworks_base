@@ -21,6 +21,7 @@ import static android.os.PowerManager.GO_TO_SLEEP_REASON_TIMEOUT;
 import static com.android.systemui.keyguard.WakefulnessLifecycle.WAKEFULNESS_GOING_TO_SLEEP;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -91,6 +92,7 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
     private boolean mPaused = false;
     private boolean mScreenOff = false;
     private int mLastSensorValue = -1;
+    private int mDefaultPulseBrightness;
     private DozeMachine.State mState = DozeMachine.State.UNINITIALIZED;
 
     /**
@@ -130,7 +132,11 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
         mScreenBrightnessMinimumDimAmountFloat = context.getResources().getFloat(
                 R.dimen.config_screenBrightnessMinimumDimAmountFloat);
 
+        int defaultPulseBrightness = context.getResources().getInteger(
+                com.android.internal.R.integer.config_screenBrightnessPulse);
+
         mDefaultDozeBrightness = alwaysOnDisplayPolicy.defaultDozeBrightness;
+        mDefaultPulseBrightness = defaultPulseBrightness != -1 ? defaultPulseBrightness : mDefaultDozeBrightness;
         mScreenBrightnessDim = alwaysOnDisplayPolicy.dimBrightness;
         mSensorToBrightness = alwaysOnDisplayPolicy.screenBrightnessArray;
         mSensorToScrimOpacity = alwaysOnDisplayPolicy.dimmingScrimArray;
@@ -146,9 +152,13 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
                 resetBrightnessToDefault();
                 break;
             case DOZE_AOD:
+                setBrightnessToValue(getDozeBrightnessValue());
+                setLightSensorEnabled(true);
+                break;
             case DOZE_REQUEST_PULSE:
             case DOZE_AOD_DOCKED:
                 setLightSensorEnabled(true);
+                setBrightnessToValue(getPulseBrightnessValue());
                 break;
             case DOZE:
             case DOZE_SUSPEND_TRIGGERS:
@@ -163,6 +173,7 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
             case DOZE_AOD_PAUSED:
                 setLightSensorEnabled(false);
                 break;
+
             case FINISH:
                 onDestroy();
                 break;
@@ -261,9 +272,28 @@ public class DozeScreenBrightness extends BroadcastReceiver implements DozeMachi
     private void resetBrightnessToDefault() {
         mDozeService.setDozeScreenBrightness(
                 clampToDimBrightnessForScreenOff(
-                        clampToUserSetting(mDefaultDozeBrightness)));
+                        clampToUserSetting(getDozeBrightnessValue())));
         mDozeHost.setAodDimmingScrim(0f);
     }
+
+    private void setBrightnessToValue(int value) {
+        boolean forceCustomBrightness = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.DOZE_BRIGHTNESS_FORCE, 0, UserHandle.USER_CURRENT) == 1;
+        mDozeService.setDozeScreenBrightness(forceCustomBrightness ? value : clampToUserSetting(value));
+    }
+
+    private int getDozeBrightnessValue() {
+        return Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.DOZE_BRIGHTNESS, mDefaultDozeBrightness,
+                UserHandle.USER_CURRENT);
+    }
+
+    private int getPulseBrightnessValue() {
+        return Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.PULSE_BRIGHTNESS, mDefaultPulseBrightness,
+                UserHandle.USER_CURRENT);
+    }
+
     //TODO: brightnessfloat change usages to float.
     private int clampToUserSetting(int brightness) {
         int screenBrightnessModeSetting = mSystemSettings.getIntForUser(

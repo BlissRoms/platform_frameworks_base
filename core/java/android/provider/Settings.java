@@ -7486,6 +7486,23 @@ public final class Settings {
         public static final String CUSTOM_KEYGUARD_BATTERY_BAR_CUSTOM_COLOR = "sysui_keyguard_battery_bar_custom_color";
 
         /**
+         * User definable value of pulse notification screen brightness
+         * @hide
+         */
+        public static final String PULSE_BRIGHTNESS = "pulse_brightness";
+
+        /**
+         * User definable value of aod screen brightness
+         * @hide
+         */
+        public static final String DOZE_BRIGHTNESS = "doze_brightness";
+
+        /**
+         * @hide
+         */
+        public static final String DOZE_BRIGHTNESS_FORCE = "doze_brightness_force";
+
+        /**
          * These are all public system settings
          *
          * @hide
