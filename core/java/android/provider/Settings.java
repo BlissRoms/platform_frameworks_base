@@ -7451,6 +7451,16 @@ public final class Settings {
         public static final String DOZE_AMBIENT_SWIPE = "doze_ambient_swipe";
 
         /**
+         * What to show at the bottom of the Ambient display
+         * 0: Nothing.
+         * 1: Battery Percentage.
+         * 2: Battery Temperature.
+         * 3: Battery Percentage & Temperature Together.
+         * @hide
+         */
+        public static final String AMBIENT_SHOW_SETTINGS = "ambient_show_settings";
+
+        /**
          * These are all public system settings
          *
          * @hide
