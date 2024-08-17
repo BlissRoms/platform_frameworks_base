@@ -52,6 +52,12 @@ import android.view.KeyEvent;
 import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -102,6 +108,41 @@ public class BlissUtils {
         // Use boolean to determine celsius or fahrenheit
         return String.valueOf((n - c) % 2 == 0 ? (int) temp :
                 ForC ? c * 9/5 + 32 + "°F" :c + "°C");
+    }
+
+    public static String getCPUTemp(Context context) {
+        String value;
+        if (fileExists(context.getResources().getString(
+            com.android.internal.R.string.config_cpu_temp_path))) {
+               value = readOneLine(context.getResources().getString(
+                  com.android.internal.R.string.config_cpu_temp_path));
+        } else {
+            value = "Error";
+        }
+        return value == "Error" ? "N/A" : String.format("%s", Integer.parseInt(value) / 1000) + "°C";
+    }
+
+    public static boolean fileExists(String filename) {
+        if (filename == null) {
+            return false;
+        }
+        return new File(filename).exists();
+    }
+
+    public static String readOneLine(String fname) {
+        BufferedReader br;
+        String line = null;
+        try {
+            br = new BufferedReader(new FileReader(fname), 512);
+            try {
+                line = br.readLine();
+            } finally {
+                br.close();
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return line;
     }
 
     public static boolean isChineseLanguage() {

@@ -324,4 +324,7 @@
     <!-- Whether to force enable multi resolution configuration for camera -->
     <bool name="config_forceMultiResolution">false</bool>
 
+    <!-- CPU temperature -->
+    <string name="config_cpu_temp_path">/sys/class/thermal/thermal_zone0/temp</string>
+
 </resources>

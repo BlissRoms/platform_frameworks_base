@@ -240,4 +240,7 @@
     <!-- Whether to force enable multi resolution configuration for camera -->
     <java-symbol type="bool" name="config_forceMultiResolution" />
 
+    <!-- CPU temperature -->
+    <java-symbol type="string" name="config_cpu_temp_path" />
+
 </resources>
