@@ -98,7 +98,7 @@ import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.SysuiStatusBarStateController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
-import com.android.systemui.statusbar.phone.FaceUnlockImageView;
+import com.android.systemui.statusbar.phone.FaceUnlockIndicatorView;
 import com.android.systemui.unfold.FoldAodAnimationController;
 import com.android.systemui.unfold.SysUIUnfoldComponent;
 import com.android.systemui.user.domain.interactor.SelectedUserInteractor;
@@ -377,7 +377,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
                 boolean isStrongBiometric) {
             super.onBiometricAuthenticated(userId, biometricSourceType, isStrongBiometric);
             if (biometricSourceType == BiometricSourceType.FACE) {
-                FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.SUCCESS);
+                FaceUnlockIndicatorView.setBouncerState(FaceUnlockIndicatorView.State.SUCCESS);
             }
         }
 
@@ -387,7 +387,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             if (biometricSourceType == BiometricSourceType.FACE) {
                 mFaceRecognitionRunning = true;
                 mFaceRecognizingHandler.postDelayed(() -> showFaceRecognizingMessage(), 100);
-                FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.SCANNING);
+                FaceUnlockIndicatorView.setBouncerState(FaceUnlockIndicatorView.State.SCANNING);
             }
         }
 
@@ -395,7 +395,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
         public void onBiometricHelp(int msgId, String helpString,
                 BiometricSourceType biometricSourceType) {
             if (biometricSourceType == BiometricSourceType.FACE && mContext.getString(R.string.kg_face_not_recognized).equals(helpString)) {
-                FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.NOT_VERIFIED);
+                FaceUnlockIndicatorView.setBouncerState(FaceUnlockIndicatorView.State.NOT_VERIFIED);
             }
         }
     };
@@ -1557,11 +1557,11 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             mPrimaryBouncerInteractor.showMessage(message, colorState);
         }
         if (mContext.getString(R.string.face_unlock_recognizing).equals(message)) {
-            FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.SCANNING);
+            FaceUnlockIndicatorView.setBouncerState(FaceUnlockIndicatorView.State.SCANNING);
         } else if (mContext.getString(R.string.kg_face_not_recognized).equals(message)) {
-            FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.NOT_VERIFIED);
+            FaceUnlockIndicatorView.setBouncerState(FaceUnlockIndicatorView.State.NOT_VERIFIED);
         } else if (mContext.getString(R.string.keyguard_face_successful_unlock).equals(message)) {
-            FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.SUCCESS);
+            FaceUnlockIndicatorView.setBouncerState(FaceUnlockIndicatorView.State.SUCCESS);
         }
     }
 

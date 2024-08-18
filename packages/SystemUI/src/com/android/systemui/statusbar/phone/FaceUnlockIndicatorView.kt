@@ -22,41 +22,35 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.Color
-import android.os.AsyncTask
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import android.view.animation.OvershootInterpolator
 
 import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnCancel
 
 import com.android.systemui.Dependency
 import com.android.systemui.plugins.statusbar.StatusBarStateController
-
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.android.systemui.res.R
 
-class FaceUnlockImageView @JvmOverloads constructor(
+class FaceUnlockIndicatorView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : ImageView(context, attrs, defStyleAttr) {
+) : ExtendedFloatingActionButton(context, attrs, defStyleAttr) {
 
     enum class State {
         SCANNING, NOT_VERIFIED, SUCCESS, HIDDEN
     }
 
-    private val DELAY_HIDE_DURATION = 1500
+    private val DELAY_HIDE_DURATION = 1500L
     private var currentState: State = State.HIDDEN
-    private var colorState: ColorStateList? = null
     private val startAnimation: ObjectAnimator = createScaleAnimation(start = true)
     private val dismissAnimation: ObjectAnimator = createScaleAnimation(start = false)
     private val scanningAnimation: ObjectAnimator = createScanningAnimation()
-    private val successAnimation: ObjectAnimator = createSuccessRotationAnimation()
+    private val successAnimation: ObjectAnimator = createSuccessScaleAnimation()
     private val failureShakeAnimation: ObjectAnimator = createShakeAnimation(10f)
     private val vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     private val animations = listOf(failureShakeAnimation, dismissAnimation, scanningAnimation, successAnimation, startAnimation)
@@ -64,7 +58,7 @@ class FaceUnlockImageView @JvmOverloads constructor(
     private val statusBarStateController: StatusBarStateController = Dependency.get(StatusBarStateController::class.java)
 
     companion object {
-        private var instance: FaceUnlockImageView? = null
+        private var instance: FaceUnlockIndicatorView? = null
 
         @JvmStatic
         fun setBouncerState(state: State) {
@@ -74,12 +68,12 @@ class FaceUnlockImageView @JvmOverloads constructor(
         }
 
         @JvmStatic
-        fun setInstance(instance: FaceUnlockImageView) {
+        fun setInstance(instance: FaceUnlockIndicatorView) {
             this.instance = instance
         }
 
         @JvmStatic
-        fun getInstance(): FaceUnlockImageView? {
+        fun getInstance(): FaceUnlockIndicatorView? {
             return instance
         }
     }
@@ -105,15 +99,17 @@ class FaceUnlockImageView @JvmOverloads constructor(
         updateFaceIconState()
     }
 
-    public override fun onAttachedToWindow() {
+    override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         setInstance(this)
         updateColor()
     }
 
     fun updateColor() {
-        imageTintList = ColorStateList.valueOf(Color.WHITE)
-        backgroundTintList = ColorStateList.valueOf(Color.parseColor("#99000000"))
+        iconPadding = context.resources.getDimensionPixelSize(R.dimen.face_unlock_indicator_icon_padding)
+        iconSize = context.resources.getDimensionPixelSize(R.dimen.face_unlock_indicator_icon_size)
+        iconTint = ColorStateList.valueOf(context.getColor(R.color.island_title_color))
+        backgroundTintList = ColorStateList.valueOf(context.getColor(R.color.island_background_color))
     }
 
     fun setState(state: State) {
@@ -129,12 +125,19 @@ class FaceUnlockImageView @JvmOverloads constructor(
             visibility = View.GONE
             return
         }
-        setImageResource(when (currentState) {
-            State.SCANNING -> R.drawable.face_scanning
-            State.NOT_VERIFIED -> R.drawable.face_not_verified
-            State.SUCCESS -> R.drawable.face_success
-            State.HIDDEN -> R.drawable.face_scanning
-        })
+        icon = when (currentState) {
+            State.SCANNING -> context.getDrawable(R.drawable.face_scanning)
+            State.NOT_VERIFIED -> context.getDrawable(R.drawable.face_not_verified)
+            State.SUCCESS -> context.getDrawable(R.drawable.face_success)
+            State.HIDDEN -> null
+        }
+
+        text = when (currentState) {
+            State.SCANNING -> context.getString(R.string.face_unlock_recognizing)
+            State.NOT_VERIFIED -> context.getString(R.string.keyguard_face_failed)
+            State.SUCCESS -> context.getString(R.string.keyguard_face_successful_unlock)
+            State.HIDDEN -> ""
+        }
     }
 
     private fun createScanningAnimation(): ObjectAnimator {
@@ -147,8 +150,10 @@ class FaceUnlockImageView @JvmOverloads constructor(
         }
     }
 
-    private fun createSuccessRotationAnimation(): ObjectAnimator {
-        return ObjectAnimator.ofFloat(this, View.ROTATION_Y, 0f, 360f).apply {
+    private fun createSuccessScaleAnimation(): ObjectAnimator {
+        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.5f, 1f)
+        val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.5f, 1f)
+        return ObjectAnimator.ofPropertyValuesHolder(this, scaleX, scaleY).apply {
             duration = 800
             interpolator = AccelerateDecelerateInterpolator()
         }
