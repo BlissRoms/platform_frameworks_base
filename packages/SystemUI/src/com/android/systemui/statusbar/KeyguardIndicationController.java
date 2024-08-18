@@ -1140,19 +1140,23 @@ public class KeyguardIndicationController {
                 String batteryTemp = com.android.internal.util.bliss.BlissUtils.batteryTemperature(mContext, false);
                 String cpuTemp = com.android.internal.util.bliss.BlissUtils.batteryTemperature(mContext, false);
                 switch (getAmbientShowSettings()) {
-                    case 0: // Show battery level
+                    case 1: // Show battery level
                         newIndication = NumberFormat.getPercentInstance()
                                 .format(mBatteryLevel / 100f);
                         break;
-                    case 1: // Battery level & battery temperature
+                    case 2: // Battery level & battery temperature
                         newIndication = NumberFormat.getPercentInstance()
                                 .format(mBatteryLevel / 100f) +
                                 " | " + batteryTemp;
                         break;
-                    case 2: // Battery level, battery temperature & cpu temperature
+                    case 3: // Battery level, battery temperature & cpu temperature
                         newIndication = NumberFormat.getPercentInstance()
                                 .format(mBatteryLevel / 100f) +
                                 " | " + batteryTemp + " | " + cpuTemp;
+                        break;
+                    case 0: // Hidden
+                    default:
+                        newIndication = "";
                         break;
                 }
             }
