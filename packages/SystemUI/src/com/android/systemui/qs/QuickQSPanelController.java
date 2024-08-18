@@ -170,7 +170,11 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel>
 
     @Override
     protected void onConfigurationChanged() {
+        mView.updateResources();
         setTiles();
+        if (mView.isListening()) {
+            refreshAllTiles();
+        }
         updateMediaExpansion();
     }
 
