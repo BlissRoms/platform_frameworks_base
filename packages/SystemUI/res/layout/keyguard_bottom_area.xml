@@ -17,6 +17,7 @@
 
 <com.android.systemui.statusbar.phone.KeyguardBottomAreaView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:systemui="http://schemas.android.com/apk/res-auto"
     android:id="@+id/keyguard_bottom_area"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -30,16 +31,24 @@
         android:layout_gravity="top|center_horizontal"
         android:orientation="vertical">
 
-        <com.android.systemui.statusbar.phone.FaceUnlockImageView
+        <com.android.systemui.statusbar.phone.FaceUnlockIndicatorView
             android:id="@+id/face_unlock_icon"
-            android:layout_height="24dp"
-            android:layout_width="24dp"
-            android:layout_marginTop="6dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:singleLine="true" 
+            android:paddingVertical="@dimen/face_unlock_indicator_padding_vertical"
+            android:paddingStart="@dimen/face_unlock_indicator_padding_start"
+            android:paddingEnd="@dimen/face_unlock_indicator_padding_end"
             android:layout_gravity="center"
-            android:scaleType="fitCenter"
-            android:tint="@android:color/white"
-            android:background="@drawable/keyguard_bottom_affordance_bg"
-            android:foreground="@drawable/keyguard_bottom_affordance_selected_border"
+            android:gravity="center"
+            android:elevation="100dp"
+            android:textSize="@dimen/face_unlock_indicator_text_size"
+            android:theme="@style/Theme.Island.SystemUI"
+            android:minWidth="@dimen/face_unlock_indicator_min_width"
+            android:includeFontPadding="false"
+            android:textAlignment="viewStart"
+            systemui:iconGravity="textStart"
+            systemui:shapeAppearanceOverlay="@style/islandBackgroundOverlay"
             android:visibility="gone" />
 
     </LinearLayout>
