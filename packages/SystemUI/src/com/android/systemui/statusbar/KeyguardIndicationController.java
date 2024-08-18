@@ -1140,6 +1140,7 @@ public class KeyguardIndicationController {
             } else if (mPowerPluggedIn || mEnableBatteryDefender) {
                 newIndication = computePowerIndication();
             } else {
+                String batteryLevel = NumberFormat.getPercentInstance().format(mBatteryLevel / 100f);
                 String batteryTemp = com.android.internal.util.bliss.BlissUtils.batteryTemperature(mContext, false);
                 String cpuTemp = com.android.internal.util.bliss.BlissUtils.batteryTemperature(mContext, false);
 
@@ -1163,61 +1164,26 @@ public class KeyguardIndicationController {
 
                 switch (getAmbientShowSettings()) {
                     case 1: // Show battery level
-                        if (!ambientShowSettingsIcon()) {
-                            newIndication = NumberFormat.getPercentInstance()
-                                    .format(mBatteryLevel / 100f);
-                        } else {
-                            indicationBuilder.append(" ");
-                            if (batteryIcon != null) {
-                                indicationBuilder.setSpan(new ImageSpan(batteryIcon), indicationBuilder.length() - 1, indicationBuilder.length(), SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
-                            }
-                            indicationBuilder.append(NumberFormat.getPercentInstance().format(mBatteryLevel / 100f));
-                            newIndication = indicationBuilder;
-                        }
+                        appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
+                        newIndication = indicationBuilder;
                         break;
+
                     case 2: // Battery level & battery temperature
-                        if (!ambientShowSettingsIcon()) {
-                            newIndication = NumberFormat.getPercentInstance()
-                                    .format(mBatteryLevel / 100f) +
-                                    " | " + batteryTemp;
-                        } else {
-                            indicationBuilder.append(" ");
-                            if (batteryIcon != null) {
-                                indicationBuilder.setSpan(new ImageSpan(batteryIcon), indicationBuilder.length() - 1, indicationBuilder.length(), SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
-                            }
-                            indicationBuilder.append(NumberFormat.getPercentInstance().format(mBatteryLevel / 100f));
-                            indicationBuilder.append(" | ");
-                            if (temperatureIcon != null) {
-                                indicationBuilder.setSpan(new ImageSpan(temperatureIcon), indicationBuilder.length() - 1, indicationBuilder.length(), SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
-                            }
-                            indicationBuilder.append(batteryTemp);
-                            newIndication = indicationBuilder;
-                        }
+                        appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
+                        appendWithSeparator(indicationBuilder, " | ");
+                        appendIcons(indicationBuilder, batteryTemp, temperatureIcon, ambientShowSettingsIcon());
+                        newIndication = indicationBuilder;
                         break;
-                    case 3: // Battery level, battery temperature & cpu temperature
-                        if (!ambientShowSettingsIcon()) {
-                            newIndication = NumberFormat.getPercentInstance()
-                                    .format(mBatteryLevel / 100f) +
-                                    " | " + batteryTemp + " | " + cpuTemp;
-                        } else {
-                            indicationBuilder.append(" ");
-                            if (batteryIcon != null) {
-                                indicationBuilder.setSpan(new ImageSpan(batteryIcon), indicationBuilder.length() - 1, indicationBuilder.length(), SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
-                            }
-                            indicationBuilder.append(NumberFormat.getPercentInstance().format(mBatteryLevel / 100f));
-                            indicationBuilder.append(" | ");
-                            if (temperatureIcon != null) {
-                                indicationBuilder.setSpan(new ImageSpan(temperatureIcon), indicationBuilder.length() - 1, indicationBuilder.length(), SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
-                            }
-                            indicationBuilder.append(batteryTemp);
-                            indicationBuilder.append(" | ");
-                            if (cpuIcon != null) {
-                                indicationBuilder.setSpan(new ImageSpan(cpuIcon), indicationBuilder.length() - 1, indicationBuilder.length(), SpannableStringBuilder.SPAN_INCLUSIVE_EXCLUSIVE);
-                            }
-                            indicationBuilder.append(cpuTemp);
-                            newIndication = indicationBuilder;
-                        }
+
+                    case 3: // Battery level, battery temperature & CPU temperature
+                        appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
+                        appendWithSeparator(indicationBuilder, " | ");
+                        appendIcons(indicationBuilder, batteryTemp, temperatureIcon, ambientShowSettingsIcon());
+                        appendWithSeparator(indicationBuilder, " | ");
+                        appendIcons(indicationBuilder, cpuTemp, cpuIcon, ambientShowSettingsIcon());
+                        newIndication = indicationBuilder;
                         break;
+
                     case 0: // Hidden
                     default:
                         newIndication = "";
@@ -1255,6 +1221,18 @@ public class KeyguardIndicationController {
     private boolean ambientShowSettingsIcon() {
         return Settings.System.getIntForUser(mContext.getContentResolver(),
             Settings.System.AMBIENT_SHOW_SETTINGS_ICONS, 0, UserHandle.USER_CURRENT) != 0;
+    }
+
+    private void appendIcons(SpannableStringBuilder builder, String text, Drawable icon, boolean showIcon) {
+        if (showIcon && icon != null) {
+            builder.append(" ");
+            builder.setSpan(new ImageSpan(icon), builder.length() - 1, builder.length(), builder.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        builder.append(text);
+    }
+
+    private void appendWithSeparator(SpannableStringBuilder builder, String separator) {
+        builder.append(separator);
     }
 
     /**
