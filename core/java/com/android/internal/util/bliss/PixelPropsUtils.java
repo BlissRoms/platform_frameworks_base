@@ -328,10 +328,8 @@ public final class PixelPropsUtils {
         if (sIsGms) {
             if (shouldTryToCertifyDevice()) {
                 if (!SystemProperties.getBoolean(SPOOF_PI, true)) {
-                    dlog("Prebuilt PIF is disabled by system prop");
                     return;
                 } else {
-                    dlog("Spoofing GMS to pass PI");
                     spoofBuildGms(context);
                 }
             }
@@ -340,21 +338,22 @@ public final class PixelPropsUtils {
                 || Arrays.asList(extraPackagesToChange).contains(packageName)) {
 
             boolean isPixelDevice = Arrays.asList(pixelCodenames).contains(SystemProperties.get(DEVICE));
-            if (!sEnablePixelProps || !SystemProperties.getBoolean(SPOOF_PIXEL_PROPS, true)) {
-                if (isPixelDevice) {
-                    dlog("Pixel props is disabled due to being a currently supported Pixel device");
+            if (SystemProperties.getBoolean(SPOOF_PIXEL_PROPS, true)) {
+                if (!isPixelDevice) {
+                    propsToChange.putAll(propsToChangeRecentPixel);
+                } else if (isPixelDevice) {
                     return;
                 }
-                dlog("Pixel props is disabled by config or system prop");
+            } else if (!sEnablePixelProps || !SystemProperties.getBoolean(SPOOF_PIXEL_PROPS, true)) {
                 return;
             } else if (Arrays.asList(packagesToChangeRecentPixel).contains(packageName)) {
                 if (packageName.toLowerCase().contains("com.google.android.gms")) {
                     setPropValue("TIME", System.currentTimeMillis());
-                    if (processName.toLowerCase().contains("gapps")
-                            || processName.toLowerCase().contains("gservice")
-                            || processName.toLowerCase().contains("learning")
-                            || processName.toLowerCase().contains("persistent")) {
-                        propsToChange.putAll(propsToChangePixel5a);
+                    if (!isPixelDevice) {
+                        if (processName.toLowerCase().contains("learning")
+                                || processName.toLowerCase().contains("persistent")) {
+                            propsToChange.putAll(propsToChangePixel5a);
+                        }
                     }
                 }
                 propsToChange.putAll(propsToChangeRecentPixel);
