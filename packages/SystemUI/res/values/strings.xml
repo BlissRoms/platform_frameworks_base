@@ -3383,6 +3383,4 @@
     <string name="home_controls_dream_label">Home Controls</string>
     <!-- Description for home control panel [CHAR LIMIT=67] -->
     <string name="home_controls_dream_description">Quickly access your home controls as a screensaver</string>
-    
-    <string name="face_unlock_recognizing">Recognizing face...</string>
 </resources>
