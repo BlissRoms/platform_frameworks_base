@@ -2275,7 +2275,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                        assistInvocationType);
                 break;
             case VOICE_SEARCH:
-                launchVoiceAssistWithWakeLock();
+                launchVoiceAssist(mAllowStartActivityForLongPressOnPowerDuringSetup);
                 break;
             case IN_APP_SEARCH:
                 triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH);
