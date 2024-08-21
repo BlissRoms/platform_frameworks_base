@@ -77,7 +77,6 @@ public final class GamesPropsUtils {
 
     private static final Map<String, Object> propsToChangeROG6 = createMap("ASUS_AI2201", "asus");
     private static final String[] packagesToChangeROG6 = { // spoof as ROG Phone 6
-            "com.activision.callofduty.shooter",
     	    "com.ea.gp.fifamobile",
             "com.gameloft.android.ANMP.GloftA9HM",
             "com.madfingergames.legends",
@@ -95,8 +94,9 @@ public final class GamesPropsUtils {
             "com.vng.pubgmobile"
     };
 
-    private static final Map<String, Object> propsToChangeXP5 = createMap("SO-52A", "Sony");
-    private static final String[] packagesToChangeXP5 = { // spoof as Xperia 5
+    private static final Map<String, Object> propsToChangeLenovoY700 = createMap("Lenovo TB-9707F", "Lenovo");
+    private static final String[] packagesToChangeLenovoY700 = { // spoof as Lenovo TB-9707F
+            "com.activision.callofduty.shooter",
             "com.garena.game.codm",
             "com.tencent.tmgp.kr.codm",
             "com.vng.codmvn"
@@ -135,8 +135,8 @@ public final class GamesPropsUtils {
                 propsToChange = propsToChangeROG6;
             } else if (Arrays.asList(packagesToChangeROG8P).contains(packageName)) {
                 propsToChange = propsToChangeROG8P;
-            } else if (Arrays.asList(packagesToChangeXP5).contains(packageName)) {
-                propsToChange = propsToChangeXP5;
+            } else if (Arrays.asList(packagesToChangeLenovoY700).contains(packageName)) {
+                propsToChange = propsToChangeLenovoY700;
             }
         }
         if (propsToChange != null) {
