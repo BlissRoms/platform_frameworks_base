@@ -43,6 +43,7 @@ public final class GamesPropsUtils {
     private static final String[] packagesToChangeMI11TP = { // spoof as Mi 11T PRO
             "com.ea.gp.apexlegendsmobilefps",
             "com.levelinfinite.hotta.gp",
+            "com.supercell.brawlstars",
             "com.supercell.clashofclans",
             "com.vng.mlbbvn"
     };
