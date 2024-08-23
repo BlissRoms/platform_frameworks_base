@@ -52,8 +52,9 @@
     <java-symbol type="string" name="unlock_application" />
     <java-symbol type="array" name="config_appLockAllowedSystemApps" />
 
-    <!-- PropImitationHooks -->
+    <!-- Prop/KeyboxImitationHooks  -->
     <java-symbol type="array" name="config_certifiedBuildProperties" />
+    <java-symbol type="array" name="config_certifiedKeybox" />
     <java-symbol type="string" name="config_stockFingerprint" />
     <java-symbol type="string" name="config_netflixSpoofModel" />
 
