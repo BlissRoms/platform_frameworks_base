@@ -2887,6 +2887,10 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
                 // (about to be visible).
                 return false;
             }
+            if (r.getTask() != null && r.getTask().inPinnedWindowingMode()) {
+                // Ignore pip activities.
+                return false;
+            }
             return r.occludesParent(mIncludeInvisibleAndFinishing /* includingFinishing */);
         }
     }
