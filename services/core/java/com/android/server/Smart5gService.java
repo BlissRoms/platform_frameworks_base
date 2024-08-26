@@ -37,8 +37,10 @@ import android.os.Handler;
 import android.os.HandlerExecutor;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.telephony.SignalStrength;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Slog;
@@ -83,6 +85,8 @@ public class Smart5gService extends SystemService {
     private boolean mIsOnMobileData, mIsPowerSaveMode;
     private int[] mActiveSubIds = new int[0];
     private int mDefaultDataSubId = INVALID_SUBSCRIPTION_ID;
+    
+    private boolean mIsScreenOff;
 
     private final ContentObserver mSettingObserver = new ContentObserver(mHandler) {
         @Override
@@ -113,6 +117,16 @@ public class Smart5gService extends SystemService {
                         dlog("dds changed, new: " + subId);
                         update();
                     }
+                    break;
+                case Intent.ACTION_SCREEN_OFF:
+                    mIsScreenOff = true;
+                    dlog("screen turned off");
+                    update();
+                    break;
+                case Intent.ACTION_SCREEN_ON:
+                    mIsScreenOff = false;
+                    dlog("screen turned on");
+                    update();
                     break;
                 default:
                     Slog.e(TAG, "Unhandled intent: " + action);
@@ -199,8 +213,11 @@ public class Smart5gService extends SystemService {
             dlog("onBootPhase PHASE_BOOT_COMPLETED");
             mIsPowerSaveMode = mPowerManager.isPowerSaveMode();
             mDefaultDataSubId = mSubManager.getDefaultDataSubscriptionId();
-            final IntentFilter filter = new IntentFilter(ACTION_POWER_SAVE_MODE_CHANGED);
+            final IntentFilter filter = new IntentFilter();
+            filter.addAction(ACTION_POWER_SAVE_MODE_CHANGED);
             filter.addAction(ACTION_DEFAULT_DATA_SUBSCRIPTION_CHANGED);
+            filter.addAction(Intent.ACTION_SCREEN_OFF);
+            filter.addAction(Intent.ACTION_SCREEN_ON);
             mContext.registerReceiver(mIntentReceiver, filter);
             mConnectivityManager.registerNetworkCallback(INTERNET_NETWORK_REQUEST, mNetworkCallback);
             mSubManager.addOnSubscriptionsChangedListener(mExecutor, mSubListener);
@@ -263,6 +280,15 @@ public class Smart5gService extends SystemService {
         } else if (!isMobileDataEnabled(subId)) {
             dlog("shouldDisable5g: mobile data is disabled for subId " + subId);
             return true;
+        } else if (mIsScreenOff) {
+            dlog("shouldDisable5g: screen is off");
+            return true;
+        } else if (isConservativeMode() && isLowSignal(subId)) {
+            dlog("shouldDisable5g: conservative mode with low signal");
+            return true;
+        } else if (isConnectedToWifi()) { // if both wifi/data are enabled for e.g smart download feature on some apps
+            dlog("shouldDisable5g: connected to wifi");
+            return true;
         }
         dlog("shouldDisable5g: subId=" + subId + " mIsPowerSaveMode=" + mIsPowerSaveMode
                 + " mIsOnMobileData=" + mIsOnMobileData + " mDefaultDataSubId="
@@ -271,6 +297,29 @@ public class Smart5gService extends SystemService {
                 || !mIsOnMobileData // we aren't on mobile data
                 // this isn't the default data sim
                 || (mDefaultDataSubId != INVALID_SUBSCRIPTION_ID && subId != mDefaultDataSubId);
+    }
+
+    private boolean isConservativeMode() {
+        String devicePowerMode = SystemProperties.get("persist.sys.device_power_mode", "");
+        return "conservative".equals(devicePowerMode);
+    }
+    
+    private boolean isLowSignal(int subId) {
+        SignalStrength signalStrength = mTelephonyManager.createForSubscriptionId(subId)
+                .getSignalStrength();
+        if (signalStrength == null) {
+            dlog("isLowSignal: SignalStrength is null");
+            return false;
+        }
+        int level = signalStrength.getLevel();
+        dlog("isLowSignal: Signal level is " + level);
+        return level <= SignalStrength.SIGNAL_STRENGTH_POOR;
+    }
+    
+    private boolean isConnectedToWifi() {
+        NetworkCapabilities capabilities = mConnectivityManager.getNetworkCapabilities(
+                mConnectivityManager.getActiveNetwork());
+        return capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
     }
 
     private static void dlog(String msg) {
