@@ -33,6 +33,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.HandlerExecutor;
 import android.os.Looper;
@@ -128,6 +129,9 @@ public class Smart5gService extends SystemService {
                     dlog("screen turned on");
                     update();
                     break;
+                case Intent.ACTION_BATTERY_CHANGED:
+                    update();
+                    break;
                 default:
                     Slog.e(TAG, "Unhandled intent: " + action);
             }
@@ -218,6 +222,7 @@ public class Smart5gService extends SystemService {
             filter.addAction(ACTION_DEFAULT_DATA_SUBSCRIPTION_CHANGED);
             filter.addAction(Intent.ACTION_SCREEN_OFF);
             filter.addAction(Intent.ACTION_SCREEN_ON);
+            filter.addAction(Intent.ACTION_BATTERY_CHANGED);
             mContext.registerReceiver(mIntentReceiver, filter);
             mConnectivityManager.registerNetworkCallback(INTERNET_NETWORK_REQUEST, mNetworkCallback);
             mSubManager.addOnSubscriptionsChangedListener(mExecutor, mSubListener);
@@ -289,6 +294,9 @@ public class Smart5gService extends SystemService {
         } else if (isConnectedToWifi()) { // if both wifi/data are enabled for e.g smart download feature on some apps
             dlog("shouldDisable5g: connected to wifi");
             return true;
+        } else if (isBatteryLow()) {
+            dlog("shouldDisable5g: battery is low");
+            return true;
         }
         dlog("shouldDisable5g: subId=" + subId + " mIsPowerSaveMode=" + mIsPowerSaveMode
                 + " mIsOnMobileData=" + mIsOnMobileData + " mDefaultDataSubId="
@@ -320,6 +328,13 @@ public class Smart5gService extends SystemService {
         NetworkCapabilities capabilities = mConnectivityManager.getNetworkCapabilities(
                 mConnectivityManager.getActiveNetwork());
         return capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
+    }
+    
+    private boolean isBatteryLow() {
+        BatteryManager batteryManager = (BatteryManager) mContext.getSystemService(Context.BATTERY_SERVICE);
+        int batteryLevel = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+        dlog("isBatteryLow: Battery level is " + batteryLevel + "%");
+        return batteryLevel < 10;
     }
 
     private static void dlog(String msg) {
