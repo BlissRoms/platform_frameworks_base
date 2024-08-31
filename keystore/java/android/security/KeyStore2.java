@@ -24,7 +24,6 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.ServiceSpecificException;
 import android.os.StrictMode;
-import android.os.SystemProperties;
 import android.security.keymaster.KeymasterDefs;
 import android.system.keystore2.Domain;
 import android.system.keystore2.IKeystoreService;
@@ -34,8 +33,6 @@ import android.system.keystore2.ResponseCode;
 import android.util.Log;
 
 import java.util.Calendar;
-
-import com.android.internal.util.bliss.PixelPropsUtils;
 
 /**
  * @hide This should not be made public in its present form because it
@@ -286,12 +283,7 @@ public class KeyStore2 {
             throws KeyStoreException {
         StrictMode.noteDiskRead();
 
-        KeyEntryResponse response = handleRemoteExceptionWithRetry((service) -> service.getKeyEntry(descriptor));
-        if (SystemProperties.getBoolean("persist.sys.pihooks.enable", true)) {
-        return PixelPropsUtils.onGetKeyEntry(response);
-        } else {
-            return response;
-        }
+        return handleRemoteExceptionWithRetry((service) -> service.getKeyEntry(descriptor));
     }
 
     /**
