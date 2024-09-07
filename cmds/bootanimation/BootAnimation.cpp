@@ -68,14 +68,16 @@
 #define STR(x)   #x
 #define STRTO(x) STR(x)
 
+#define TYPE_FORCED 3  // Must match com.bliss.view.DisplayResolutionManager.TYPE_FORCED
+
 namespace android {
 
 using ui::DisplayMode;
 
 static const char OEM_BOOTANIMATION_FILE[] = "/oem/media/bootanimation.zip";
 static const char PRODUCT_BOOTANIMATION_DIR[] = "/product/media/";
-static const char PRODUCT_BOOTANIMATION_DARK_FILE[] = "bootanimation-dark.zip";
 static const char PRODUCT_BOOTANIMATION_FILE[] = "bootanimation.zip";
+static const char PRODUCT_BOOTANIMATION_LOWER_RESOLUTION_FILE[] = "bootanimation-lower_resolution.zip";
 static const char SYSTEM_BOOTANIMATION_FILE[] = "/system/media/bootanimation.zip";
 static const char APEX_BOOTANIMATION_FILE[] = "/apex/com.android.bootanimation/etc/bootanimation.zip";
 static const char OEM_SHUTDOWNANIMATION_FILE[] = "/oem/media/shutdownanimation.zip";
@@ -500,13 +502,25 @@ status_t BootAnimation::initDisplaysAndSurfaces() {
             return error;
         }
         ui::Size resolution = displayMode.resolution;
+        
+        // Apply custom display resolution switch if enabled
+        const bool shouldScale =
+                android::base::GetIntProperty("ro.bliss.display.resolution_switch", 0) == TYPE_FORCED &&
+                android::base::GetIntProperty("persist.sys.bliss.bootanimation.scale", 0) == 1;
+        if (shouldScale) {
+            resolution.width = (int) (resolution.width * 0.75f);
+            resolution.height = (int) (resolution.height * 0.75f);
+        }
+        
         // Clamp each surface to max size
         resolution = limitSurfaceSize(resolution.width, resolution.height);
+        
         // Create the native surface
         display.surfaceControl =
                 session()->createSurface(String8("BootAnimation"), resolution.width,
                                          resolution.height, PIXEL_FORMAT_RGB_565,
                                          ISurfaceComposerClient::eOpaque);
+                                         
         // Attach surface to layerstack, and associate layerstack with physical display
         configureDisplayAndLayerStack(display, ui::LayerStack::fromValue(displayIdx));
         display.surface = display.surfaceControl->getSurface();
@@ -522,6 +536,15 @@ status_t BootAnimation::initDisplaysAndSurfaces() {
         display.initWidth = display.width = w;
         display.initHeight = display.height = h;
         mTargetInset = -1;
+
+        // Scale forced resolution to physical resolution if needed
+        if (shouldScale) {
+            Rect forcedRes(0, 0, resolution.width, resolution.height);
+            Rect physRes(0, 0, displayMode.resolution.width, displayMode.resolution.height);
+            SurfaceComposerClient::Transaction t;
+            t.setDisplayProjection(display.displayToken, ui::ROTATION_0, forcedRes, physRes);
+            t.apply();
+        }
 
         // Rotate the boot animation according to the value specified in the sysprop
         // ro.bootanim.set_orientation_<display_id>. Four values are supported: ORIENTATION_0,
@@ -662,10 +685,12 @@ bool BootAnimation::findBootAnimationFileInternal(const std::vector<std::string>
 
 void BootAnimation::findBootAnimationFile() {
     ATRACE_CALL();
-    const bool playDarkAnim = android::base::GetIntProperty("ro.boot.theme", 0) == 1;
+    const bool shouldScale =
+            android::base::GetIntProperty("ro.bliss.display.resolution_switch", 0) == TYPE_FORCED &&
+            android::base::GetIntProperty("persist.sys.bliss.bootanimation.scale", 0) == 1;
     const std::string productBootanimationFile = PRODUCT_BOOTANIMATION_DIR +
-        android::base::GetProperty("ro.product.bootanim.file", playDarkAnim ?
-        PRODUCT_BOOTANIMATION_DARK_FILE : PRODUCT_BOOTANIMATION_FILE);
+        android::base::GetProperty("ro.product.bootanim.file", shouldScale ?
+        PRODUCT_BOOTANIMATION_LOWER_RESOLUTION_FILE : PRODUCT_BOOTANIMATION_FILE);
     static const std::vector<std::string> bootFiles = {
         APEX_BOOTANIMATION_FILE, productBootanimationFile,
         OEM_BOOTANIMATION_FILE, SYSTEM_BOOTANIMATION_FILE

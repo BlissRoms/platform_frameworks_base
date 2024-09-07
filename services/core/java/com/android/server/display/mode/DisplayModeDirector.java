@@ -36,6 +36,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -82,6 +83,7 @@ import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.display.BrightnessSynchronizer;
 import com.android.internal.os.BackgroundThread;
+import com.android.server.DisplayResolutionController;
 import com.android.server.LocalServices;
 import com.android.server.display.DisplayDeviceConfig;
 import com.android.server.display.ModeRequestManager;
@@ -338,6 +340,12 @@ public class DisplayModeDirector {
                         votes, lowestConsideredPriority, highestConsideredPriority);
 
                 primarySummary.adjustSize(defaultMode, modes);
+
+                final Point p = DisplayResolutionController.getInstance().getResolution(); 
+                if (p.x > 0 && p.y > 0) {
+                    primarySummary.width = p.x;
+                    primarySummary.height = p.y;
+                }
 
                 availableModes = primarySummary.filterModes(modes);
                 if (!availableModes.isEmpty()) {
