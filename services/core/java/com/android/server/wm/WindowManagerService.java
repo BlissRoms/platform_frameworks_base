@@ -898,6 +898,7 @@ public class WindowManagerService extends IWindowManager.Stub
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(mDevelopmentOverrideDesktopExperienceUri, false, this,
                     UserHandle.USER_ALL);
+            WindowManagerServiceExt.getInstance().registerContentObserver(this);
         }
 
         @Override
@@ -950,6 +951,10 @@ public class WindowManagerService extends IWindowManager.Stub
                 return;
             }
 
+            if (WindowManagerServiceExt.getInstance().onSettingsChanged(uri)) {
+                return;
+            }
+
             @UpdateAnimationScaleMode
             final int mode;
             if (mWindowAnimationScaleUri.equals(uri)) {
@@ -970,6 +975,7 @@ public class WindowManagerService extends IWindowManager.Stub
             updateMaximumObscuringOpacityForTouch();
             updateDisableSecureWindows();
             updateMagnifyIme();
+            WindowManagerServiceExt.getInstance().loadSettings();
         }
 
         void updateMaximumObscuringOpacityForTouch() {
@@ -1524,6 +1530,8 @@ public class WindowManagerService extends IWindowManager.Stub
         mContext.registerReceiverAsUser(mBroadcastReceiver, UserHandle.ALL, filter, null, null);
 
         mLatencyTracker = LatencyTracker.getInstance(context);
+
+        WindowManagerServiceExt.getInstance().init(this);
 
         mSettingsObserver = new SettingsObserver();
 
@@ -3678,6 +3686,7 @@ public class WindowManagerService extends IWindowManager.Stub
 
     @Override
     public void onUserSwitched() {
+        WindowManagerServiceExt.getInstance().onUserSwitched();
         synchronized (mGlobalLock) {
             // force a re-application of focused window sysui visibility on each display.
             mRoot.forAllDisplayPolicies(DisplayPolicy::resetSystemBarAttributes);
@@ -6117,6 +6126,8 @@ public class WindowManagerService extends IWindowManager.Stub
         if (mAppLockController != null) {
             mAppLockController.systemReady();
         }
+
+        WindowManagerServiceExt.getInstance().systemReady();
     }
 
 
