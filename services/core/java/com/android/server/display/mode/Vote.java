@@ -154,9 +154,15 @@ interface Vote {
     // set to a high priority.
     int PRIORITY_PROXIMITY = 23;
 
+    // User preferred refresh rate for specific apps
+    int PRIORITY_USER_PREFERRED = 24;
+
+    // Force display to requested refresh rate in MEMC mode
+    int PRIORITY_MEMC = 25;
+
     // The Under-Display Fingerprint Sensor (UDFPS) needs the refresh rate to be locked in order
     // to function, so this needs to be the highest priority of all votes.
-    int PRIORITY_UDFPS = 24;
+    int PRIORITY_UDFPS = 26;
 
     @IntDef(prefix = { "PRIORITY_" }, value = {
             PRIORITY_DEFAULT_RENDER_FRAME_RATE,
@@ -183,6 +189,8 @@ interface Vote {
             PRIORITY_FLICKER_REFRESH_RATE_SWITCH,
             PRIORITY_SKIN_TEMPERATURE,
             PRIORITY_PROXIMITY,
+            PRIORITY_USER_PREFERRED,
+            PRIORITY_MEMC,
             PRIORITY_UDFPS
     })
     @Retention(RetentionPolicy.SOURCE)
@@ -328,6 +336,10 @@ interface Vote {
                 return "PRIORITY_LOW_POWER_MODE_RENDER_RATE";
             case PRIORITY_SKIN_TEMPERATURE:
                 return "PRIORITY_SKIN_TEMPERATURE";
+            case PRIORITY_USER_PREFERRED:
+                return "PRIORITY_USER_PREFERRED";
+            case PRIORITY_MEMC:
+                return "PRIORITY_MEMC";
             case PRIORITY_UDFPS:
                 return "PRIORITY_UDFPS";
             case PRIORITY_USER_SETTING_MIN_RENDER_FRAME_RATE:

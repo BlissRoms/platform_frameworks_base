@@ -6752,8 +6752,7 @@ public class WindowManagerService extends IWindowManager.Stub
                 // Clear forced display density
                 final DisplayContent displayContent = mRoot.getDisplayContent(displayId);
                 if (displayContent != null) {
-                    displayContent.setForcedDensity(displayContent.getInitialDisplayDensity(),
-                            callingUserId);
+	            displayContent.setForcedDensity(density, targetUserId);
                     return;
                 }
 

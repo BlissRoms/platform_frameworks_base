@@ -19605,6 +19605,12 @@ public final class Settings {
                 "uids_allowed_on_restricted_networks";
 
         /**
+         * Whether refresh rate should be switched to 60Hz on power save mode.
+         * @hide
+         */
+        public static final String LOW_POWER_REFRESH_RATE = "low_power_rr_switch";
+
+        /**
          * A semi-colon separated list of Bluetooth hearing devices' local ambient volume data.
          * Each entry is encoded as a key=value list, separated by commas. Ex:
          *
