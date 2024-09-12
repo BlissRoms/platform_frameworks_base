@@ -119,7 +119,9 @@ public class BlissUtils {
         } else {
             value = "Error";
         }
-        return value == "Error" ? "N/A" : String.format("%s", Integer.parseInt(value) / 1000) + "°C";
+        int cpuTempMultiplier = context.getResources().getInteger(
+                com.android.internal.R.integer.config_sysCPUTempMultiplier);
+        return value == "Error" ? "N/A" : String.format("%s", Integer.parseInt(value) / cpuTempMultiplier) + "°C";
     }
 
     public static boolean fileExists(String filename) {
