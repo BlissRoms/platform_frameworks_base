@@ -1119,6 +1119,10 @@ public class KeyguardIndicationController {
                      Settings.System.CUSTOM_KEYGUARD_SHOW_BATTERY_BAR, 0, UserHandle.USER_CURRENT) == 1;
             boolean showBatteryBarAlways = Settings.System.getIntForUser(mContext.getContentResolver(),
                      Settings.System.CUSTOM_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS, 0, UserHandle.USER_CURRENT) == 1;
+            int batteryBarSource = Settings.System.getIntForUser(mContext.getContentResolver(),
+                     Settings.System.CUSTOM_KEYGUARD_BATTERY_BAR_COLOR_SOURCE, 2, UserHandle.USER_CURRENT);
+            int batteryBarColor = Settings.System.getIntForUser(mContext.getContentResolver(),
+                     Settings.System.CUSTOM_KEYGUARD_BATTERY_BAR_CUSTOM_COLOR, 0xFF39FF42, UserHandle.USER_CURRENT);
             // A few places might need to hide the indication, so always start by making it visible
             mIndicationArea.setVisibility(VISIBLE);
 
@@ -1167,7 +1171,13 @@ public class KeyguardIndicationController {
                     if (showBatteryBar || showBatteryBarAlways) {
                         mBatteryBar.setVisibility(View.VISIBLE);
                         mBatteryBar.setBatteryPercent(mBatteryLevel);
-                        mBatteryBar.setBarColor(Color.WHITE);
+                        if (batteryBarSource == 2) {
+                            mBatteryBar.setBarColor(batteryBarColor);
+                        } else if (batteryBarSource == 1) {
+                            mBatteryBar.setBarColor(mContext.getColor(R.color.ambient_batterybar_color));
+                        } else {
+                            mBatteryBar.setBarColor(Color.WHITE);
+                        }
                     }
                     setWakelock = animate;
                 } else {
@@ -1223,7 +1233,13 @@ public class KeyguardIndicationController {
                     if (showBatteryBarAlways) {
                         mBatteryBar.setVisibility(View.VISIBLE);
                         mBatteryBar.setBatteryPercent(mBatteryLevel);
-                        mBatteryBar.setBarColor(Color.WHITE);
+                        if (batteryBarSource == 2) {
+                            mBatteryBar.setBarColor(batteryBarColor);
+                        } else if (batteryBarSource == 1) {
+                            mBatteryBar.setBarColor(mContext.getColor(R.color.ambient_batterybar_color));
+                        } else {
+                            mBatteryBar.setBarColor(Color.WHITE);
+                        }
                     }
                     setWakelock = false;
                 }
