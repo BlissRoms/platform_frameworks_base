@@ -7467,6 +7467,15 @@ public final class Settings {
         public static final String AMBIENT_SHOW_SETTINGS_ICONS = "ambient_show_settings_icons";
 
         /**
+         * @hide
+         */
+        public static final String CUSTOM_KEYGUARD_SHOW_BATTERY_BAR = "sysui_keyguard_show_battery_bar";
+        /**
+         * @hide
+         */
+        public static final String CUSTOM_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS = "sysui_keyguard_show_battery_bar_always";
+
+        /**
          * These are all public system settings
          *
          * @hide

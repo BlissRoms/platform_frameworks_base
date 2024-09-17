@@ -125,6 +125,7 @@ import com.android.systemui.statusbar.phone.KeyguardBypassController;
 import com.android.systemui.statusbar.phone.KeyguardIndicationTextView;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
+import com.android.systemui.bliss.BatteryBarView;
 import com.android.systemui.util.AlarmTimeout;
 import com.android.systemui.util.concurrency.DelayableExecutor;
 import com.android.systemui.util.wakelock.SettableWakeLock;
@@ -245,6 +246,8 @@ public class KeyguardIndicationController {
 
     private IBatteryPropertiesRegistrar mBatteryPropertiesRegistrar;
     private int mCurrentDivider;
+
+    private BatteryBarView mBatteryBar;
 
     private KeyguardUpdateMonitorCallback mUpdateMonitorCallback;
 
@@ -460,6 +463,7 @@ public class KeyguardIndicationController {
                 mKeyguardLogger,
                 mFeatureFlags
         );
+        mBatteryBar = indicationArea.findViewById(R.id.battery_bar_view);
         updateDeviceEntryIndication(false /* animate */);
         updateOrganizedOwnedDevice();
         if (mBroadcastReceiver == null) {
@@ -1110,107 +1114,152 @@ public class KeyguardIndicationController {
             return;
         }
 
-        // Device is dreaming and the dream is hosted in lockscreen
-        if (mIsActiveDreamLockscreenHosted) {
-            mIndicationArea.setVisibility(GONE);
-            return;
-        }
+        if (mVisible) {
+            boolean showBatteryBar = Settings.System.getIntForUser(mContext.getContentResolver(),
+                     Settings.System.CUSTOM_KEYGUARD_SHOW_BATTERY_BAR, 0, UserHandle.USER_CURRENT) == 1;
+            boolean showBatteryBarAlways = Settings.System.getIntForUser(mContext.getContentResolver(),
+                     Settings.System.CUSTOM_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS, 0, UserHandle.USER_CURRENT) == 1;
+            // A few places might need to hide the indication, so always start by making it visible
+            mIndicationArea.setVisibility(VISIBLE);
 
-        // A few places might need to hide the indication, so always start by making it visible
-        mIndicationArea.setVisibility(VISIBLE);
+            // Walk down a precedence-ordered list of what indication
+            // should be shown based on user or device state
+            // AoD
+            mBatteryBar.setVisibility(View.GONE);
 
-        // Walk down a precedence-ordered list of what indication
-        // should be shown based on device state
-        if (mDozing) {
-            boolean useMisalignmentColor = false;
-            mLockScreenIndicationView.setVisibility(View.GONE);
-            mTopIndicationView.setVisibility(VISIBLE);
-            CharSequence newIndication = "";
-            if (!TextUtils.isEmpty(mBiometricMessage)) {
-                newIndication = mBiometricMessage; // note: doesn't show mBiometricMessageFollowUp
-            } else if (!TextUtils.isEmpty(mTransientIndication)) {
-                newIndication = mTransientIndication;
-            } else if (!mBatteryPresent) {
-                // If there is no battery detected, hide the indication and bail
+            // Device is dreaming and the dream is hosted in lockscreen
+            if (mIsActiveDreamLockscreenHosted) {
                 mIndicationArea.setVisibility(GONE);
                 return;
-            } else if (!TextUtils.isEmpty(mAlignmentIndication)) {
-                useMisalignmentColor = true;
-                newIndication = mAlignmentIndication;
-            } else if (mPowerPluggedIn || mEnableBatteryDefender) {
-                newIndication = computePowerIndication();
-            } else {
-                String batteryLevel = NumberFormat.getPercentInstance().format(mBatteryLevel / 100f);
-                String batteryTemp = com.android.internal.util.bliss.BlissUtils.batteryTemperature(mContext, false);
-                String cpuTemp = com.android.internal.util.bliss.BlissUtils.batteryTemperature(mContext, false);
-
-                Drawable batteryIcon = mContext.getDrawable(R.drawable.ic_ambient_battery);
-                Drawable cpuIcon = mContext.getDrawable(R.drawable.ic_ambient_cpu);
-                Drawable temperatureIcon = mContext.getDrawable(R.drawable.ic_ambient_temperature);
-
-                if (batteryIcon != null) {
-                    batteryIcon.setBounds(0, 0, batteryIcon.getIntrinsicWidth(), batteryIcon.getIntrinsicHeight());
-                }
-
-                if (cpuIcon != null) {
-                    cpuIcon.setBounds(0, 0, cpuIcon.getIntrinsicWidth(), cpuIcon.getIntrinsicHeight());
-                }
-
-                if (temperatureIcon != null) {
-                    temperatureIcon.setBounds(0, 0, temperatureIcon.getIntrinsicWidth(), temperatureIcon.getIntrinsicHeight());
-                }
-
-                SpannableStringBuilder indicationBuilder = new SpannableStringBuilder();
-
-                switch (getAmbientShowSettings()) {
-                    case 1: // Show battery level
-                        appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
-                        newIndication = indicationBuilder;
-                        break;
-
-                    case 2: // Battery level & battery temperature
-                        appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
-                        appendWithSeparator(indicationBuilder, " | ");
-                        appendIcons(indicationBuilder, batteryTemp, temperatureIcon, ambientShowSettingsIcon());
-                        newIndication = indicationBuilder;
-                        break;
-
-                    case 3: // Battery level, battery temperature & CPU temperature
-                        appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
-                        appendWithSeparator(indicationBuilder, " | ");
-                        appendIcons(indicationBuilder, batteryTemp, temperatureIcon, ambientShowSettingsIcon());
-                        appendWithSeparator(indicationBuilder, " | ");
-                        appendIcons(indicationBuilder, cpuTemp, cpuIcon, ambientShowSettingsIcon());
-                        newIndication = indicationBuilder;
-                        break;
-
-                    case 0: // Hidden
-                    default:
-                        newIndication = "";
-                        break;
-                }
             }
 
-            if (!TextUtils.equals(mTopIndicationView.getText(), newIndication)) {
-                mWakeLock.setAcquired(true);
-                mTopIndicationView.switchIndication(newIndication,
-                        new KeyguardIndication.Builder()
-                                .setMessage(newIndication)
-                                .setTextColor(ColorStateList.valueOf(
-                                        useMisalignmentColor
-                                                ? mContext.getColor(R.color.misalignment_text_color)
-                                                : Color.WHITE))
-                                .build(),
-                        animate, () -> mWakeLock.setAcquired(false));
-            }
-            return;
-        }
+            // A few places might need to hide the indication, so always start by making it visible
+            mIndicationArea.setVisibility(VISIBLE);
 
-        // LOCK SCREEN
+            // Walk down a precedence-ordered list of what indication
+            // should be shown based on device state
+            if (mDozing) {
+                boolean useMisalignmentColor = false;
+                mLockScreenIndicationView.setVisibility(View.GONE);
+                mTopIndicationView.setVisibility(VISIBLE);
+                mTopIndicationView.setTextColor(Color.WHITE);
+                CharSequence newIndication = "";
+                boolean setWakelock = false;
+
+                if (!TextUtils.isEmpty(mBiometricMessage)) {
+                    newIndication = mBiometricMessage; // note: doesn't show mBiometricMessageFollowUp
+                    setWakelock = true;
+                } else if (!TextUtils.isEmpty(mTransientIndication)) {
+                    newIndication = mTransientIndication;
+                    setWakelock = true;
+                } else if (!mBatteryPresent) {
+                    // If there is no battery detected, hide the indication and bail
+                    mIndicationArea.setVisibility(GONE);
+                    setWakelock = false;
+                    return;
+                } else if (!TextUtils.isEmpty(mAlignmentIndication)) {
+                    useMisalignmentColor = true;
+                    newIndication = mAlignmentIndication;
+                    mTopIndicationView.setTextColor(mContext.getColor(R.color.misalignment_text_color));
+                    setWakelock = false;
+                } else if (mPowerPluggedIn || mEnableBatteryDefender) {
+                    newIndication = computePowerIndication();
+                    if (showBatteryBar || showBatteryBarAlways) {
+                        mBatteryBar.setVisibility(View.VISIBLE);
+                        mBatteryBar.setBatteryPercent(mBatteryLevel);
+                        mBatteryBar.setBarColor(Color.WHITE);
+                    }
+                    setWakelock = animate;
+                } else {
+                    String batteryLevel = NumberFormat.getPercentInstance().format(mBatteryLevel / 100f);
+                    String batteryTemp = com.android.internal.util.bliss.BlissUtils.batteryTemperature(mContext, false);
+                    String cpuTemp = com.android.internal.util.bliss.BlissUtils.getCPUTemp(mContext);
+
+                    Drawable batteryIcon = mContext.getDrawable(R.drawable.ic_ambient_battery);
+                    Drawable cpuIcon = mContext.getDrawable(R.drawable.ic_ambient_cpu);
+                    Drawable temperatureIcon = mContext.getDrawable(R.drawable.ic_ambient_temperature);
+
+                    if (batteryIcon != null) {
+                        batteryIcon.setBounds(0, 0, batteryIcon.getIntrinsicWidth(), batteryIcon.getIntrinsicHeight());
+                    }
+
+                    if (cpuIcon != null) {
+                        cpuIcon.setBounds(0, 0, cpuIcon.getIntrinsicWidth(), cpuIcon.getIntrinsicHeight());
+                    }
+
+                    if (temperatureIcon != null) {
+                        temperatureIcon.setBounds(0, 0, temperatureIcon.getIntrinsicWidth(), temperatureIcon.getIntrinsicHeight());
+                    }
+
+                    SpannableStringBuilder indicationBuilder = new SpannableStringBuilder();
+
+                    switch (getAmbientShowSettings()) {
+                        case 1: // Show battery level
+                            appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
+                            newIndication = indicationBuilder;
+                            break;
+
+                        case 2: // Battery level & battery temperature
+                            appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
+                            appendWithSeparator(indicationBuilder, " | ");
+                            appendIcons(indicationBuilder, batteryTemp, temperatureIcon, ambientShowSettingsIcon());
+                            newIndication = indicationBuilder;
+                            break;
+
+                        case 3: // Battery level, battery temperature & CPU temperature
+                            appendIcons(indicationBuilder, batteryLevel, batteryIcon, ambientShowSettingsIcon());
+                            appendWithSeparator(indicationBuilder, " | ");
+                            appendIcons(indicationBuilder, batteryTemp, temperatureIcon, ambientShowSettingsIcon());
+                            appendWithSeparator(indicationBuilder, " | ");
+                            appendIcons(indicationBuilder, cpuTemp, cpuIcon, ambientShowSettingsIcon());
+                            newIndication = indicationBuilder;
+                            break;
+
+                        case 0: // Hidden
+                        default:
+                            newIndication = "";
+                            break;
+                    }
+                    if (showBatteryBarAlways) {
+                        mBatteryBar.setVisibility(View.VISIBLE);
+                        mBatteryBar.setBatteryPercent(mBatteryLevel);
+                        mBatteryBar.setBarColor(Color.WHITE);
+                    }
+                    setWakelock = false;
+                }
+
+                if (!TextUtils.equals(mTopIndicationView.getText(), newIndication)) {
+                    if (setWakelock) {
+                        mWakeLock.setAcquired(true);
+                        mTopIndicationView.switchIndication(newIndication,
+                            new KeyguardIndication.Builder()
+                                    .setMessage(newIndication)
+                                    .setTextColor(ColorStateList.valueOf(
+                                            useMisalignmentColor
+                                                    ? mContext.getColor(R.color.misalignment_text_color)
+                                                    : Color.WHITE))
+                                    .build(),
+                            animate, () -> mWakeLock.setAcquired(false));
+                    } else {
+                        mTopIndicationView.switchIndication(newIndication,
+                            new KeyguardIndication.Builder()
+                                    .setMessage(newIndication)
+                                    .setTextColor(ColorStateList.valueOf(
+                                            useMisalignmentColor
+                                                    ? mContext.getColor(R.color.misalignment_text_color)
+                                                    : Color.WHITE))
+                                    .build(), animate, null /* onAnimationEndCallback */);
+                    }
+                }
+                return;
+            }
+
+            // LOCK SCREEN
         mTopIndicationView.setVisibility(GONE);
         mTopIndicationView.setText(null);
         mLockScreenIndicationView.setVisibility(View.VISIBLE);
         updateLockScreenIndications(animate, getCurrentUser());
+        }
     }
 
     private int getAmbientShowSettings() {
