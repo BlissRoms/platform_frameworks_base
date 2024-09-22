@@ -1,5 +1,6 @@
 /*
 * Copyright (C) 2019 The OmniROM Project
+*           (C) 2024 tenX-OS
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -21,8 +22,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,12 +38,12 @@ public class BatteryBarView extends LinearLayout {
     private Runnable mBarUpdate = new Runnable() {
         @Override
         public void run() {
-            mCurrentWidth = (mMaxWidth / 100) * mPercent;
             ViewGroup.LayoutParams barParams = mBarForground.getLayoutParams();
             barParams.width = mCurrentWidth;
             mBarForground.setLayoutParams(barParams);
         }
     };
+
     public BatteryBarView(Context context) {
         this(context, null);
     }
@@ -68,10 +67,24 @@ public class BatteryBarView extends LinearLayout {
         mInitDone = false;
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        mMaxWidth = getWidth();
+        if (mInitDone) {
+            post(mBarUpdate);
+        }
+    }
+
     public void setBatteryPercent(int percent) {
         mPercent = percent;
         if (mMaxWidth != 0) {
             mInitDone = true;
+            if (mPercent == 100) {
+                mCurrentWidth = mMaxWidth;
+            } else {
+                mCurrentWidth = (mMaxWidth / 100) * mPercent;
+            }
             post(mBarUpdate);
         }
     }
@@ -87,7 +100,6 @@ public class BatteryBarView extends LinearLayout {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        mMaxWidth = getWidth();
         if (!mInitDone) {
             mInitDone = true;
             post(mBarUpdate);
