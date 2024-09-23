@@ -60,6 +60,16 @@
             android:textAppearance="@style/TextAppearance.Keyguard.BottomArea"
             android:accessibilityLiveRegion="polite"/>
 
+        <View
+            android:id="@+id/transparent_keyguard_view"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@*android:color/transparent"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:visibility="gone" />
+
         <com.android.systemui.bliss.BatteryBarView
             android:id="@+id/battery_bar_view"
             android:layout_width="match_parent"

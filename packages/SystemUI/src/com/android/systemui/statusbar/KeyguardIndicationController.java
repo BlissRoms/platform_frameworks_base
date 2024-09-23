@@ -248,6 +248,7 @@ public class KeyguardIndicationController {
     private int mCurrentDivider;
 
     private BatteryBarView mBatteryBar;
+    private View mTransparentView;
 
     private KeyguardUpdateMonitorCallback mUpdateMonitorCallback;
 
@@ -463,6 +464,7 @@ public class KeyguardIndicationController {
                 mKeyguardLogger,
                 mFeatureFlags
         );
+        mTransparentView = indicationArea.findViewById(R.id.transparent_keyguard_view);
         mBatteryBar = indicationArea.findViewById(R.id.battery_bar_view);
         updateDeviceEntryIndication(false /* animate */);
         updateOrganizedOwnedDevice();
@@ -1130,6 +1132,7 @@ public class KeyguardIndicationController {
             // should be shown based on user or device state
             // AoD
             mBatteryBar.setVisibility(View.GONE);
+            mTransparentView.setVisibility(View.GONE);
 
             // Device is dreaming and the dream is hosted in lockscreen
             if (mIsActiveDreamLockscreenHosted) {
@@ -1171,6 +1174,11 @@ public class KeyguardIndicationController {
                     if (showBatteryBar || showBatteryBarAlways) {
                         mBatteryBar.setVisibility(View.VISIBLE);
                         mBatteryBar.setBatteryPercent(mBatteryLevel);
+                        if (ambientShowSettingsIcon()) {
+                            mTransparentView.setVisibility(View.VISIBLE);
+                        } else {
+                            mTransparentView.setVisibility(View.GONE);
+                        }
                         if (batteryBarSource == 2) {
                             mBatteryBar.setBarColor(batteryBarColor);
                         } else if (batteryBarSource == 1) {
@@ -1233,6 +1241,11 @@ public class KeyguardIndicationController {
                     if (showBatteryBarAlways) {
                         mBatteryBar.setVisibility(View.VISIBLE);
                         mBatteryBar.setBatteryPercent(mBatteryLevel);
+                        if (ambientShowSettingsIcon()) {
+                            mTransparentView.setVisibility(View.VISIBLE);
+                        } else {
+                            mTransparentView.setVisibility(View.GONE);
+                        }
                         if (batteryBarSource == 2) {
                             mBatteryBar.setBarColor(batteryBarColor);
                         } else if (batteryBarSource == 1) {
