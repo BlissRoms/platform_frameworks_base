@@ -6096,6 +6096,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         }
                         if (!isAlreadyRunning(intent)) {
                             isWakeKey = true;
+                            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, "Camera key - Launch Camera");
                             startActivityAsUser(intent, UserHandle.CURRENT_OR_SELF);
                         }
                     }
