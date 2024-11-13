@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "08eb3eda_02c261e4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000142
+      },
+      "writtenOn": "2024-11-13T02:40:16Z",
+      "side": 1,
+      "message": "Only needed for Nothing Camera for Phone (1), probably Phone (2) nd CMF Phones who ship NOS Cams",
+      "revId": "4650d0c9872b8f7a715d03ec1474209620af1cb6",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    }
+  ]
+}
