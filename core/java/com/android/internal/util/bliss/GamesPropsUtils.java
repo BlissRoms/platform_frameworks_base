@@ -31,6 +31,7 @@ import java.util.Map;
  */
 public final class GamesPropsUtils {
 
+    private static final String ENABLE_GAME_PROP_OPTIONS = "persist.sys.gameprops.enabled";
     private static final String TAG = GamesPropsUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
 
@@ -111,7 +112,7 @@ public final class GamesPropsUtils {
             return;
         }
         Map<String, Object> propsToChange = null;
-        if (!SystemProperties.getBoolean("persist.sys.gamehooks.enable", false)) {
+        if (!SystemProperties.getBoolean(ENABLE_GAME_PROP_OPTIONS, false)) {
             return;
         } else {
             if (Arrays.asList(packagesToChangeBS4).contains(packageName)) {
@@ -135,6 +136,35 @@ public final class GamesPropsUtils {
             for (Map.Entry<String, Object> prop : propsToChange.entrySet()) {
                 String key = prop.getKey();
                 Object value = prop.getValue();
+                setPropValue(key, value);
+            }
+        }
+    }
+
+    public static void setGameProps(String packageName) {
+        setGameProps(packageName);
+        if (!SystemProperties.getBoolean(ENABLE_GAME_PROP_OPTIONS, false)) {
+            return;
+        }
+        if (packageName == null || packageName.isEmpty()) {
+            return;
+        }
+        Map<String, String> gamePropsToChange = new HashMap<>();
+        String[] keys = {"BRAND", "DEVICE", "MANUFACTURER", "MODEL"};
+        for (String key : keys) {
+            String systemPropertyKey = "persist.sys.gameprops." + packageName + "." + key;
+            String value = SystemProperties.get(systemPropertyKey);
+            if (value != null && !value.isEmpty()) {
+                gamePropsToChange.put(key, value);
+                if (DEBUG) Log.d(TAG, "Got system property: " + systemPropertyKey + " = " + value);
+            }
+        }
+        if (!gamePropsToChange.isEmpty()) {
+            if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            for (Map.Entry<String, String> prop : gamePropsToChange.entrySet()) {
+                String key = prop.getKey();
+                String value = prop.getValue();
+                if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
                 setPropValue(key, value);
             }
         }
