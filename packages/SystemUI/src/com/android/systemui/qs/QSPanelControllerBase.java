@@ -43,6 +43,7 @@ import com.android.systemui.qs.customize.QSCustomizerController;
 import com.android.systemui.qs.external.CustomTile;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tiles.FlashlightStrengthTile;
+import com.android.systemui.qs.tiles.VolumeControlTile;
 import com.android.systemui.qs.tileimpl.QSTileViewImpl;
 import com.android.systemui.qs.tileimpl.SliderQSTileViewImpl;
 import com.android.systemui.qs.tileimpl.SlideableQSTile;
@@ -426,6 +427,22 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         mView.addTile(r);
         mRecords.add(r);
         mCachedSpecs = getTilesSpecs();
+    }
+
+    private QSTileView createTileView(final QSTile tile, boolean collapsedView,
+            QSLongPressEffect longPressEffect) {
+        switch (tile.getTileSpec()) {
+            case FlashlightStrengthTile.TILE_SPEC:
+            case VolumeControlTile.TILE_SPEC:
+                SlideableQSTile slideableQSTile = (SlideableQSTile) tile;
+                return new SliderQSTileViewImpl(
+                        getContext(),
+                        collapsedView,
+                        slideableQSTile);
+            default:
+                return new QSTileViewImpl(
+                        getContext(), collapsedView, longPressEffect);
+        }
     }
 
     /** */
