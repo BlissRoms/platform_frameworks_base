@@ -45,6 +45,7 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.SparseArray;
 import android.view.DisplayCutout;
@@ -1220,8 +1221,8 @@ class InsetsPolicy {
     void updateLockedStatus() {
         mLastSwipeTime = 0L;
         mLastUnlockedTime = 0L;
-        mLockedGesture = Settings.System.getInt(mPolicy.getContext().getContentResolver(),
-                Settings.System.LOCK_GESTURE_STATUS, 0) == 1;
+        mLockedGesture = Settings.System.getIntForUser(mPolicy.getContext().getContentResolver(),
+                Settings.System.LOCK_GESTURE_STATUS, 0, UserHandle.USER_CURRENT) == 1;
     }
 
     void warnGestureLocked() {
