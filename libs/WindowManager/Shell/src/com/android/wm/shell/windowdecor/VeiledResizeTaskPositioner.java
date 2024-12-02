@@ -46,7 +46,7 @@ import java.util.function.Supplier;
 public class VeiledResizeTaskPositioner implements DragPositioningCallback,
         TaskDragResizer, Transitions.TransitionHandler {
 
-    private WindowDecoration<?> mDesktopWindowDecoration;
+    private DesktopModeWindowDecoration mDesktopWindowDecoration;
     private ShellTaskOrganizer mTaskOrganizer;
     private DisplayController mDisplayController;
     private DragPositioningCallbackUtility.DragStartListener mDragStartListener;
@@ -61,7 +61,7 @@ public class VeiledResizeTaskPositioner implements DragPositioningCallback,
     @Surface.Rotation private int mRotation;
 
     public VeiledResizeTaskPositioner(ShellTaskOrganizer taskOrganizer,
-            WindowDecoration<?> windowDecoration,
+            DesktopModeWindowDecoration windowDecoration,
             DisplayController displayController,
             DragPositioningCallbackUtility.DragStartListener dragStartListener,
             Transitions transitions) {
@@ -70,7 +70,7 @@ public class VeiledResizeTaskPositioner implements DragPositioningCallback,
     }
 
     public VeiledResizeTaskPositioner(ShellTaskOrganizer taskOrganizer,
-            WindowDecoration<?> windowDecoration,
+            DesktopModeWindowDecoration windowDecoration,
             DisplayController displayController,
             DragPositioningCallbackUtility.DragStartListener dragStartListener,
             Supplier<SurfaceControl.Transaction> supplier, Transitions transitions) {
@@ -114,22 +114,10 @@ public class VeiledResizeTaskPositioner implements DragPositioningCallback,
                 mRepositionTaskBounds, mTaskBoundsAtDragStart, mStableBounds, delta,
                 mDisplayController, mDesktopWindowDecoration)) {
             if (!mIsResizingOrAnimatingResize) {
-                if(mDesktopWindowDecoration instanceof DesktopModeWindowDecoration) {
-                    ((DesktopModeWindowDecoration) mDesktopWindowDecoration)
-                        .showResizeVeil(mRepositionTaskBounds);
-                } else {
-                    ((CaptionWindowDecoration) mDesktopWindowDecoration)
-                        .showResizeVeil(mRepositionTaskBounds);
-                }
+                mDesktopWindowDecoration.showResizeVeil(mRepositionTaskBounds);
                 mIsResizingOrAnimatingResize = true;
             } else {
-                if(mDesktopWindowDecoration instanceof DesktopModeWindowDecoration) {
-                    ((DesktopModeWindowDecoration) mDesktopWindowDecoration)
-                        .updateResizeVeil(mRepositionTaskBounds);
-                } else {
-                    ((CaptionWindowDecoration) mDesktopWindowDecoration)
-                        .updateResizeVeil(mRepositionTaskBounds);
-                }
+                mDesktopWindowDecoration.updateResizeVeil(mRepositionTaskBounds);
             }
         } else if (mCtrlType == CTRL_TYPE_UNDEFINED) {
             final SurfaceControl.Transaction t = mTransactionSupplier.get();
@@ -149,13 +137,7 @@ public class VeiledResizeTaskPositioner implements DragPositioningCallback,
                 DragPositioningCallbackUtility.changeBounds(
                         mCtrlType, mRepositionTaskBounds, mTaskBoundsAtDragStart, mStableBounds,
                         delta, mDisplayController, mDesktopWindowDecoration);
-                if(mDesktopWindowDecoration instanceof DesktopModeWindowDecoration) {
-                    ((DesktopModeWindowDecoration) mDesktopWindowDecoration)
-                        .updateResizeVeil(mRepositionTaskBounds);
-                } else {
-                    ((CaptionWindowDecoration) mDesktopWindowDecoration)
-                        .updateResizeVeil(mRepositionTaskBounds);
-                }
+                mDesktopWindowDecoration.updateResizeVeil(mRepositionTaskBounds);
                 final WindowContainerTransaction wct = new WindowContainerTransaction();
                 wct.setBounds(mDesktopWindowDecoration.mTaskInfo.token, mRepositionTaskBounds);
                 mTransitions.startTransition(TRANSIT_CHANGE, wct, this);
@@ -185,13 +167,7 @@ public class VeiledResizeTaskPositioner implements DragPositioningCallback,
 
     private void resetVeilIfVisible() {
         if (mIsResizingOrAnimatingResize) {
-            if(mDesktopWindowDecoration instanceof DesktopModeWindowDecoration) {
-                ((DesktopModeWindowDecoration) mDesktopWindowDecoration)
-                    .hideResizeVeil();
-            } else {
-                ((CaptionWindowDecoration) mDesktopWindowDecoration)
-                    .hideResizeVeil();
-            }
+            mDesktopWindowDecoration.hideResizeVeil();
             mIsResizingOrAnimatingResize = false;
         }
     }

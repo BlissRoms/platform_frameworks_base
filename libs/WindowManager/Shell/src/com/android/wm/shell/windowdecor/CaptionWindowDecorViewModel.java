@@ -234,28 +234,18 @@ public class CaptionWindowDecorViewModel implements WindowDecorViewModel {
                         mSyncQueue);
         mWindowDecorByTaskId.put(taskInfo.taskId, windowDecoration);
 
-        final DragPositioningCallback taskPositioner = createDragPositioningCallback(
-                windowDecoration);
+        final FluidResizeTaskPositioner taskPositioner =
+                new FluidResizeTaskPositioner(mTaskOrganizer, mTransitions, windowDecoration,
+                        mDisplayController);
         final CaptionTouchEventListener touchEventListener =
                 new CaptionTouchEventListener(taskInfo, taskPositioner);
         windowDecoration.setCaptionListeners(touchEventListener, touchEventListener);
         windowDecoration.setDragPositioningCallback(taskPositioner);
         windowDecoration.setDragDetector(touchEventListener.mDragDetector);
-        windowDecoration.setTaskDragResizer((VeiledResizeTaskPositioner) taskPositioner);
+        windowDecoration.setTaskDragResizer(taskPositioner);
         windowDecoration.relayout(taskInfo, startT, finishT,
                 false /* applyStartTransactionOnDraw */, false /* setTaskCropAndPosition */);
         setupCaptionColor(taskInfo, windowDecoration);
-    }
-
-    private DragPositioningCallback createDragPositioningCallback(
-            CaptionWindowDecoration windowDecoration) {
-            windowDecoration.createResizeVeil();
-        return new VeiledResizeTaskPositioner(
-                mTaskOrganizer,
-                windowDecoration,
-                mDisplayController,
-                dragStartListener -> {},
-                mTransitions);
     }
 
     private class CaptionTouchEventListener implements
