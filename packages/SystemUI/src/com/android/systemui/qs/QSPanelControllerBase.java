@@ -402,7 +402,8 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
             getContext().getContentResolver(),
             Settings.System.QS_TILE_UI_STYLE, 0, UserHandle.USER_CURRENT
         ) != 0;
-        if (FlashlightStrengthTile.TILE_SPEC.equals(tile.getTileSpec())
+        if ((FlashlightStrengthTile.TILE_SPEC.equals(tile.getTileSpec())
+            || VolumeControlTile.TILE_SPEC.equals(tile.getTileSpec()))
             && !isA11Style) {
             SlideableQSTile slideableQSTile = (SlideableQSTile) tile;
             tileView = new SliderQSTileViewImpl(
