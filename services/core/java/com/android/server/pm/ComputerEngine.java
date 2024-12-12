@@ -160,6 +160,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1667,6 +1668,21 @@ public class ComputerEngine implements Computer {
 
             if (packageInfo == null) {
                 return null;
+            }
+
+            if (requestsFakeSignature(p)) {
+                try {
+                    packageInfo.signingInfo = new SigningInfo(
+                            new SigningDetails(
+                                    packageInfo.signatures,
+                                    SigningDetails.SignatureSchemeVersion.SIGNING_BLOCK_V3,
+                                    SigningDetails.toSigningKeys(packageInfo.signatures),
+                                    null
+                            )
+                    );
+                } catch (CertificateException | NullPointerException e) {
+                    Slog.e(TAG, "Caught an exception when creating signing keys: ", e);
+                }
             }
 
             packageInfo.packageName = packageInfo.applicationInfo.packageName =
