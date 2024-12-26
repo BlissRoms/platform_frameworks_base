@@ -108,4 +108,6 @@ easier.
     <style name="Theme.DeviceDefault.AutofillDialogExpressiveButton" parent="Theme.DeviceDefault.Panel">
         <item name="colorPrimary">@color/system_primary_dark</item>
     </style>
+
+    <style name="Theme.DeviceDefault.System" parent="Theme.DeviceDefault.DayNight" />
 </resources>
