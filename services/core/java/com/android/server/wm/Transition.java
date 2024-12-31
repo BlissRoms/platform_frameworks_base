@@ -73,6 +73,8 @@ import static com.android.server.wm.ActivityTaskManagerInternal.APP_TRANSITION_W
 import static com.android.server.wm.SurfaceAnimator.ANIMATION_TYPE_PREDICT_BACK;
 import static com.android.server.wm.WindowContainer.AnimationFlags.PARENTS;
 import static com.android.server.wm.WindowState.BLAST_TIMEOUT_DURATION;
+import static com.android.server.wm.StartingData.AFTER_TRANSACTION_IDLE;
+import static com.android.server.wm.StartingData.AFTER_TRANSITION_FINISH;
 import static com.android.window.flags.Flags.enableDisplayFocusInShellTransitions;
 
 import android.annotation.IntDef;
@@ -1386,6 +1388,13 @@ class Transition implements BLASTSyncEngine.TransactionReadyListener {
                     } else {
                         enterAutoPip = true;
                     }
+                }
+
+                if (ar.mStartingData != null && ar.mStartingData.mRemoveAfterTransaction
+                        == AFTER_TRANSITION_FINISH
+                        && (!ar.isVisible() || !ar.mTransitionController.inTransition(ar))) {
+                    ar.mStartingData.mRemoveAfterTransaction = AFTER_TRANSACTION_IDLE;
+                    ar.removeStartingWindow();
                 }
                 final ChangeInfo changeInfo = mChanges.get(ar);
                 // Due to transient-hide, there may be some activities here which weren't in the
