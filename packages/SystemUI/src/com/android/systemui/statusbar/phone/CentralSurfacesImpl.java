@@ -201,12 +201,14 @@ import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.LiftReveal;
 import com.android.systemui.statusbar.LightRevealScrim;
 import com.android.systemui.statusbar.LockscreenShadeTransitionController;
+import com.android.systemui.statusbar.NotificationListener;
 import com.android.systemui.statusbar.NotificationLockscreenUserManager;
 import com.android.systemui.statusbar.NotificationMediaManager;
 import com.android.systemui.statusbar.NotificationPresenter;
 import com.android.systemui.statusbar.NotificationRemoteInputManager;
 import com.android.systemui.statusbar.NotificationShadeDepthController;
 import com.android.systemui.statusbar.NotificationShadeWindowController;
+import com.android.systemui.statusbar.OnGoingActionProgressController;
 import com.android.systemui.statusbar.PowerButtonReveal;
 import com.android.systemui.statusbar.PulseExpansionHandler;
 import com.android.systemui.statusbar.StatusBarState;
@@ -407,6 +409,10 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces,
     DozeServiceHost mDozeServiceHost;
     private final LightRevealScrim mLightRevealScrim;
     private PowerButtonReveal mPowerButtonReveal;
+
+    private OnGoingActionProgressController mOnGoingActionProgressController = null;
+
+    @Inject public NotificationListener mNotificationListener;
 
     /**
      * Whether we should delay the wakeup animation (which shows the notifications and moves the
@@ -1301,6 +1307,11 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces,
                         checkBarModes();
                         mPhoneStatusBarViewController.setBrightnessControlEnabled(mBrightnessControl);
                         mBurnInProtectionController.setPhoneStatusBarView(mPhoneStatusBarViewController.getPhoneStatusBarView());
+                        mOnGoingActionProgressController =
+                             new OnGoingActionProgressController(
+                                     mContext,
+                                     statusBarViewController.getOngoingActionProgressGroup(),
+                                     mNotificationListener);
                     });
         }
         if (!StatusBarRootModernization.isEnabled() && !StatusBarConnectedDisplays.isEnabled()) {

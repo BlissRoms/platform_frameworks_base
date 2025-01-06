@@ -23,6 +23,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.annotation.VisibleForTesting
 import com.android.systemui.Flags
 import com.android.systemui.Gefingerpoken
@@ -44,6 +46,7 @@ import com.android.systemui.shade.domain.interactor.PanelExpansionInteractor
 import com.android.systemui.shade.shared.flag.ShadeWindowGoesAround
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator
 import com.android.systemui.statusbar.data.repository.StatusBarContentInsetsProviderStore
+import com.android.systemui.statusbar.OnGoingActionProgressGroup
 import com.android.systemui.statusbar.policy.Clock
 import com.android.systemui.statusbar.policy.ConfigurationController
 import com.android.systemui.statusbar.window.StatusBarWindowStateController
@@ -244,6 +247,14 @@ private constructor(
         }
 
         centralSurfaces.onBrightnessChanged(upOrCancel)
+    }
+
+    fun getOngoingActionProgressGroup(): OnGoingActionProgressGroup{
+        return OnGoingActionProgressGroup(
+            mView.findViewById(R.id.status_bar_ongoing_action_chip),
+            mView.findViewById(R.id.ongoing_action_app_icon) as ImageView,
+            mView.findViewById(R.id.app_action_progress) as ProgressBar,
+        )
     }
 
     private fun addDarkReceivers() {
