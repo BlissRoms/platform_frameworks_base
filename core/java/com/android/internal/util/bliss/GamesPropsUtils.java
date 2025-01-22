@@ -73,18 +73,7 @@ public final class GamesPropsUtils {
             "com.dts.freefiremax",
             "com.dts.freefireth",
             "com.mobile.legends",
-	    "com.activision.callofduty.shooter",
 	    "com.activision.callofduty.warzone",
-	    "com.garena.game.codm",
-	    "com.tencent.tmgp.kr.codm",
-	    "com.vng.codmvn",
-	    "com.tencent.tmgp.cod",
-	    "com.tencent.ig",
-	    "com.pubg.imobile",
-	    "com.pubg.krmobile",
-	    "com.rekoo.pubgm",
-	    "com.vng.pubgmobile",
-	    "com.tencent.tmgp.pubgmhd",
 	    "com.epicgames.fortnite"
     };
 
