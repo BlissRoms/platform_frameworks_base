@@ -1131,6 +1131,9 @@ public class MediaFocusControl implements PlayerFocusEnforcer {
             IAudioFocusDispatcher fd, @NonNull String clientId, @NonNull String callingPackageName,
             int flags, int sdk, boolean forceDuck, int testUid,
             boolean permissionOverridesCheck) {
+        final ContentResolver cr = mContext.getContentResolver();
+        if (Settings.System.getIntForUser(cr, "grant_all_audio_focus", 1, cr.getUserId()) != 0)
+            return AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
         new MediaMetrics.Item(mMetricsId)
                 .setUid(Binder.getCallingUid())
                 .set(MediaMetrics.Property.CALLING_PACKAGE, callingPackageName)
