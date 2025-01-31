@@ -14,8 +14,8 @@
      limitations under the License.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Disabled state of seekbar track -->
-    <item android:alpha="?android:attr/primaryContentAlpha" android:color="@color/settingslib_colorSurfaceVariant" android:state_enabled="false" />
-    <!-- Enabled state of seekbar track -->
-    <item android:alpha="?android:attr/secondaryContentAlpha"  android:color="?android:attr/colorAccent" />
+    <!-- Disabled state of thumb -->
+    <item android:alpha="?android:attr/primaryContentAlpha" android:color="@color/settingslib_materialColorOutline" android:state_enabled="false" />
+    <!-- Enabled state of thumb -->
+    <item android:color="@color/settingslib_materialColorOnPrimary" />
 </selector>
