@@ -60,7 +60,7 @@ public class MediaArtUtils implements MediaSessionManagerHelper.MediaMetadataLis
     private static final String LS_MEDIA_ART_FILTER = "ls_media_art_filter";
     private static final String LS_MEDIA_ART_FADE_LEVEL = "ls_media_art_fade_level";
 
-    private static final int GRADIENT_BLUR_LEVEL = 1000;
+    private static final int GRADIENT_BLUR_LEVEL = 50;
 
     private static MediaArtUtils instance;
     private FrameLayout mLsMediaScrim;
