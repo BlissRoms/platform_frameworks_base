@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.util.Log;
@@ -206,11 +207,7 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
     private void updateVolumeFromSystem() {
         mCurrentVolumeLevel = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         mCurrentVolumePercent = (float) mCurrentVolumeLevel / mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        Settings.System.putFloat(
-                mContext.getContentResolver(),
-                VOLUME_LEVEL_SETTING,
-                mCurrentVolumePercent);
-        refreshState(true);
+        updateVolumeLevel();
     }
 
     @Override
@@ -225,10 +222,15 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
         int newLevel = (int) (mCurrentVolumePercent * mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newLevel, 0);
         mCurrentVolumeLevel = newLevel;
-        Settings.System.putFloat(
+        updateVolumeLevel();
+    }
+    
+    private void updateVolumeLevel() {
+        Settings.System.putFloatForUser(
                 mContext.getContentResolver(),
                 VOLUME_LEVEL_SETTING,
-                mCurrentVolumePercent);
+                mCurrentVolumePercent,
+                UserHandle.USER_CURRENT);
         refreshState(true);
     }
 
