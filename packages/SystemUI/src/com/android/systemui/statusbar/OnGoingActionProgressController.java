@@ -254,6 +254,7 @@ public class OnGoingActionProgressController implements NotificationListener.Not
             }
             if (sbn.getKey().equals(mTrackedNotificationKey)) {
                 mIsTrackingProgress = false;
+                mPreviousTrackingProgress = false;
                 mCurrentDrawable = null;
                 updateViews();
             }
@@ -299,5 +300,11 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     public void destroy() {
         mSettingsObserver.unregister();
+        mIsTrackingProgress = false;
+        mPreviousTrackingProgress = false;
+        mCurrentDrawable = null;
+        mCurrentProgress = 0;
+        mCurrentProgressMax = 0;
+        mTrackedNotificationKey = null;
     }
 }
