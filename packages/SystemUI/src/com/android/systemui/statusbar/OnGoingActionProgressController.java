@@ -66,6 +66,8 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private final NotificationListener mNotificationListener;
     private boolean mIsEnabled;
 
+    private boolean mPreviousTrackingProgress = false;
+
     private static int getThemeColor(Context context, int attrResId) {
         TypedValue typedValue = new TypedValue();
         context.getTheme().resolveAttribute(attrResId, typedValue, true);
@@ -187,12 +189,18 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     /** Updates progress views @AsyncUnsafe */
     private void updateViews() {
+        if (mIsTrackingProgress == mPreviousTrackingProgress) {
+            // No change in tracking state, skip update
+            return;
+        }
+
+        mPreviousTrackingProgress = mIsTrackingProgress;
+
         if (!mIsEnabled || !mIsTrackingProgress) {
             mProgressRootView.setVisibility(View.GONE);
             return;
         }
-        // TODO: make it a bit faster by checking wether mIsTrackingProgress has changed between
-        // calls
+
         mProgressRootView.setVisibility(View.VISIBLE);
         if (mCurrentProgressMax == 0) {
             Log.w(TAG, "updateViews: max progress is 0. Guessing it as 100");
