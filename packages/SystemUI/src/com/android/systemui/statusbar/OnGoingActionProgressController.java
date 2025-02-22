@@ -189,23 +189,30 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     /** Updates progress views @AsyncUnsafe */
     private void updateViews() {
-        if (mIsTrackingProgress == mPreviousTrackingProgress) {
-            // No change in tracking state, skip update
-            return;
-        }
-
-        mPreviousTrackingProgress = mIsTrackingProgress;
-
+        // Check if tracking state changed or if we're not tracking/enabled
         if (!mIsEnabled || !mIsTrackingProgress) {
             mProgressRootView.setVisibility(View.GONE);
+            mPreviousTrackingProgress = mIsTrackingProgress;
             return;
         }
 
+        // Update previous tracking state
+        mPreviousTrackingProgress = mIsTrackingProgress;
+
+        // Show and update progress
         mProgressRootView.setVisibility(View.VISIBLE);
         if (mCurrentProgressMax == 0) {
             Log.w(TAG, "updateViews: max progress is 0. Guessing it as 100");
             mCurrentProgressMax = 100;
         }
+        
+        // Hide if progress is complete
+        if (mCurrentProgress >= mCurrentProgressMax) {
+            mIsTrackingProgress = false;
+            mProgressRootView.setVisibility(View.GONE);
+            return;
+        }
+
         Log.d(TAG, "updateViews: " + mCurrentProgress + "/" + mCurrentProgressMax);
         mProgressBar.setMax(mCurrentProgressMax);
         mProgressBar.setProgress(mCurrentProgress);
