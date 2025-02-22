@@ -6626,6 +6626,11 @@ public final class Settings {
                 "high_touch_polling_rate_enable";
 
         /**
+         * @hide
+         */
+        public static final String ONGOING_ACTION_CHIP = "ongoing_action_chip";
+
+        /**
          * Whether the HighTouchSensitivity is activated or not.
          * 0 = off, 1 = on
          * @hide

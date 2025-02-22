@@ -15,7 +15,9 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ongoing_action_chip"
     android:layout_width="60dp"
     android:layout_height="16sp"
     android:maxWidth="120dp"

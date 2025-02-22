@@ -27,7 +27,7 @@ public class OnGoingActionProgressGroup {
     public final ProgressBar progressBarView;
 
     public OnGoingActionProgressGroup(View rootView, ImageView iconView,
-                                      ProgressBar progressBarView){
+                                      ProgressBar progressBarView) {
         this.rootView = rootView;
         this.iconView = iconView;
         this.progressBarView = progressBarView;
