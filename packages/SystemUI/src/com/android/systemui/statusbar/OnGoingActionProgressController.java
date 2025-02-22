@@ -17,10 +17,17 @@
 package com.android.systemui.statusbar;
 
 import android.app.Notification;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -36,8 +43,12 @@ import com.android.systemui.statusbar.OnGoingActionProgressGroup;
 /** Controls the ongoing progress chip based on notifcations @LineageExtension */
 public class OnGoingActionProgressController implements NotificationListener.NotificationHandler {
     private static final String TAG = "OngoingActionProgressController";
+    private static final String ONGOING_ACTION_CHIP_ENABLED = "ongoing_action_chip";
 
     private Context mContext;
+    private ContentResolver mContentResolver;
+    private final Handler mHandler;
+    private final SettingsObserver mSettingsObserver;
 
     // Views of chip
     private final ProgressBar mProgressBar;
@@ -52,13 +63,39 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private String mTrackedNotificationKey;
 
     private final IconFetcher mIconFetcher;
-
     private final NotificationListener mNotificationListener;
+    private boolean mIsEnabled;
 
     private static int getThemeColor(Context context, int attrResId) {
         TypedValue typedValue = new TypedValue();
         context.getTheme().resolveAttribute(attrResId, typedValue, true);
         return typedValue.data;
+    }
+
+    private class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            if (uri.equals(Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED))) {
+                updateSettings();
+            }
+        }
+
+        public void register() {
+            mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED),
+                false, this, UserHandle.USER_ALL);
+            // Update initial state
+            updateSettings();
+        }
+
+        public void unregister() {
+            mContentResolver.unregisterContentObserver(this);
+        }
     }
 
     /**
@@ -77,11 +114,18 @@ public class OnGoingActionProgressController implements NotificationListener.Not
             Log.wtf(TAG, "mNotificationListener is null");
         }
         mContext = context;
+        mContentResolver = context.getContentResolver();
+        mHandler = new Handler(Looper.getMainLooper());
+        mSettingsObserver = new SettingsObserver(mHandler);
+        
         mProgressBar = progressGroup.progressBarView;
         mProgressRootView = progressGroup.rootView;
         mIconView = progressGroup.iconView;
         mIconFetcher = new IconFetcher(context);
         mNotificationListener.addNotificationHandler(this);
+        
+        // Register settings observer
+        mSettingsObserver.register();
     }
 
     /** Checks whether notification has progress */
@@ -143,22 +187,22 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     /** Updates progress views @AsyncUnsafe */
     private void updateViews() {
-        if (!mIsTrackingProgress) {
+        if (!mIsEnabled || !mIsTrackingProgress) {
             mProgressRootView.setVisibility(View.GONE);
-        } else {
-            // TODO: make it a bit faster by checking wether mIsTrackingProgress has changed between
-            // calls
-            mProgressRootView.setVisibility(View.VISIBLE);
-            if (mCurrentProgressMax == 0) {
-                Log.w(TAG, "updateViews: max progress is 0. Guessing it as 100");
-                mCurrentProgressMax = 100;
-            }
-            Log.d(TAG, "updateViews: " + mCurrentProgress + "/" + mCurrentProgressMax);
-            mProgressBar.setMax(mCurrentProgressMax);
-            mProgressBar.setProgress(mCurrentProgress);
-            if (mCurrentDrawable != null) {
-                mIconView.setImageDrawable(mCurrentDrawable);
-            }
+            return;
+        }
+        // TODO: make it a bit faster by checking wether mIsTrackingProgress has changed between
+        // calls
+        mProgressRootView.setVisibility(View.VISIBLE);
+        if (mCurrentProgressMax == 0) {
+            Log.w(TAG, "updateViews: max progress is 0. Guessing it as 100");
+            mCurrentProgressMax = 100;
+        }
+        Log.d(TAG, "updateViews: " + mCurrentProgress + "/" + mCurrentProgressMax);
+        mProgressBar.setMax(mCurrentProgressMax);
+        mProgressBar.setProgress(mCurrentProgress);
+        if (mCurrentDrawable != null) {
+            mIconView.setImageDrawable(mCurrentDrawable);
         }
     }
 
@@ -237,5 +281,15 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     @Override
     public void onNotificationsInitialized() {
         /*stub*/
+    }
+
+    private void updateSettings() {
+        mIsEnabled = Settings.System.getIntForUser(mContentResolver,
+            ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
+        updateViews();
+    }
+
+    public void destroy() {
+        mSettingsObserver.unregister();
     }
 }
