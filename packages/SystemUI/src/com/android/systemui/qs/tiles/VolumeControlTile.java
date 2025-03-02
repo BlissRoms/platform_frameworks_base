@@ -45,14 +45,14 @@ import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
-import com.android.systemui.qs.tileimpl.TouchableQSTile;
+import com.android.systemui.qs.tileimpl.SlideableQSTile;
 import com.android.systemui.res.R;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 
 import javax.inject.Inject;
 
 public class VolumeControlTile extends QSTileImpl<BooleanState> 
-        implements TouchableQSTile, ConfigurationController.ConfigurationListener {
+        implements SlideableQSTile, ConfigurationController.ConfigurationListener {
 
     public static final String TILE_SPEC = "volume_control";
 
@@ -211,6 +211,11 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
                 VOLUME_LEVEL_SETTING,
                 mCurrentVolumePercent);
         refreshState(true);
+    }
+
+    @Override
+    public boolean isSlideable() {
+        return true;
     }
 
     @Override
