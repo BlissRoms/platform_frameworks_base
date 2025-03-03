@@ -214,8 +214,8 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
         // Show and update progress
         mProgressRootView.setVisibility(View.VISIBLE);
-        if (mCurrentProgressMax == 0) {
-            Log.w(TAG, "updateViews: max progress is 0. Guessing it as 100");
+        if (mCurrentProgressMax <= 0) {
+            Log.w(TAG, "updateViews: invalid max progress " + mCurrentProgressMax + ", using 100");
             mCurrentProgressMax = 100;
         }
         
