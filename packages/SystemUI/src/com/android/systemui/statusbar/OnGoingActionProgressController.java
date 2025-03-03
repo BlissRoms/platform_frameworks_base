@@ -163,6 +163,7 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         mCurrentProgress = notification.extras.getInt(Notification.EXTRA_PROGRESS, 0);
         IconFetcher.AdaptiveDrawableResult drawable =
                 mIconFetcher.getMonotonicPackageIcon(sbn.getPackageName());
+        mCurrentDrawable = drawable.drawable;
         updateIconImageView(drawable);
         updateViews();
     }
