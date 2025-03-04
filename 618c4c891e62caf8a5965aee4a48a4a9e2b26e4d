@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ec74b8a_0f86a6e1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000142
+      },
+      "writtenOn": "2025-03-04T11:12:00Z",
+      "side": 1,
+      "message": "As of now it remains unmerged as the icon remains very big, so until thats tuned, keep it for later",
+      "revId": "618c4c891e62caf8a5965aee4a48a4a9e2b26e4d",
+      "serverId": "b7386340-edb3-408c-9cac-98e148952b30"
+    }
+  ]
+}
