@@ -92,6 +92,8 @@ public final class CategoryKey {
             "com.android.settings.category.ia.sc_system_and_updates";
     public static final String CATEGORY_SC_CELLULAR_NETWORK_SECURITY =
             "com.android.settings.category.ia.sc_cellular_network_security";
+    public static final String CATEGORY_BLISSIFY =
+            "com.android.settings.category.ia.blissify";
 
     public static final Map<String, String> KEY_COMPAT_MAP;
 
