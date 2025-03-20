@@ -78,6 +78,8 @@ public final class CategoryKey {
             "com.android.settings.category.ia.media_controls_settings";
     public static final String CATEGORY_PRIVACY_CONTROLS =
             "com.android.settings.category.ia.privacy_controls";
+    public static final String CATEGORY_BLISSIFY =
+            "com.android.settings.category.ia.blissify";
 
     public static final Map<String, String> KEY_COMPAT_MAP;
 
