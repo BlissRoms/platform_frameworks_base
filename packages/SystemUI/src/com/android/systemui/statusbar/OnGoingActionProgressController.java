@@ -19,6 +19,7 @@ package com.android.systemui.statusbar;
 import android.app.Notification;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
@@ -134,6 +135,7 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         
         // Register settings observer
         mSettingsObserver.register();
+        mProgressRootView.setOnClickListener(v -> openTrackedApp());
     }
 
     /** Checks whether notification has progress */
@@ -214,6 +216,36 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         Log.d(TAG, "updateViews: " + mCurrentProgress + "/" + mCurrentProgressMax);
         mProgressBar.setMax(mCurrentProgressMax);
         mProgressBar.setProgress(mCurrentProgress);
+    }
+
+    /** Handles click action to open the corresponding app */
+    private void openTrackedApp() {
+        if (mTrackedNotificationKey == null || mNotificationListener == null) {
+            Log.w(TAG, "No tracked notification available");
+            return;
+        }
+
+        StatusBarNotification sbn = null;
+        for (StatusBarNotification notification : mNotificationListener.getActiveNotifications()) {
+            if (notification.getKey().equals(mTrackedNotificationKey)) {
+                sbn = notification;
+                break;
+            }
+        }
+
+        if (sbn == null) {
+            Log.w(TAG, "Tracked notification not found");
+            return;
+        }
+
+        String packageName = sbn.getPackageName();
+        Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(packageName);
+        if (launchIntent != null) {
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(launchIntent);
+        } else {
+            Log.w(TAG, "No launch intent for package: " + packageName);
+        }
     }
 
     /**
