@@ -33,6 +33,8 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -41,11 +43,13 @@ import com.android.systemui.res.R;
 import com.android.systemui.util.IconFetcher;
 import com.android.systemui.statusbar.OnGoingActionProgressGroup;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
+import com.android.systemui.util.MediaSessionManagerHelper;
 
 /** Controls the ongoing progress chip based on notifcations @LineageExtension */
 public class OnGoingActionProgressController implements NotificationListener.NotificationHandler, KeyguardStateController.Callback {
     private static final String TAG = "OngoingActionProgressController";
     private static final String ONGOING_ACTION_CHIP_ENABLED = "ongoing_action_chip";
+    private static final String SHOW_MEDIA_PROGRESS = "show_media_progress";
 
     private Context mContext;
     private ContentResolver mContentResolver;
@@ -61,6 +65,7 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private final KeyguardStateController mKeyguardStateController;
 
     // Progress tracking variables
+    private boolean mShowMediaProgress = true;
     private boolean mIsTrackingProgress = false;
     private boolean mIsForceHidden = false;
     private int mCurrentProgress = 0;
@@ -71,6 +76,21 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private final IconFetcher mIconFetcher;
     private final NotificationListener mNotificationListener;
     private boolean mIsEnabled;
+
+    private final GestureDetector mGestureDetector;
+    private final MediaSessionManagerHelper mMediaSessionHelper;
+
+    // Handler for real-time media progress updates
+    private final Handler mMediaProgressHandler = new Handler(Looper.getMainLooper());
+    private final Runnable mMediaProgressRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mShowMediaProgress && mMediaSessionHelper.isMediaPlaying()) {
+                updateViews();
+                mMediaProgressHandler.postDelayed(this, 1000); // Update every second
+            }
+        }
+    };
 
     private static int getThemeColor(Context context, int attrResId) {
         TypedValue typedValue = new TypedValue();
@@ -86,7 +106,8 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
-            if (uri.equals(Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED))) {
+            if (uri.equals(Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED)) ||
+                uri.equals(Settings.System.getUriFor(SHOW_MEDIA_PROGRESS))) {
                 updateSettings();
             }
         }
@@ -95,7 +116,12 @@ public class OnGoingActionProgressController implements NotificationListener.Not
             mContentResolver.registerContentObserver(
                 Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED),
                 false, this, UserHandle.USER_ALL);
-            // Update initial state
+            
+            // Register observer for media progress toggle
+            mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(SHOW_MEDIA_PROGRESS),
+                false, this, UserHandle.USER_ALL);
+            
             updateSettings();
         }
 
@@ -132,11 +158,44 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         mIconView = progressGroup.iconView;
         mIconFetcher = new IconFetcher(context);
         mNotificationListener.addNotificationHandler(this);
+        mMediaSessionHelper = MediaSessionManagerHelper.Companion.getInstance(context);
         
+        // 🔹 Initialize gesture detector for media progress bar actions
+        mGestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                toggleMediaPlaybackState();
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                skipToNextTrack();
+                return true;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                openMediaApp();
+            }
+        });
+
         // Register settings observer
         mSettingsObserver.register();
-        mProgressRootView.setOnClickListener(v -> openTrackedApp());
-    }
+        mProgressRootView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
+        // Add Media Listener to Update UI on Media Playback Change
+            mMediaSessionHelper.addMediaMetadataListener(new MediaSessionManagerHelper.MediaMetadataListener() {
+                @Override
+                public void onMediaMetadataChanged() {
+                    updateViews();
+                }
+
+                @Override
+                public void onPlaybackStateChanged() {
+                    updateViews();
+                }
+            });
+        }
 
     /** Checks whether notification has progress */
     private static boolean hasProgress(final Notification notification) {
@@ -198,24 +257,74 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     /** Updates progress views @AsyncUnsafe */
     private void updateViews() {
-        if(mIsForceHidden){ // Keyguard locked, user-disabled, etc.
+        if (mIsForceHidden) {
             mProgressRootView.setVisibility(View.GONE);
             return;
         }
+
+        boolean isMediaPlaying = mShowMediaProgress && mMediaSessionHelper.isMediaPlaying();
+
+        // If media is playing and it's enabled, show media progress
+        if (isMediaPlaying) {
+            mProgressRootView.setVisibility(View.VISIBLE);
+
+            mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
+            mMediaProgressHandler.post(mMediaProgressRunnable);
+
+            // Get media app icon and update it
+            Drawable mediaAppIcon = mMediaSessionHelper.getMediaAppIcon();
+            if (mediaAppIcon != null) {
+                mIconView.setImageDrawable(mediaAppIcon);
+            } else {
+                mIconView.setImageResource(R.drawable.ic_default_music_icon);
+            }
+
+            long totalDuration = mMediaSessionHelper.getTotalDuration();
+            long currentProgress = mMediaSessionHelper.getMediaControllerPlaybackState() != null
+                    ? mMediaSessionHelper.getMediaControllerPlaybackState().getPosition()
+                    : 0;
+
+            if (totalDuration > 0) {
+                mProgressBar.setMax((int) totalDuration);
+                mProgressBar.setProgress((int) currentProgress);
+            }
+            return;
+        }
+
+        // If no media is playing, show download/upload progress as usual
         if (!mIsEnabled || !mIsTrackingProgress) {
             mProgressRootView.setVisibility(View.GONE);
+            mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
             return;
         }
-        // TODO: make it a bit faster by checking wether mIsTrackingProgress has changed between
-        // calls
+
         mProgressRootView.setVisibility(View.VISIBLE);
+
         if (mCurrentProgressMax <= 0) {
             Log.w(TAG, "updateViews: invalid max progress " + mCurrentProgressMax + ", using 100");
             mCurrentProgressMax = 100;
         }
+
         Log.d(TAG, "updateViews: " + mCurrentProgress + "/" + mCurrentProgressMax);
         mProgressBar.setMax(mCurrentProgressMax);
         mProgressBar.setProgress(mCurrentProgress);
+
+        // When switching to download progress, update the correct download app icon
+        if (mTrackedNotificationKey != null) {
+            StatusBarNotification sbn = null;
+            for (StatusBarNotification notification : mNotificationListener.getActiveNotifications()) {
+                if (notification.getKey().equals(mTrackedNotificationKey)) {
+                    sbn = notification;
+                    break;
+                }
+            }
+            if (sbn != null) {
+                Drawable downloadAppIcon = mIconFetcher.getMonotonicPackageIcon(sbn.getPackageName()).drawable;
+                if (downloadAppIcon != null) {
+                    mIconView.setImageDrawable(downloadAppIcon);
+                }
+            }
+        }
     }
 
     /** Handles click action to open the corresponding app */
@@ -305,6 +414,23 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         updateViews();
     }
 
+    // Gesture Actions for Media Progress Bar
+    private void toggleMediaPlaybackState() {
+        if (mMediaSessionHelper.isMediaPlaying()) {
+            mMediaSessionHelper.toggleMediaPlaybackState();
+        } else {
+            mMediaSessionHelper.toggleMediaPlaybackState();
+        }
+    }
+
+    private void skipToNextTrack() {
+        mMediaSessionHelper.nextSong();
+    }
+
+    private void openMediaApp() {
+        mMediaSessionHelper.launchMediaApp();
+    }
+
     // Implementation of notification handler
     @Override
     public void onNotificationPosted(
@@ -344,12 +470,17 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     private void updateSettings() {
         mIsEnabled = Settings.System.getIntForUser(mContentResolver,
-            ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
+        ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
+
+        mShowMediaProgress = Settings.System.getIntForUser(mContentResolver,
+            SHOW_MEDIA_PROGRESS, 1, UserHandle.USER_CURRENT) == 1;
+
         updateViews();
     }
 
     public void destroy() {
         mSettingsObserver.unregister();
+        mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
         mIsTrackingProgress = false;
         mCurrentDrawable = null;
         mCurrentProgress = 0;

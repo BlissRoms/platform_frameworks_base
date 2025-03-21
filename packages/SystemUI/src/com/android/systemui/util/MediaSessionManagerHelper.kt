@@ -18,7 +18,9 @@ package com.android.systemui.util
 import android.app.WallpaperColors
 import android.content.Context
 import android.content.res.Configuration
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.MediaSessionLegacyHelper
@@ -240,6 +242,16 @@ class MediaSessionManagerHelper private constructor(private val context: Context
         }
     }
 
+    fun getMediaAppIcon(): Drawable? {
+        val packageName = activeController?.packageName ?: return null
+        return try {
+            val pm = context.packageManager
+            pm.getApplicationIcon(packageName)
+        } catch (e: PackageManager.NameNotFoundException) {
+            null
+        }
+    }
+
     fun getMediaMetadata(): MediaMetadata? {
         return getActiveLocalMediaController()?.metadata
     }
@@ -303,6 +315,21 @@ class MediaSessionManagerHelper private constructor(private val context: Context
         }
     }
     
+    fun launchMediaApp() {
+        lastSavedPackageName?.takeIf { it.isNotEmpty() }?.let {
+            launchMediaPlayerApp(it)
+        }
+    }
+
+    fun launchMediaPlayerApp(packageName: String) {
+        if (packageName.isNotEmpty()) {
+            val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
+            launchIntent?.let { intent ->
+                context.startActivity(intent)
+            }
+        }
+    }
+
     fun showMediaDialog(view: View) {
         val packageName = lastSavedPackageName?.takeIf { it.isNotEmpty() } ?: return
         Dependency.get(MediaOutputDialogManager::class.java)
