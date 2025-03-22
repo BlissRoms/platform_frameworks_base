@@ -34,9 +34,13 @@ import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 
 import com.android.systemui.res.R;
@@ -50,6 +54,9 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private static final String TAG = "OngoingActionProgressController";
     private static final String ONGOING_ACTION_CHIP_ENABLED = "ongoing_action_chip";
     private static final String SHOW_MEDIA_PROGRESS = "show_media_progress";
+
+    private static final int SWIPE_THRESHOLD = 100;
+    private static final int SWIPE_VELOCITY_THRESHOLD = 100;
 
     private Context mContext;
     private ContentResolver mContentResolver;
@@ -76,6 +83,7 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private final IconFetcher mIconFetcher;
     private final NotificationListener mNotificationListener;
     private boolean mIsEnabled;
+    private PopupWindow mMediaPopup;
 
     private final GestureDetector mGestureDetector;
     private final MediaSessionManagerHelper mMediaSessionHelper;
@@ -164,20 +172,49 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         mGestureDetector = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                toggleMediaPlaybackState();
+                if (mShowMediaProgress && mMediaSessionHelper.isMediaPlaying()) {
+                    showMediaPopup(mProgressRootView);
+                } else {
+                    openTrackedApp();
+                }
                 return true;
             }
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                skipToNextTrack();
+                if (mShowMediaProgress && mMediaSessionHelper.isMediaPlaying()) {
+                    toggleMediaPlaybackState();
+                }
                 return true;
             }
 
             @Override
             public void onLongPress(MotionEvent e) {
-                openMediaApp();
+                if (mShowMediaProgress && mMediaSessionHelper.isMediaPlaying()) {
+                    openMediaApp();
+                }
             }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (!(mShowMediaProgress && mMediaSessionHelper.isMediaPlaying())) {
+                    return false;
+                }
+
+                float diffX = e2.getX() - e1.getX();
+                if (Math.abs(diffX) > Math.abs(e2.getY() - e1.getY())) {
+                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffX > 0) {
+                            skipToNextTrack();
+                        } else {
+                            skipToPreviousTrack();
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         });
 
         // Register settings observer
@@ -288,6 +325,10 @@ public class OnGoingActionProgressController implements NotificationListener.Not
                 mProgressBar.setMax((int) totalDuration);
                 mProgressBar.setProgress((int) currentProgress);
             }
+
+            // Attach Swipe Gesture for Media Progress Bar
+            mProgressRootView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
+
             return;
         }
 
@@ -295,6 +336,11 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         if (!mIsEnabled || !mIsTrackingProgress) {
             mProgressRootView.setVisibility(View.GONE);
             mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
+
+            // 🔹 Reset media icon when media stops playing
+            if (!mMediaSessionHelper.isMediaPlaying()) {
+                mIconView.setImageDrawable(null); 
+            }
             return;
         }
 
@@ -325,6 +371,43 @@ public class OnGoingActionProgressController implements NotificationListener.Not
                 }
             }
         }
+    }
+
+    private void showMediaPopup(View anchorView) {
+        if (mMediaPopup != null && mMediaPopup.isShowing()) {
+            mMediaPopup.dismiss();
+            return;
+        }
+
+        // Inflate the popup layout
+        View popupView = LayoutInflater.from(mContext).inflate(R.layout.media_control_popup, null);
+
+        // Initialize PopupWindow
+        mMediaPopup = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        mMediaPopup.setOutsideTouchable(true);
+        mMediaPopup.setFocusable(true);
+
+        // Set up buttons (Only Previous & Next)
+        ImageButton btnPrevious = popupView.findViewById(R.id.btn_previous);
+        ImageButton btnNext = popupView.findViewById(R.id.btn_next);
+
+        // Set button actions
+        btnPrevious.setOnClickListener(v -> {
+            skipToPreviousTrack();
+            mMediaPopup.dismiss();
+        });
+
+        btnNext.setOnClickListener(v -> {
+            skipToNextTrack();
+            mMediaPopup.dismiss();
+        });
+
+        // Show popup near the anchor view
+        anchorView.post(() -> {
+            int offsetX = -popupView.getWidth() / 3;
+            int offsetY = -anchorView.getHeight();
+            mMediaPopup.showAsDropDown(anchorView, offsetX, offsetY);
+        });
     }
 
     /** Handles click action to open the corresponding app */
@@ -416,15 +499,15 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     // Gesture Actions for Media Progress Bar
     private void toggleMediaPlaybackState() {
-        if (mMediaSessionHelper.isMediaPlaying()) {
-            mMediaSessionHelper.toggleMediaPlaybackState();
-        } else {
-            mMediaSessionHelper.toggleMediaPlaybackState();
-        }
+        mMediaSessionHelper.toggleMediaPlaybackState();
     }
 
     private void skipToNextTrack() {
         mMediaSessionHelper.nextSong();
+    }
+
+    private void skipToPreviousTrack() {
+        mMediaSessionHelper.prevSong();
     }
 
     private void openMediaApp() {
@@ -486,5 +569,6 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         mCurrentProgress = 0;
         mCurrentProgressMax = 0;
         mTrackedNotificationKey = null;
+        mIconView.setImageDrawable(null);
     }
 }
