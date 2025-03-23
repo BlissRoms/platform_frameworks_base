@@ -19,7 +19,7 @@
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/overlay_action_container_corner_radius"/>
-            <solid android:color="@drawable/action_chip_container_background"/>
+            <solid android:color="@android:color/transparent"/>
         </shape>
     </item>
 </ripple>
