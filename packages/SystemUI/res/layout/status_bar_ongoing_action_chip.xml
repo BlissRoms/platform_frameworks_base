@@ -29,8 +29,7 @@
     android:visibility="gone"
     android:background="@drawable/action_chip_container_background"
     android:clickable="true"
-    android:focusable="true"
-    android:foreground="@drawable/ripple_chip_background">
+    android:focusable="true" >
 
     <ImageView
         android:id="@+id/ongoing_action_app_icon"
