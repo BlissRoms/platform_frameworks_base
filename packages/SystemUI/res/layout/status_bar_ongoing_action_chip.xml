@@ -32,13 +32,13 @@
     android:focusable="true" >
 
     <ImageView
-        android:id="@+id/ongoing_action_app_icon"
+	    android:id="@+id/ongoing_action_app_icon"
         android:layout_width="8sp"
-        android:layout_height="8sp"
-        android:contentDescription="App icon"
-        android:gravity="center_vertical|start"
+	    android:layout_height="8sp"
+	    android:gravity="center_vertical|start"
         android:scaleType="centerInside"
-        android:tint="?android:attr/colorForeground"
+        android:contentDescription="App icon"
+        android:tint="@android:color/transparent"
         android:src="@android:drawable/sym_def_app_icon" />
 
     <View
@@ -46,7 +46,7 @@
         android:layout_height="0dp" />
 
     <ProgressBar
-        android:id="@+id/app_action_progress"
+	    android:id="@+id/app_action_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="8sp"
