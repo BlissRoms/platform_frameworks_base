@@ -18,38 +18,38 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ongoing_action_chip"
-    android:layout_width="65dp"
-    android:layout_height="20dp"
-    android:maxWidth="160dp"
-    android:minWidth="80dp"	
+    android:layout_width="@dimen/ongoing_action_chip_width"
+    android:layout_height="@dimen/ongoing_action_chip_height"
+    android:maxWidth="120dp"
+    android:minWidth="60dp"
     android:orientation="horizontal"
     android:layout_gravity="center_vertical|start"
-    android:padding="4dp"
+    android:padding="@dimen/ongoing_action_padding"
     android:layout_marginLeft="4dp"
     android:visibility="gone"
     android:background="@drawable/action_chip_container_background"
     android:clickable="true"
-    android:focusable="true" >
+    android:focusable="true">
 
     <ImageView
-	android:id="@+id/ongoing_action_app_icon"
-        android:layout_width="9dp"
-	android:layout_height="9dp"
-	android:gravity="center_vertical|start"
+        android:id="@+id/ongoing_action_app_icon"
+        android:layout_width="@dimen/ongoing_action_icon_size"
+        android:layout_height="@dimen/ongoing_action_icon_size"
+        android:gravity="center_vertical|start"
         android:scaleType="centerInside"
         android:contentDescription="App icon"
         android:tint="@android:color/transparent"
         android:src="@android:drawable/sym_def_app_icon" />
 
     <View
-        android:layout_width="4dp"
+        android:layout_width="@dimen/ongoing_action_spacing"
         android:layout_height="0dp" />
 
     <ProgressBar
-	android:id="@+id/app_action_progress"
+        android:id="@+id/app_action_progress"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="9dp"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/ongoing_action_progress_height"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:indeterminate="false"
@@ -57,5 +57,4 @@
         android:max="100"
         android:clickable="false"
         android:focusable="false" />
-
 </LinearLayout>

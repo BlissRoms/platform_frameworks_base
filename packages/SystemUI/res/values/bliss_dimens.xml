@@ -94,4 +94,12 @@
     <dimen name="qs_ringer_tile_dot_radius">2dp</dimen>
     <dimen name="qs_ringer_corner_radius">28dp</dimen>
 
+    <!-- Progress chip -->
+    <dimen name="ongoing_action_chip_width">70dp</dimen>
+    <dimen name="ongoing_action_chip_height">18sp</dimen>
+    <dimen name="ongoing_action_icon_size">10sp</dimen>
+    <dimen name="ongoing_action_progress_height">10sp</dimen>
+    <dimen name="ongoing_action_padding">4sp</dimen>
+    <dimen name="ongoing_action_spacing">5dp</dimen>
+
 </resources>
