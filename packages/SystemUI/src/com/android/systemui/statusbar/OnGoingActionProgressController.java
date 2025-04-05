@@ -56,8 +56,11 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private static final String TAG = "OngoingActionProgressController";
     private static final String ONGOING_ACTION_CHIP_ENABLED = "ongoing_action_chip";
     private static final String SHOW_MEDIA_PROGRESS = "show_media_progress";
+    private static final String PROGRESS_BAR_OPACITY = "progress_bar_opacity";
     private static final int SWIPE_THRESHOLD = 100;
     private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+    private static final int DEFAULT_OPACITY = 255;
+    private static final int DEFAULT_OPACITY_PERCENTAGE = 100;
 
     private Context mContext;
     private ContentResolver mContentResolver;
@@ -78,6 +81,7 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private boolean mIsEnabled;
     private int mCurrentProgress = 0;
     private int mCurrentProgressMax = 0;
+    private int mProgressBarOpacity = DEFAULT_OPACITY;
     private Drawable mCurrentDrawable = null;
     private String mTrackedNotificationKey;
     private PopupWindow mMediaPopup;
@@ -192,6 +196,8 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
     /** Updates the UI based on current state */
     private void updateViews() {
+        mProgressRootView.setAlpha(mProgressBarOpacity / 255f);
+        
         if (mIsForceHidden) {
             mProgressRootView.setVisibility(View.GONE);
             return;
@@ -446,7 +452,8 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             if (uri.equals(Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED)) ||
-                    uri.equals(Settings.System.getUriFor(SHOW_MEDIA_PROGRESS))) {
+                    uri.equals(Settings.System.getUriFor(SHOW_MEDIA_PROGRESS)) ||
+                    uri.equals(Settings.System.getUriFor(PROGRESS_BAR_OPACITY))) {
                 updateSettings();
             }
         }
@@ -454,6 +461,7 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         public void register() {
             mContentResolver.registerContentObserver(Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED), false, this, UserHandle.USER_ALL);
             mContentResolver.registerContentObserver(Settings.System.getUriFor(SHOW_MEDIA_PROGRESS), false, this, UserHandle.USER_ALL);
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(PROGRESS_BAR_OPACITY), false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -464,6 +472,20 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private void updateSettings() {
         mIsEnabled = Settings.System.getIntForUser(mContentResolver, ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
         mShowMediaProgress = Settings.System.getIntForUser(mContentResolver, SHOW_MEDIA_PROGRESS, 1, UserHandle.USER_CURRENT) == 1;
+        
+        // Read opacity as percentage (0-100)
+        int opacityPercentage = Settings.System.getIntForUser(mContentResolver, PROGRESS_BAR_OPACITY, DEFAULT_OPACITY_PERCENTAGE, UserHandle.USER_CURRENT);
+        
+        // Ensure percentage is within valid range
+        if (opacityPercentage < 0) {
+            opacityPercentage = 0;
+        } else if (opacityPercentage > 100) {
+            opacityPercentage = 100;
+        }
+        
+        // Convert percentage to alpha value (0-255)
+        mProgressBarOpacity = (int)(opacityPercentage * 2.55f);
+        
         updateViews();
     }
 
