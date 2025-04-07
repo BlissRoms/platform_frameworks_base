@@ -34,6 +34,4 @@
     <string name="accessibility_quick_settings_profiles_off">ପ୍ରୋଫାଇଲ୍‍ଗୁଡିକ ଅଫ୍‍ ଅଛି।</string>
     <string name="accessibility_quick_settings_profiles">ପ୍ରୋଫାଇଲ୍‍: <xliff:g id="profile" example="Default">%s</xliff:g>।</string>
     <string name="quick_settings_usb_tether_label">USB ଟିଥରିଂ</string>
-    <string name="accessibility_dpad_left">କର୍ସର୍‍ ବାମ</string>
-    <string name="accessibility_dpad_right">କର୍ସର୍ ଡାହାଣ</string>
 </resources>

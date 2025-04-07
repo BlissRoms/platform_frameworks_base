@@ -63,6 +63,4 @@
     <string name="vpn_credentials_username">အသုံးပြုသူအမည်</string>
     <string name="vpn_credentials_password">လျှို့ဝှက်နံပါတ်</string>
     <string name="vpn_credentials_dialog_connect">ချိတ်ဆက်မည်</string>
-    <string name="accessibility_dpad_left">Cursor ဘယ်ဖက်</string>
-    <string name="accessibility_dpad_right">Coursor ညာဖက်</string>
 </resources>

@@ -54,6 +54,4 @@
     <string name="vpn_credentials_username">שם משתמש</string>
     <string name="vpn_credentials_password">סיסמה</string>
     <string name="vpn_credentials_dialog_connect">התחבר</string>
-    <string name="accessibility_dpad_left">סמן שמאלה</string>
-    <string name="accessibility_dpad_right">סמן ימינה</string>
 </resources>

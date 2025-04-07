@@ -58,6 +58,4 @@
     <string name="vpn_credentials_hint"><xliff:g id="name">%s</xliff:g> এর সাথে সংযুক্ত হতে আপনার ক্রেদেন্টিয়াল প্রবেশ করান</string>
     <string name="vpn_credentials_username">ইউজারনেম</string>
     <string name="vpn_credentials_password">পাসওয়ার্ড</string>
-    <string name="accessibility_dpad_left">কার্সর বামে</string>
-    <string name="accessibility_dpad_right">কার্সর ডানে</string>
 </resources>

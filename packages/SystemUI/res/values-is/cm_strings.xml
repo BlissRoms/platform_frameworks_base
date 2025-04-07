@@ -65,7 +65,5 @@
     <string name="vpn_credentials_username">Notandanafn</string>
     <string name="vpn_credentials_password">Lykilorð</string>
     <string name="vpn_credentials_dialog_connect">Tengjast</string>
-    <string name="accessibility_dpad_left">Bendill til vinstri</string>
-    <string name="accessibility_dpad_right">Bendill til hægri</string>
     <string name="status_bar_firewall">Eldveggur</string>
 </resources>

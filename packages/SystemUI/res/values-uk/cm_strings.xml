@@ -56,6 +56,4 @@
     <string name="vpn_credentials_username">Користувацьке ім\'я</string>
     <string name="vpn_credentials_password">Пароль</string>
     <string name="vpn_credentials_dialog_connect">З\'єднатись</string>
-    <string name="accessibility_dpad_left">Курсор ліворуч</string>
-    <string name="accessibility_dpad_right">Курсор праворуч</string>
 </resources>

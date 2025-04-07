@@ -51,6 +51,4 @@
     <string name="vpn_credentials_username">Isem n useqdac</string>
     <string name="vpn_credentials_password">Awal uffir</string>
     <string name="vpn_credentials_dialog_connect">Qqen</string>
-    <string name="accessibility_dpad_left">Taḥenaccaḍt tazelmadt</string>
-    <string name="accessibility_dpad_right">Taḥenaccaḍt tayeffust</string>
 </resources>

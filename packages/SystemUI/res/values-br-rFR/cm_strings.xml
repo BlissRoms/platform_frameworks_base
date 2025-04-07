@@ -45,6 +45,4 @@
     <string name="vpn_credentials_hint">Lakait hoc\'h anaouderioù evit kevreañ da<xliff:g id="name">%s</xliff:g></string>
     <string name="vpn_credentials_username">Anv implijer</string>
     <string name="vpn_credentials_password">Ger-tremen</string>
-    <string name="accessibility_dpad_left">Reti kleiz</string>
-    <string name="accessibility_dpad_right">Reti dehoù</string>
 </resources>

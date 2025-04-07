@@ -29,6 +29,4 @@
     <string name="accessibility_quick_settings_profiles_off">設定檔已關閉。</string>
     <string name="accessibility_quick_settings_profiles">設定檔：<xliff:g id="profile" example="Default">%s</xliff:g>。</string>
     <string name="quick_settings_usb_tether_label">USB 網絡共享</string>
-    <string name="accessibility_dpad_left">游標向左</string>
-    <string name="accessibility_dpad_right">游標向右</string>
 </resources>

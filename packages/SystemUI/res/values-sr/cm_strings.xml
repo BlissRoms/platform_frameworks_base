@@ -54,6 +54,4 @@
     <string name="vpn_credentials_username">Корисничко име</string>
     <string name="vpn_credentials_password">Лозинка</string>
     <string name="vpn_credentials_dialog_connect">Повежи се</string>
-    <string name="accessibility_dpad_left">Курсор улево</string>
-    <string name="accessibility_dpad_right">Курсор удесно</string>
 </resources>

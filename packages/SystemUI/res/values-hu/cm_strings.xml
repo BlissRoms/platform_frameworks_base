@@ -65,13 +65,7 @@
     <string name="vpn_credentials_username">Felhasználónév</string>
     <string name="vpn_credentials_password">Jelszó</string>
     <string name="vpn_credentials_dialog_connect">Kapcsolódás</string>
-    <string name="accessibility_dpad_left">Kurzor balra</string>
-    <string name="accessibility_dpad_right">Kurzor jobbra</string>
     <string name="status_bar_firewall">Tűzfal</string>
-    <string name="screenshot_delete_label">Törlés</string>
-    <string name="screenshot_delete_description">A képernyőkép törlése</string>
-    <string name="screenrecord_delete_label">Törlés</string>
-    <string name="screenrecord_delete_description">A képernyőfelvétel törölve</string>
     <string name="screenrecord_lowquality_label">Gyengébb minőség</string>
     <string name="screenrecord_lowquality_summary">... hogy kisebbek legyenek a fájlok</string>
     <string name="screenrecord_longer_timeout_switch_label">A nagy fájlméret felső határa</string>
@@ -81,4 +75,6 @@
     <string name="screenrecord_hevc_switch_label">HEVC-kódolás</string>
     <string name="screenrecord_hevc_switch_summary">Használja a hatékonyabb HEVC-kódolót</string>
     <string name="battery_notification_channel_tv">Akkumulátor-figyelmeztetés</string>
+    <string name="screenshot_delete_label">Törlés</string>
+    <string name="screenshot_delete_description">A képernyőkép törlése</string>
 </resources>

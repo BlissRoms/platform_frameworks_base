@@ -65,13 +65,7 @@
     <string name="vpn_credentials_username">Nazwa użytkownika</string>
     <string name="vpn_credentials_password">Hasło</string>
     <string name="vpn_credentials_dialog_connect">Połącz</string>
-    <string name="accessibility_dpad_left">Kursor w lewo</string>
-    <string name="accessibility_dpad_right">Kursor w prawo</string>
     <string name="status_bar_firewall">Zapora sieciowa</string>
-    <string name="screenshot_delete_label">Usuń</string>
-    <string name="screenshot_delete_description">Usuń zrzut ekranu</string>
-    <string name="screenrecord_delete_label">Usuń</string>
-    <string name="screenrecord_delete_description">Usunięto nagranie ekranu</string>
     <string name="screenrecord_lowquality_label">Niższa jakość</string>
     <string name="screenrecord_lowquality_summary">Dla mniejszego rozmiaru pliku</string>
     <string name="screenrecord_longer_timeout_switch_label">Większy limit rozmiaru pliku</string>
@@ -81,4 +75,6 @@
     <string name="screenrecord_hevc_switch_label">Kodowanie HEVC</string>
     <string name="screenrecord_hevc_switch_summary">Używaj skuteczniejszego kodera HEVC</string>
     <string name="battery_notification_channel_tv">Ostrzeżenie dotyczące baterii</string>
+    <string name="screenshot_delete_label">Usuń</string>
+    <string name="screenshot_delete_description">Usuń zrzut ekranu</string>
 </resources>

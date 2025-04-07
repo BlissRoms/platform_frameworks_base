@@ -35,6 +35,4 @@
     <string name="accessibility_quick_settings_profiles_off">Profiele af.</string>
     <string name="accessibility_quick_settings_profiles">Profiel: <xliff:g id="profile" example="Default">%s</xliff:g>.</string>
     <string name="quick_settings_usb_tether_label">USB internet verbinding</string>
-    <string name="accessibility_dpad_left">Wyser na links</string>
-    <string name="accessibility_dpad_right">Wyser na regs</string>
 </resources>

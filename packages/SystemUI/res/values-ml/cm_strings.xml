@@ -34,6 +34,4 @@
     <string name="accessibility_quick_settings_profiles_off">പ്രൊഫൈലുകൾ ഓഫ്.</string>
     <string name="accessibility_quick_settings_profiles">പ്രൊഫൈൽ: <xliff:g id="profile" example="Default">%s</xliff:g>.</string>
     <string name="quick_settings_usb_tether_label">USB ടെതറിംഗ്</string>
-    <string name="accessibility_dpad_left">കർസർ ഇടത്</string>
-    <string name="accessibility_dpad_right">കർസർ വലത്</string>
 </resources>

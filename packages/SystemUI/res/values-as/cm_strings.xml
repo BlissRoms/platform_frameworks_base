@@ -34,6 +34,4 @@
     <string name="accessibility_quick_settings_profiles_off">প্ৰ\'ফাইল অফ।</string>
     <string name="accessibility_quick_settings_profiles">প্ৰ\'ফাইল: <xliff:g id="profile" example="Default">%s</xliff:g>।</string>
     <string name="quick_settings_usb_tether_label">USB টেথাৰিং</string>
-    <string name="accessibility_dpad_left">কাৰ্ছৰ বাওঁফালে</string>
-    <string name="accessibility_dpad_right">কাৰ্ছৰ সোঁফালে</string>
 </resources>

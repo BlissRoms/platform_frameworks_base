@@ -65,13 +65,7 @@
     <string name="vpn_credentials_username">Nome de utilizador</string>
     <string name="vpn_credentials_password">Palavra-passe</string>
     <string name="vpn_credentials_dialog_connect">Ligar</string>
-    <string name="accessibility_dpad_left">Cursor à esquerda</string>
-    <string name="accessibility_dpad_right">Cursor à direita</string>
     <string name="status_bar_firewall">Firewall</string>
-    <string name="screenshot_delete_label">Eliminar</string>
-    <string name="screenshot_delete_description">Eliminar captura de ecrã</string>
-    <string name="screenrecord_delete_label">Eliminar</string>
-    <string name="screenrecord_delete_description">Gravação de ecrã eliminada</string>
     <string name="screenrecord_lowquality_label">Qualidade mais baixa</string>
     <string name="screenrecord_lowquality_summary">Para um ficheiro de menor tamanho</string>
     <string name="screenrecord_longer_timeout_switch_label">Limite de tamanho para ficheiros maiores</string>
@@ -81,4 +75,6 @@
     <string name="screenrecord_hevc_switch_label">Codificação HEVC</string>
     <string name="screenrecord_hevc_switch_summary">Utilizar o codificador HEVC, mais eficiente</string>
     <string name="battery_notification_channel_tv">Aviso de bateria</string>
+    <string name="screenshot_delete_label">Eliminar</string>
+    <string name="screenshot_delete_description">Eliminar captura de ecrã</string>
 </resources>

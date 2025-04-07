@@ -65,13 +65,7 @@
     <string name="vpn_credentials_username">İstifadəçi adı</string>
     <string name="vpn_credentials_password">Parol</string>
     <string name="vpn_credentials_dialog_connect">Bağlantı qur</string>
-    <string name="accessibility_dpad_left">Sol kursor</string>
-    <string name="accessibility_dpad_right">Sağ kursor</string>
     <string name="status_bar_firewall">Firewall</string>
-    <string name="screenshot_delete_label">Sil</string>
-    <string name="screenshot_delete_description">Ekran şəklini sil</string>
-    <string name="screenrecord_delete_label">Sil</string>
-    <string name="screenrecord_delete_description">Ekran yazısı silindi</string>
     <string name="screenrecord_lowquality_label">Aşağı keyfiyyət</string>
     <string name="screenrecord_lowquality_summary">Daha kiçik fayl ölçüsü üçün</string>
     <string name="screenrecord_longer_timeout_switch_label">Daha böyük fayl ölçüsü limiti</string>
@@ -81,4 +75,6 @@
     <string name="screenrecord_hevc_switch_label">HEVC kodlaşdırma</string>
     <string name="screenrecord_hevc_switch_summary">Daha səmərəli HEVC kodlaşdırıcını istifadə et</string>
     <string name="battery_notification_channel_tv">Batareya xəbərdarlığı</string>
+    <string name="screenshot_delete_label">Sil</string>
+    <string name="screenshot_delete_description">Ekran şəklini sil</string>
 </resources>

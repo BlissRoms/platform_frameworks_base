@@ -65,10 +65,7 @@
     <string name="vpn_credentials_username">Uživatelské jméno</string>
     <string name="vpn_credentials_password">Heslo</string>
     <string name="vpn_credentials_dialog_connect">Připojit</string>
-    <string name="accessibility_dpad_left">Kurzor doleva</string>
-    <string name="accessibility_dpad_right">Kurzor doprava</string>
     <string name="status_bar_firewall">Firewall</string>
     <string name="screenshot_delete_label">Smazat</string>
     <string name="screenshot_delete_description">Smazat snímky obrazovky</string>
-    <string name="screenrecord_delete_label">Smazat</string>
 </resources>

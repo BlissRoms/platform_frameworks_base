@@ -34,6 +34,4 @@
     <string name="accessibility_quick_settings_profiles_off">પ્રોફાઇલ્સ બંધ.</string>
     <string name="accessibility_quick_settings_profiles">પ્રોફાઇલ: <xliff:g id="profile" example="Default">%s</xliff:g>.</string>
     <string name="quick_settings_usb_tether_label">USB ટિથરિંગ</string>
-    <string name="accessibility_dpad_left">કર્સર ડાબું</string>
-    <string name="accessibility_dpad_right">કર્સર જમણું</string>
 </resources>

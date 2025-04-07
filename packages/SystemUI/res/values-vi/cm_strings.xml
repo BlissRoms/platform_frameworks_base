@@ -65,13 +65,7 @@
     <string name="vpn_credentials_username">Tên người dùng</string>
     <string name="vpn_credentials_password">Mật khẩu</string>
     <string name="vpn_credentials_dialog_connect">Kết nối</string>
-    <string name="accessibility_dpad_left">Trỏ trái</string>
-    <string name="accessibility_dpad_right">Trỏ phải</string>
     <string name="status_bar_firewall">Tường lửa</string>
-    <string name="screenshot_delete_label">Xóa</string>
-    <string name="screenshot_delete_description">Xóa ảnh chụp màn hình</string>
-    <string name="screenrecord_delete_label">Xóa</string>
-    <string name="screenrecord_delete_description">Đã xóa bản ghi màn hình</string>
     <string name="screenrecord_lowquality_label">Chất lượng thấp hơn</string>
     <string name="screenrecord_lowquality_summary">Để có kích thước tệp nhỏ hơn</string>
     <string name="screenrecord_longer_timeout_switch_label">Giới hạn kích thước tệp lớn hơn</string>
@@ -81,4 +75,6 @@
     <string name="screenrecord_hevc_switch_label">Mã hóa HEVC</string>
     <string name="screenrecord_hevc_switch_summary">Sử dụng bộ mã hóa HEVC hiệu quả hơn</string>
     <string name="battery_notification_channel_tv">Cảnh báo pin</string>
+    <string name="screenshot_delete_label">Xóa</string>
+    <string name="screenshot_delete_description">Xóa ảnh chụp màn hình</string>
 </resources>

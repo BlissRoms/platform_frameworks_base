@@ -45,6 +45,4 @@
     <string name="accessibility_quick_settings_profiles_off">Profili isklučeni.</string>
     <string name="accessibility_quick_settings_profiles">Profil: <xliff:g id="profile" example="Default">%s </xliff:g>.</string>
     <string name="quick_settings_usb_tether_label">Dijeljenje veze preko USB-a</string>
-    <string name="accessibility_dpad_left">Kursor lijevo</string>
-    <string name="accessibility_dpad_right">Kursor desno</string>
 </resources>

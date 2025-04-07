@@ -31,6 +31,4 @@
     <string name="accessibility_quick_settings_profiles_off">प्रोफ़ाइलें बंद है।</string>
     <string name="accessibility_quick_settings_profiles">प्रोफ़ाइल: <xliff:g id="profile" example="Default">%s</xliff:g>।</string>
     <string name="quick_settings_usb_tether_label">यूएसबी टेदरिंग</string>
-    <string name="accessibility_dpad_left">कर्सर बायाँ</string>
-    <string name="accessibility_dpad_right">कर्सर दायाँ</string>
 </resources>

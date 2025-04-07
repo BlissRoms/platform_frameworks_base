@@ -60,6 +60,4 @@
     <string name="vpn_credentials_username">Usuario</string>
     <string name="vpn_credentials_password">Contraseña</string>
     <string name="vpn_credentials_dialog_connect">Conectar</string>
-    <string name="accessibility_dpad_left">Cursor izquierda</string>
-    <string name="accessibility_dpad_right">Cursor derecha</string>
 </resources>

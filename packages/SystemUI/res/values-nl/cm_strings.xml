@@ -65,13 +65,7 @@
     <string name="vpn_credentials_username">Gebruikersnaam</string>
     <string name="vpn_credentials_password">Wachtwoord</string>
     <string name="vpn_credentials_dialog_connect">Verbinden </string>
-    <string name="accessibility_dpad_left">Cursor links</string>
-    <string name="accessibility_dpad_right">Cursor rechts</string>
     <string name="status_bar_firewall">Firewall</string>
-    <string name="screenshot_delete_label">Verwijder</string>
-    <string name="screenshot_delete_description">Verwijder screenshot</string>
-    <string name="screenrecord_delete_label">Verwijder</string>
-    <string name="screenrecord_delete_description">Schermopname verwijderd</string>
     <string name="screenrecord_lowquality_label">Lagere kwaliteit</string>
     <string name="screenrecord_lowquality_summary">Voor kleinere bestandsgrootte</string>
     <string name="screenrecord_longer_timeout_switch_label">Grotere limiet bestandsgrootte</string>
@@ -81,4 +75,6 @@
     <string name="screenrecord_hevc_switch_label">HEVC codering</string>
     <string name="screenrecord_hevc_switch_summary">Gebruik de efficiëntere HEVC-encoder</string>
     <string name="battery_notification_channel_tv">Batterij waarschuwing</string>
+    <string name="screenshot_delete_label">Verwijder</string>
+    <string name="screenshot_delete_description">Verwijder screenshot</string>
 </resources>

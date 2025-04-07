@@ -65,11 +65,8 @@
     <string name="vpn_credentials_username">მომხმარებელი</string>
     <string name="vpn_credentials_password">პაროლი</string>
     <string name="vpn_credentials_dialog_connect">დაკავშირება</string>
-    <string name="accessibility_dpad_left">მაჩვენებელი მარცხნივ</string>
-    <string name="accessibility_dpad_right">მიმთითებელი მარჯვნივ</string>
     <string name="status_bar_firewall">ქსელის ფარი</string>
+    <string name="battery_notification_channel_tv">ბატარეის გაფრთხილება</string>
     <string name="screenshot_delete_label">წაშლა</string>
     <string name="screenshot_delete_description">ეკრანის სურათის წაშლა</string>
-    <string name="screenrecord_delete_label">წაშლა</string>
-    <string name="battery_notification_channel_tv">ბატარეის გაფრთხილება</string>
 </resources>

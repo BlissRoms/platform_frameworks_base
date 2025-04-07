@@ -46,6 +46,4 @@
     <string name="accessibility_quick_settings_profiles_off">ಪ್ರೊಫೈಲ್ಸ್ ಆಫ್.</string>
     <string name="accessibility_quick_settings_profiles">ಪ್ರೊಫೈಲ್: <xliff:g id="profile" example="Default">%s</xliff:g>.</string>
     <string name="quick_settings_usb_tether_label">ಯುಎಸ್‍ಬಿ ಟೆಥರಿಂಗ್</string>
-    <string name="accessibility_dpad_left">ಸೂಚಕದ ಎಡ</string>
-    <string name="accessibility_dpad_right">ಸೂಚಕದ ಬಲ</string>
 </resources>

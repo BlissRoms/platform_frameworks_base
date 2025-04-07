@@ -49,6 +49,4 @@
     <string name="vpn_credentials_username">Erabiltzaile-izena</string>
     <string name="vpn_credentials_password">Pasahitza</string>
     <string name="vpn_credentials_dialog_connect">Konektatu</string>
-    <string name="accessibility_dpad_left">Kurtsorea ezkerrean</string>
-    <string name="accessibility_dpad_right">Kurtsorearen eskuinean</string>
 </resources>

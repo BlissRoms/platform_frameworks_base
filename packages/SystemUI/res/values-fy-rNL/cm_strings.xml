@@ -60,6 +60,4 @@
     <string name="vpn_credentials_username">Brûkersnamme</string>
     <string name="vpn_credentials_password">Wachtwurd</string>
     <string name="vpn_credentials_dialog_connect">Ferbine</string>
-    <string name="accessibility_dpad_left">Cursor links</string>
-    <string name="accessibility_dpad_right">Cursor rjochts</string>
 </resources>

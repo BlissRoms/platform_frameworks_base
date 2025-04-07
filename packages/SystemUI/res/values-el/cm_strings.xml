@@ -65,13 +65,7 @@
     <string name="vpn_credentials_username">Όνομα χρήστη</string>
     <string name="vpn_credentials_password">Κωδικός</string>
     <string name="vpn_credentials_dialog_connect">Σύνδεση</string>
-    <string name="accessibility_dpad_left">Κέρσορας αριστερά</string>
-    <string name="accessibility_dpad_right">Κέρσορας δεξιά</string>
     <string name="status_bar_firewall">Τείχος προστασίας</string>
-    <string name="screenshot_delete_label">Διαγραφή</string>
-    <string name="screenshot_delete_description">Διαγραφή στιγμιότυπου οθόνης</string>
-    <string name="screenrecord_delete_label">Διαγραφή</string>
-    <string name="screenrecord_delete_description">Η εγγραφή οθόνης διαγράφηκε</string>
     <string name="screenrecord_lowquality_label">Μείωση ποιότητας</string>
     <string name="screenrecord_lowquality_summary">Για μικρότερο μέγεθος αρχείου</string>
     <string name="screenrecord_longer_timeout_switch_label">Μεγαλύτερο όριο μεγέθους αρχείου</string>
@@ -81,4 +75,6 @@
     <string name="screenrecord_hevc_switch_label">Κωδικοποίηση HEVC</string>
     <string name="screenrecord_hevc_switch_summary">Χρησιμοποιήστε τον πιο αποδοτικό κωδικοποιητή HEVC</string>
     <string name="battery_notification_channel_tv">Προειδοποίηση μπαταρίας</string>
+    <string name="screenshot_delete_label">Διαγραφή</string>
+    <string name="screenshot_delete_description">Διαγραφή στιγμιότυπου οθόνης</string>
 </resources>

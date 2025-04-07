@@ -65,13 +65,7 @@
     <string name="vpn_credentials_username">Ainm úsáideora</string>
     <string name="vpn_credentials_password">Pasfhocal</string>
     <string name="vpn_credentials_dialog_connect">Ceangal</string>
-    <string name="accessibility_dpad_left">Cúrsóir ar chlé</string>
-    <string name="accessibility_dpad_right">Cúrsóir ar dheis</string>
     <string name="status_bar_firewall">Balla dóiteáin</string>
-    <string name="screenshot_delete_label">Scrios</string>
-    <string name="screenshot_delete_description">Scrios seat scáileáin</string>
-    <string name="screenrecord_delete_label">Scrios</string>
-    <string name="screenrecord_delete_description">Scriosadh an taifeadadh scáileáin</string>
     <string name="screenrecord_lowquality_label">Caighdeán níos ísle</string>
     <string name="screenrecord_lowquality_summary">Le haghaidh méid comhaid níos lú</string>
     <string name="screenrecord_longer_timeout_switch_label">Teorainn méid comhaid níos mó</string>
@@ -81,4 +75,6 @@
     <string name="screenrecord_hevc_switch_label">Ionchódú HEVC</string>
     <string name="screenrecord_hevc_switch_summary">Bain úsáid as an ionchódóir HEVC níos éifeachtaí</string>
     <string name="battery_notification_channel_tv">Rabhadh ceallraí</string>
+    <string name="screenshot_delete_label">Scrios</string>
+    <string name="screenshot_delete_description">Scrios seat scáileáin</string>
 </resources>
