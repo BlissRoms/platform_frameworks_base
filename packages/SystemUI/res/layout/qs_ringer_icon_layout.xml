@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="@dimen/qs_quick_tile_size"
+    android:layout_width="@dimen/qs_quick_tile_size"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <FrameLayout
+        android:id="@+id/qs_ringer_active_icon_container"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+        <ImageView
+            android:id="@+id/qs_ringer_active_icon_bg"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:src="@drawable/qs_tile_background_shape"
+            android:tint="?attr/shadeActive"/>
+
+        <!-- QSIconViewImpl added by tile view -->
+    </FrameLayout>
+
+</FrameLayout>

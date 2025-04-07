@@ -89,4 +89,8 @@
 
     <!-- Face unlock icon -->
     <dimen name="face_unlock_icon_margin_top">6dp</dimen>
+
+    <!-- Ringer QS tile -->
+    <dimen name="qs_ringer_tile_dot_radius">2dp</dimen>
+
 </resources>

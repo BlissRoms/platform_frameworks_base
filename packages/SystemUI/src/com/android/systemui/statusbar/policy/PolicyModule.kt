@@ -34,6 +34,7 @@ import com.android.systemui.qs.tiles.FlashlightStrengthTile
 import com.android.systemui.qs.tiles.LocationTile
 import com.android.systemui.qs.tiles.MicrophoneToggleTile
 import com.android.systemui.qs.tiles.ModesTile
+import com.android.systemui.qs.tiles.RingerModeTile
 import com.android.systemui.qs.tiles.UiModeNightTile
 import com.android.systemui.qs.tiles.WorkModeTile
 import com.android.systemui.qs.tiles.base.interactor.QSTileAvailabilityInteractor
@@ -486,4 +487,9 @@ interface PolicyModule {
     @IntoMap
     @StringKey(UiModeNightTile.TILE_SPEC)
     fun bindUiModeNightTile(uiModeNightTile: UiModeNightTile): QSTileImpl<*>
+
+    @Binds
+    @IntoMap
+    @StringKey(RingerModeTile.TILE_SPEC)
+    fun bindRingerModeTile(RingerModeTile: RingerModeTile): QSTileImpl<*>
 }
