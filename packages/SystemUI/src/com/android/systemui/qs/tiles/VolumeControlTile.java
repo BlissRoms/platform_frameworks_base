@@ -29,12 +29,10 @@ import android.service.quicksettings.Tile;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
 import androidx.annotation.Nullable;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
-
 import com.android.systemui.animation.Expandable;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
@@ -47,32 +45,28 @@ import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.qs.tileimpl.SlideableQSTile;
+
 import com.android.systemui.res.R;
 import com.android.systemui.statusbar.policy.ConfigurationController;
-
 import javax.inject.Inject;
 
-public class VolumeControlTile extends QSTileImpl<BooleanState> 
+public class VolumeControlTile extends QSTileImpl<BooleanState>
         implements SlideableQSTile, ConfigurationController.ConfigurationListener {
 
     public static final String TILE_SPEC = "volume_control";
-
     private static final String VOLUME_LEVEL_SETTING = "volume_level";
-
-    private static final Intent SOUND_SETTINGS = new Intent(Settings.Panel.ACTION_VOLUME);
-
     private final AudioManager mAudioManager;
     private float mCurrentVolumePercent;
     private int mCurrentVolumeLevel;
-    
-    private boolean mListening = false;
 
+    private boolean mReceiverRegistered = false;
+
+    private boolean mListening = false;
     private final View.OnTouchListener mTouchListener =
             new View.OnTouchListener() {
                 float initX = 0;
                 float initPct = 0;
                 boolean moved = false;
-
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     switch (motionEvent.getAction()) {
@@ -146,17 +140,24 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
     public void handleSetListening(boolean listening) {
         if (mListening == listening) return;
         mListening = listening;
-        if (listening) {
+        if (listening && !mReceiverRegistered) {
             IntentFilter filter = new IntentFilter(AudioManager.VOLUME_CHANGED_ACTION);
-            mContext.registerReceiver(mVolumeChangeReceiver, filter);
-        } else {
+            mContext.registerReceiver(mVolumeChangeReceiver, filter, Context.RECEIVER_EXPORTED);
+            updateVolumeFromSystem();
+            mReceiverRegistered = true;
+        } else if (!listening && mReceiverRegistered){
             mContext.unregisterReceiver(mVolumeChangeReceiver);
+            mReceiverRegistered = false;
         }
     }
 
     @Override
     protected void handleDestroy() {
         super.handleDestroy();
+        if (mReceiverRegistered) {
+            mContext.unregisterReceiver(mVolumeChangeReceiver);
+            mReceiverRegistered = false;
+        }
     }
 
     @Override
@@ -166,12 +167,13 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
     @Override
     public BooleanState newTileState() {
         BooleanState state = new BooleanState();
+        state.handlesLongClick = false;
         return state;
     }
 
     @Override
     public Intent getLongClickIntent() {
-        return SOUND_SETTINGS;
+        return null;
     }
 
     @Override
@@ -198,12 +200,12 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
     public int getMetricsCategory() {
         return MetricsEvent.VIEW_UNKNOWN;
     }
-    
+
     @Override
     public void onUiModeChanged() {
         updateVolumeFromSystem();
     }
-    
+
     private void updateVolumeFromSystem() {
         mCurrentVolumeLevel = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         mCurrentVolumePercent = (float) mCurrentVolumeLevel / mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
@@ -236,8 +238,9 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
+        if (state == null) return;
         state.state = Tile.STATE_ACTIVE;
-        state.label = mHost.getContext().getString(R.string.quick_settings_volume_tile_label) 
+        state.label = mHost.getContext().getString(R.string.quick_settings_volume_tile_label)
             + " - " + Math.round(mCurrentVolumePercent * 100f) + "%";
         float volumePercent = mCurrentVolumePercent * 100f;
         if (volumePercent <= 1) {
