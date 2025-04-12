@@ -61,44 +61,10 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
 
     private boolean mReceiverRegistered = false;
 
+    private final Handler mMainHandler;
+
     private boolean mListening = false;
-    private final View.OnTouchListener mTouchListener =
-            new View.OnTouchListener() {
-                float initX = 0;
-                float initPct = 0;
-                boolean moved = false;
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    switch (motionEvent.getAction()) {
-                        case MotionEvent.ACTION_DOWN -> {
-                            initX = motionEvent.getX();
-                            initPct = initX / view.getWidth();
-                            return true;
-                        }
-                        case MotionEvent.ACTION_MOVE -> {
-                            float newPct = motionEvent.getX() / view.getWidth();
-                            float deltaPct = Math.abs(newPct - initPct);
-                            if (deltaPct > .03f) {
-                                view.getParent().requestDisallowInterceptTouchEvent(true);
-                                moved = true;
-                                mCurrentVolumePercent = Math.max(0f, Math.min(newPct, 1));
-                                updateVolumeFromUser();
-                            }
-                            return true;
-                        }
-                        case MotionEvent.ACTION_UP -> {
-                            if (moved) {
-                                moved = false;
-                                updateVolumeFromUser();
-                            } else {
-                                refreshState(true);
-                            }
-                            return true;
-                        }
-                    }
-                    return true;
-                }
-            };
+    private final View.OnTouchListener mTouchListener;
 
     private final BroadcastReceiver mVolumeChangeReceiver = new BroadcastReceiver() {
         @Override
@@ -131,7 +97,63 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
                 statusBarStateController,
                 activityStarter,
                 qsLogger);
+        mMainHandler = mainHandler;
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        mTouchListener = new View.OnTouchListener() {
+                private static final int LONG_PRESS_TIMEOUT = 500;
+
+                private float initX = 0;
+                private float initPct = 0;
+                private boolean moved = false;
+                private boolean longPressed = false;
+
+                private final Runnable longPressRunnable = () -> {
+                    if (!moved) {
+                        longPressed = true;
+                        mAudioManager.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+                    }
+                };
+
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN -> {
+                            initX = motionEvent.getX();
+                            initPct = initX / view.getWidth();
+                            moved = false;
+                            longPressed = false;
+                            mMainHandler.postDelayed(longPressRunnable, LONG_PRESS_TIMEOUT);
+                            return true;
+                        }
+                        case MotionEvent.ACTION_MOVE -> {
+                            float newPct = motionEvent.getX() / view.getWidth();
+                            float deltaPct = Math.abs(newPct - initPct);
+                            if (deltaPct > .03f) {
+                                view.getParent().requestDisallowInterceptTouchEvent(true);
+                                moved = true;
+                                mMainHandler.removeCallbacks(longPressRunnable);
+                                mCurrentVolumePercent = Math.max(0f, Math.min(newPct, 1));
+                                updateVolumeFromUser();
+                            }
+                            return true;
+                        }
+                        case MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                            mMainHandler.removeCallbacks(longPressRunnable);
+                            if (longPressed) {
+                                return true;
+                            }
+                            if (moved) {
+                                moved = false;
+                                updateVolumeFromUser();
+                            } else {
+                                refreshState(true);
+                            }
+                            return true;
+                        }
+                    }
+                    return true;
+                }
+            };
         configurationController.observe(getLifecycle(), this);
         updateVolumeFromSystem();
     }
@@ -145,15 +167,19 @@ public class VolumeControlTile extends QSTileImpl<BooleanState>
             mContext.registerReceiver(mVolumeChangeReceiver, filter, Context.RECEIVER_EXPORTED);
             updateVolumeFromSystem();
             mReceiverRegistered = true;
-        } else if (!listening && mReceiverRegistered){
-            mContext.unregisterReceiver(mVolumeChangeReceiver);
-            mReceiverRegistered = false;
+        } else if (!listening){
+            cleanup();
         }
     }
 
     @Override
     protected void handleDestroy() {
         super.handleDestroy();
+        cleanup();
+    }
+    
+    private void cleanup() {
+        mMainHandler.removeCallbacksAndMessages(null);
         if (mReceiverRegistered) {
             mContext.unregisterReceiver(mVolumeChangeReceiver);
             mReceiverRegistered = false;
