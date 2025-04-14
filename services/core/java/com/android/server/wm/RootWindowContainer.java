@@ -890,9 +890,9 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
             int buttonBrightnessFloatAsIntBits = Float.floatToIntBits(buttonBrightnessOverride);
             // Post these on a handler such that we don't call into power manager service while
             // holding the window manager lock to avoid lock contention with power manager lock.
-            mHandler.obtainMessage(SET_BUTTON_BRIGHTNESS_OVERRIDE, buttonBrightnessFloatAsIntBits,
-                    0).sendToTarget();
-            mHandler.obtainMessage(SET_SCREEN_BRIGHTNESS_OVERRIDE, mDisplayBrightnessOverrides.clone())
+            // Send a copy of the brightness overrides as they may be cleared before being sent out.
+            mHandler.obtainMessage(SET_SCREEN_BRIGHTNESS_OVERRIDE,
+                    mDisplayBrightnessOverrides.clone())
                     .sendToTarget();
             mHandler.obtainMessage(SET_USER_ACTIVITY_TIMEOUT, mUserActivityTimeout).sendToTarget();
         }
