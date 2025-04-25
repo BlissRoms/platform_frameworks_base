@@ -119,4 +119,6 @@
     <!-- Mock Oplus LinearmotorVibratorService -->
     <java-symbol type="bool" name="config_mockOplusLinearmotorVibratorService" />
 
+    <!-- GameSpace -->
+    <java-symbol type="string" name="gamespace_new_game_added" />
 </resources>
