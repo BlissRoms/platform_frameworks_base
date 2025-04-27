@@ -471,7 +471,7 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     /** Updates settings from system preferences */
     private void updateSettings() {
         mIsEnabled = Settings.System.getIntForUser(mContentResolver, ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
-        mShowMediaProgress = Settings.System.getIntForUser(mContentResolver, SHOW_MEDIA_PROGRESS, 1, UserHandle.USER_CURRENT) == 1;
+        mShowMediaProgress = Settings.System.getIntForUser(mContentResolver, SHOW_MEDIA_PROGRESS, 0, UserHandle.USER_CURRENT) == 1;
         
         // Read opacity as percentage (0-100)
         int opacityPercentage = Settings.System.getIntForUser(mContentResolver, PROGRESS_BAR_OPACITY, DEFAULT_OPACITY_PERCENTAGE, UserHandle.USER_CURRENT);
