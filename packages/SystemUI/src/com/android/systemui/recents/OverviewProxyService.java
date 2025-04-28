@@ -322,10 +322,8 @@ public class OverviewProxyService implements CallbackController<OverviewProxyLis
         }
 
         @Override
-        public void injectDoublePress(int keyCode) throws RemoteException {
-            verifyCallerAndClearCallingIdentityPostMain("doublePressInjected", () -> {
-                sendEvent(KeyEvent.ACTION_DOWN, keyCode);
-                sendEvent(KeyEvent.ACTION_UP, keyCode);
+        public void injectPress(int keyCode) throws RemoteException {
+            verifyCallerAndClearCallingIdentityPostMain("pressInjected", () -> {
                 sendEvent(KeyEvent.ACTION_DOWN, keyCode);
                 sendEvent(KeyEvent.ACTION_UP, keyCode);
             });
