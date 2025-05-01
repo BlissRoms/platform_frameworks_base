@@ -66,6 +66,17 @@
     <string name="vpn_credentials_password">Şifre</string>
     <string name="vpn_credentials_dialog_connect">Bağlan</string>
     <string name="status_bar_firewall">Güvenlik Duvarı</string>
+    <string name="screenrecord_lowquality_label">Daha düşük kalite</string>
+    <string name="screenrecord_lowquality_summary">Daha küçük dosya boyutu için</string>
+    <string name="screenrecord_longer_timeout_switch_label">Daha büyük dosya boyutu sınırı</string>
+    <string name="screenrecord_longer_timeout_switch_summary">Kayıt boyutunu 15 GB ile sınırlayın</string>
+    <string name="screenrecord_skip_time_label">Zamanlayıcıyı atla</string>
+    <string name="screenrecord_skip_time_summary">3 saniye beklemeyi kaldır</string>
+    <string name="screenrecord_hevc_switch_label">HEVC kodlayıcı</string>
+    <string name="screenrecord_hevc_switch_summary">Daha verimli HEVC kodlayıcıyı kullanın</string>
+    <string name="battery_notification_channel_tv">Pil uyarısı</string>
     <string name="screenshot_delete_label">Sil</string>
     <string name="screenshot_delete_description">Ekran görüntüsünü sil</string>
+    <string name="screen_pinning_description_no_navbar">Bu işlem, siz sabitlemeyi kaldırana kadar ekranı görünür durumda tutar. Sabitlemeyi kaldırmak için Geri\'ye dokunun ve basılı tutun.</string>
+    <string name="screen_pinning_toast_no_navbar">Bu ekran görünümünü kaldırmak için, Geri tuşuna dokunun ve basılı tutun</string>
 </resources>

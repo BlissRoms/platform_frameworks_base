@@ -76,4 +76,6 @@
     <string name="battery_notification_channel_tv">Предупреждение за батерията</string>
     <string name="screenshot_delete_label">Изтрий</string>
     <string name="screenshot_delete_description">Изтрий екранна снимка</string>
+    <string name="screen_pinning_description_no_navbar">Това го държи в изглед, докато не го освободите. Натиснете &amp; задръжте бутона \"Назад\" за освобождаване.</string>
+    <string name="screen_pinning_toast_no_navbar">За да откачите този екран, докоснете и задръжте бутона \"Назад\"</string>
 </resources>
