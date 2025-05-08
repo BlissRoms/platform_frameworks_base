@@ -43,6 +43,9 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.systemui.res.R;
 import com.android.systemui.util.IconFetcher;
 import com.android.systemui.statusbar.OnGoingActionProgressGroup;
@@ -50,6 +53,10 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.MediaSessionManagerHelper;
 
 import com.android.internal.util.android.VibrationUtils;
+
+import java.util.HashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /** Controls the ongoing progress chip based on notifications @LineageExtension */
 public class OnGoingActionProgressController implements NotificationListener.NotificationHandler, KeyguardStateController.Callback {
@@ -61,20 +68,26 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private static final int SWIPE_VELOCITY_THRESHOLD = 100;
     private static final int DEFAULT_OPACITY = 255;
     private static final int DEFAULT_OPACITY_PERCENTAGE = 100;
+    private static final int MEDIA_UPDATE_INTERVAL_MS = 1000;
+    private static final int DEBOUNCE_DELAY_MS = 150;
 
-    private Context mContext;
-    private ContentResolver mContentResolver;
+    private final Context mContext;
+    private final ContentResolver mContentResolver;
     private final Handler mHandler;
     private final SettingsObserver mSettingsObserver;
     private final KeyguardStateController mKeyguardStateController;
     private final NotificationListener mNotificationListener;
     private final IconFetcher mIconFetcher;
     private final MediaSessionManagerHelper mMediaSessionHelper;
+    private final Executor mBackgroundExecutor;
 
     private final ProgressBar mProgressBar;
     private final View mProgressRootView;
     private final ImageView mIconView;
 
+    // Cache for package icons to avoid repeated loading
+    private final HashMap<String, IconFetcher.AdaptiveDrawableResult> mIconCache = new HashMap<>();
+    
     private boolean mShowMediaProgress = true;
     private boolean mIsTrackingProgress = false;
     private boolean mIsForceHidden = false;
@@ -82,9 +95,16 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     private int mCurrentProgress = 0;
     private int mCurrentProgressMax = 0;
     private int mProgressBarOpacity = DEFAULT_OPACITY;
-    private Drawable mCurrentDrawable = null;
     private String mTrackedNotificationKey;
+    private String mTrackedPackageName;
     private PopupWindow mMediaPopup;
+    private boolean mIsPopupActive = false;
+    private boolean mNeedsFullUiUpdate = true;
+    private boolean mIsViewAttached = false;
+    
+    // Debounce UI updates
+    private boolean mUpdatePending = false;
+    private long mLastUpdateTime = 0;
 
     private final GestureDetector mGestureDetector;
     private final Handler mMediaProgressHandler = new Handler(Looper.getMainLooper());
@@ -92,11 +112,28 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         @Override
         public void run() {
             if (mShowMediaProgress && mMediaSessionHelper.isMediaPlaying()) {
-                updateViews();
-                mMediaProgressHandler.postDelayed(this, 1000);
+                updateMediaProgressOnly();
+                mMediaProgressHandler.postDelayed(this, MEDIA_UPDATE_INTERVAL_MS);
             }
         }
     };
+
+    private final MediaSessionManagerHelper.MediaMetadataListener mMediaMetadataListener = 
+            new MediaSessionManagerHelper.MediaMetadataListener() {
+                @Override
+                public void onMediaMetadataChanged() {
+                    // Force full UI update when metadata changes
+                    mNeedsFullUiUpdate = true;
+                    requestUiUpdate();
+                }
+
+                @Override
+                public void onPlaybackStateChanged() {
+                    // Force full UI update when playback state changes
+                    mNeedsFullUiUpdate = true;
+                    requestUiUpdate();
+                }
+            };
 
     /** Constructor */
     public OnGoingActionProgressController(
@@ -105,44 +142,42 @@ public class OnGoingActionProgressController implements NotificationListener.Not
             KeyguardStateController keyguardStateController) {
         if (progressGroup == null) {
             Log.wtf(TAG, "progressGroup is null");
+            throw new IllegalArgumentException("progressGroup cannot be null");
         }
+        
         mNotificationListener = notificationListener;
         if (mNotificationListener == null) {
             Log.wtf(TAG, "mNotificationListener is null");
+            throw new IllegalArgumentException("notificationListener cannot be null");
         }
 
         mKeyguardStateController = keyguardStateController;
-        keyguardStateController.addCallback(this);
         mContext = context;
         mContentResolver = context.getContentResolver();
         mHandler = new Handler(Looper.getMainLooper());
         mSettingsObserver = new SettingsObserver(mHandler);
+        mBackgroundExecutor = Executors.newSingleThreadExecutor();
 
         mProgressBar = progressGroup.progressBarView;
         mProgressRootView = progressGroup.rootView;
         mIconView = progressGroup.iconView;
 
         mIconFetcher = new IconFetcher(context);
-        mNotificationListener.addNotificationHandler(this);
         mMediaSessionHelper = MediaSessionManagerHelper.Companion.getInstance(context);
 
         mGestureDetector = new GestureDetector(mContext, new MediaGestureListener());
 
+        // Initialize
+        mKeyguardStateController.addCallback(this);
+        mNotificationListener.addNotificationHandler(this);
         mSettingsObserver.register();
+        
+        // Optimize touch listeners - only set once
         mProgressRootView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
-        mMediaSessionHelper.addMediaMetadataListener(new MediaSessionManagerHelper.MediaMetadataListener() {
-            @Override
-            public void onMediaMetadataChanged() {
-                updateViews();
-            }
-
-            @Override
-            public void onPlaybackStateChanged() {
-                updateViews();
-            }
-        });
-
-        updateViews();
+        mMediaSessionHelper.addMediaMetadataListener(mMediaMetadataListener);
+        
+        mIsViewAttached = true;
+        updateSettings();
     }
 
     /** Gesture listener for media controls */
@@ -194,8 +229,31 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         }
     }
 
+    /**
+     * Request a UI update with debouncing to prevent too many rapid updates
+     */
+    private void requestUiUpdate() {
+        long currentTime = System.currentTimeMillis();
+        if (!mUpdatePending && (currentTime - mLastUpdateTime > DEBOUNCE_DELAY_MS)) {
+            // Update immediately if enough time has passed since last update
+            mUpdatePending = false;
+            mLastUpdateTime = currentTime;
+            updateViews();
+        } else if (!mUpdatePending) {
+            // Schedule update for later
+            mUpdatePending = true;
+            mHandler.postDelayed(() -> {
+                mUpdatePending = false;
+                mLastUpdateTime = System.currentTimeMillis();
+                updateViews();
+            }, DEBOUNCE_DELAY_MS);
+        }
+    }
+
     /** Updates the UI based on current state */
     private void updateViews() {
+        if (!mIsViewAttached) return;
+        
         mProgressRootView.setAlpha(mProgressBarOpacity / 255f);
         
         if (mIsForceHidden) {
@@ -205,40 +263,78 @@ public class OnGoingActionProgressController implements NotificationListener.Not
 
         boolean isMediaPlaying = mShowMediaProgress && mMediaSessionHelper.isMediaPlaying();
         if (isMediaPlaying) {
-            updateMediaProgress();
+            if (mNeedsFullUiUpdate) {
+                updateMediaProgressFull();
+                mNeedsFullUiUpdate = false;
+            } else {
+                updateMediaProgressOnly();
+            }
         } else {
             updateNotificationProgress();
         }
     }
 
-    /** Updates UI for media playback progress */
-    private void updateMediaProgress() {
+    /** Updates only the media progress value without changing other UI elements */
+    private void updateMediaProgressOnly() {
+        if (!mIsViewAttached) return;
+        
+        // Only update if visible to avoid unnecessary work
+        if (mProgressRootView.getVisibility() != View.VISIBLE) return;
+        
+        long totalDuration = mMediaSessionHelper.getTotalDuration();
+        long currentProgress = mMediaSessionHelper.getMediaControllerPlaybackState() != null
+                ? mMediaSessionHelper.getMediaControllerPlaybackState().getPosition() : 0;
+                
+        if (totalDuration > 0 && mProgressBar != null) {
+            mProgressBar.setMax((int) totalDuration);
+            mProgressBar.setProgress((int) currentProgress);
+        }
+    }
+
+    /** Updates complete media UI including icon and visibility */
+    private void updateMediaProgressFull() {
+        if (!mIsViewAttached) return;
+        
         mProgressRootView.setVisibility(View.VISIBLE);
         mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
         mMediaProgressHandler.post(mMediaProgressRunnable);
 
+        // Load icon in background if needed
         Drawable mediaAppIcon = mMediaSessionHelper.getMediaAppIcon();
-        mIconView.setImageDrawable(mediaAppIcon != null ? mediaAppIcon : mContext.getResources().getDrawable(R.drawable.ic_default_music_icon));
-
-        long totalDuration = mMediaSessionHelper.getTotalDuration();
-        long currentProgress = mMediaSessionHelper.getMediaControllerPlaybackState() != null
-                ? mMediaSessionHelper.getMediaControllerPlaybackState().getPosition() : 0;
-        if (totalDuration > 0) {
-            mProgressBar.setMax((int) totalDuration);
-            mProgressBar.setProgress((int) currentProgress);
+        
+        if (mediaAppIcon != null) {
+            mIconView.setImageDrawable(mediaAppIcon);
+        } else {
+            // Get current media session package and load icon if available
+            String packageName = null;
+            if (mMediaSessionHelper.getMediaControllerPlaybackState() != null &&
+                mMediaSessionHelper.getMediaControllerPlaybackState().getExtras() != null) {
+                packageName = mMediaSessionHelper.getMediaControllerPlaybackState().getExtras().getString("package");
+            }
+            
+            if (packageName != null) {
+                loadIconInBackground(packageName, drawable -> {
+                    if (mIconView != null && drawable != null) {
+                        mIconView.setImageDrawable(drawable);
+                    } else if (mIconView != null) {
+                        mIconView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_default_music_icon));
+                    }
+                });
+            } else if (mIconView != null) {
+                mIconView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_default_music_icon));
+            }
         }
 
-        mProgressRootView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
+        updateMediaProgressOnly();
     }
 
     /** Updates UI for notification progress */
     private void updateNotificationProgress() {
+        if (!mIsViewAttached) return;
+        
         if (!mIsEnabled || !mIsTrackingProgress) {
             mProgressRootView.setVisibility(View.GONE);
             mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
-            if (!mMediaSessionHelper.isMediaPlaying()) {
-                mIconView.setImageDrawable(null);
-            }
             return;
         }
 
@@ -248,52 +344,90 @@ public class OnGoingActionProgressController implements NotificationListener.Not
             mCurrentProgressMax = 100;
         }
 
-        Log.d(TAG, "updateViews: " + mCurrentProgress + "/" + mCurrentProgressMax);
-        mProgressBar.setMax(mCurrentProgressMax);
-        mProgressBar.setProgress(mCurrentProgress);
+        if (mProgressBar != null) {
+            mProgressBar.setMax(mCurrentProgressMax);
+            mProgressBar.setProgress(mCurrentProgress);
+        }
 
-        if (mTrackedNotificationKey != null) {
-            StatusBarNotification sbn = findNotificationByKey(mTrackedNotificationKey);
-            if (sbn != null) {
-                Drawable downloadAppIcon = mIconFetcher.getMonotonicPackageIcon(sbn.getPackageName()).drawable;
-                if (downloadAppIcon != null) {
-                    mIconView.setImageDrawable(downloadAppIcon);
+        // Use cached icons or load in background
+        if (mTrackedPackageName != null) {
+            loadIconInBackground(mTrackedPackageName, drawable -> {
+                if (mIconView != null && drawable != null) {
+                    mIconView.setImageDrawable(drawable);
                 }
+            });
+        }
+    }
+
+    /**
+     * Load package icon in background thread and cache it
+     */
+    private void loadIconInBackground(String packageName, IconCallback callback) {
+        if (packageName == null) return;
+        
+        // Check cache first
+        if (mIconCache.containsKey(packageName)) {
+            IconFetcher.AdaptiveDrawableResult cachedResult = mIconCache.get(packageName);
+            if (cachedResult != null && cachedResult.drawable != null) {
+                callback.onIconLoaded(cachedResult.drawable);
+                return;
             }
         }
+        
+        // Load in background
+        mBackgroundExecutor.execute(() -> {
+            final IconFetcher.AdaptiveDrawableResult iconResult = 
+                    mIconFetcher.getMonotonicPackageIcon(packageName);
+            
+            if (iconResult != null && iconResult.drawable != null) {
+                // Cache the result
+                mIconCache.put(packageName, iconResult);
+                
+                // Apply on main thread
+                mHandler.post(() -> {
+                    callback.onIconLoaded(iconResult.drawable);
+                });
+            }
+        });
+    }
+    
+    /** Interface for icon loading callbacks */
+    private interface IconCallback {
+        void onIconLoaded(@Nullable Drawable drawable);
     }
 
     /** Helper to extract progress from a notification */
     private void extractProgress(Notification notification) {
-        mCurrentProgressMax = notification.extras.getInt(Notification.EXTRA_PROGRESS_MAX, 100);
-        mCurrentProgress = notification.extras.getInt(Notification.EXTRA_PROGRESS, 0);
+        Bundle extras = notification.extras;
+        mCurrentProgressMax = extras.getInt(Notification.EXTRA_PROGRESS_MAX, 100);
+        mCurrentProgress = extras.getInt(Notification.EXTRA_PROGRESS, 0);
     }
 
     /** Tracks progress of a notification */
     private void trackProgress(final StatusBarNotification sbn) {
         mIsTrackingProgress = true;
         mTrackedNotificationKey = sbn.getKey();
+        mTrackedPackageName = sbn.getPackageName();
         extractProgress(sbn.getNotification());
-        IconFetcher.AdaptiveDrawableResult drawable = mIconFetcher.getMonotonicPackageIcon(sbn.getPackageName());
-        mCurrentDrawable = drawable.drawable;
-        updateIconImageView(drawable);
-        updateViews();
+        requestUiUpdate();
     }
 
     /** Updates progress if the notification matches the tracked key */
     private void updateProgressIfNeeded(final StatusBarNotification sbn) {
         if (!mIsTrackingProgress) {
-            Log.wtf(TAG, "Called updateProgress if needed, but we are not tracking anything");
             return;
         }
         if (sbn.getKey().equals(mTrackedNotificationKey)) {
             extractProgress(sbn.getNotification());
-            updateViews();
+            requestUiUpdate();
         }
     }
 
     /** Finds a notification by its key */
+    @Nullable
     private StatusBarNotification findNotificationByKey(String key) {
+        if (key == null || mNotificationListener == null) return null;
+        
         for (StatusBarNotification notification : mNotificationListener.getActiveNotifications()) {
             if (notification.getKey().equals(key)) {
                 return notification;
@@ -303,122 +437,168 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     }
 
     /** Checks if a notification has progress */
-    private static boolean hasProgress(final Notification notification) {
+    private static boolean hasProgress(@NonNull final Notification notification) {
         Bundle extras = notification.extras;
+        if (extras == null) return false;
+        
         boolean indeterminate = extras.getBoolean(Notification.EXTRA_PROGRESS_INDETERMINATE, false);
         boolean maxProgressValid = extras.getInt(Notification.EXTRA_PROGRESS_MAX, 0) > 0;
         return extras.containsKey(Notification.EXTRA_PROGRESS) &&
-                extras.containsKey(Notification.EXTRA_PROGRESS_MAX) &&
-                !indeterminate && maxProgressValid;
-    }
-
-    /** Updates the icon view based on drawable properties */
-    private void updateIconImageView(IconFetcher.AdaptiveDrawableResult drawable) {
-        mIconView.setImageTintList(drawable.isAdaptive ?
-                ColorStateList.valueOf(getThemeColor(mContext, android.R.attr.colorForeground)) : null);
-        mIconView.setImageDrawable(drawable.drawable);
+               extras.containsKey(Notification.EXTRA_PROGRESS_MAX) &&
+               !indeterminate && maxProgressValid;
     }
 
     /** Shows a media control popup */
     private void showMediaPopup(View anchorView) {
-        if (mMediaPopup != null && mMediaPopup.isShowing()) {
-            mMediaPopup.dismiss();
+        if (mIsPopupActive) {
+            if (mMediaPopup != null) {
+                mMediaPopup.dismiss();
+            }
+            mIsPopupActive = false;
             return;
         }
 
-        View popupView = LayoutInflater.from(mContext).inflate(R.layout.media_control_popup, null);
-        mMediaPopup = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        // Use view to ensure context is still valid
+        Context context = anchorView.getContext();
+        View popupView = LayoutInflater.from(context).inflate(R.layout.media_control_popup, null);
+        
+        if (mMediaPopup != null && mMediaPopup.isShowing()) {
+            mMediaPopup.dismiss();
+        }
+        
+        mMediaPopup = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, 
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
         mMediaPopup.setOutsideTouchable(true);
         mMediaPopup.setFocusable(true);
+        mMediaPopup.setOnDismissListener(() -> mIsPopupActive = false);
 
         ImageButton btnPrevious = popupView.findViewById(R.id.btn_previous);
         ImageButton btnNext = popupView.findViewById(R.id.btn_next);
-        btnPrevious.setOnClickListener(v -> {
-            skipToPreviousTrack();
-            mMediaPopup.dismiss();
-        });
-        btnNext.setOnClickListener(v -> {
-            skipToNextTrack();
-            mMediaPopup.dismiss();
-        });
+        
+        if (btnPrevious != null) {
+            btnPrevious.setOnClickListener(v -> {
+                skipToPreviousTrack();
+                mMediaPopup.dismiss();
+            });
+        }
+        
+        if (btnNext != null) {
+            btnNext.setOnClickListener(v -> {
+                skipToNextTrack();
+                mMediaPopup.dismiss();
+            });
+        }
 
         anchorView.post(() -> {
+            if (!mIsViewAttached) return;
+            
             int offsetX = -popupView.getWidth() / 3;
             int offsetY = -anchorView.getHeight();
             mMediaPopup.showAsDropDown(anchorView, offsetX, offsetY);
+            mIsPopupActive = true;
         });
     }
 
     /** Opens the app associated with the tracked notification */
     private void openTrackedApp() {
-        if (mTrackedNotificationKey == null || mNotificationListener == null) {
-            Log.w(TAG, "No tracked notification available");
+        if (mTrackedPackageName == null) {
+            Log.w(TAG, "No tracked package available");
             return;
         }
 
-        StatusBarNotification sbn = findNotificationByKey(mTrackedNotificationKey);
-        if (sbn == null) {
-            Log.w(TAG, "Tracked notification not found");
-            return;
-        }
-
-        String packageName = sbn.getPackageName();
-        Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(packageName);
+        Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(mTrackedPackageName);
         if (launchIntent != null) {
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(launchIntent);
         } else {
-            Log.w(TAG, "No launch intent for package: " + packageName);
+            Log.w(TAG, "No launch intent for package: " + mTrackedPackageName);
         }
     }
 
     /** Handles notification posted event */
     private void onNotificationPosted(final StatusBarNotification sbn) {
+        if (sbn == null) return;
+        
         Notification notification = sbn.getNotification();
-        if (!hasProgress(notification)) {
-            if (mTrackedNotificationKey != null && mTrackedNotificationKey.equals(sbn.getKey())) {
-                Log.d(TAG, "Tracked notification has lost progress");
-                synchronized (this) {
-                    mIsTrackingProgress = false;
-                    mCurrentDrawable = null;
-                    updateViews();
+        if (notification == null) return;
+        
+        // Process in background to avoid UI jank
+        mBackgroundExecutor.execute(() -> {
+            boolean hasValidProgress = hasProgress(notification);
+            
+            if (!hasValidProgress) {
+                if (mTrackedNotificationKey != null && mTrackedNotificationKey.equals(sbn.getKey())) {
+                    Log.d(TAG, "Tracked notification has lost progress");
+                    synchronized (this) {
+                        mIsTrackingProgress = false;
+                        mTrackedPackageName = null;
+                        mHandler.post(this::requestUiUpdate);
+                    }
+                }
+                return;
+            }
+            
+            synchronized (this) {
+                if (!mIsTrackingProgress) {
+                    // New notification to track
+                    mHandler.post(() -> trackProgress(sbn));
+                } else {
+                    // Update existing notification
+                    mHandler.post(() -> updateProgressIfNeeded(sbn));
                 }
             }
-            return;
-        }
-        synchronized (this) {
-            if (!mIsTrackingProgress) {
-                trackProgress(sbn);
-            } else {
-                updateProgressIfNeeded(sbn);
-            }
-        }
+        });
     }
 
     /** Handles notification removed event */
     private void onNotificationRemoved(final StatusBarNotification sbn) {
+        if (sbn == null) return;
+        
         synchronized (this) {
             if (!mIsTrackingProgress || !sbn.getKey().equals(mTrackedNotificationKey)) {
                 return;
             }
             mIsTrackingProgress = false;
-            mCurrentDrawable = null;
-            updateViews();
+            mTrackedPackageName = null;
+            requestUiUpdate();
         }
     }
 
     /** Sets force hidden state */
     public void setForceHidden(final boolean forceHidden) {
-        Log.d(TAG, "setForceHidden " + forceHidden);
-        mIsForceHidden = forceHidden;
-        updateViews();
+        if (mIsForceHidden != forceHidden) {
+            Log.d(TAG, "setForceHidden " + forceHidden);
+            mIsForceHidden = forceHidden;
+            requestUiUpdate();
+        }
     }
 
-    private void toggleMediaPlaybackState() { mMediaSessionHelper.toggleMediaPlaybackState(); }
-    private void skipToNextTrack() { mMediaSessionHelper.nextSong(); }
-    private void skipToPreviousTrack() { mMediaSessionHelper.prevSong(); }
-    private void openMediaApp() { mMediaSessionHelper.launchMediaApp(); }
+    // Media playback control helpers
+    private void toggleMediaPlaybackState() { 
+        if (mMediaSessionHelper != null) {
+            mMediaSessionHelper.toggleMediaPlaybackState(); 
+        }
+    }
+    
+    private void skipToNextTrack() { 
+        if (mMediaSessionHelper != null) {
+            mMediaSessionHelper.nextSong(); 
+        }
+    }
+    
+    private void skipToPreviousTrack() { 
+        if (mMediaSessionHelper != null) {
+            mMediaSessionHelper.prevSong(); 
+        }
+    }
+    
+    private void openMediaApp() { 
+        if (mMediaSessionHelper != null) {
+            mMediaSessionHelper.launchMediaApp(); 
+        }
+    }
 
+    // NotificationHandler implementation
     @Override
     public void onNotificationPosted(StatusBarNotification sbn, NotificationListenerService.RankingMap _rankingMap) {
         onNotificationPosted(sbn);
@@ -435,10 +615,16 @@ public class OnGoingActionProgressController implements NotificationListener.Not
     }
 
     @Override
-    public void onNotificationRankingUpdate(NotificationListenerService.RankingMap _rankingMap) { /* stub */ }
+    public void onNotificationRankingUpdate(NotificationListenerService.RankingMap _rankingMap) {
+        // No need to process ranking updates
+    }
+    
     @Override
-    public void onNotificationsInitialized() { /* stub */ }
+    public void onNotificationsInitialized() {
+        // Opportunity to handle initial notification set if needed
+    }
 
+    // KeyguardStateController.Callback implementation
     @Override
     public void onKeyguardShowingChanged() {
         setForceHidden(mKeyguardStateController.isShowing());
@@ -459,46 +645,78 @@ public class OnGoingActionProgressController implements NotificationListener.Not
         }
 
         public void register() {
-            mContentResolver.registerContentObserver(Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED), false, this, UserHandle.USER_ALL);
-            mContentResolver.registerContentObserver(Settings.System.getUriFor(SHOW_MEDIA_PROGRESS), false, this, UserHandle.USER_ALL);
-            mContentResolver.registerContentObserver(Settings.System.getUriFor(PROGRESS_BAR_OPACITY), false, this, UserHandle.USER_ALL);
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(ONGOING_ACTION_CHIP_ENABLED), 
+                    false, this, UserHandle.USER_ALL);
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(SHOW_MEDIA_PROGRESS), 
+                    false, this, UserHandle.USER_ALL);
+            mContentResolver.registerContentObserver(Settings.System.getUriFor(PROGRESS_BAR_OPACITY), 
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
-        public void unregister() { mContentResolver.unregisterContentObserver(this); }
+        public void unregister() { 
+            mContentResolver.unregisterContentObserver(this); 
+        }
     }
 
     /** Updates settings from system preferences */
     private void updateSettings() {
-        mIsEnabled = Settings.System.getIntForUser(mContentResolver, ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
-        mShowMediaProgress = Settings.System.getIntForUser(mContentResolver, SHOW_MEDIA_PROGRESS, 0, UserHandle.USER_CURRENT) == 1;
+        boolean wasEnabled = mIsEnabled;
+        boolean wasShowingMedia = mShowMediaProgress;
+        
+        mIsEnabled = Settings.System.getIntForUser(mContentResolver, 
+                ONGOING_ACTION_CHIP_ENABLED, 1, UserHandle.USER_CURRENT) == 1;
+        mShowMediaProgress = Settings.System.getIntForUser(mContentResolver, 
+                SHOW_MEDIA_PROGRESS, 0, UserHandle.USER_CURRENT) == 1;
         
         // Read opacity as percentage (0-100)
-        int opacityPercentage = Settings.System.getIntForUser(mContentResolver, PROGRESS_BAR_OPACITY, DEFAULT_OPACITY_PERCENTAGE, UserHandle.USER_CURRENT);
+        int opacityPercentage = Settings.System.getIntForUser(mContentResolver, 
+                PROGRESS_BAR_OPACITY, DEFAULT_OPACITY_PERCENTAGE, UserHandle.USER_CURRENT);
         
         // Ensure percentage is within valid range
-        if (opacityPercentage < 0) {
-            opacityPercentage = 0;
-        } else if (opacityPercentage > 100) {
-            opacityPercentage = 100;
-        }
+        opacityPercentage = Math.max(0, Math.min(100, opacityPercentage));
         
         // Convert percentage to alpha value (0-255)
         mProgressBarOpacity = (int)(opacityPercentage * 2.55f);
         
-        updateViews();
+        // Only update if something actually changed
+        if (wasEnabled != mIsEnabled || wasShowingMedia != mShowMediaProgress) {
+            mNeedsFullUiUpdate = true;
+        }
+        
+        requestUiUpdate();
     }
 
     /** Cleans up resources */
     public void destroy() {
+        mIsViewAttached = false;
+        
+        // Unregister observers/callbacks
         mSettingsObserver.unregister();
+        mKeyguardStateController.removeCallback(this);
+        mMediaSessionHelper.removeMediaMetadataListener(mMediaMetadataListener);
+        
+        // Cancel any pending operations
         mMediaProgressHandler.removeCallbacks(mMediaProgressRunnable);
+        mHandler.removeCallbacksAndMessages(null);
+        
+        // Dismiss popup if showing
+        if (mMediaPopup != null && mMediaPopup.isShowing()) {
+            mMediaPopup.dismiss();
+        }
+        
+        // Clear references
         mIsTrackingProgress = false;
-        mCurrentDrawable = null;
-        mCurrentProgress = 0;
-        mCurrentProgressMax = 0;
         mTrackedNotificationKey = null;
-        mIconView.setImageDrawable(null);
+        mTrackedPackageName = null;
+        
+        // Clear icon cache
+        mIconCache.clear();
+        
+        // Clear views
+        if (mIconView != null) {
+            mIconView.setImageDrawable(null);
+        }
     }
 
     private static int getThemeColor(Context context, int attrResId) {
