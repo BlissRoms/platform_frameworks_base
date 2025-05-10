@@ -52,7 +52,7 @@ public final class AttestationHooks {
         "DEVICE", "komodo",
         "PRODUCT", "komodo",
         "MODEL", "Pixel 9 Pro XL",
-        "FINGERPRINT", "google/komodo/komodo:15/BP1A.250405.007/13240079:user/release-keys"
+        "FINGERPRINT", "google/komodo/komodo:15/BP1A.250505.005/13277524:user/release-keys"
     );
 
     private static final Map<String, Object> sPixel5aProps = Map.of(
