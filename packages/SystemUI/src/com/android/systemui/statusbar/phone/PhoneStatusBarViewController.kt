@@ -249,11 +249,15 @@ private constructor(
         centralSurfaces.onBrightnessChanged(upOrCancel)
     }
 
-    fun getOngoingActionProgressGroup(): OnGoingActionProgressGroup{
+    fun getOngoingActionProgressGroup(): OnGoingActionProgressGroup {
         return OnGoingActionProgressGroup(
             mView.findViewById(R.id.status_bar_ongoing_action_chip),
             mView.findViewById(R.id.ongoing_action_app_icon) as ImageView,
             mView.findViewById(R.id.app_action_progress) as ProgressBar,
+
+	    mView.findViewById(R.id.ongoing_progress_chip_compact),
+            mView.findViewById(R.id.ongoing_action_app_icon_compact) as ImageView,
+            mView.findViewById(R.id.circular_progress) as ProgressBar
         )
     }
 

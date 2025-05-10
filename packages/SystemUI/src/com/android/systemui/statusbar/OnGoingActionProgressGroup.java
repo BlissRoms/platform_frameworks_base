@@ -26,10 +26,19 @@ public class OnGoingActionProgressGroup {
     public final ImageView iconView;
     public final ProgressBar progressBarView;
 
+    public final View compactRootView;
+    public final ImageView compactIconView;
+    public final ProgressBar circularProgressBarView;
+
     public OnGoingActionProgressGroup(View rootView, ImageView iconView,
-                                      ProgressBar progressBarView) {
+                                      ProgressBar progressBarView,
+                                      View compactRootView, ImageView compactIconView,
+                                      ProgressBar circularProgressBarView) {
         this.rootView = rootView;
         this.iconView = iconView;
         this.progressBarView = progressBarView;
+        this.compactRootView = compactRootView;
+        this.compactIconView = compactIconView;
+        this.circularProgressBarView = circularProgressBarView;
     }
 }
