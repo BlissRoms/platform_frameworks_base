@@ -63,13 +63,19 @@ class MediaSessionManagerHelper private constructor(private val context: Context
 
     private val mediaControllerCallback = object : MediaController.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadata?) {
-            if (mediaMetadata != metadata) {
-                mediaMetadata = metadata
-                notifyListeners { it.onMediaMetadataChanged() }
-            }
+            this@MediaSessionManagerHelper.mediaMetadata = metadata
+            notifyListeners { it.onMediaMetadataChanged() }
         }
+
         override fun onPlaybackStateChanged(state: PlaybackState?) {
             notifyListeners { it.onPlaybackStateChanged() }
+        }
+
+        override fun onSessionDestroyed() {
+            activeController?.unregisterCallback(this)
+            activeController = null
+            mediaMetadata = null
+            notifyListeners()
         }
     }
 
@@ -91,13 +97,13 @@ class MediaSessionManagerHelper private constructor(private val context: Context
             }
         }
     }
-    
+
     fun updateMediaColors() {
         val metadata = getMediaMetadata()
         val bitmap = metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
             ?: metadata?.getBitmap(MediaMetadata.METADATA_KEY_ART)
             ?: metadata?.getBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON)
-        
+
         val wallpaperColors = bitmap?.let { WallpaperColors.fromBitmap(it) }
         if (wallpaperColors == null || wallpaperColors == mWallpaperColors) return
 
@@ -134,7 +140,7 @@ class MediaSessionManagerHelper private constructor(private val context: Context
             notifyListeners()
         }
     }
-    
+
     fun removeMediaMetadataListener(listener: MediaMetadataListener?) {
         listener?.let {
             listeners.remove(it)
@@ -154,7 +160,6 @@ class MediaSessionManagerHelper private constructor(private val context: Context
     }
 
     private fun notifyListeners() {
-        // Store the last used media package name
         saveLastNonNullPackageName()
         listeners.forEach {
             it.onMediaMetadataChanged()
@@ -186,53 +191,55 @@ class MediaSessionManagerHelper private constructor(private val context: Context
     }
 
     fun updateMediaController() {
-        val localController = getActiveLocalMediaController()
-        if (localController != null && !sameSessions(activeController, localController)) {
-            activeController?.unregisterCallback(mediaControllerCallback)
-            activeController = localController
-            activeController?.registerCallback(mediaControllerCallback)
-            notifyListeners()
+        val newLocalController = getActiveLocalMediaController()
+
+        if (activeController != null && newLocalController != null &&
+            activeController!!.controlsSameSession(newLocalController)) {
+            return
         }
+
+        activeController?.unregisterCallback(mediaControllerCallback)
+        activeController = newLocalController
+        mediaMetadata = activeController?.metadata
+
+        if (activeController != null) {
+            activeController!!.registerCallback(mediaControllerCallback)
+        }
+        notifyListeners()
     }
 
     private fun getActiveLocalMediaController(): MediaController? {
         var localController: MediaController? = null
         val remoteMediaSessionLists = mutableListOf<String>()
-        if (mediaSessionManager != null) {
-            for (controller in mediaSessionManager.getActiveSessions(null)) {
-                val playbackInfo = controller.playbackInfo
-                if (playbackInfo == null) {
-                    // do nothing
-                    continue
+        // mediaSessionManager can be null if the service is not available yet.
+        // Though in this class's init it's fetched with '!!', defensive check here is fine.
+        mediaSessionManager.getActiveSessions(null)?.forEach { controller ->
+            val playbackInfo = controller.playbackInfo ?: return@forEach
+            val playbackState = controller.playbackState ?: return@forEach
+
+            if (playbackState.state != PlaybackState.STATE_PLAYING) {
+                return@forEach
+            }
+
+            if (playbackInfo.playbackType == MediaController.PlaybackInfo.PLAYBACK_TYPE_REMOTE) {
+                if (localController != null && localController?.packageName == controller.packageName) {
+                    localController = null // Prioritize local if remote is from same app
                 }
-                val playbackState = controller.playbackState
-                if (playbackState == null) {
-                    // do nothing
-                    continue
+                if (!remoteMediaSessionLists.contains(controller.packageName)) {
+                    remoteMediaSessionLists.add(controller.packageName)
                 }
-                if (playbackState.state != PlaybackState.STATE_PLAYING) {
-                    // do nothing
-                    continue
-                }
-                if (playbackInfo.playbackType == MediaController.PlaybackInfo.PLAYBACK_TYPE_REMOTE) {
-                    if (localController != null && localController.packageName == controller.packageName) {
-                        localController = null
-                    }
-                    if (!remoteMediaSessionLists.contains(controller.packageName)) {
-                        remoteMediaSessionLists.add(controller.packageName)
-                    }
-                    continue
-                }
-                if (playbackInfo.playbackType == MediaController.PlaybackInfo.PLAYBACK_TYPE_LOCAL) {
-                    if (localController == null && !remoteMediaSessionLists.contains(controller.packageName)) {
-                        localController = controller
-                    }
+                return@forEach // Continue to next controller
+            }
+
+            if (playbackInfo.playbackType == MediaController.PlaybackInfo.PLAYBACK_TYPE_LOCAL) {
+                if (localController == null && !remoteMediaSessionLists.contains(controller.packageName)) {
+                    localController = controller
                 }
             }
         }
         return localController
     }
-    
+
     fun getMediaBitmap(): Bitmap? {
         val metadata = getMediaMetadata()
         return metadata?.let {
@@ -253,9 +260,9 @@ class MediaSessionManagerHelper private constructor(private val context: Context
     }
 
     fun getMediaMetadata(): MediaMetadata? {
-        return getActiveLocalMediaController()?.metadata
+        return activeController?.metadata ?: mediaMetadata // Fallback to cached if activeController is briefly null
     }
-    
+
     fun getMediaColor(): Int {
         return currMediaArtColor
     }
@@ -266,8 +273,9 @@ class MediaSessionManagerHelper private constructor(private val context: Context
     }
 
     fun isMediaPlaying(): Boolean {
-        return isMediaControllerAvailable() &&
-            getMediaControllerPlaybackState(getActiveLocalMediaController()) == PlaybackState.STATE_PLAYING
+        val controller = getActiveLocalMediaController()
+        return controller != null &&
+               (controller.playbackState?.state == PlaybackState.STATE_PLAYING)
     }
 
     fun getMediaControllerPlaybackState(controller: MediaController?): Int {
@@ -276,13 +284,7 @@ class MediaSessionManagerHelper private constructor(private val context: Context
 
     fun getMediaControllerPlaybackState(): PlaybackState? {
         val controller = getActiveLocalMediaController()
-        return controller?.playbackState ?: null
-    }
-
-    private fun sameSessions(a: MediaController?, b: MediaController?): Boolean {
-        if (a == b) return true
-        if (a == null) return false
-        return a.controlsSameSession(b)
+        return controller?.playbackState
     }
 
     private fun dispatchMediaKeyWithWakeLockToMediaSession(keycode: Int) {
@@ -314,7 +316,7 @@ class MediaSessionManagerHelper private constructor(private val context: Context
             dispatchMediaKeyWithWakeLockToMediaSession(KeyEvent.KEYCODE_MEDIA_PLAY)
         }
     }
-    
+
     fun launchMediaApp() {
         lastSavedPackageName?.takeIf { it.isNotEmpty() }?.let {
             launchMediaPlayerApp(it)
@@ -339,7 +341,7 @@ class MediaSessionManagerHelper private constructor(private val context: Context
                 Expandable.fromView(view).dialogController()
             )
     }
-    
+
     private fun Expandable.dialogController(): DialogTransitionAnimator.Controller? {
         return dialogTransitionController(
             cuj =
@@ -355,7 +357,7 @@ class MediaSessionManagerHelper private constructor(private val context: Context
         private var instance: MediaSessionManagerHelper? = null
         fun getInstance(context: Context): MediaSessionManagerHelper {
             return instance ?: synchronized(this) {
-                instance ?: MediaSessionManagerHelper(context).also { instance = it }
+                instance ?: MediaSessionManagerHelper(context.applicationContext).also { instance = it }
             }
         }
     }
