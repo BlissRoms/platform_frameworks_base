@@ -92,5 +92,6 @@
 
     <!-- Ringer QS tile -->
     <dimen name="qs_ringer_tile_dot_radius">2dp</dimen>
+    <dimen name="qs_ringer_corner_radius">28dp</dimen>
 
 </resources>

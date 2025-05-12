@@ -237,7 +237,7 @@ class RingerQSTileViewImpl @JvmOverloads constructor(
             // Replicate @drawable/qs_tile_background_shape
             shape = RECTANGLE
             cornerRadius =
-                context.resources.getDimensionPixelSize(R.dimen.qs_corner_radius).toFloat()
+                context.resources.getDimensionPixelSize(R.dimen.qs_ringer_corner_radius).toFloat()
             setColor(Utils.getColorAttrDefaultColor(context, R.attr.shadeInactive))
         }
 
