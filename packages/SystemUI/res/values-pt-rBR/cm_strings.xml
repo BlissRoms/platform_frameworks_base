@@ -75,6 +75,6 @@
     <string name="screenrecord_hevc_switch_label">Codificação HEVC</string>
     <string name="screenrecord_hevc_switch_summary">Usar o codificador HEVC, que é mais eficiente</string>
     <string name="battery_notification_channel_tv">Alerta de bateria</string>
-    <string name="screenshot_delete_label">Excluir</string>
-    <string name="screenshot_delete_description">Excluir captura de tela</string>
+    <string name="screenshot_delete_label">Apagar</string>
+    <string name="screenshot_delete_description">Apagar captura de tela</string>
 </resources>
