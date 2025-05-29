@@ -90,10 +90,6 @@
     <!-- Face unlock icon -->
     <dimen name="face_unlock_icon_margin_top">6dp</dimen>
 
-    <!-- Ringer QS tile -->
-    <dimen name="qs_ringer_tile_dot_radius">2dp</dimen>
-    <dimen name="qs_ringer_corner_radius">28dp</dimen>
-
     <!-- Progress chip -->
     <dimen name="ongoing_action_chip_width">70dp</dimen>
     <dimen name="ongoing_action_chip_height">18sp</dimen>

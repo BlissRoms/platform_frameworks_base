@@ -289,7 +289,6 @@ public class QSAnimator implements QSHost.Callback, PagedTileLayout.PageListener
             TouchAnimator.Builder animatorBuilderY,
             TouchAnimator.Builder qqsAnimatorBuilderY
     ) {
-        if (qqsView == null || qsView == null) return;
         getRelativePosition(temp, qqsView, commonParent);
         int qqsPosX = temp[0];
         int qqsPosY = temp[1];
@@ -378,8 +377,8 @@ public class QSAnimator implements QSHost.Callback, PagedTileLayout.PageListener
 
                     // Icons
                     translateContent(
-                            isA11Style ? quickTileView.getIconWithBackground() : quickTileView.getIconWithBackground(),
-                            isA11Style ? tileView.getIconWithBackground() : tileView.getIconWithBackground(),
+                            isA11Style ? quickTileView.getIconWithBackground() : quickTileView.getIcon(),
+                            isA11Style ? tileView.getIconWithBackground() : tileView.getIcon(),
                             view,
                             xOffset,
                             yOffset,
@@ -420,19 +419,17 @@ public class QSAnimator implements QSHost.Callback, PagedTileLayout.PageListener
                     // * on TileLayout
                     // Therefore, we use a quadratic interpolator animator to animate the alpha
                     // for tiles in QQS to match.
-                    if (quickTileView.getSecondaryLabel() != null) {
-                        quadraticInterpolatorBuilder
-                                .addFloat(isA11Style ? quickTileView.getLabelContainer() :
-                                        quickTileView.getSecondaryLabel(), "alpha", 0, 1);
-                        nonFirstPageAlphaBuilder
-                                .addFloat(isA11Style ? quickTileView.getLabelContainer() :
-                                        quickTileView.getSecondaryLabel(), "alpha", 0, 0);
-                        mAllViews.add(isA11Style ? quickTileView.getLabelContainer() :
-                                quickTileView.getSecondaryLabel());
-                    }
+                    quadraticInterpolatorBuilder
+                            .addFloat(isA11Style ? quickTileView.getLabelContainer() :
+                                    quickTileView.getSecondaryLabel(), "alpha", 0, 1);
+                    nonFirstPageAlphaBuilder
+                            .addFloat(isA11Style ? quickTileView.getLabelContainer() :
+                                    quickTileView.getSecondaryLabel(), "alpha", 0, 0);
 
                     mAnimatedQsViews.add(tileView);
                     mAllViews.add(quickTileView);
+                    mAllViews.add(isA11Style ? quickTileView.getLabelContainer() :
+                            quickTileView.getSecondaryLabel());
                 } else if (!isIconInAnimatedRow(count)) {
                     // Pretend there's a corresponding QQS tile (for the position) that we are
                     // expanding from.
@@ -451,12 +448,10 @@ public class QSAnimator implements QSHost.Callback, PagedTileLayout.PageListener
                     mOtherFirstPageTilesHeightAnimator.addView(tileView);
                     tileView.setClipChildren(true);
                     tileView.setClipToPadding(true);
-                    if (tileView.getSecondaryLabel() != null) {
-                        firstPageBuilder.addFloat(isA11Style ? tileView.getLabelContainer() :
-                                tileView.getSecondaryLabel(), "alpha", 0, 1);
-                        mAllViews.add(isA11Style ? tileView.getLabelContainer() :
-                                tileView.getSecondaryLabel());
-                    }
+                    firstPageBuilder.addFloat(isA11Style ? tileView.getLabelContainer() :
+                            tileView.getSecondaryLabel(), "alpha", 0, 1);
+                    mAllViews.add(isA11Style ? tileView.getLabelContainer() :
+                            tileView.getSecondaryLabel());
                 }
 
                 mAllViews.add(tileView);
@@ -541,29 +536,21 @@ public class QSAnimator implements QSHost.Callback, PagedTileLayout.PageListener
             builder.addFloat(tileView, "translationY", -diff, 0);
             // The different elements in the tile should be centered, so maintain them centered
             int centerDiff = (tileView.getMeasuredHeight() - mLastQQSTileHeight) / 2;
-            builder.addFloat(tileView.getIconWithBackground(), "translationY", -centerDiff, 0);
-            alphaDelayedBuilder.addFloat(tileView.getIconWithBackground(), "alpha", 0, 1);
-
-            if (tileView.getSecondaryIcon() != null) {
-                builder.addFloat(tileView.getSecondaryIcon(), "translationY", -centerDiff, 0);
-                alphaDelayedBuilder.addFloat(tileView.getSecondaryIcon(), "alpha", 0, 1);
-                mAllViews.add(tileView.getSecondaryIcon());
+            builder.addFloat(tileView.getIcon(), "translationY", -centerDiff, 0);
+            builder.addFloat(tileView.getSecondaryIcon(), "translationY", -centerDiff, 0);
+            // The labels have different apparent size in QQS vs QS (no secondary label), so the
+            // translation needs to account for that.
+            int secondaryLabelOffset = 0;
+            if (tileView.getSecondaryLabel().getVisibility() == View.VISIBLE) {
+                secondaryLabelOffset = tileView.getSecondaryLabel().getMeasuredHeight() / 2;
             }
+            int labelDiff = centerDiff - secondaryLabelOffset;
+            builder.addFloat(tileView.getLabelContainer(), "translationY", -labelDiff, 0);
+            builder.addFloat(tileView.getSecondaryLabel(), "alpha", 0, 0.3f, 1);
 
-            if (tileView.getLabelContainer() != null && tileView.getSecondaryLabel() != null) {
-                // The labels have different apparent size in QQS vs QS (no secondary label), so the
-                // translation needs to account for that.
-                int secondaryLabelOffset = 0;
-                if (tileView.getSecondaryLabel().getVisibility() == View.VISIBLE) {
-                    secondaryLabelOffset = tileView.getSecondaryLabel().getMeasuredHeight() / 2;
-                }
-                int labelDiff = centerDiff - secondaryLabelOffset;
-                builder.addFloat(tileView.getLabelContainer(), "translationY", -labelDiff, 0);
-                builder.addFloat(tileView.getSecondaryLabel(), "alpha", 0, 0.3f, 1);
-                alphaDelayedBuilder.addFloat(tileView.getLabelContainer(), "alpha", 0, 1);
-                mAllViews.add(tileView.getSecondaryLabel());
-                mAllViews.add(tileView.getLabelContainer());
-            }
+            alphaDelayedBuilder.addFloat(tileView.getLabelContainer(), "alpha", 0, 1);
+            alphaDelayedBuilder.addFloat(tileView.getIcon(), "alpha", 0, 1);
+            alphaDelayedBuilder.addFloat(tileView.getSecondaryIcon(), "alpha", 0, 1);
 
             final int tileTop = tileView.getTop();
             if (tileTop != lastTileTop) {
@@ -592,7 +579,10 @@ public class QSAnimator implements QSHost.Callback, PagedTileLayout.PageListener
             tileView.setClipChildren(true);
             tileView.setClipToPadding(true);
             mAllViews.add(tileView);
-            mAllViews.add(tileView.getIconWithBackground());
+            mAllViews.add(tileView.getSecondaryLabel());
+            mAllViews.add(tileView.getIcon());
+            mAllViews.add(tileView.getSecondaryIcon());
+            mAllViews.add(tileView.getLabelContainer());
         }
         builder.addFloat(alphaDelayedBuilder.build(), "position", 0, 1);
         return new Pair<>(animator, builder.build());
@@ -676,7 +666,6 @@ public class QSAnimator implements QSHost.Callback, PagedTileLayout.PageListener
     }
 
     private void getRelativePosition(int[] loc1, View view, View parent) {
-        if (view == parent || view == null) return;
         loc1[0] = 0 + view.getWidth() / 2;
         loc1[1] = 0;
         getRelativePositionInt(loc1, view, parent);
