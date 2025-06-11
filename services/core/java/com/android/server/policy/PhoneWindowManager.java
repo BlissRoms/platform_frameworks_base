@@ -2410,6 +2410,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
             case RINGER_MODES:
                 toggleRingerModes();
+            case PLAY_PAUSE_MUSIC:
+                triggerVirtualKeypress(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
                 break;
             default:
                 break;
