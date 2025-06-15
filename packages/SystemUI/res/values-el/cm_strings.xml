@@ -77,4 +77,6 @@
     <string name="battery_notification_channel_tv">Προειδοποίηση μπαταρίας</string>
     <string name="screenshot_delete_label">Διαγραφή</string>
     <string name="screenshot_delete_description">Διαγραφή στιγμιότυπου οθόνης</string>
+    <string name="screen_pinning_description_no_navbar">Αυτό κλειδώνει τη συγκεκριμένη οθόνη μέχρι να την ξεκαρφιτσώσετε. Αγγίξτε &amp; κρατήστε πατημένο το πλήκτρο Πίσω για ξεκαρφίτσωμα.</string>
+    <string name="screen_pinning_toast_no_navbar">Για να ξεκαρφιτσώσετε αυτήν την οθόνη, αγγίξτε &amp; κρατήστε πατημένο το πλήκτρο Πίσω.</string>
 </resources>
