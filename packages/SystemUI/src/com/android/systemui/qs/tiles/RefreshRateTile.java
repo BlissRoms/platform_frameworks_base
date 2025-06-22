@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
@@ -28,7 +29,7 @@ import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.FalsingManager;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
-import com.android.systemui.plugins.qs.QSTile.State;
+import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.QsEventLogger;
 import com.android.systemui.qs.logging.QSLogger;
@@ -43,7 +44,7 @@ import javax.inject.Inject;
 import com.bliss.display.IRefreshRateListener;
 import com.bliss.display.RefreshRateManager;
 
-public class RefreshRateTile extends QSTileImpl<State> {
+public class RefreshRateTile extends QSTileImpl<QSTile.BooleanState> {
 
     public static final String TILE_SPEC = "refresh_rate";
 
@@ -57,7 +58,8 @@ public class RefreshRateTile extends QSTileImpl<State> {
     private final RefreshRateManager mManager;
     private final SettingsObserver mObserver;
 
-    private final Icon mIcon = ResourceIcon.get(R.drawable.ic_refresh_rate);
+    @Nullable
+    private Icon mIcon = null;
 
     private int mMinRefreshRate;
     private int mPeakRefreshRate;
@@ -115,8 +117,10 @@ public class RefreshRateTile extends QSTileImpl<State> {
     }
 
     @Override
-    public State newTileState() {
-        return new State();
+    public QSTile.BooleanState newTileState() {
+        QSTile.BooleanState state = new QSTile.BooleanState();
+        state.forceExpandIcon = true;
+        return state;
     }
 
     @Override
@@ -164,17 +168,20 @@ public class RefreshRateTile extends QSTileImpl<State> {
     }
 
     @Override
-    protected void handleUpdateState(State state, Object arg) {
+    protected void handleUpdateState(QSTile.BooleanState state, Object arg) {
         if (!isAvailable()) {
             return;
         }
-
+        if (mIcon == null) {
+            mIcon = maybeLoadResourceIcon(R.drawable.ic_refresh_rate);
+        }
         state.state = mRequestedRefreshRate > 0 || mRequestedMemcRefreshRate > 0
                 ? Tile.STATE_UNAVAILABLE : Tile.STATE_ACTIVE;
         state.icon = mIcon;
         state.label = mContext.getString(R.string.refresh_rate_tile_label);
         state.contentDescription = mContext.getString(R.string.refresh_rate_tile_label);
         state.secondaryLabel = getRefreshRateLabel();
+        state.expandedAccessibilityClassName = Button.class.getName();
     }
 
     @Override
