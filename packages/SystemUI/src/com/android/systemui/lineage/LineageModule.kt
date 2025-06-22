@@ -117,6 +117,7 @@ interface LineageModule {
         const val POWERSHARE_TILE_SPEC = "powershare"
         const val PROFILES_TILE_SPEC = "profiles"
         const val READING_MODE_TILE_SPEC = "reading_mode"
+        const val REFRESH_RATE_TILE_SPEC = "refresh_rate"
         const val SYNC_TILE_SPEC = "sync"
         const val USB_TETHER_TILE_SPEC = "usb_tether"
         const val VPN_TILE_SPEC = "vpn"
@@ -225,6 +226,21 @@ interface LineageModule {
                 instanceId = uiEventLogger.getNewInstanceId(),
                 category = TileCategory.DISPLAY,
             )
+
+        @Provides
+        @IntoMap
+        @StringKey(REFRESH_RATE_TILE_SPEC)
+        fun provideRefreshRateTileConfig(uiEventLogger: QsEventLogger): QSTileConfig {
+            return QSTileConfig(
+                tileSpec = TileSpec.create(REFRESH_RATE_TILE_SPEC),
+                uiConfig = QSTileUIConfig.Resource(
+                    iconRes = R.drawable.ic_refresh_rate,
+                    labelRes = R.string.refresh_rate_tile_label
+                ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.DISPLAY
+            )
+        }
 
         @Provides
         @IntoMap
