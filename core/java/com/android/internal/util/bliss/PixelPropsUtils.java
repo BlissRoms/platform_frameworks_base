@@ -64,14 +64,17 @@ public final class PixelPropsUtils {
             "persist.sys.disguise_props_for_music_app";
     private static final String PACKAGE_ARCORE = "com.google.ar.core";
     private static final String PACKAGE_GMS = "com.google.android.gms";
+    private static final String PROCESS_GMS_UNSTABLE = PACKAGE_GMS + ".unstable";
     private static final String PACKAGE_GOOGLE = "com.google";
     private static final String PACKAGE_NEXUS_LAUNCHER = "com.google.android.apps.nexuslauncher";
     private static final String PACKAGE_QSB = "com.google.android.googlequicksearchbox";
     private static final String PACKAGE_SI = "com.google.android.settings.intelligence";
 
+    private static final String PROP_HOOKS = "persist.sys.pihooks_";
     private static final String SPOOF_QSB = "persist.sys.pixelprops.qsb";
     private static final String SPOOF_PIXEL_PROPS = "persist.sys.pixelprops";
     private static final String SPOOF_PIXEL_GAMES = "persist.sys.pixelprops.games";
+    public static final String SPOOF_PIXEL_GMS = "persist.sys.pixelprops.gms";
 
     private static final String TAG = PixelPropsUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
@@ -225,7 +228,16 @@ public final class PixelPropsUtils {
             "com.vng.pubgmobile"
     };
 
-    private static volatile boolean sIsExcluded;
+    private static final String[] GMS_SPOOF_KEYS = {
+        "BRAND", "DEVICE", "DEVICE_INITIAL_SDK_INT", "FINGERPRINT", "ID",
+        "MANUFACTURER", "MODEL", "PRODUCT", "RELEASE", "SECURITY_PATCH",
+        "TAGS", "TYPE", "SDK_INT"
+    };
+
+    private static final ComponentName GMS_ADD_ACCOUNT_ACTIVITY = ComponentName.unflattenFromString(
+            "com.google.android.gms/.auth.uiflows.minutemaid.MinuteMaidActivity");
+
+    private static volatile boolean sIsGms, sIsExcluded;
     private static volatile String sProcessName;
 
     static {
@@ -323,6 +335,47 @@ public final class PixelPropsUtils {
                 || Arrays.asList(customGoogleCameraPackages).contains(packageName);
     }
 
+    private static boolean shouldTryToCertifyDevice() {
+        if (!sIsGms) return false;
+
+        final String processName = Application.getProcessName();
+        if (!processName.toLowerCase().contains("unstable")) {
+            return false;
+        }
+
+        final boolean was = isGmsAddAccountActivityOnTop();
+        final String reason = "GmsAddAccountActivityOnTop";
+        if (!was) {
+            return true;
+        }
+        dlog("Skip spoofing build for GMS, because " + reason + "!");
+        TaskStackListener taskStackListener = new TaskStackListener() {
+            @Override
+            public void onTaskStackChanged() {
+                final boolean isNow = isGmsAddAccountActivityOnTop();
+                if (isNow ^ was) {
+                    dlog(String.format("%s changed: isNow=%b, was=%b, killing myself!", reason, isNow, was));
+                    Process.killProcess(Process.myPid());
+                }
+            }
+        };
+        try {
+            ActivityTaskManager.getService().registerTaskStackListener(taskStackListener);
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to register task stack listener!", e);
+            return true;
+        }
+    }
+
+    public static void spoofBuildGms() {
+        if (!SystemProperties.getBoolean(SPOOF_PIXEL_GMS, false))
+            return;
+        for (String key : GMS_SPOOF_KEYS) {
+            setPropValue(key, SystemProperties.get(PROP_HOOKS + key));
+        }
+    }
+
     public static void setProps(Context context) {
         final String packageName = context.getPackageName();
         final String processName = Application.getProcessName();
@@ -330,11 +383,13 @@ public final class PixelPropsUtils {
         Context appContext = context.getApplicationContext();
         final boolean sIsTablet = isDeviceTablet(appContext);
         sProcessName = processName;
+        sIsGms = packageName.equals(PACKAGE_GMS) && processName.equals(PROCESS_GMS_UNSTABLE);
         sIsExcluded = isGoogleCameraPackage(packageName);
         String model = SystemProperties.get("ro.product.model");
         boolean isPixelDevice = SystemProperties.get("ro.soc.manufacturer").equalsIgnoreCase("Google");
         boolean isMainlineDevice = isPixelDevice && model.matches("Pixel [8-9][a-zA-Z ]*");
         boolean isTensorDevice = isPixelDevice && model.matches("Pixel [6-9][a-zA-Z ]*");
+        boolean isPixelGmsEnabled = SystemProperties.getBoolean(SPOOF_PIXEL_GMS, false);
         propsToChangeGeneric.forEach((k, v) -> setPropValue(k, v));
         if (packageName == null || processName == null || packageName.isEmpty()) {
             return;
@@ -342,7 +397,15 @@ public final class PixelPropsUtils {
         if (sIsExcluded) {
             return;
         }
-        if (Arrays.asList(packagesToChangeRecentPixel).contains(packageName)) {
+        if (sIsGms) {
+            if (shouldTryToCertifyDevice()) {
+                if (!isPixelGmsEnabled) {
+                    return;
+                } else {
+                    spoofBuildGms();
+                }
+            }
+        } else if (Arrays.asList(packagesToChangeRecentPixel).contains(packageName)) {
             if (isMainlineDevice || !SystemProperties.getBoolean(SPOOF_PIXEL_PROPS, true)) {
                 return;
             } else if (packageName.equals(PACKAGE_QSB)) {
@@ -553,6 +616,18 @@ public final class PixelPropsUtils {
         }
     }
 
+    private static boolean isGmsAddAccountActivityOnTop() {
+        try {
+            final ActivityTaskManager.RootTaskInfo focusedTask =
+                    ActivityTaskManager.getService().getFocusedRootTaskInfo();
+            return focusedTask != null && focusedTask.topActivity != null
+                    && focusedTask.topActivity.equals(GMS_ADD_ACCOUNT_ACTIVITY);
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to get top activity!", e);
+        }
+        return false;
+    }
+
     private static String[] getStringArrayResSafely(int resId) {
         String[] strArr = Resources.getSystem().getStringArray(resId);
         if (strArr == null) strArr = new String[0];
@@ -684,6 +759,23 @@ public final class PixelPropsUtils {
             return true;
         }
         return false;
+    }
+
+    private static boolean isCallerSafetyNet() {
+        return Arrays.stream(Thread.currentThread().getStackTrace())
+                        .anyMatch(elem -> elem.getClassName().toLowerCase()
+                            .contains("droidguard"));
+    }
+
+    public static void onEngineGetCertificateChain() {
+        boolean isPixelGmsEnabled = SystemProperties.getBoolean(SPOOF_PIXEL_GMS, false);
+        if (!isPixelGmsEnabled)
+            return;
+        // Check stack for SafetyNet or Play Integrity
+        if (isCallerSafetyNet() && !sIsExcluded) {
+            dlog("Blocked key attestation");
+            throw new UnsupportedOperationException();
+        }
     }
 
     public static void dlog(String msg) {
