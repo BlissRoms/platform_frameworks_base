@@ -698,23 +698,25 @@ constructor(
                             vm = viewModel
                         )
                     }
-                if (viewModel.isQsEnabled) {
-                    Box(
-                        modifier =
-                            Modifier.collapseExpandSemanticAction(
-                                    stringResource(
-                                        id = R.string.accessibility_quick_settings_expand
-                                    )
-                                )
-                                .padding(horizontal = qsHorizontalMargin())
-                    ) {
-                        QuickQuickSettingsLayout(
-                            brightness = BrightnessSlider,
-                            tiles = Tiles,
-                            media = Media,
-                            mediaInRow = viewModel.qqsMediaInRow,
-                            mediaVisible = viewModel.qqsMediaVisible,
-                            draghandle = DragHandle,
+if (viewModel.isQsEnabled) {
+    Box(
+        modifier = Modifier
+            .collapseExpandSemanticAction(
+                stringResource(
+                    id = R.string.accessibility_quick_settings_expand
+                )
+            )
+            .padding(
+                horizontal = qsHorizontalMargin().coerceAtLeast(0.dp)
+            )
+    ) {
+        QuickQuickSettingsLayout(
+            brightness = BrightnessSlider,
+            tiles = Tiles,
+            media = Media,
+            mediaInRow = viewModel.qqsMediaInRow,
+            mediaVisible = viewModel.qqsMediaVisible,
+            draghandle = DragHandle,
                         )
                     }
                 }
@@ -1396,10 +1398,7 @@ fun BrightnessLayout(
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(
-                        horizontal = (QuickSettingsShade.Dimensions.InnerPadding - qsHorizontalMargin())
-                            .coerceAtLeast(0.dp)
-                    )
+                    .padding(horizontal = QuickSettingsShade.Dimensions.InnerPadding)
             )
         }
     }

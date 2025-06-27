@@ -99,13 +99,7 @@ constructor(
     }
 
     suspend fun loadImage(@DrawableRes resId: Int, context: Context): Icon.Loaded {
-        return imageLoader
-            .loadDrawable(
-                android.graphics.drawable.Icon.createWithResource(context, resId),
-                maxHeight = 200,
-                maxWidth = 200,
-            )!!
-            .asIcon(null, resId)
+        return imageLoader.loadDrawableRes(resId, context)!!.asIcon(null, resId)
     }
 
     /**

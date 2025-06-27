@@ -17,6 +17,7 @@
 package com.android.systemui.util
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.SystemProperties
 import android.provider.Settings
 import androidx.compose.runtime.Composable
@@ -40,6 +41,10 @@ class CustomAndroidColorScheme(private val context: Context) {
             val tileColorAlpha = ColorUtils.setAlphaComponent(tileColor, (alpha * 255).toInt())
             return Color(tileColorAlpha)
         }
+
+    private val isNightMode: Boolean
+        get() = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                Configuration.UI_MODE_NIGHT_YES
 
     companion object {
         val current: CustomAndroidColorScheme
