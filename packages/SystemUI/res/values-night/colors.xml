@@ -20,6 +20,8 @@
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <!-- The dark background color behind the shade -->
     <color name="shade_scrim_background_dark">@androidprv:color/system_under_surface_dark</color>
+    
+    <color name="shade_tile_color">@android:color/system_neutral1_900</color>
 
     <!-- The color of the legacy notifications with customs backgrounds (gingerbread and lollipop.)
     It's fine to override this color since at that point the shade was dark. -->
@@ -121,11 +123,11 @@
     <!-- Dark theme base colors for notification shade/scrim, the alpha component is adjusted
      programmatically to match the spec -->
     <color name="shade_panel_base">@android:color/system_accent1_800</color>
-    <color name="notification_scrim_base">@android:color/system_accent1_800</color>
+    <color name="notification_scrim_base">@android:color/system_accent1_900</color>
 
     <!-- Dark theme fallback colors for notification shade/scrim -->
-    <color name="shade_panel_fallback">@android:color/system_accent2_800</color>
-    <color name="notification_scrim_fallback">@android:color/system_surface_dim_dark</color>
+    <color name="shade_panel_fallback">@android:color/system_neutral1_800</color>
+    <color name="notification_scrim_fallback">@android:color/system_neutral1_900</color>
 
     <!-- Keyboard shortcut helper dialog -->
     <color name="ksh_key_item_color">@*android:color/system_on_surface_variant_dark</color>

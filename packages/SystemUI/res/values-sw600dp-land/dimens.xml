@@ -33,7 +33,6 @@
          otherwise full space between two pages is qs_horizontal_margin*2, and that makes tiles page
          not appear immediately after user swipes to the side -->
     <dimen name="qs_tiles_page_horizontal_margin">12dp</dimen>
-    <dimen name="qs_media_session_height_expanded">172dp</dimen>
 
     <dimen name="split_shade_notifications_scrim_margin_bottom">16dp</dimen>
 

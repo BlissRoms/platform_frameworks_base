@@ -140,7 +140,7 @@ import com.android.systemui.qs.panels.ui.compose.dragAndDropTileList
 import com.android.systemui.qs.panels.ui.compose.dragAndDropTileSource
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.InactiveCornerRadius
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileArrangementPadding
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileHeight
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.tileHeight
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.ToggleTargetSize
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.EditModeTileDefaults.AUTO_SCROLL_DISTANCE
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.EditModeTileDefaults.AUTO_SCROLL_SPEED
@@ -523,7 +523,7 @@ private fun CurrentTilesGrid(
     val totalRows = listState.tiles.lastOrNull()?.row ?: 0
     val totalHeight by
         animateDpAsState(
-            gridHeight(totalRows + 1, TileHeight, TileArrangementPadding, CurrentTilesGridPadding),
+            gridHeight(totalRows + 1, tileHeight(), TileArrangementPadding, CurrentTilesGridPadding),
             label = "QSEditCurrentTilesGridHeight",
         )
     val gridState = rememberLazyGridState()
@@ -799,7 +799,7 @@ private fun TileGridCell(
         tileState = tileState,
         resizingState = resizingState,
         modifier =
-            modifier.height(TileHeight).fillMaxWidth().onSizeChanged {
+            modifier.height(tileHeight()).fillMaxWidth().onSizeChanged {
                 // Calculate the min/max width from the idle size
                 val min = if (cell.isIcon) it.width else (it.width - totalPadding) / largeTilesSpan
                 val max = if (cell.isIcon) (it.width * largeTilesSpan) + totalPadding else it.width
@@ -904,7 +904,7 @@ private fun AvailableTileGridCell(
                     stateDescription?.let { this.stateDescription = it }
                 },
     ) {
-        Box(Modifier.fillMaxWidth().height(TileHeight)) {
+        Box(Modifier.fillMaxWidth().height(tileHeight())) {
             val draggableModifier =
                 if (cell.isAvailable) {
                     Modifier.dragAndDropTileSource(
@@ -954,7 +954,7 @@ private fun AvailableTileGridCell(
 @Composable
 private fun SpacerGridCell(modifier: Modifier = Modifier) {
     // By default, spacers are invisible and exist purely to catch drag movements
-    Box(modifier.height(TileHeight).fillMaxWidth())
+    Box(modifier.height(tileHeight()).fillMaxWidth())
 }
 
 @Composable
