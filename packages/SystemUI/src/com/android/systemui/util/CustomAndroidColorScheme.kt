@@ -17,6 +17,8 @@
 package com.android.systemui.util
 
 import android.content.Context
+import android.os.SystemProperties
+import android.provider.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
@@ -29,8 +31,13 @@ class CustomAndroidColorScheme(private val context: Context) {
 
     val shadeTileColor: Color
         get() {
-            val tileColor = context.getColor(R.color.shade_tile_color)
-            val tileColorAlpha = ColorUtils.setAlphaComponent(tileColor, (0.5f * 255).toInt())
+            val blurEnabledByDefault = SystemProperties.getBoolean("ro.custom.blur.enable", false) 
+            val blurEnabled = Settings.Global.getInt(context.getContentResolver(),
+                 Settings.Global.DISABLE_WINDOW_BLURS, if (blurEnabledByDefault) 0 else 1) != 1
+            val colorRes = if (blurEnabled) R.color.shade_tile_color else R.color.shade_tile_color_fallback
+            val tileColor = context.resources.getColor(colorRes, context.theme)
+            val alpha = if (blurEnabled) 0.5f else 1f
+            val tileColorAlpha = ColorUtils.setAlphaComponent(tileColor, (alpha * 255).toInt())
             return Color(tileColorAlpha)
         }
 

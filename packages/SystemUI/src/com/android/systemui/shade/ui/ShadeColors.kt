@@ -44,9 +44,10 @@ object ShadeColors {
     private fun Resources.shadePanelStandard(): Int {
         val layerAbove = ColorUtils.setAlphaComponent(
             getColor(R.color.shade_panel_base, null),
-            (0.4f * 255).toInt()
+            (0.5f * 255).toInt()
         )
-        val layerBelow = ColorUtils.setAlphaComponent(Color.WHITE, (0.1f * 255).toInt())
+        val colorBase = getColor(R.color.shade_panel_base_color, null)
+        val layerBelow = ColorUtils.setAlphaComponent(colorBase, (0.1f * 255).toInt())
         return ColorUtils.compositeColors(layerAbove, layerBelow)
     }
 

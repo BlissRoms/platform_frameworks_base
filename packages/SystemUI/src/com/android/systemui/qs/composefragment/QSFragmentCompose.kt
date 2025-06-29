@@ -38,6 +38,7 @@ import androidx.activity.setViewTreeOnBackPressedDispatcherOwner
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement.spacedBy
@@ -50,6 +51,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -689,7 +692,12 @@ constructor(
                             )
                         }
                     }
-
+                val DragHandle: @Composable () -> Unit = {
+                        DragHandle(
+                            enable = enabled,
+                            vm = viewModel
+                        )
+                    }
                 if (viewModel.isQsEnabled) {
                     Box(
                         modifier =
@@ -706,6 +714,7 @@ constructor(
                             media = Media,
                             mediaInRow = viewModel.qqsMediaInRow,
                             mediaVisible = viewModel.qqsMediaVisible,
+                            draghandle = DragHandle,
                         )
                     }
                 }
@@ -1232,6 +1241,7 @@ fun QuickQuickSettingsLayout(
     media: @Composable () -> Unit,
     mediaInRow: Boolean,
     mediaVisible: Boolean,
+    draghandle: @Composable () -> Unit,
 ) {
     if (mediaInRow) {
         Row(
@@ -1253,6 +1263,7 @@ fun QuickQuickSettingsLayout(
             }
             media()
             spacerLayout(height = dimensionResource(R.dimen.qs_tile_margin_horizontal))
+            draghandle()
         }
     }
 }
@@ -1301,6 +1312,53 @@ fun spacerLayout(height: Dp) {
     Spacer(
         modifier = Modifier.height { height.roundToPx() }
     )
+}
+
+@Composable
+@VisibleForTesting
+fun DragHandle(
+    vm: QSFragmentComposeViewModel,
+    enable: Boolean
+) {
+    val translationY = with(LocalDensity.current) { 100.dp.toPx() }
+
+    val qqsMin = 0.01f
+    val qqsMax = 0.4f
+
+    val expansionProgress = vm.expansionState.progress
+
+    val progress = run {
+        val range = expansionProgress.coerceIn(qqsMin, qqsMax)
+        ((qqsMax - range) / (qqsMax - qqsMin)).coerceIn(0f, 1f)
+    }
+
+    val expansionAlpha by animateFloatAsState(
+        targetValue = progress,
+        label = "dragHandleAlpha"
+    )
+
+    val offsetY by animateFloatAsState(
+        targetValue = translationY * (1f - progress),
+        label = "dragHandleOffsetY"
+    )
+
+    Box(
+        modifier = Modifier
+            .offset { IntOffset(0, offsetY.roundToInt()) }
+            .alpha(expansionAlpha)
+            .systemGestureExclusionInShade(enabled = { enable })
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(width = 56.dp, height = 4.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(2.dp)
+                )
+        )
+    }
 }
 
 @Composable

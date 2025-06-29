@@ -88,6 +88,7 @@ import com.android.systemui.settings.UserTracker;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController.DeviceProvisionedListener;
 import com.android.systemui.util.kotlin.JavaAdapter;
+import com.android.systemui.util.settings.GlobalSettings;
 import com.android.systemui.util.settings.SecureSettings;
 import com.android.systemui.util.settings.SystemSettings;
 
@@ -135,6 +136,7 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
     private final UserManager mUserManager;
     private final BroadcastDispatcher mBroadcastDispatcher;
     private final Executor mBgExecutor;
+    private final GlobalSettings mGlobalSettings;
     private final SecureSettings mSecureSettings;
     private final SystemSettings mSystemSettings;
     private final Executor mMainExecutor;
@@ -437,7 +439,8 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
             KeyguardTransitionInteractor keyguardTransitionInteractor,
             UiModeManager uiModeManager,
             ActivityManager activityManager,
-            SystemPropertiesHelper systemPropertiesHelper
+            SystemPropertiesHelper systemPropertiesHelper,
+            GlobalSettings globalSettings
     ) {
         mContext = context;
         mIsMonetEnabled = featureFlags.isEnabled(Flags.MONET);
@@ -451,6 +454,7 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
         mThemeManager = themeOverlayApplier;
         mSecureSettings = secureSettings;
         mSystemSettings = systemSettings;
+        mGlobalSettings = globalSettings;
         mWallpaperManager = wallpaperManager;
         mUserTracker = userTracker;
         mResources = resources;
@@ -559,6 +563,26 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
         if (!mIsMonetEnabled) {
             return;
         }
+
+        mGlobalSettings.registerContentObserverSync(
+                mGlobalSettings.getUriFor(Settings.Global.DISABLE_WINDOW_BLURS),
+                true,
+                new ContentObserver(mBgHandler) {
+                    @Override
+                    public void onChange(boolean selfChange, Collection<Uri> collection, int flags,
+                            int userId) {
+                        if (DEBUG) Log.d(TAG, "Overlay changed for user: " + userId);
+                        if (mUserTracker.getUserId() != userId) {
+                            return;
+                        }
+                        if (!mDeviceProvisionedController.isUserSetup(userId)) {
+                            Log.i(TAG, "Theme application deferred when setting changed.");
+                            mDeferredThemeEvaluation = true;
+                            return;
+                        }
+                        reevaluateSystemTheme(true /* forceReload */);
+                    }
+                });
 
         mUserTracker.addCallback(mUserTrackerCallback, mMainExecutor);
         mDeviceProvisionedController.addCallback(mDeviceProvisionedListener);
