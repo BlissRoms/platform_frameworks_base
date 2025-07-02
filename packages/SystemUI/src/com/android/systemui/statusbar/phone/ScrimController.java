@@ -1084,6 +1084,16 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
                 mNotificationsTint = mState.getNotifTint();
                 mBehindTint = behindTint;
             }
+            // At the end of a launch animation over the lockscreen, the state is either KEYGUARD or
+            // SHADE_LOCKED and this code is called. We have to set the panel scrims alpha to 0
+            // otherwise there is a flicker to its previous value.
+            boolean hidePanelScrim = (mState == ScrimState.KEYGUARD
+                    && mTransitionToFullShadeProgress == 0
+                    && mQsExpansion == 0
+                    && !mClipsQsScrim);
+            if (mKeyguardOccluded || hidePanelScrim) {
+                mBehindAlpha = 0;
+            }
         }
         if (mState != ScrimState.UNLOCKED) {
             mAnimatingPanelExpansionOnUnlock = false;
@@ -1253,6 +1263,11 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         // Prevent flickering for activities above keyguard and quick settings in keyguard.
         if (mKeyguardOccluded
                 && (mState == ScrimState.KEYGUARD || mState == ScrimState.SHADE_LOCKED)) {
+            mBehindAlpha = 0;
+        }
+
+        // Prevent panel scrims flicker when transitioning away from keyguard.
+        if (mKeyguardStateController.isKeyguardGoingAway()) {
             mBehindAlpha = 0;
         }
 
