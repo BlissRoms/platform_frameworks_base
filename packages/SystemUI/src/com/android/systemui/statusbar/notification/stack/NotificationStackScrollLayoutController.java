@@ -1270,6 +1270,11 @@ public class NotificationStackScrollLayoutController implements Dumpable {
         return mView.calculateAppearFractionBypass();
     }
 
+    public void updateTopPadding(float qsHeight) {
+        SceneContainerFlag.assertInLegacyMode();
+        mView.updateTopPadding(qsHeight, true, true);
+    }
+
     public void updateTopPadding(float qsHeight, boolean animate) {
         SceneContainerFlag.assertInLegacyMode();
         mView.updateTopPadding(qsHeight, animate);

@@ -37,9 +37,6 @@
             android:layout_marginStart="@dimen/qs_status_bar_margin_start"
             app:layout_constraintStart_toStartOf="@+id/begin_guide"
             app:layout_constraintTop_toTopOf="parent"/>
-        <CustomAttribute
-            app:attributeName="letterSpacing"
-            app:customFloatValue="0"/>
         <Transform
             android:scaleX="@dimen/qqs_expand_clock_scale"
             android:scaleY="@dimen/qqs_expand_clock_scale"/>

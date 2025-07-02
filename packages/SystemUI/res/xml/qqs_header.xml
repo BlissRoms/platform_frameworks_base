@@ -29,9 +29,6 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@+id/begin_guide"
             app:layout_constraintTop_toTopOf="parent"/>
-        <CustomAttribute
-            app:attributeName="letterSpacing"
-            app:customFloatValue="0.01"/>
         <Transform
             android:scaleX="1"
             android:scaleY="1"/>

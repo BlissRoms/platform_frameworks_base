@@ -726,7 +726,7 @@ constructor(
     @Composable
     private fun ContentScope.QuickSettingsElement(modifier: Modifier = Modifier) {
         val qqsPadding = viewModel.qqsHeaderHeight
-        val qsExtraPadding = dimensionResource(R.dimen.nt_qs_panel_padding_top)
+        val qsExtraPaddingTop = viewModel.qsExtraPaddingTop
         Column(
             modifier =
                 modifier.collapseExpandSemanticAction(
@@ -769,7 +769,7 @@ constructor(
                     ) {
                         val containerViewModel = viewModel.containerViewModel
                         Spacer(
-                            modifier = Modifier.height { qqsPadding + qsExtraPadding.roundToPx() }
+                            modifier = Modifier.height { qqsPadding + qsExtraPaddingTop }
                         )
                         val enabled = layoutState.transitionState is TransitionState.Idle &&
                                      viewModel.isNotTransitioning
