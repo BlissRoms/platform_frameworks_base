@@ -125,8 +125,8 @@
 
     <!-- Dark theme base colors for notification shade/scrim, the alpha component is adjusted
      programmatically to match the spec -->
-    <color name="shade_panel_base">@android:color/system_accent1_900</color>
-    <color name="notification_scrim_base">@android:color/system_accent1_900</color>
+    <color name="shade_panel_base">@android:color/system_accent1_800</color>
+    <color name="notification_scrim_base">@android:color/system_accent1_800</color>
 
     <!-- Dark theme fallback colors for notification shade/scrim -->
     <color name="shade_panel_fallback">@android:color/system_neutral1_900</color>

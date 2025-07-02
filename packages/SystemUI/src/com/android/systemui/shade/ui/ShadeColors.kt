@@ -44,7 +44,7 @@ object ShadeColors {
     private fun Resources.shadePanelStandard(): Int {
         val layerAbove = ColorUtils.setAlphaComponent(
             getColor(R.color.shade_panel_base, null),
-            (0.5f * 255).toInt()
+            (0.65f * 255).toInt()
         )
         val colorBase = getColor(R.color.shade_panel_base_color, null)
         val layerBelow = ColorUtils.setAlphaComponent(colorBase, (0.1f * 255).toInt())
@@ -60,7 +60,7 @@ object ShadeColors {
     private fun Resources.notificationScrimStandard(): Int {
         return ColorUtils.setAlphaComponent(
             getColor(R.color.notification_scrim_base, null),
-            (0.5f * 255).toInt(),
+            (0.65f * 255).toInt(),
         )
     }
 
