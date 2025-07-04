@@ -1320,45 +1320,7 @@ fun DragHandle(
     vm: QSFragmentComposeViewModel,
     enable: Boolean
 ) {
-    val translationY = with(LocalDensity.current) { 100.dp.toPx() }
-
-    val qqsMin = 0.01f
-    val qqsMax = 0.4f
-
-    val expansionProgress = vm.expansionState.progress
-
-    val progress = run {
-        val range = expansionProgress.coerceIn(qqsMin, qqsMax)
-        ((qqsMax - range) / (qqsMax - qqsMin)).coerceIn(0f, 1f)
-    }
-
-    val expansionAlpha by animateFloatAsState(
-        targetValue = progress,
-        label = "dragHandleAlpha"
-    )
-
-    val offsetY by animateFloatAsState(
-        targetValue = translationY * (1f - progress),
-        label = "dragHandleOffsetY"
-    )
-
-    Box(
-        modifier = Modifier
-            .offset { IntOffset(0, offsetY.roundToInt()) }
-            .alpha(expansionAlpha)
-            .systemGestureExclusionInShade(enabled = { enable })
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(width = 56.dp, height = 4.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                    shape = RoundedCornerShape(2.dp)
-                )
-        )
-    }
+    // This function is intentionally left empty to remove the drag handle.
 }
 
 @Composable
