@@ -7284,6 +7284,12 @@ public final class Settings {
         public static final String QS_SHOW_DATA_USAGE_WINDOW = "qs_show_data_usage_window";
 
         /**
+         * Lockscreen Media Art
+         * @hide
+         */
+        public static final String LS_MEDIA_ART_ENABLED = "ls_media_art_enabled";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
