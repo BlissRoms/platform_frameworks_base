@@ -37,6 +37,7 @@ import com.android.systemui.qs.logging.QSLogger
 import com.android.systemui.qs.tileimpl.QSTileImpl
 import com.android.systemui.qs.tiles.dialog.InternetDetailsViewModel
 import com.android.systemui.qs.tiles.dialog.InternetDialogManager
+import com.android.systemui.qs.tiles.dialog.WifiStateWorker
 import com.android.systemui.res.R
 import com.android.systemui.statusbar.connectivity.AccessPointController
 import com.android.systemui.statusbar.pipeline.shared.ui.binder.InternetTileBinder
@@ -60,6 +61,7 @@ constructor(
     private val internetDialogManager: InternetDialogManager,
     private val accessPointController: AccessPointController,
     private val internetDetailsViewModelFactory: InternetDetailsViewModel.Factory,
+    private val wifiStateWorker: WifiStateWorker,
 ) :
     QSTileImpl<QSTile.BooleanState>(
         host,
@@ -89,7 +91,10 @@ constructor(
         mContext.getString(R.string.quick_settings_internet_label)
 
     override fun newTileState(): QSTile.BooleanState {
-        return QSTile.BooleanState().also { it.forceExpandIcon = true }
+        return QSTile.BooleanState().also {
+             it.forceExpandIcon = true
+             it.handlesSecondaryClick = true
+        }
     }
 
     override fun handleClick(expandable: Expandable?) {
@@ -101,6 +106,10 @@ constructor(
                 expandable,
             )
         }
+    }
+
+    override fun handleSecondaryClick(expandable: Expandable?) {
+        wifiStateWorker.setWifiEnabled(!wifiStateWorker.isWifiEnabled())
     }
 
     override fun getDetailsViewModel(): TileDetailsViewModel {
