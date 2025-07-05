@@ -47,7 +47,7 @@ abstract class SettingsBasePreferenceFragment : PreferenceFragmentCompat() {
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
+        if (SettingsThemeHelper.isExpressiveTheme(requireContext()) && listView != null) {
             // This null check is to fix b/412578060 on our side;
             // If this will be resolved in the future in PreferenceFragmentCompat this can be removed
             if (listView != null) {
