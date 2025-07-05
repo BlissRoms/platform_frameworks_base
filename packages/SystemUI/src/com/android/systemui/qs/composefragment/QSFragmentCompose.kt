@@ -1245,12 +1245,21 @@ fun QuickQuickSettingsLayout(
 ) {
     if (mediaInRow) {
         Row(
-            horizontalArrangement = spacedBy(dimensionResource(R.dimen.qs_tile_margin_horizontal)),
-            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = spacedBy(QuickSettingsShade.Dimensions.Padding),
+            verticalAlignment = Alignment.Top,
         ) {
-            Box(modifier = Modifier.weight(1f)) { tiles() }
-            Box(modifier = Modifier.weight(1f)) { brightness() }
-            Box(modifier = Modifier.weight(1f)) { media() }
+            Column(
+                verticalArrangement = spacedBy(QuickSettingsShade.Dimensions.Padding),
+                modifier = Modifier.weight(1f)
+            ) {
+                tiles()
+                brightness()
+            }
+            if (mediaVisible) {
+                Box(modifier = Modifier.weight(1f)) {
+                    media()
+                }
+            }
         }
     } else {
         Column() {
@@ -1278,17 +1287,21 @@ fun QuickSettingsLayout(
     mediaVisible: Boolean,
 ) {
     if (mediaInRow) {
-        Column(
-            verticalArrangement = spacedBy(QuickSettingsShade.Dimensions.Padding),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Row(
+            horizontalArrangement = spacedBy(QuickSettingsShade.Dimensions.Padding),
+            verticalAlignment = Alignment.Top,
         ) {
-            Row(
-                horizontalArrangement = spacedBy(QuickSettingsShade.Dimensions.Padding),
-                verticalAlignment = Alignment.CenterVertically,
+            Column(
+                verticalArrangement = spacedBy(QuickSettingsShade.Dimensions.Padding),
+                modifier = Modifier.weight(1f)
             ) {
-                Box(modifier = Modifier.weight(1f)) { tiles() }
-                Box(modifier = Modifier.weight(1f)) { brightness() }
-                Box(modifier = Modifier.weight(1f)) { media() }
+                tiles()
+                brightness()
+            }
+            if (mediaVisible) {
+                Box(modifier = Modifier.weight(1f)) {
+                    media()
+                }
             }
         }
     } else {
