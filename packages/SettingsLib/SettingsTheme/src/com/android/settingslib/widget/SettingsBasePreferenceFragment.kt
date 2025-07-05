@@ -53,7 +53,7 @@ abstract class SettingsBasePreferenceFragment : PreferenceFragmentCompat() {
 
         if (shouldSkipTheming(this)) return
 
-        if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
+        if (SettingsThemeHelper.isExpressiveTheme(requireContext()) && listView != null) {
             // Don't allow any divider in between the preferences in expressive design.
             setDivider(null)
             listView?.addItemDecoration(MarginItemDecoration())
