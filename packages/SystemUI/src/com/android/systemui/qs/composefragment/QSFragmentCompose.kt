@@ -1265,7 +1265,7 @@ fun QuickQuickSettingsLayout(
         Column() {
             spacerLayout(height = dimensionResource(R.dimen.nt_qqs_layout_margin_top))
             tiles()
-            spacerLayout(height = dimensionResource(R.dimen.qs_tile_margin_horizontal))
+            spacerLayout(height = dimensionResource(R.dimen.qqs_brightness_margin_top))
             brightness()
             if (mediaVisible) {
                 spacerLayout(height = dimensionResource(R.dimen.qs_tile_margin_horizontal))   
