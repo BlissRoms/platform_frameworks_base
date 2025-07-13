@@ -89,6 +89,7 @@ import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
@@ -1398,7 +1399,10 @@ fun BrightnessLayout(
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = QuickSettingsShade.Dimensions.InnerPadding - qsHorizontalMargin())
+                    .padding(
+                        horizontal = (QuickSettingsShade.Dimensions.InnerPadding - qsHorizontalMargin())
+                            .coerceAtLeast(0.dp)
+                    )
             )
         }
     }
