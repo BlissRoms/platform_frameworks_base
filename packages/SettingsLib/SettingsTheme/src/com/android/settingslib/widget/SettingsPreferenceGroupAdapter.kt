@@ -49,6 +49,13 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
 
     private val syncRunnable = Runnable { updatePreferencesList() }
 
+    private val excludedClasses = setOf(
+        "com.android.settingslib.widget.LayoutPreference",
+        "com.android.settingslib.widget.IllustrationPreference",
+        "com.android.settings.accessibility.TextReadingPreviewPreference",
+        "com.android.settings.accessibility.TextReadingResetPreference"
+    )
+
     init {
         val context = preferenceGroup.context
         mNormalPaddingStart =
@@ -111,7 +118,17 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
         var endIndex = -1
         var currentParent: PreferenceGroup? = group
         for (i in 0 until itemCount) {
-            when (val pref = getItem(i)) {
+            val pref = getItem(i)
+            val isExcludedFromExpressive = pref?.javaClass?.name in excludedClasses
+            if (isExcludedFromExpressive) {
+                cornerStyles[i] = 0
+                startIndex = -1
+                endIndex = -1
+                currentParent = pref?.parent as? PreferenceGroup ?: currentParent
+                continue
+            }
+
+            when (pref) {
                 // the preference has round corner background, so we don't need to handle it.
                 is GroupSectionDividerMixin -> {
                     cornerStyles[i] = 0
@@ -182,16 +199,26 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
     /** handle roundCorner background */
     private fun updateBackground(holder: PreferenceViewHolder, position: Int) {
         val context = holder.itemView.context
+        val pref = getItem(position)
+
+        val isExcludedFromExpressive = pref?.javaClass?.name in excludedClasses
         @DrawableRes
         val backgroundRes =
-            when (SettingsThemeHelper.isExpressiveTheme(context)) {
-                true -> getRoundCornerDrawableRes(position, isSelected = false)
-                else -> mLegacyBackgroundRes
+            when {
+                SettingsThemeHelper.isExpressiveTheme(context) && isExcludedFromExpressive -> {
+                    mLegacyBackgroundRes
+                }
+                SettingsThemeHelper.isExpressiveTheme(context) -> {
+                    getRoundCornerDrawableRes(position, isSelected = false)
+                }
+                else -> {
+                    mLegacyBackgroundRes
+                }
             }
 
         val v = holder.itemView
         // Update padding
-        if (SettingsThemeHelper.isExpressiveTheme(context)) {
+        if (SettingsThemeHelper.isExpressiveTheme(context) && !isExcludedFromExpressive) {
             val (paddingStart, paddingEnd) = getStartEndPadding(position, backgroundRes)
             v.setPaddingRelative(paddingStart, v.paddingTop, paddingEnd, v.paddingBottom)
             v.clipToOutline = backgroundRes != 0

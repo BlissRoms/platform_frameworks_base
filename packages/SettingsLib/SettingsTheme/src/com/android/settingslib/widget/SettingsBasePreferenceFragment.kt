@@ -30,6 +30,16 @@ import com.android.settingslib.widget.theme.R
 /** Base class for Settings to use PreferenceFragmentCompat */
 abstract class SettingsBasePreferenceFragment : PreferenceFragmentCompat() {
 
+    companion object {
+        private val excludedFromTheming = setOf(
+            "com.android.settings.applications.RunningServices"
+        )
+
+        fun shouldSkipTheming(fragment: PreferenceFragmentCompat): Boolean {
+            return excludedFromTheming.contains(fragment::class.qualifiedName)
+        }
+    }
+
     @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,9 +57,15 @@ abstract class SettingsBasePreferenceFragment : PreferenceFragmentCompat() {
             setDivider(null)
             listView?.addItemDecoration(MarginItemDecoration())
         }
+        
+        if (shouldSkipTheming(this)) return
+
     }
 
     override fun onCreateAdapter(preferenceScreen: PreferenceScreen): RecyclerView.Adapter<*> {
+        if (shouldSkipTheming(this)) {
+            return super.onCreateAdapter(preferenceScreen)
+        }
         if (SettingsThemeHelper.isExpressiveTheme(requireContext()))
             return SettingsPreferenceGroupAdapter(preferenceScreen)
         return super.onCreateAdapter(preferenceScreen)
