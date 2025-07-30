@@ -79,6 +79,9 @@ import com.android.systemui.shade.transition.LargeScreenShadeInterpolator;
 import com.android.systemui.statusbar.notification.stack.ViewState;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
+import android.os.UserHandle;
+import android.provider.Settings;
+import android.provider.Settings.System;
 import com.android.systemui.util.kotlin.JavaAdapter;
 import com.android.systemui.util.wakelock.DelayedWakeLock;
 import com.android.systemui.util.wakelock.WakeLock;
@@ -270,7 +273,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
 
     private float mInFrontAlpha = NOT_INITIALIZED;
     private float mBehindAlpha = NOT_INITIALIZED;
-    private float mNotificationsAlpha = 0;
+    private float mNotificationsAlpha = NOT_INITIALIZED;
 
     private int mInFrontTint;
     private int mBehindTint;
@@ -306,6 +309,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
                 mInFrontAlpha = alphas.getFrontAlpha();
                 mScrimInFront.setViewAlpha(mInFrontAlpha);
 
+		mNotificationsAlpha = alphas.getNotificationsAlpha();
                 mNotificationsScrim.setViewAlpha(mNotificationsAlpha);
 
                 mBehindAlpha = alphas.getBehindAlpha();
@@ -990,12 +994,20 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
     }
 
     private void applyState() {
+        boolean useDualTone = System.getIntForUser(mContext.getContentResolver(),
+                System.QS_DUAL_TONE, 1, UserHandle.USER_CURRENT) == 1;
+
         mInFrontTint = mState.getFrontTint();
         mBehindTint = mState.getBehindTint();
         mNotificationsTint = mState.getNotifTint();
 
         mInFrontAlpha = mState.getFrontAlpha();
         mBehindAlpha = mState.getBehindAlpha();
+	mNotificationsAlpha = mState.getNotifAlpha();
+
+        if (!useDualTone) {
+            mNotificationsAlpha = 0;
+        }
 
         assertAlphasValid();
 
@@ -1020,16 +1032,24 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
                     float behindFraction = getInterpolatedFraction();
                     behindFraction = (float) Math.pow(behindFraction, 0.8f);
                     mBehindAlpha = 1;
+                    if (useDualTone) {
+                        mNotificationsAlpha = behindFraction * getDefaultScrimAlpha();
+                    }
                 } else {
                     if (Flags.notificationShadeBlur()) {
                         // TODO (b/390730594): match any spec for controlling alpha based on shade
                         //  expansion fraction.
                         mBehindAlpha = mState.getBehindAlpha() * mPanelExpansionFraction;
                         mBehindTint = mState.getBehindTint();
+                        if (useDualTone) {
+                            mNotificationsAlpha = mState.getNotifAlpha() * mPanelExpansionFraction;
+                        }
                         mNotificationsTint = mState.getNotifTint();
                     } else {
                         mBehindAlpha = mLargeScreenShadeInterpolator.getBehindScrimAlpha(
                                 mPanelExpansionFraction * getDefaultScrimAlpha());
+                        mNotificationsAlpha = useDualTone ? mLargeScreenShadeInterpolator.getNotificationScrimAlpha(
+                                        mPanelExpansionFraction) : 0;
                     }
                 }
                 mBehindTint = mState.getBehindTint();
@@ -1068,30 +1088,62 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             }
             mInFrontAlpha = mState.getFrontAlpha();
             if (mClipsQsScrim) {
+                mNotificationsAlpha = behindAlpha;
                 mNotificationsTint = behindTint;
                 mBehindAlpha = 1;
                 mBehindTint = Color.BLACK;
             } else {
                 mBehindAlpha = behindAlpha;
+            if (useDualTone) {
+                if (mState == ScrimState.KEYGUARD && mTransitionToFullShadeProgress > 0.0f) {
+                    mNotificationsAlpha = MathUtils
+                        .saturate(mTransitionToLockScreenFullShadeNotificationsProgress);
+            } else if (mState == ScrimState.SHADE_LOCKED) {
+                // going from KEYGUARD to SHADE_LOCKED state
+                if (Flags.notificationShadeBlur()) {
+                    mNotificationsAlpha = mState.getNotifAlpha() * getInterpolatedFraction();
+                } else {
+                    mNotificationsAlpha = getInterpolatedFraction();
+                }
+            } else if (mState == ScrimState.GLANCEABLE_HUB
+                && mTransitionToFullShadeProgress == 0.0f) {
+                // Notification scrim should not be visible on the glanceable hub unless the
+                // shade is showing or transitioning in. Otherwise the notification scrim will
+                // be visible as the bouncer transitions in or after the notification shade
+                // closes.
+                mNotificationsAlpha = 0;
+            } else {
+                mNotificationsAlpha = Math.max(1.0f - getInterpolatedFraction(), mQsExpansion);
+            }
+        } else {
+            mNotificationsAlpha = 0;
+        }
                 mNotificationsTint = mState.getNotifTint();
                 mBehindTint = behindTint;
             }
-            // At the end of a launch animation over the lockscreen, the state is either KEYGUARD or
-            // SHADE_LOCKED and this code is called. We have to set the panel scrims alpha to 0
+            // At the end of a launch animation over the lockscreen, the state is either KEYGUARD
+            // or SHADE_LOCKED and this code is called. We have to set the notification alpha to 0
             // otherwise there is a flicker to its previous value.
-            boolean hidePanelScrim = (mState == ScrimState.KEYGUARD
+            boolean hideNotificationScrim = (mState == ScrimState.KEYGUARD
                     && mTransitionToFullShadeProgress == 0
                     && mQsExpansion == 0
                     && !mClipsQsScrim);
-            if (mKeyguardOccluded || hidePanelScrim) {
-                mBehindAlpha = 0;
+            if (mKeyguardOccluded || hideNotificationScrim) {
+            // In these specific cases, the notification scrim should always be hidden,
+            // regardless of the dual-tone setting.
+                mNotificationsAlpha = 0;
+                }
             }
-        }
         if (mState != ScrimState.UNLOCKED) {
             mAnimatingPanelExpansionOnUnlock = false;
         }
 
-        assertAlphasValid();
+        // The user's file has this logic here, which is wrong. The hidePanelScrim logic should be
+        // replaced entirely by the hideNotificationScrim logic above. The keyguard-occluded
+        // logic should affect mNotificationsAlpha, not just mBehindAlpha.
+        if (mKeyguardOccluded) {
+            mBehindAlpha = 0;
+        }
     }
 
     private void assertAlphasValid() {
@@ -1252,15 +1304,16 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             mBehindAlpha = 1;
         }
 
+        // Prevent notification scrim flicker when transitioning away from keyguard.
+        if (mKeyguardStateController.isKeyguardGoingAway()) {
+            mNotificationsAlpha = 0;
+         }
+
         // Prevent flickering for activities above keyguard and quick settings in keyguard.
         if (mKeyguardOccluded
                 && (mState == ScrimState.KEYGUARD || mState == ScrimState.SHADE_LOCKED)) {
             mBehindAlpha = 0;
-        }
-
-        // Prevent panel scrims flicker when transitioning away from keyguard.
-        if (mKeyguardStateController.isKeyguardGoingAway()) {
-            mBehindAlpha = 0;
+            mNotificationsAlpha = 0;
         }
 
         setScrimAlpha(mScrimInFront, mInFrontAlpha);
@@ -1586,20 +1639,31 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
     }
 
     private void updateThemeColors() {
+        boolean useDualTone = System.getIntForUser(mContext.getContentResolver(),
+                System.QS_DUAL_TONE, 1, UserHandle.USER_CURRENT) == 1;
         if (mScrimBehind == null) return;
         int background = mContext.getColor(
                 com.android.internal.R.color.materialColorSurfaceDim);
         int accent = mContext.getColor(
                 com.android.internal.R.color.materialColorPrimary);
-        mColors.setMainColor(background);
-        mColors.setSecondaryColor(accent);
-        final boolean isBackgroundLight = !ContrastColorUtil.isColorDark(background);
-        mColors.setSupportsDarkText(isBackgroundLight);
 
         int surface = mContext.getColor(
                 com.android.internal.R.color.materialColorSurface);
+
+        mColors.setMainColor(useDualTone ? surface : background);
+        mColors.setSecondaryColor(accent);
+
+        final boolean isSurfaceBackgroundLight = !ContrastColorUtil.isColorDark(surface);
+        final boolean isBackgroundLight = !ContrastColorUtil.isColorDark(background);
+        mColors.setSupportsDarkText(useDualTone ? isSurfaceBackgroundLight : isBackgroundLight);
+
         for (ScrimState state : ScrimState.values()) {
             state.setSurfaceColor(surface);
+        }
+
+        if (mState != null) {
+            applyState();
+            updateScrims();
         }
 
         mNeedsDrawableColorUpdate = true;

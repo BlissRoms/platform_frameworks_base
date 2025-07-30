@@ -1,4 +1,4 @@
-/*
+		/*
  * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,24 @@
 package com.android.systemui.shade.ui
 
 import android.content.res.Resources
+import android.content.Context
 import android.graphics.Color
+import android.provider.Settings
 import com.android.internal.graphics.ColorUtils
 import com.android.systemui.res.R
 
 object ShadeColors {
     @JvmStatic
-    fun Resources.shadePanel(blurSupported: Boolean): Int {
+    fun Resources.shadePanel(blurSupported: Boolean, context: Context): Int {
         return if (blurSupported) {
-            shadePanelStandard()
+            shadePanelStandard(context)
         } else {
             shadePanelFallback()
         }
     }
 
     @JvmStatic
-    fun Resources.notificationScrim(blurSupported: Boolean): Int {
+    fun Resources.notificationScrim(blurSupported: Boolean, context: Context): Int {
         return if (blurSupported) {
             notificationScrimStandard()
         } else {
@@ -41,13 +43,22 @@ object ShadeColors {
     }
 
     @JvmStatic
-    private fun Resources.shadePanelStandard(): Int {
+    private fun Resources.shadePanelStandard(context: Context): Int {
+        val useDualTone = Settings.System.getInt(context.contentResolver, Settings.System.QS_DUAL_TONE, 1) == 1
+        val topLayerAlpha = if (useDualTone) 0.4f else 0.5f
+
         val layerAbove = ColorUtils.setAlphaComponent(
             getColor(R.color.shade_panel_base, null),
-            (0.35f * 255).toInt()
+            (topLayerAlpha * 255).toInt()
         )
-        val colorBase = getColor(R.color.shade_panel_base_color, null)
-        val layerBelow = ColorUtils.setAlphaComponent(colorBase, (0.1f * 255).toInt())
+
+        val layerBelow = if (useDualTone) {
+            ColorUtils.setAlphaComponent(Color.WHITE, (0.1f * 255).toInt())
+        } else {
+            val colorBase = getColor(R.color.shade_panel_base_color, null)
+            ColorUtils.setAlphaComponent(colorBase, (0.1f * 255).toInt())
+        }
+
         return ColorUtils.compositeColors(layerAbove, layerBelow)
     }
 
@@ -60,7 +71,7 @@ object ShadeColors {
     private fun Resources.notificationScrimStandard(): Int {
         return ColorUtils.setAlphaComponent(
             getColor(R.color.notification_scrim_base, null),
-            (0.35f * 255).toInt(),
+            (0.6f * 255).toInt(),
         )
     }
 

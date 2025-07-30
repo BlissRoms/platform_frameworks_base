@@ -6924,6 +6924,12 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_WEATHER_HUMIDITY_INFO = "lockscreen_weather_humidity_info";
 
+	/**
+         * Enable and Disable Dual Tone Colors QsPanel
+         * @hide
+         */
+        public static final String QS_DUAL_TONE = "qs_dual_tone";
+
         /**
          * Whether to show the battery info on the lockscreen while charging
          * @hide
