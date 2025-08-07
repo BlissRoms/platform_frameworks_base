@@ -67,6 +67,7 @@ import androidx.compose.ui.graphics.ColorProducer
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.semantics.Role
@@ -96,6 +97,7 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults
 import com.android.systemui.qs.panels.ui.viewmodel.AccessibilityUiState
 import com.android.systemui.qs.ui.compose.borderOnFocus
 import com.android.systemui.res.R
+import com.android.systemui.text.CompatMarqueeText
 
 private const val TEST_TAG_TOGGLE = "qs_tile_toggle_target"
 
@@ -309,13 +311,13 @@ private fun TileLabel(
     var textSize by remember { mutableIntStateOf(0) }
 
     val iterations = if (isVisible()) TILE_MARQUEE_ITERATIONS else 0
+    val blurEdgeWidthPx = with(LocalDensity.current) { TileLabelBlurWidth.toPx() }
 
-    BasicText(
+    CompatMarqueeText(
         text = text,
-        color = color,
-        style = style,
-        maxLines = 1,
-        onTextLayout = { textSize = it.size.width },
+        style = style.copy(color = color()),
+        iterations = iterations,
+        blurEdgeWidthPx = blurEdgeWidthPx,
         modifier =
             modifier
                 .fillMaxWidth()
@@ -323,29 +325,12 @@ private fun TileLabel(
                     if (textSize > size.width) {
                         compositingStrategy = CompositingStrategy.Offscreen
                     }
-                }
-                .drawWithContent {
-                    drawContent()
-                    if (textSize > size.width) {
-                        // Draw a blur over the end of the text
-                        val edgeWidthPx = TileLabelBlurWidth.toPx()
-                        drawRect(
-                            topLeft = Offset(size.width - edgeWidthPx, 0f),
-                            size = Size(edgeWidthPx, size.height),
-                            brush =
-                                Brush.horizontalGradient(
-                                    colors = listOf(Color.Transparent, Color.Black),
-                                    startX = size.width,
-                                    endX = size.width - edgeWidthPx,
-                                ),
-                            blendMode = BlendMode.DstIn,
-                        )
-                    }
-                }
-                .basicMarquee(
-                    iterations = iterations,
-                    initialDelayMillis = TILE_INITIAL_DELAY_MILLIS,
-                ),
+                },
+        onView = {
+            post {
+                textSize = paint.measureText(text).toInt()
+            }
+        }
     )
 }
 

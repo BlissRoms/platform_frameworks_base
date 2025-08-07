@@ -94,6 +94,7 @@ import com.android.systemui.qs.ui.composable.QuickSettings
 import com.android.systemui.qs.ui.composable.QuickSettingsTheme
 import com.android.systemui.qs.ui.compose.borderOnFocus
 import com.android.systemui.res.R
+import com.android.systemui.text.CompatText
 import kotlinx.coroutines.launch
 
 @Composable
@@ -369,7 +370,7 @@ private fun NumberButton(
                     .clip(CircleShape)
                     .indication(interactionSource, LocalIndication.current)
             ) {
-                Text(
+                CompatText(
                     number.toString(),
                     modifier =
                         Modifier.align(Alignment.Center).semantics {
@@ -438,7 +439,7 @@ private fun TextButton(
                 tint = MaterialTheme.colorScheme.onSurface,
             )
 
-            Text(
+            CompatText(
                 text,
                 Modifier.weight(1f),
                 style =
