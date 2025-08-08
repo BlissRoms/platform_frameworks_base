@@ -134,8 +134,8 @@ public class PropImitationHooks {
          * Set custom model for Netflix
          * Set Pixel XL for Google Photos
          */
-        if (sIsGms) {
-            setCertifiedPropsForGms();
+        if (sIsGms || sIsFinsky) {
+            setPlayIntegrityProps(context);
         } else if (!sStockFp.isEmpty() && packageName.equals(PACKAGE_ARCORE)) {
             dlog("Setting stock fingerprint for: " + packageName);
             setPropValue("FINGERPRINT", sStockFp);
@@ -166,7 +166,7 @@ public class PropImitationHooks {
         }
     }
 
-    private static void setCertifiedPropsForGms() {
+    private static void setPlayIntegrityProps(Context context) {
         if (sDisableGmsProps) {
             dlog("GMS prop imitation is disabled by user");
             return;
@@ -190,10 +190,10 @@ public class PropImitationHooks {
             }
         };
         if (!was) {
-            dlog("Spoofing build for GMS");
+            dlog("Spoofing build for GMS / Finsky");
             setCertifiedProps();
         } else {
-            dlog("Skip spoofing build for GMS, because GmsAddAccountActivityOnTop");
+            dlog("Skip spoofing build for GMS / Finsky, because GmsAddAccountActivityOnTop");
         }
         try {
             ActivityTaskManager.getService().registerTaskStackListener(taskStackListener);
