@@ -145,7 +145,6 @@ import com.android.systemui.qs.panels.ui.compose.TileGrid
 import com.android.systemui.qs.shared.ui.ElementKeys
 import com.android.systemui.qs.ui.composable.QuickSettingsShade
 import com.android.systemui.qs.ui.composable.QuickSettingsShade.systemGestureExclusionInShade
-import com.android.systemui.qs.ui.composable.QuickSettingsTheme
 import com.android.systemui.res.R
 import com.android.systemui.util.LifecycleFragment
 import com.android.systemui.util.animation.UniqueObjectHostView
@@ -833,7 +832,7 @@ constructor(
                         }
                     }
                 }
-                QuickSettingsTheme {
+                PlatformTheme(isDarkTheme = isSystemInDarkTheme()) {
                     Element(
                         ElementKeys.FooterActions,
                         Modifier.sysuiResTag(ResIdTags.qsFooterActions),
