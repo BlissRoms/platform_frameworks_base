@@ -44,7 +44,16 @@ object ShadeColors {
 
     @JvmStatic
     private fun Resources.shadePanelStandard(context: Context): Int {
-        val useDualTone = Settings.System.getInt(context.contentResolver, Settings.System.QS_DUAL_TONE, 1) == 1
+        val useDualTone = if (context != null) {
+            try {
+                Settings.System.getInt(context.contentResolver, Settings.System.QS_DUAL_TONE, 1) == 1
+            } catch (e: Exception) {
+            true // fallback to default
+        }
+    } else {
+        true // fallback to default when context is null
+    }
+
         val topLayerAlpha = if (useDualTone) 0.4f else 0.5f
 
         val layerAbove = ColorUtils.setAlphaComponent(
