@@ -64,6 +64,7 @@ public final class PixelPropsUtils {
             "persist.sys.disguise_props_for_music_app";
     private static final String PACKAGE_ARCORE = "com.google.ar.core";
     private static final String PACKAGE_GMS = "com.google.android.gms";
+    private static final String PACKAGE_FINSKY = "com.android.vending";
     private static final String PROCESS_GMS_UNSTABLE = PACKAGE_GMS + ".unstable";
     private static final String PACKAGE_GOOGLE = "com.google";
     private static final String PACKAGE_NEXUS_LAUNCHER = "com.google.android.apps.nexuslauncher";
@@ -282,6 +283,16 @@ public final class PixelPropsUtils {
             return;
         }
         if (sIsExcluded) {
+            return;
+        }
+        if (packageName.equals(PACKAGE_FINSKY)) {
+            String[] finskyProps = {"FINGERPRINT", "SECURITY_PATCH", "DEVICE_INITIAL_SDK_INT"};
+            if (SystemProperties.getBoolean(SPOOF_PIXEL_GMS, true)) {
+                dlog("Spoofing a few props for: " + packageName);
+                for (String key : finskyProps) {
+                    setPropValue(key, SystemProperties.get(PROP_HOOKS + key));
+                }
+            }
             return;
         }
         setGameProps(packageName);
