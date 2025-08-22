@@ -34,6 +34,7 @@ import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -138,12 +139,15 @@ constructor(
         // Set the bounds to null when the QuickSettings overlay disappears.
         DisposableEffect(Unit) { onDispose { contentViewModel.onPanelShapeChanged(null) } }
 
-        val onScrimClickedStable = remember { contentViewModel::onScrimClicked }
+        val currentContentViewModel by rememberUpdatedState(contentViewModel)
+        val currentQuickSettingsViewModel by rememberUpdatedState(quickSettingsContainerViewModel)
+        
+        val onScrimClickedStable = remember { { currentContentViewModel.onScrimClicked() } }
 
         val headerStable = remember<@Composable () -> Unit> {
             {
                 OverlayShadeHeader(
-                    viewModel = quickSettingsContainerViewModel.shadeHeaderViewModel,
+                    viewModel = currentQuickSettingsViewModel.shadeHeaderViewModel,
                     modifier = Modifier.element(QuickSettingsShade.Elements.StatusBar),
                 )
             }
@@ -152,16 +156,15 @@ constructor(
         val contentStable = remember<@Composable () -> Unit> {
             {
                 QuickSettingsContainer(
-                    viewModel = quickSettingsContainerViewModel,
+                    viewModel = currentQuickSettingsViewModel,
                     modifier =
                         Modifier.onPlaced { coordinates ->
-                            val shape =
-                                ShadeScrimShape(
-                                    bounds = ShadeScrimBounds(coordinates.boundsInWindow()),
-                                    topRadius = 0,
-                                    bottomRadius = panelCornerRadius,
-                                )
-                            contentViewModel.onPanelShapeChanged(shape)
+                            val shape = ShadeScrimShape(
+                                bounds = ShadeScrimBounds(coordinates.boundsInWindow()),
+                                topRadius = 0,
+                                bottomRadius = panelCornerRadius,
+                            )
+                            currentContentViewModel.onPanelShapeChanged(shape)
                         },
                 )
             }
