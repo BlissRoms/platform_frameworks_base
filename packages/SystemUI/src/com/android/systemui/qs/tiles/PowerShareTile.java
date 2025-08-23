@@ -142,7 +142,13 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
 
     @Override
     public boolean isAvailable() {
-        return mPowerShare != null;
+        try {
+            // Will throw NPE or some other exception if HAL is either missing or broken.
+            mPowerShare.isEnabled();
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     @Override
