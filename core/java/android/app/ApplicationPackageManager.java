@@ -938,7 +938,7 @@ public class ApplicationPackageManager extends PackageManager {
             if (Arrays.asList(featuresNexus).contains(name)) return true;
         }
         boolean enableTensorFeaturesOnNonTensor = SystemProperties.getBoolean("persist.sys.features.tensor", false);
-        boolean isTensorDevice = SystemProperties.get("ro.product.model").matches("Pixel [6-9][a-zA-Z ]*");
+        boolean isTensorDevice = SystemProperties.get("ro.product.model").matches("Pixel (6|7|8|9|10)[a-zA-Z ]*");
         if (packageName != null && packageName.equals("com.google.android.as")) {
             if (isTensorDevice && Arrays.asList(featuresTensor).contains(name)) {
                 return true;

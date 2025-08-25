@@ -254,8 +254,8 @@ public final class PixelPropsUtils {
         propsToChangeRecentPixel.put("PRODUCT", "komodo");
         propsToChangeRecentPixel.put("HARDWARE", "komodo");
         propsToChangeRecentPixel.put("MODEL", "Pixel 9 Pro XL");
-        propsToChangeRecentPixel.put("ID", "BP2A.250805.005");
-        propsToChangeRecentPixel.put("FINGERPRINT", "google/komodo/komodo:16/BP2A.250805.005/13691446:user/release-keys");
+        propsToChangeRecentPixel.put("ID", "BP3A.250905.014");
+        propsToChangeRecentPixel.put("FINGERPRINT", "google/komodo/komodo:16/BP3A.250905.014/13873947:user/release-keys");
         propsToChangePixelTablet = new HashMap<>();
         propsToChangePixelTablet.put("BRAND", "google");
         propsToChangePixelTablet.put("BOARD", "tangorpro");
@@ -264,8 +264,8 @@ public final class PixelPropsUtils {
         propsToChangePixelTablet.put("PRODUCT", "tangorpro");
         propsToChangePixelTablet.put("HARDWARE", "tangorpro");
         propsToChangePixelTablet.put("MODEL", "Pixel Tablet");
-        propsToChangePixelTablet.put("ID", "BP2A.250805.005");
-        propsToChangePixelTablet.put("FINGERPRINT", "google/tangorpro/tangorpro:16/BP2A.250805.005/13691446:user/release-keys");
+        propsToChangePixelTablet.put("ID", "BP3A.250905.014.A1");
+        propsToChangePixelTablet.put("FINGERPRINT", "google/tangorpro/tangorpro:16/BP3A.250905.014.A1/13873969:user/release-keys");
         propsToChangeMeizu = new HashMap<>();
         propsToChangeMeizu.put("BRAND", "meizu");
         propsToChangeMeizu.put("MANUFACTURER", "Meizu");
@@ -386,8 +386,8 @@ public final class PixelPropsUtils {
         sIsExcluded = isGoogleCameraPackage(packageName);
         String model = SystemProperties.get("ro.product.model");
         boolean isPixelDevice = SystemProperties.get("ro.soc.manufacturer").equalsIgnoreCase("Google");
-        boolean isMainlineDevice = isPixelDevice && model.matches("Pixel [8-9][a-zA-Z ]*");
-        boolean isTensorDevice = isPixelDevice && model.matches("Pixel [6-9][a-zA-Z ]*");
+        boolean isMainlineDevice = isPixelDevice && model.matches("Pixel (8|9|10)[a-zA-Z ]*");
+        boolean isTensorDevice = isPixelDevice && model.matches("Pixel (6|7|8|9|10)[a-zA-Z ]*");
         boolean isPixelGmsEnabled = SystemProperties.getBoolean(SPOOF_PIXEL_GMS, false);
         propsToChangeGeneric.forEach((k, v) -> setPropValue(k, v));
         if (packageName == null || processName == null || packageName.isEmpty()) {
