@@ -36,6 +36,7 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.Tile
 import com.android.systemui.qs.panels.ui.viewmodel.BounceableTileViewModel
 import com.android.systemui.qs.panels.ui.viewmodel.QuickQuickSettingsViewModel
 import com.android.systemui.qs.shared.ui.ElementKeys.toElementKey
+import com.android.systemui.qs.ui.composable.QuickSettingsShade
 import com.android.systemui.res.R
 
 @Composable
@@ -58,7 +59,7 @@ fun ContentScope.QuickQuickSettings(
         GridAnchor()
         CustomVerticalSpannedGrid(
             columns = columns,
-            rowSpacing = dimensionResource(R.dimen.qs_tile_margin_vertical),
+            rowSpacing = QuickSettingsShade.QSVerticalPadding(),
             spans = spans,
             modifier = Modifier.sysuiResTag("qqs_tile_layout"),
             keys = { sizedTiles[it].tile.spec },

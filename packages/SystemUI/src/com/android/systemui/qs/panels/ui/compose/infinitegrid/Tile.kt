@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -92,7 +93,7 @@ import com.android.systemui.qs.panels.ui.compose.BounceableInfo
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.ActiveCornerRadius
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.InactiveCornerRadius
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileEndPadding
-import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.tileHeight
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileHeight
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TilePaddingLarge
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileStartPadding
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.longPressLabel
@@ -175,12 +176,12 @@ fun Tile(
         val tileShape by TileDefaults.animateTileShapeAsState(uiState.state)
         val animatedColor by animateColorAsState(colors.background, label = "QSTileBackgroundColor")
         val animatedAlpha by animateFloatAsState(colors.alpha, label = "QSTileAlpha")
-        val tileHeight = tileHeight()
+        val tileHeight = LocalContext.current.TileHeight
 
         TileExpandable(
             color = { animatedColor },
             shape = tileShape,
-            squishiness = if (iconOnly) { { 1f } } else squishiness,
+            squishiness = { 1f },
             hapticsViewModel = hapticsViewModel,
             modifier =
                 modifier
@@ -296,7 +297,7 @@ fun TileContainer(
 ) {
     Box(
         modifier =
-            Modifier.height(tileHeight())
+            Modifier.height(LocalContext.current.TileHeight)
                 .fillMaxWidth()
                 .tileCombinedClickable(
                     onClick = onClick,
@@ -322,7 +323,7 @@ fun LargeStaticTile(
         modifier
             .clip(TileDefaults.animateTileShapeAsState(state = uiState.state).value)
             .background(colors.background)
-            .height(tileHeight())
+            .height(LocalContext.current.TileHeight)
             .largeTilePadding()
     ) {
         LargeTileContent(
