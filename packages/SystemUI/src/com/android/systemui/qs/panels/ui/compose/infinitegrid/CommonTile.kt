@@ -176,7 +176,7 @@ fun LargeTileContent(
             isVisible = isVisible,
             modifier = Modifier.weight(1f)
                         .padding(
-                            start = context.TileContentStartPadding, 
+                            start = if (toggleClick != null) (context.TileContentStartPadding) else 0.dp, 
                             end = context.TileContentEndPadding
                         ),
         )
@@ -352,7 +352,7 @@ object CommonTileDefaults {
         get() {
             val displayMetrics = resources.displayMetrics
             val sw = minOf(displayMetrics.widthPixels, displayMetrics.heightPixels) / displayMetrics.density
-            val ratio = sw / 420f
+            val ratio = if (sw >= 420f) 1f else sw / 420f
             return ratio
         }
 
