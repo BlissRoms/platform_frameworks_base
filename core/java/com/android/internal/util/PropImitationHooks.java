@@ -135,7 +135,11 @@ public class PropImitationHooks {
          * Set Pixel XL for Google Photos
          */
         if (sIsGms || sIsFinsky) {
-            setPlayIntegrityProps(context);
+            if (!android.os.Process.isIsolated()) {
+                setPlayIntegrityProps(context);
+            } else {
+                dlog("Not setting Play Integrity props in isolated process");
+            }
         } else if (!sStockFp.isEmpty() && packageName.equals(PACKAGE_ARCORE)) {
             dlog("Setting stock fingerprint for: " + packageName);
             setPropValue("FINGERPRINT", sStockFp);
@@ -146,7 +150,7 @@ public class PropImitationHooks {
             dlog("Setting model to " + sNetflixModel + " for Netflix");
             setPropValue("MODEL", sNetflixModel);
         }
-    }
+     }
 
     private static void setPropValue(String key, String value) {
         try {
@@ -167,7 +171,12 @@ public class PropImitationHooks {
     }
 
     private static void setPlayIntegrityProps(Context context) {
-        if (sDisableGmsProps) {
+        if (android.os.Process.isIsolated()) {
+            dlog("Skipping setPlayIntegrityProps in isolated process");
+            return;
+        }
+
+	 if (sDisableGmsProps) {
             dlog("GMS prop imitation is disabled by user");
             return;
         }
