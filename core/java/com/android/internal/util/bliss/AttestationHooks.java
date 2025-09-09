@@ -52,10 +52,10 @@ public final class AttestationHooks {
     private static final Map<String, Object> sMainlineProps = Map.of(
         "BRAND", "google",
         "MANUFACTURER", "Google",
-        "DEVICE", "mustang",
-        "PRODUCT", "mustang_beta",
-        "MODEL", "Pixel 10 Pro XL",
-        "FINGERPRINT", "google/mustang_beta/mustang:16/BP41.250725.006/12701944:user/release-keys"
+        "DEVICE", "komodo",
+        "PRODUCT", "komodo",
+        "MODEL", "Pixel 9 Pro XL",
+        "FINGERPRINT", "google/komodo/komodo:16/BP2A.250805.005/13691446:user/release-keys"
     );
 
     private static final Map<String, Object> sPixelXLProps = Map.of(
