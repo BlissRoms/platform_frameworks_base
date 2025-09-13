@@ -834,14 +834,16 @@ if (viewModel.isQsEnabled) {
                         }
                     }
                 }
-                Element(
-                    ElementKeys.FooterActions,
-                    Modifier.sysuiResTag(ResIdTags.qsFooterActions),
-                ) {
-                    FooterActions(
-                        viewModel = viewModel.footerActionsViewModel,
-                        qsVisibilityLifecycleOwner = this@QSFragmentCompose,
-                    )
+                PlatformTheme(isDarkTheme = isSystemInDarkTheme()) {
+                    Element(
+                        ElementKeys.FooterActions,
+                        Modifier.sysuiResTag(ResIdTags.qsFooterActions),
+                    ) {
+                        FooterActions(
+                            viewModel = viewModel.footerActionsViewModel,
+                            qsVisibilityLifecycleOwner = this@QSFragmentCompose,
+                        )
+                    }
                 }
             }
         }
