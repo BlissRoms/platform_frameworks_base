@@ -25,6 +25,7 @@
     <string name="status_bar_roaming">Roaming indicator</string>
     <string name="status_bar_hd_calling">HD calling (VoLTE/VoNR)</string>
     <string name="status_bar_vowifi">Wi-Fi calling (VoWiFi)</string>
+    <string name="data_disabled_icon_title">Data disabled icon</string>
 
     <!-- Notification counter -->
     <string name="status_bar_notification_info_overflow" translatable="false">\u221E</string>
