@@ -36,6 +36,7 @@ import com.android.internal.util.custom.KeyProviderManager;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -253,9 +254,10 @@ public class PropImitationHooks {
         return gmsUid == callingUid;
     }
 
-    private static boolean isCallerSafetyNet() {
-        return sIsGms && Arrays.stream(Thread.currentThread().getStackTrace())
-                .anyMatch(elem -> elem.getClassName().contains("DroidGuard"));
+    private static boolean isCallerPlayIntegrity() {
+        return Arrays.stream(Thread.currentThread().getStackTrace())
+                .map(StackTraceElement::getClassName)
+                .anyMatch(name -> name.toLowerCase(Locale.US).contains("droidguard"));
     }
 
     public static void onEngineGetCertificateChain() {
@@ -270,9 +272,9 @@ public class PropImitationHooks {
             return;
         }
 
-        // Check stack for SafetyNet or Play Integrity
-        if (isCallerSafetyNet() || sIsFinsky) {
-            dlog("Blocked key attestation sIsGms=" + sIsGms + " sIsFinsky=" + sIsFinsky);
+        // Check stack for Play Integrity
+        if (isCallerPlayIntegrity()) {
+            dlog("Blocked key attestation for play integrity");
             throw new UnsupportedOperationException();
         }
     }
