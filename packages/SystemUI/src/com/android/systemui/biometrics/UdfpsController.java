@@ -96,6 +96,7 @@ import com.android.systemui.biometrics.udfps.TouchProcessorResult;
 import com.android.systemui.biometrics.ui.view.UdfpsTouchOverlay;
 import com.android.systemui.biometrics.ui.viewmodel.DefaultUdfpsTouchOverlayViewModel;
 import com.android.systemui.biometrics.ui.viewmodel.DeviceEntryUdfpsTouchOverlayViewModel;
+import com.android.systemui.biometrics.ui.viewmodel.PromptUdfpsTouchOverlayViewModel;
 import com.android.systemui.bouncer.domain.interactor.AlternateBouncerInteractor;
 import com.android.systemui.bouncer.domain.interactor.PrimaryBouncerInteractor;
 import com.android.systemui.dagger.SysUISingleton;
@@ -191,6 +192,8 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             mDeviceEntryUdfpsTouchOverlayViewModel;
     @NonNull private final Lazy<DefaultUdfpsTouchOverlayViewModel>
             mDefaultUdfpsTouchOverlayViewModel;
+    @NonNull private final Lazy<PromptUdfpsTouchOverlayViewModel>
+            mPromptUdfpsTouchOverlayViewModel;
     @NonNull private final AlternateBouncerInteractor mAlternateBouncerInteractor;
     @NonNull private final UdfpsOverlayInteractor mUdfpsOverlayInteractor;
     @NonNull private final PowerInteractor mPowerInteractor;
@@ -372,14 +375,8 @@ public class UdfpsController implements DozeReceiver, Dumpable {
                         mInflater,
                         mWindowManager,
                         mAccessibilityManager,
-                        mStatusBarStateController,
-                        mKeyguardViewManager,
                         mKeyguardUpdateMonitor,
-                        mDialogManager,
-                        mDumpManager,
-                        mConfigurationController,
                         mKeyguardStateController,
-                        mUnlockedScreenOffAnimationController,
                         mUdfpsDisplayMode,
                         requestId,
                         reason,
@@ -388,13 +385,10 @@ public class UdfpsController implements DozeReceiver, Dumpable {
                             requestId,
                             event
                         ),
-                            mActivityTransitionAnimator,
-                        mPrimaryBouncerInteractor,
-                        mAlternateBouncerInteractor,
                         mKeyguardTransitionInteractor,
-                        mSelectedUserInteractor,
                         mDeviceEntryUdfpsTouchOverlayViewModel,
                         mDefaultUdfpsTouchOverlayViewModel,
+                        mPromptUdfpsTouchOverlayViewModel,
                         mShadeInteractor,
                         mUdfpsOverlayInteractor,
                         mPowerInteractor,
@@ -804,6 +798,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             @NonNull KeyguardTransitionInteractor keyguardTransitionInteractor,
             Lazy<DeviceEntryUdfpsTouchOverlayViewModel> deviceEntryUdfpsTouchOverlayViewModel,
             Lazy<DefaultUdfpsTouchOverlayViewModel> defaultUdfpsTouchOverlayViewModel,
+            Lazy<PromptUdfpsTouchOverlayViewModel> promptUdfpsTouchOverlayViewModel,
             @NonNull UdfpsOverlayInteractor udfpsOverlayInteractor,
             @NonNull PowerInteractor powerInteractor,
             @Application CoroutineScope scope,
@@ -854,6 +849,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         mSessionTracker = sessionTracker;
         mDeviceEntryUdfpsTouchOverlayViewModel = deviceEntryUdfpsTouchOverlayViewModel;
         mDefaultUdfpsTouchOverlayViewModel = defaultUdfpsTouchOverlayViewModel;
+        mPromptUdfpsTouchOverlayViewModel = promptUdfpsTouchOverlayViewModel;
 
         mDumpManager.registerDumpable(TAG, this);
         
@@ -1027,7 +1023,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
                     + " isn't running on keyguard. Skip show.");
             return;
         }
-        if (overlay.show(this, mOverlayParams)) {
+        if (overlay.show(mOverlayParams)) {
             Log.d(TAG, "showUdfpsOverlay | adding window reason=" + requestReason);
             mOnFingerDown = false;
             mAttemptedToDismissKeyguard = false;
