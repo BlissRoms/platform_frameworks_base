@@ -53,6 +53,11 @@
         android:layout_height="match_parent"
         sysui:ignoreRightInset="true" />
 
+    <include layout="@layout/status_bar_expanded"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:visibility="invisible" />
+
     <com.android.systemui.pulse.VisualizerView
         android:id="@+id/visualizerview"
         android:gravity="bottom"
@@ -61,11 +66,6 @@
         android:layout_height="match_parent"
         android:visibility="visible"
         sysui:ignoreRightInset="true" />
-
-    <include layout="@layout/status_bar_expanded"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:visibility="invisible" />
 
     <!-- Root for all keyguard content. It was previously located within the shade. -->
     <com.android.systemui.keyguard.ui.view.KeyguardRootView
