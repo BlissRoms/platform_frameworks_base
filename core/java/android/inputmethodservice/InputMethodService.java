@@ -920,6 +920,10 @@ public class InputMethodService extends AbstractInputMethodService {
             if (mWindow != null) {
                 mWindow.getOnBackInvokedDispatcher().setImeOnBackInvokedDispatcher(mImeDispatcher);
                 if (mDecorViewVisible && mShowInputRequested) {
+                    // Back callback is typically registered in {@link #showWindow()}, but it's
+                    // possible for {@link #doStartInput()} to be called without
+                    // {@link #showWindow()} so we also register here, after setting the new
+                    // dispatcher.
                     registerDefaultOnBackInvokedCallback();
                 }
             }
