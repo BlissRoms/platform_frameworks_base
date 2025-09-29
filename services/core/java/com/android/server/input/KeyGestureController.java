@@ -842,8 +842,8 @@ final class KeyGestureController {
                 }
                 return true;
             case KeyEvent.KEYCODE_ASSIST:
-                Slog.wtf(TAG, "KEYCODE_ASSIST should be handled in interceptKeyBeforeQueueing");
-                return true;
+                // Let policy handle it in PhoneWindowManager.interceptKeyBeforeQueueing
+                return false;
             case KeyEvent.KEYCODE_VOICE_ASSIST:
                 Slog.wtf(TAG, "KEYCODE_VOICE_ASSIST should be handled in"
                         + " interceptKeyBeforeQueueing");
