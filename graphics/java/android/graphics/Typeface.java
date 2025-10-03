@@ -27,6 +27,8 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.TestApi;
 import android.annotation.UiThread;
+import android.app.ActivityThread;
+import android.app.Application;
 import android.compat.annotation.UnsupportedAppUsage;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -57,6 +59,7 @@ import android.util.SparseArray;
 
 import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.util.android.FontController;
 import com.android.internal.util.Preconditions;
 import com.android.text.flags.Flags;
 
@@ -189,7 +192,7 @@ public class Typeface {
      */
     @GuardedBy("SYSTEM_FONT_MAP_LOCK")
     @UnsupportedAppUsage(trackingBug = 123769347)
-    static final Map<String, Typeface> sSystemFontMap = new ArrayMap<>();
+    static final Map<String, Typeface> sSystemFontMap = new HashMap<>();
 
     // DirectByteBuffer object to hold sSystemFontMap's backing memory mapping.
     static ByteBuffer sSystemFontMapBuffer = null;
@@ -301,6 +304,8 @@ public class Typeface {
      * @hide
      */
     public static final String DEFAULT_FAMILY = "sans-serif";
+
+    private static volatile String sFontName = DEFAULT_FAMILY;
 
     static {
         DEFAULT_BOLD = new Typeface(Typeface.BOLD, 700, null);
@@ -1000,7 +1005,7 @@ public class Typeface {
      * @return The best matching typeface.
      */
     public static Typeface create(String familyName, @Style int style) {
-        return create(getSystemOverrideTypeface(familyName), style);
+        return create(getOverrideTypeface(familyName), style);
     }
 
     /**
@@ -1388,7 +1393,14 @@ public class Typeface {
         return tf == null ? getSystemDefaultTypeface(familyName) : tf;
     }
 
-    private static Typeface getSystemDefaultTypeface(@NonNull String familyName) {
+    /** @hide */
+    public static Typeface getOverrideTypeface(@NonNull String familyName) {
+        Typeface tf = FontController.getOverrideTypeface(familyName);
+        return tf == null ? getSystemDefaultTypeface(familyName) : tf;
+    }
+
+    /** @hide */
+    public static Typeface getSystemDefaultTypeface(@NonNull String familyName) {
         Typeface tf = sSystemFontMap.get(familyName);
         return tf == null ? Typeface.DEFAULT : tf;
     }
@@ -1715,6 +1727,39 @@ public class Typeface {
     }
 
     /** @hide */
+    public static void changeFont() {
+        synchronized (sDynamicCacheLock) {
+            sDynamicTypefaceCache.evictAll();
+        }
+
+        String fontFamily = FontController.getCurrentFontFamily();
+
+        sFontName = fontFamily;
+
+        Typeface tf = getOverrideTypeface(sFontName);
+
+        Typeface tfBold = create(tf, BOLD);
+        Typeface tfItalic = create(tf, ITALIC);
+        Typeface tfItalicBold = create(tf, BOLD_ITALIC);
+
+        if (tf != null) {
+            synchronized (SYSTEM_FONT_MAP_LOCK) {
+                setDefault(tf);
+            }
+        }
+
+        changeDefaultFontForTest(
+                Arrays.asList(
+                        tf, tfBold, tfItalic, tfItalicBold),
+                Arrays.asList(tf, Typeface.SERIF, Typeface.MONOSPACE));
+    }
+
+    /** @hide */
+    public static String getFontName() {
+        return sFontName;
+    }
+
+    /** @hide */
     @VisibleForTesting
     public static void setSystemFontMap(Map<String, Typeface> systemFontMap) {
         synchronized (SYSTEM_FONT_MAP_LOCK) {
@@ -1742,15 +1787,9 @@ public class Typeface {
                 // Robolectric disables Typeface static initializer and call
                 // loadPreinstalledSystemFontMap to load system font map manually when the class is
                 // loaded.
-                nativeForceSetStaticFinalField("DEFAULT",
-                        create(sDefaultTypeface, Typeface.NORMAL));
-                nativeForceSetStaticFinalField("DEFAULT_BOLD",
-                        create(sDefaultTypeface, Typeface.BOLD));
-                nativeForceSetStaticFinalField("SANS_SERIF",
-                        create("sans-serif", Typeface.NORMAL));
-                nativeForceSetStaticFinalField("SERIF", create("serif", Typeface.NORMAL));
-                nativeForceSetStaticFinalField("MONOSPACE",
-                        create("monospace", Typeface.NORMAL));
+                if (sDefaultTypeface != null) {
+                    setDefault(sDefaultTypeface);
+                }
             }
 
             setPublicDefaults(null);
