@@ -53,8 +53,19 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
         "com.android.settingslib.widget.LayoutPreference",
         "com.android.settingslib.widget.IllustrationPreference",
         "com.android.settings.accessibility.TextReadingPreviewPreference",
-        "com.android.settings.accessibility.TextReadingResetPreference"
+        "com.android.settings.accessibility.TextReadingResetPreference",
+        "com.bliss.widget.ShrinkablePreference"
     )
+
+    private fun hasCustomBlissLayout(pref: Preference?): Boolean {
+        if (pref == null) return false
+        try {
+            val layoutName = pref.context?.resources?.getResourceEntryName(pref.layoutResource)
+            return layoutName?.startsWith("bliss_card_") == true
+        } catch (e: Exception) {
+            return false
+        }
+    }
 
     init {
         val context = preferenceGroup.context
@@ -120,7 +131,8 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
         for (i in 0 until itemCount) {
             val pref = getItem(i)
             val isExcludedFromExpressive = pref?.javaClass?.name in excludedClasses
-            if (isExcludedFromExpressive) {
+            val hasCustomLayout = hasCustomBlissLayout(pref)
+            if (isExcludedFromExpressive || hasCustomLayout) {
                 cornerStyles[i] = 0
                 startIndex = -1
                 endIndex = -1
@@ -202,10 +214,11 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
         val pref = getItem(position)
 
         val isExcludedFromExpressive = pref?.javaClass?.name in excludedClasses
+        val hasCustomLayout = hasCustomBlissLayout(pref)
         @DrawableRes
         val backgroundRes =
             when {
-                SettingsThemeHelper.isExpressiveTheme(context) && isExcludedFromExpressive -> {
+                SettingsThemeHelper.isExpressiveTheme(context) && (isExcludedFromExpressive || hasCustomLayout) -> {
                     mLegacyBackgroundRes
                 }
                 SettingsThemeHelper.isExpressiveTheme(context) -> {
@@ -218,7 +231,7 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
 
         val v = holder.itemView
         // Update padding
-        if (SettingsThemeHelper.isExpressiveTheme(context) && !isExcludedFromExpressive) {
+        if (SettingsThemeHelper.isExpressiveTheme(context) && !isExcludedFromExpressive && !hasCustomLayout) {
             val (paddingStart, paddingEnd) = getStartEndPadding(position, backgroundRes)
             v.setPaddingRelative(paddingStart, v.paddingTop, paddingEnd, v.paddingBottom)
             v.clipToOutline = backgroundRes != 0
