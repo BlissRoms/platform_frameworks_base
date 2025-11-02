@@ -298,14 +298,6 @@ class PluginInstance<T : Plugin>(
             pluginClass: Class<T>,
             listener: PluginListener<T>,
         ): PluginInstance<T>? {
-            if (!buildInfo.isDebuggable && !config.isPackagePrivileged(pluginAppInfo.packageName)) {
-                logger.w({ "Cannot build non-privileged plugin. Src: $str1, pkg: $str2" }) {
-                    str1 = pluginAppInfo.sourceDir
-                    str2 = pluginAppInfo.packageName
-                }
-                return null
-            }
-
             return PluginInstance(
                 hostContext,
                 listener,

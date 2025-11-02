@@ -218,12 +218,6 @@ private constructor(
     }
 
     private fun loadPluginComponent(component: ComponentName): PluginInstance<T>? {
-        // Do not load non-privileged plugins in production builds.
-        if (!buildInfo.isDebuggable && !config.isPrivileged(component)) {
-            logger.e({ "Plugin cannot be loaded in production: $str1" }) { str1 = "$component" }
-            return null
-        }
-
         if (!pluginEnabler.isEnabled(component)) {
             logger.w({ "Plugin is not enabled, aborting load: $str1" }) { str1 = "$component" }
             return null
