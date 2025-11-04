@@ -50,9 +50,9 @@ fun RingerSliderWidget(
     val isDndEnabled by interactor.dndMode.collectAsState(initial = interactor.isDndEnabled())
     
     val targetPosition = when (mode) {
-        AudioManager.RINGER_MODE_NORMAL -> 0f
+        AudioManager.RINGER_MODE_SILENT -> 0f
         AudioManager.RINGER_MODE_VIBRATE -> 1f
-        AudioManager.RINGER_MODE_SILENT -> 2f
+        AudioManager.RINGER_MODE_NORMAL -> 2f
         else -> 0f
     }
 
@@ -106,9 +106,9 @@ fun RingerSliderWidget(
             dragOffset = snappedIndex.toFloat()
 
             val snappedMode = when (snappedIndex) {
-                0 -> AudioManager.RINGER_MODE_NORMAL
+                0 -> AudioManager.RINGER_MODE_SILENT
                 1 -> AudioManager.RINGER_MODE_VIBRATE
-                else -> AudioManager.RINGER_MODE_SILENT
+                else -> AudioManager.RINGER_MODE_NORMAL
             }
 
             interactor.setRingerMode(snappedMode)
@@ -124,9 +124,9 @@ fun RingerSliderWidget(
                     onDragEnd = {
                         isDragging = false
                         val snappedMode = when {
-                            dragOffset < 0.5f -> AudioManager.RINGER_MODE_NORMAL
+                            dragOffset < 0.5f -> AudioManager.RINGER_MODE_SILENT
                             dragOffset < 1.5f -> AudioManager.RINGER_MODE_VIBRATE
-                            else -> AudioManager.RINGER_MODE_SILENT
+                            else -> AudioManager.RINGER_MODE_NORMAL
                         }
                         if (isDndEnabled) return@detectDragGestures
 

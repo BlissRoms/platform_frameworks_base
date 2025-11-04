@@ -107,8 +107,8 @@ class RingerModeInteractorImpl(
 
     override fun getAvailableRingerModes(): List<RingerModeOption> {
         val modes = mutableListOf(
-            RingerModeOption(AudioManager.RINGER_MODE_NORMAL, Icons.Filled.VolumeUp, "Normal"),
-            RingerModeOption(AudioManager.RINGER_MODE_SILENT, Icons.Filled.VolumeOff, "Silent")
+            RingerModeOption(AudioManager.RINGER_MODE_SILENT, Icons.Filled.VolumeOff, "Silent"),
+            RingerModeOption(AudioManager.RINGER_MODE_NORMAL, Icons.Filled.VolumeUp, "Normal")
         )
 
         if (hasVibrator) {
