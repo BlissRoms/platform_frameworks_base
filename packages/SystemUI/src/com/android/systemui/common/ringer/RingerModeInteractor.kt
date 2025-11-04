@@ -20,25 +20,46 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.os.Vibrator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Vibration
+import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.*
+import kotlin.math.roundToInt
 
 interface RingerModeInteractor {
     val ringerMode: Flow<Int>
+    val targetPositionFlow: Flow<Float>
+
     fun getCurrentMode(): Int
     fun setRingerMode(mode: Int)
+    fun getAvailableRingerModes(): List<RingerModeOption>
+    fun getNumberOfModes(): Int
+    fun getMaxOffset(): Float
+    fun getTargetPosition(currentMode: Int): Float
+    fun snapMode(offset: Float): Int
 }
+
+data class RingerModeOption(
+    val mode: Int,
+    val icon: ImageVector,
+    val label: String
+)
 
 class RingerModeInteractorImpl(
     private val context: Context,
     private val audioManager: AudioManager
 ) : RingerModeInteractor {
-    
+
+    private val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+    private val hasVibrator: Boolean = vibrator?.hasVibrator() == true
+
     override val ringerMode: Flow<Int> = callbackFlow {
         trySend(audioManager.ringerMode)
-        
+
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent?.action == AudioManager.RINGER_MODE_CHANGED_ACTION) {
@@ -46,18 +67,48 @@ class RingerModeInteractorImpl(
                 }
             }
         }
-        
+
         val filter = IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION)
         context.registerReceiver(receiver, filter)
-        
-        awaitClose {
-            context.unregisterReceiver(receiver)
-        }
+        awaitClose { context.unregisterReceiver(receiver) }
     }.distinctUntilChanged()
-    
-    override fun getCurrentMode(): Int = audioManager.ringerMode
-    
+
+    override fun getCurrentMode(): Int = audioManager.ringerModeInternal
+
     override fun setRingerMode(mode: Int) {
-        audioManager.ringerMode = mode
+        audioManager.ringerModeInternal = mode
     }
+
+    override fun getAvailableRingerModes(): List<RingerModeOption> {
+        val modes = mutableListOf(
+            RingerModeOption(AudioManager.RINGER_MODE_NORMAL, Icons.Filled.VolumeUp, "Normal"),
+            RingerModeOption(AudioManager.RINGER_MODE_SILENT, Icons.Filled.VolumeOff, "Silent")
+        )
+
+        if (hasVibrator) {
+            modes.add(1, RingerModeOption(AudioManager.RINGER_MODE_VIBRATE, Icons.Filled.Vibration, "Vibrate"))
+        }
+
+        return modes
+    }
+
+    override fun getNumberOfModes(): Int = getAvailableRingerModes().size
+
+    override fun getMaxOffset(): Float = (getNumberOfModes() - 1).coerceAtLeast(1).toFloat()
+
+    override fun getTargetPosition(currentMode: Int): Float {
+        val modes = getAvailableRingerModes()
+        val idx = modes.indexOfFirst { it.mode == currentMode }.takeIf { it >= 0 } ?: 0
+        return idx.toFloat()
+    }
+
+    override fun snapMode(offset: Float): Int {
+        val modes = getAvailableRingerModes()
+        val maxIndex = (modes.size - 1).coerceAtLeast(0)
+        val snappedIndex = offset.roundToInt().coerceIn(0, maxIndex)
+        return modes[snappedIndex].mode
+    }
+
+    override val targetPositionFlow: Flow<Float> =
+        ringerMode.map { getTargetPosition(it) }.distinctUntilChanged()
 }
