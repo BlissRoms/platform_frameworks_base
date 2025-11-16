@@ -29,6 +29,7 @@ import androidx.constraintlayout.widget.ConstraintSet.START
 import androidx.constraintlayout.widget.ConstraintSet.TOP
 import com.android.systemui.customization.R as customR
 import com.android.systemui.keyguard.shared.model.KeyguardSection
+import com.android.systemui.keyguard.ui.viewmodel.KeyguardSmartspaceViewModel
 import com.android.systemui.media.controls.ui.controller.KeyguardMediaController
 import com.android.systemui.res.R
 import com.android.systemui.shade.ShadeDisplayAware
@@ -40,6 +41,7 @@ class SplitShadeMediaSection
 constructor(
     @ShadeDisplayAware private val context: Context,
     private val keyguardMediaController: KeyguardMediaController,
+    private val smartspaceViewModel: KeyguardSmartspaceViewModel,
 ) : KeyguardSection() {
     private val mediaContainerId = R.id.status_view_media_container
 

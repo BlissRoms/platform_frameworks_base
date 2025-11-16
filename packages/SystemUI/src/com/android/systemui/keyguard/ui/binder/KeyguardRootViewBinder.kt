@@ -192,6 +192,7 @@ object KeyguardRootViewBinder {
                         // need to add translation to it here same as translationX
                         viewModel.translationY.collect { y ->
                             childViews[burnInLayerId]?.translationY = y
+                            childViews[sliceViewId]?.translationY = y
                             childViews[largeClockId]?.translationY = y
                             if (com.android.systemui.shared.Flags.clockReactiveSmartspaceLayout()) {
                                 childViews[largeClockDateId]?.translationY = y
@@ -210,6 +211,7 @@ object KeyguardRootViewBinder {
                                 state.isToOrFrom(KeyguardState.AOD) -> {
                                     // Large Clock is not translated in the x direction
                                     childViews[burnInLayerId]?.translationX = px
+                                    childViews[sliceViewId]?.translationX = px
                                     childViews[aodPromotedNotificationId]?.translationX = px
                                     childViews[aodNotificationIconContainerId]?.translationX = px
                                     childViews[sliceViewId]?.translationX = px
