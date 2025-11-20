@@ -39,17 +39,19 @@ class KeyguardSmartspaceViewModel
 @Inject
 constructor(
     @Application applicationScope: CoroutineScope,
-    smartspaceController: LockscreenSmartspaceController,
+    private val smartspaceController: LockscreenSmartspaceController,
     keyguardClockViewModel: KeyguardClockViewModel,
-    smartspaceInteractor: KeyguardSmartspaceInteractor,
+    private val smartspaceInteractor: KeyguardSmartspaceInteractor,
     shadeModeInteractor: ShadeModeInteractor,
     keyguardInteractor: KeyguardInteractor,
 ) {
     /** Whether the smartspace section is available in the build. */
-    val isSmartspaceEnabled: Boolean = smartspaceController.isEnabled
+    val isSmartspaceEnabled: Boolean
+        get() = smartspaceController.isEnabled
 
     /** Whether the weather area is available and enabled. */
-    val isWeatherEnabled: Flow<Boolean> = smartspaceInteractor.isWeatherEnabled
+    val isWeatherEnabled: Flow<Boolean>
+        get() = smartspaceInteractor.isWeatherEnabled
 
     @Deprecated("Remove after flexiglass ships")
     /** Whether the date area should be visible. */
