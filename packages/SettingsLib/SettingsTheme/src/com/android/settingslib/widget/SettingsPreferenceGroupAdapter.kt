@@ -60,6 +60,20 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
 
     private val syncRunnable = Runnable { updatePreferencesList() }
 
+    private val excludedClasses = setOf(
+        "com.bliss.widget.ShrinkablePreference"
+    )
+
+    private fun hasCustomBlissLayout(pref: Preference?): Boolean {
+        if (pref == null) return false
+        try {
+            val layoutName = pref.context?.resources?.getResourceEntryName(pref.layoutResource)
+            return layoutName?.startsWith("bliss_card_") == true
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
     init {
         val context = preferenceGroup.context
         mNormalPaddingStart =
@@ -136,6 +150,17 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
         var currentParent: Preference? = null
         for (i in 0..<itemCount) {
             val preference = getItem(i)!!
+
+            val isExcludedFromExpressive = preference.javaClass.name in excludedClasses
+            val hasCustomLayout = hasCustomBlissLayout(preference)
+            if (isExcludedFromExpressive || hasCustomLayout) {
+                itemPositionStates[i] = 0
+                prevItemIndex = -2
+                previousParent = null
+                currentParent = null
+                continue
+            }
+
             // If the preference is a group divider, skip this index (resulting in new group)
             if (isGroupDivider(preference)) {
                 itemPositionStates[i] = 0
@@ -181,6 +206,15 @@ open class SettingsPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
     /** handle roundCorner background */
     private fun updateBackground(holder: PreferenceViewHolder, position: Int) {
         val v = holder.itemView
+        val preference = getItem(position)
+        val isExcludedFromExpressive = preference?.javaClass?.name in excludedClasses
+        val hasCustomLayout = hasCustomBlissLayout(preference)
+        
+        if (isExcludedFromExpressive || hasCustomLayout) {
+            v.setBackgroundResource(mLegacyBackgroundRes)
+            return
+        }
+
         val drawableStateLayout = holder.itemView as? DrawableStateLayout
         if (drawableStateLayout != null && mItemPositionStates[position] != 0) {
             if (v.background == null) {
