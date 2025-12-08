@@ -3849,42 +3849,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     }
                 }
                 return true;
-            case KeyEvent.KEYCODE_ASSIST:
-                if (keyguardOn) {
-                    break;
-                }
-                if (down) {
-                    if (mAssistPressAction == Action.APP_SWITCH
-                            || mAssistLongPressAction == Action.APP_SWITCH) {
-                        preloadRecentApps();
-                    }
-                    if (repeatCount == 0) {
-                        mAssistPressed = true;
-                    } else if (longPress) {
-                        if (mAssistLongPressAction != Action.NOTHING) {
-                            if (mAssistLongPressAction != Action.APP_SWITCH) {
-                                cancelPreloadRecentApps();
-                            }
-                            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                                    "Assist - Long Press");
-                            performKeyAction(mAssistLongPressAction, event,
-                                    AssistUtils.INVOCATION_TYPE_ASSIST_BUTTON);
-                            mAssistPressed = false;
-                        }
-                    }
-                } else {
-                    if (mAssistPressed) {
-                        if (mAssistPressAction != Action.APP_SWITCH) {
-                            cancelPreloadRecentApps();
-                        }
-                        mAssistPressed = false;
-                        if (!canceled) {
-                            performKeyAction(mAssistPressAction, event,
-                                    AssistUtils.INVOCATION_TYPE_ASSIST_BUTTON);
-                        }
-                    }
-                }
-                return true;
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_MUTE:
@@ -4950,6 +4914,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         final boolean canceled = event.isCanceled();
         final int displayId = event.getDisplayId();
         final boolean isInjected = (policyFlags & WindowManagerPolicy.FLAG_INJECTED) != 0;
+        final boolean longPress = (event.getFlags() & KeyEvent.FLAG_LONG_PRESS) != 0;
 
         // If screen is off then we treat the case where the keyguard is open but hidden
         // the same as if it were open and in front.
@@ -5430,10 +5395,38 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 break;
             }
             case KeyEvent.KEYCODE_ASSIST: {
-                if (down && !interactive) {
-                    isWakeKey = mWakeOnAssistKeyPress;
-                    if (!isWakeKey) {
-                        useHapticFeedback = false;
+                if (keyguardOn()) {
+                    break;
+                }
+                if (down) {
+                    if (mAssistPressAction == Action.APP_SWITCH
+                            || mAssistLongPressAction == Action.APP_SWITCH) {
+                        preloadRecentApps();
+                    }
+                    if (event.getRepeatCount() == 0) {
+                        mAssistPressed = true;
+                    } else if (longPress) {
+                        if (mAssistLongPressAction != Action.NOTHING) {
+                            if (mAssistLongPressAction != Action.APP_SWITCH) {
+                                cancelPreloadRecentApps();
+                            }
+                            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                                    "Assist - Long Press");
+                            performKeyAction(mAssistLongPressAction, event,
+                                    AssistUtils.INVOCATION_TYPE_ASSIST_BUTTON);
+                            mAssistPressed = false;
+                        }
+                    }
+                } else {
+                    if (mAssistPressed) {
+                        if (mAssistPressAction != Action.APP_SWITCH) {
+                            cancelPreloadRecentApps();
+                        }
+                        mAssistPressed = false;
+                        if (!canceled) {
+                            performKeyAction(mAssistPressAction, event,
+                                    AssistUtils.INVOCATION_TYPE_ASSIST_BUTTON);
+                        }
                     }
                 }
                 break;
