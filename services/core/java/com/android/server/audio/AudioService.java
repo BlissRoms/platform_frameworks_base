@@ -1290,6 +1290,20 @@ public class AudioService extends IAudioService.Stub
     // The main default MediaFocusControl. Associated to the null focus environment token.
     private final MediaFocusControl mMediaFocusControl;
 
+    private final ContentObserver mMultiAudioFocusObserver =
+            new ContentObserver(new Handler(Looper.getMainLooper())) {
+        @Override
+        public void onChange(boolean selfChange) {
+            final ContentResolver cr = mContext.getContentResolver();
+            boolean enabled = Settings.System.getIntForUser(cr,
+                    Settings.System.MULTI_AUDIO_FOCUS_ENABLED, 0, cr.getUserId()) != 0;
+            Log.i(TAG, "Multi audio focus " + (enabled ? "enabled" : "disabled"));
+            if (mMediaFocusControl != null) {
+                mMediaFocusControl.updateMultiAudioFocus(enabled);
+            }
+        }
+    };
+
     // Lock for synchronizing access to the focus environments map
     private final Object mFocusEnvironmentsLock = new Object();
 
@@ -1795,6 +1809,10 @@ public class AudioService extends IAudioService.Stub
         mPlaybackMonitor.registerPlaybackCallback(mPlaybackActivityMonitor, true);
 
         mMediaFocusControl = new MediaFocusControl(mPlaybackMonitor, isMultiFocus());
+
+        mContentResolver.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.MULTI_AUDIO_FOCUS_ENABLED),
+                false, mMultiAudioFocusObserver, UserHandle.USER_ALL);
 
         readAndSetLowRamDevice();
 
