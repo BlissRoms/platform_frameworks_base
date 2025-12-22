@@ -20,7 +20,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.widget.Button
 import android.widget.FrameLayout
 import android.view.ContextThemeWrapper
 import android.view.Gravity
@@ -76,7 +75,6 @@ class FlashlightDialogDelegate @Inject constructor(
             { _, _ ->
                 val newState = !flashlightController.isEnabled()
                 flashlightController.setFlashlight(newState)
-                slider.isEnabled = newState
                 dialog.getButton(SystemUIDialog.BUTTON_NEUTRAL)?.text =
                     if (newState)
                         dialog.context.getString(R.string.flashlight_strength_turn_off)
@@ -91,7 +89,7 @@ class FlashlightDialogDelegate @Inject constructor(
         val maxLevel = flashlightController.getMaxLevel()
         val currentPercent = flashlightController.getCurrentPercent()
 
-        slider.isEnabled = flashlightController.isEnabled()
+        slider.isEnabled = true
         slider.valueFrom = 1f
         slider.valueTo = 100f
         slider.value = (currentPercent * 100f).coerceAtLeast(1f)
