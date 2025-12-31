@@ -15,11 +15,14 @@
  */
 package com.android.systemui.common.ringer
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import android.os.Vibrator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.VolumeOff
@@ -33,6 +36,9 @@ import kotlin.math.roundToInt
 interface RingerModeInteractor {
     val ringerMode: Flow<Int>
     val targetPositionFlow: Flow<Float>
+    val dndMode: Flow<Boolean>
+    fun isDndEnabled(): Boolean
+    fun toggleDnd()
 
     fun getCurrentMode(): Int
     fun setRingerMode(mode: Int)
@@ -51,7 +57,8 @@ data class RingerModeOption(
 
 class RingerModeInteractorImpl(
     private val context: Context,
-    private val audioManager: AudioManager
+    private val audioManager: AudioManager,
+    private val notificationManager: NotificationManager
 ) : RingerModeInteractor {
 
     private val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
@@ -71,6 +78,25 @@ class RingerModeInteractorImpl(
         val filter = IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION)
         context.registerReceiver(receiver, filter)
         awaitClose { context.unregisterReceiver(receiver) }
+    }.distinctUntilChanged()
+
+    override val dndMode: Flow<Boolean> = callbackFlow {
+        trySend(isDndEnabled())
+        
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action == NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED) {
+                    trySend(isDndEnabled())
+                }
+            }
+        }
+        
+        val filter = IntentFilter(NotificationManager.ACTION_INTERRUPTION_FILTER_CHANGED)
+        context.registerReceiver(receiver, filter)
+        
+        awaitClose {
+            context.unregisterReceiver(receiver)
+        }
     }.distinctUntilChanged()
 
     override fun getCurrentMode(): Int = audioManager.ringerModeInternal
@@ -111,4 +137,16 @@ class RingerModeInteractorImpl(
 
     override val targetPositionFlow: Flow<Float> =
         ringerMode.map { getTargetPosition(it) }.distinctUntilChanged()
+
+    override fun isDndEnabled(): Boolean = 
+        notificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
+    
+    override fun toggleDnd() {
+        val newFilter = if (isDndEnabled()) {
+            NotificationManager.INTERRUPTION_FILTER_ALL
+        } else {
+            NotificationManager.INTERRUPTION_FILTER_PRIORITY
+        }
+        notificationManager.setInterruptionFilter(newFilter)
+    }
 }

@@ -32,6 +32,12 @@ interface RingerSliderTheme {
     @get:Composable
     val neutralIcon: Color
     
+    @get:Composable
+    val dndBg: Color
+    
+    @get:Composable
+    val dndIcon: Color
+
     val dozeStroke: Dp
 }
 
