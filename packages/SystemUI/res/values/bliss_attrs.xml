@@ -4,5 +4,14 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
-
+    <attr format="dimension" name="remoteViewsCardCornerRadius" />
+    <attr format="dimension" name="smartspaceSubtitleTextSize" />
+    <attr format="dimension" name="smartspaceTitleTextSize" />
+    <declare-styleable
+        name="WeatherSmartspaceView">
+        <attr format="dimension" name="iconInset" />
+        <attr format="dimension" name="iconSize" />
+        <attr format="boolean" name="removeTextDescent" />
+        <attr format="dimension" name="textDescentExtraPadding" />
+    </declare-styleable>
 </resources>
