@@ -129,6 +129,9 @@ import javax.inject.Inject
 import kotlin.math.abs
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.collect
 
 /** Factory to simplify the dependency management for [StatusBarRoot] */
 @PerDisplaySingleton
@@ -583,6 +586,8 @@ fun chipsMaxWidth(
     return (widthInPx / density).dp
 }
 
+private const val SLOT_BATTERY = "battery"
+
 /** Create a new [UnifiedBattery] and add it to the end of the system_icons container */
 private fun addBatteryComposable(
     phoneStatusBarView: PhoneStatusBarView,
@@ -606,6 +611,15 @@ private fun addBatteryComposable(
         }
     phoneStatusBarView.findViewById<ViewGroup>(R.id.system_icons).apply {
         addView(batteryComposeView, getChildCount() - 1)
+    }
+
+    batteryComposeView.repeatWhenAttached {
+        statusBarViewModel.iconBlockList
+            .map { blocked -> blocked.contains(SLOT_BATTERY) }
+            .distinctUntilChanged()
+            .collect { isBlocked ->
+                batteryComposeView.visibility = if (isBlocked) View.GONE else View.VISIBLE
+            }
     }
 }
 
