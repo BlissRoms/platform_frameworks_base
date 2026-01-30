@@ -4,12 +4,6 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
-    <!-- Smartspace -->
-    <color name="ambient_text_shadow_color">#40000000</color>
-    <color name="key_text_shadow_color">#89000000</color>
-    <color name="smartspace_button_background">@android:color/system_accent2_200</color>
-    <color name="smartspace_button_text">@android:color/system_accent2_700</color>
-
     <!-- Fallback shade colors -->
     <color name="shade_panel_fallback_fg">@android:color/system_accent1_200</color>
     <color name="shade_panel_fallback_bg">@android:color/system_neutral1_100</color>
