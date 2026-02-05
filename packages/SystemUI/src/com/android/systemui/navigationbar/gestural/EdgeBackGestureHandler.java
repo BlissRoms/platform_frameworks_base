@@ -434,6 +434,9 @@ public class EdgeBackGestureHandler {
                 mTrackpadsConnected.remove(deviceId);
                 if (mTrackpadsConnected.isEmpty()) {
                     update();
+                    if (mStateChangeCallback != null) {
+                        mStateChangeCallback.run();
+                    }
                 }
             });
         }
