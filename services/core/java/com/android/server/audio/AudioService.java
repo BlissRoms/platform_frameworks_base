@@ -1290,13 +1290,16 @@ public class AudioService extends IAudioService.Stub
     // The main default MediaFocusControl. Associated to the null focus environment token.
     private final MediaFocusControl mMediaFocusControl;
 
+    private final boolean mMultiAudioFocusEnabledDefault;
+
     private final ContentObserver mMultiAudioFocusObserver =
             new ContentObserver(new Handler(Looper.getMainLooper())) {
         @Override
         public void onChange(boolean selfChange) {
             final ContentResolver cr = mContext.getContentResolver();
             boolean enabled = Settings.System.getIntForUser(cr,
-                    Settings.System.MULTI_AUDIO_FOCUS_ENABLED, 0, cr.getUserId()) != 0;
+                    Settings.System.MULTI_AUDIO_FOCUS_ENABLED,
+                    mMultiAudioFocusEnabledDefault ? 1 : 0, cr.getUserId()) != 0;
             Log.i(TAG, "Multi audio focus " + (enabled ? "enabled" : "disabled"));
             if (mMediaFocusControl != null) {
                 mMediaFocusControl.updateMultiAudioFocus(enabled);
@@ -1536,6 +1539,10 @@ public class AudioService extends IAudioService.Stub
         mContentResolver = context.getContentResolver();
         mAppOps = appOps;
         mCurrentUserId = getCurrentUserId();
+
+        mMultiAudioFocusEnabledDefault = audioFocusDesktop()
+                && mContext.getResources().getBoolean(
+                        com.android.internal.R.bool.config_multi_audio_focus_enabled_default);
 
         mPermissionProvider = permissionProvider;
         mAudioServerLifecycleExecutor = audioserverLifecycleExecutor;
@@ -1867,11 +1874,8 @@ public class AudioService extends IAudioService.Stub
 
     private boolean isMultiFocus() {
         ContentResolver cr = mContext.getContentResolver();
-        boolean multiAudioFocusEnabledDefault =
-                audioFocusDesktop() && mContext.getResources().getBoolean(
-                        com.android.internal.R.bool.config_multi_audio_focus_enabled_default);
         return Settings.System.getIntForUser(cr, Settings.System.MULTI_AUDIO_FOCUS_ENABLED,
-                multiAudioFocusEnabledDefault ? 1 : 0, cr.getUserId()) != 0;
+                mMultiAudioFocusEnabledDefault ? 1 : 0, cr.getUserId()) != 0;
     }
 
     private void initVolumeStreamStates() {
