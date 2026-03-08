@@ -1528,8 +1528,19 @@ public class PermissionManagerService extends IPermissionManager.Stub {
                 }
                 final AttributionSource resolvedAttributionSource =
                         accessorSource.withPackageName(resolvedAccessorPackageName);
-                final int opMode = appOpsManager.unsafeCheckOpRawNoThrow(op,
-                        resolvedAttributionSource);
+                // Avoid checking the first attr in the chain in some cases for consistency with
+                // checks for data delivery.
+                // In particular, for chains of 2 or more, when skipProxyOperation is true, the
+                // for data delivery implementation does not actually check the first link in the
+                // chain. If the attribution is just a singleReceiverFromDatasource, this
+                // exemption does not apply, since it does not go through proxyOp flow, and the top
+                // of the chain is actually removed above.
+                // Skipping the check avoids situations where preflight checks fail since the data
+                // source itself does not have the op (e.g. audioserver).
+                final int opMode = (skipProxyOperation && !singleReceiverFromDatasource) ?
+                        AppOpsManager.MODE_ALLOWED :
+                        appOpsManager.unsafeCheckOpRawNoThrow(op, resolvedAttributionSource);
+
                 final AttributionSource next = accessorSource.getNext();
                 if (!selfAccess && opMode == AppOpsManager.MODE_ALLOWED && next != null) {
                     final String resolvedNextPackageName = resolvePackageName(context, next);

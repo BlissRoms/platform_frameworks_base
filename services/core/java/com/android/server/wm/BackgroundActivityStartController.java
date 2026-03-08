@@ -426,7 +426,8 @@ public class BackgroundActivityStartController {
             } else {
                 mRealCallingUidProcState = mService.mActiveUids.getUidState(realCallingUid);
                 mRealCallingUidHasVisibleActivity =
-                        mService.mVisibleActivityProcessTracker.hasVisibleActivity(realCallingUid);
+                        mService.mVisibleActivityProcessTracker.hasVisibleActivity(
+                                realCallingUid);
                 mRealCallingUidHasNonAppVisibleWindow =
                         mService.mActiveUids.hasNonAppVisibleWindow(realCallingUid);
                 mRealCallerApp = mService.getProcessController(realCallingPid, realCallingUid);
@@ -632,6 +633,10 @@ public class BackgroundActivityStartController {
         private boolean mOnlyCreatorAllows;
         /** indicates that this verdict is based on the real calling UID and not the calling UID */
         private boolean mBasedOnRealCaller;
+
+        BalVerdict(@BalCode int balCode, String message) {
+            this(balCode, true, message);
+        }
 
         BalVerdict(@BalCode int balCode, boolean background, String message) {
             this.mBackground = background;
@@ -1011,8 +1016,7 @@ public class BackgroundActivityStartController {
         final boolean appSwitchAllowedOrFg = state.mAppSwitchState == APP_SWITCH_ALLOW
                 || state.mAppSwitchState == APP_SWITCH_FG_ONLY;
         if (appSwitchAllowedOrFg && state.mCallingUidHasVisibleActivity) {
-            return new BalVerdict(BAL_ALLOW_VISIBLE_WINDOW,
-                    /*background*/ false, "callingUid has visible window");
+            return new BalVerdict(BAL_ALLOW_VISIBLE_WINDOW, "callingUid has visible window");
         }
         if (state.mCallingUidHasNonAppVisibleWindow) {
             return new BalVerdict(BAL_ALLOW_NON_APP_VISIBLE_WINDOW,
@@ -1138,8 +1142,7 @@ public class BackgroundActivityStartController {
                 || state.mAppSwitchState == APP_SWITCH_FG_ONLY
                 || isHomeApp(state.mRealCallingUid, state.mRealCallingPackage);
         if (appSwitchAllowedOrFg && state.mRealCallingUidHasVisibleActivity) {
-            return new BalVerdict(BAL_ALLOW_VISIBLE_WINDOW,
-                    /*background*/ false, "realCallingUid has visible window");
+            return new BalVerdict(BAL_ALLOW_VISIBLE_WINDOW, "realCallingUid has visible window");
         }
         if (state.mRealCallingUidHasNonAppVisibleWindow) {
             return new BalVerdict(BAL_ALLOW_NON_APP_VISIBLE_WINDOW,

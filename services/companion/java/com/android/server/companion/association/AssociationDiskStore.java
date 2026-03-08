@@ -280,7 +280,7 @@ public final class AssociationDiskStore {
     }
 
     @NonNull
-    private static Associations readAssociationsFromInputStream(@UserIdInt int userId,
+    public static Associations readAssociationsFromInputStream(@UserIdInt int userId,
             @NonNull InputStream in, @NonNull String rootTag)
             throws XmlPullParserException, IOException {
         final TypedXmlPullParser parser = Xml.resolvePullParser(in);
@@ -296,10 +296,15 @@ public final class AssociationDiskStore {
             case 1:
                 while (true) {
                     parser.nextTag();
+                    if (isEndOfTag(parser, rootTag)) {
+                        break;
+                    }
                     if (isStartOfTag(parser, XML_TAG_ASSOCIATIONS)) {
                         associations = readAssociationsV1(parser, userId);
-                    } else if (isEndOfTag(parser, rootTag)) {
-                        break;
+                    } else {
+                        Slog.e(TAG, "Unexpected tag " + parser.getName()
+                                + " inside <" + rootTag + "> for user " + userId);
+                        XmlUtils.skipCurrentTag(parser);
                     }
                 }
                 break;
@@ -314,7 +319,7 @@ public final class AssociationDiskStore {
         writeToFileSafely(file, out -> {
             final TypedXmlSerializer serializer = Xml.resolveSerializer(out);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-            serializer.startDocument(null, true);
+            serializer.startDocument("UTF-8", true);
             serializer.startTag(null, XML_TAG_STATE);
             writeIntAttribute(serializer,
                     XML_ATTR_PERSISTENCE_VERSION, CURRENT_PERSISTENCE_VERSION);
@@ -424,13 +429,18 @@ public final class AssociationDiskStore {
 
         while (true) {
             parser.nextTag();
-            if (isEndOfTag(parser, XML_TAG_ASSOCIATIONS)) break;
-            if (!isStartOfTag(parser, XML_TAG_ASSOCIATION)) continue;
-
-            AssociationInfo association = readAssociationV1(parser, userId);
-            associations.addAssociation(association);
-
-            maxId = Math.max(maxId, association.getId());
+            if (isEndOfTag(parser, XML_TAG_ASSOCIATIONS)) {
+                break;
+            }
+            if (isStartOfTag(parser, XML_TAG_ASSOCIATION)) {
+                AssociationInfo association = readAssociationV1(parser, userId);
+                associations.addAssociation(association);
+                maxId = Math.max(maxId, association.getId());
+            } else {
+                Slog.e(TAG, "Unexpected tag " + parser.getName()
+                        + " inside <" + XML_TAG_ASSOCIATIONS + "> for user " + userId);
+                XmlUtils.skipCurrentTag(parser);
+            }
         }
 
         associations.setMaxId(maxId);

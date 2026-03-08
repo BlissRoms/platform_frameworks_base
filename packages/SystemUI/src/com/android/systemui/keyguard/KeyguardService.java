@@ -331,6 +331,7 @@ public class KeyguardService extends Service {
         }
     };
     private final KeyguardServiceLockNowInteractor mKeyguardServiceLockNowInteractor;
+    private final ActivityManager mActivityManager;
 
     @Inject
     public KeyguardService(
@@ -356,7 +357,8 @@ public class KeyguardService extends Service {
             KeyguardDismissInteractor keyguardDismissInteractor,
             Lazy<DeviceEntryInteractor> deviceEntryInteractorLazy,
             KeyguardStateCallbackInteractor keyguardStateCallbackInteractor,
-            KeyguardServiceLockNowInteractor keyguardServiceLockNowInteractor) {
+            KeyguardServiceLockNowInteractor keyguardServiceLockNowInteractor,
+            ActivityManager activityManager) {
         super();
         mKeyguardViewMediator = keyguardViewMediator;
         mKeyguardLifecyclesDispatcher = keyguardLifecyclesDispatcher;
@@ -389,6 +391,7 @@ public class KeyguardService extends Service {
         mKeyguardWakeDirectlyToGoneInteractor = keyguardWakeDirectlyToGoneInteractor;
         mKeyguardDismissInteractor = keyguardDismissInteractor;
         mKeyguardServiceLockNowInteractor = keyguardServiceLockNowInteractor;
+        mActivityManager = activityManager;
     }
 
     @Override
@@ -674,6 +677,10 @@ public class KeyguardService extends Service {
         public void showDismissibleKeyguard() {
             trace("showDismissibleKeyguard");
             checkPermission();
+            if (mActivityManager.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_NONE) {
+                return;
+            }
+
             if (mFoldGracePeriodProvider.get().isEnabled()) {
                 mKeyguardInteractor.showDismissibleKeyguard();
             }

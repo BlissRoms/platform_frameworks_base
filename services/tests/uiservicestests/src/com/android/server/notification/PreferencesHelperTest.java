@@ -46,8 +46,12 @@ import static android.app.NotificationManager.IMPORTANCE_MAX;
 import static android.app.NotificationManager.IMPORTANCE_NONE;
 import static android.app.NotificationManager.IMPORTANCE_UNSPECIFIED;
 import static android.app.NotificationManager.VISIBILITY_NO_OVERRIDE;
+import static android.content.ContentResolver.SCHEME_ANDROID_RESOURCE;
+import static android.content.ContentResolver.SCHEME_CONTENT;
+import static android.content.ContentResolver.SCHEME_FILE;
 import static android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION;
 import static android.media.AudioAttributes.USAGE_NOTIFICATION;
+import static android.os.Process.INVALID_UID;
 import static android.os.UserHandle.USER_ALL;
 import static android.os.UserHandle.USER_SYSTEM;
 
@@ -71,7 +75,6 @@ import static com.android.server.notification.PreferencesHelper.DEFAULT_BUBBLE_P
 import static com.android.server.notification.PreferencesHelper.LockableAppFields.USER_LOCKED_PROMOTABLE;
 import static com.android.server.notification.PreferencesHelper.NOTIFICATION_CHANNEL_COUNT_LIMIT;
 import static com.android.server.notification.PreferencesHelper.NOTIFICATION_CHANNEL_GROUP_COUNT_LIMIT;
-import static com.android.server.notification.PreferencesHelper.UNKNOWN_UID;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -91,6 +94,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -161,6 +165,7 @@ import com.android.os.AtomsProto.PackageNotificationChannelPreferences;
 import com.android.os.AtomsProto.PackageNotificationPreferences;
 import com.android.server.UiServiceTestCase;
 import com.android.server.notification.PermissionHelper.PackagePermission;
+import com.android.server.uri.UriGrantsManagerInternal;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -377,10 +382,10 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
         mHelper = new PreferencesHelper(getContext(), mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                false, mClock);
+                mUgmInternal, false, mClock);
         mXmlHelper = new PreferencesHelper(getContext(), mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                false, mClock);
+                mUgmInternal, false, mClock);
         resetZenModeHelper();
 
         mAudioAttributes = new AudioAttributes.Builder()
@@ -792,7 +797,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     public void testReadXml_oldXml_migrates() throws Exception {
         mXmlHelper = new PreferencesHelper(getContext(), mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                /* showReviewPermissionsNotification= */ true, mClock);
+                mUgmInternal, /* showReviewPermissionsNotification= */ true, mClock);
 
         String xml = "<ranking version=\"2\">\n"
                 + "<package name=\"" + PKG_N_MR1 + "\" uid=\"" + UID_N_MR1
@@ -851,9 +856,12 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
     @Test
     public void testReadXml_oldXml_backup_migratesWhenPkgInstalled() throws Exception {
-        when(mPm.getPackageUidAsUser("pkg1", USER_SYSTEM)).thenReturn(UNKNOWN_UID);
-        when(mPm.getPackageUidAsUser("pkg2", USER_SYSTEM)).thenReturn(UNKNOWN_UID);
-        when(mPm.getPackageUidAsUser("pkg3", USER_SYSTEM)).thenReturn(UNKNOWN_UID);
+        when(mPm.getPackageUidAsUser("pkg1", USER_SYSTEM))
+                .thenThrow(new PackageManager.NameNotFoundException("Package pkg1 not found"));
+        when(mPm.getPackageUidAsUser("pkg2", USER_SYSTEM))
+                .thenThrow(new PackageManager.NameNotFoundException("Package pkg2 not found"));
+        when(mPm.getPackageUidAsUser("pkg3", USER_SYSTEM))
+                .thenThrow(new PackageManager.NameNotFoundException("Package pkg3 not found"));
         when(mPm.getApplicationInfoAsUser(eq("pkg1"), anyInt(), anyInt())).thenThrow(
                 new PackageManager.NameNotFoundException());
         when(mPm.getApplicationInfoAsUser(eq("pkg2"), anyInt(), anyInt())).thenThrow(
@@ -906,9 +914,9 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
         verify(mPermissionHelper, never()).setNotificationPermission(any());
 
-        when(mPm.getPackageUidAsUser("pkg1", USER_SYSTEM)).thenReturn(11);
-        when(mPm.getPackageUidAsUser("pkg2", USER_SYSTEM)).thenReturn(12);
-        when(mPm.getPackageUidAsUser("pkg3", USER_SYSTEM)).thenReturn(13);
+        doReturn(11).when(mPm).getPackageUidAsUser("pkg1", USER_SYSTEM);
+        doReturn(12).when(mPm).getPackageUidAsUser("pkg2", USER_SYSTEM);
+        doReturn(13).when(mPm).getPackageUidAsUser("pkg3", USER_SYSTEM);
 
         mXmlHelper.onPackagesChanged(
                 false, 0, new String[]{"pkg1", "pkg2", "pkg3"}, new int[] {11, 12, 13});
@@ -928,7 +936,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     public void testReadXml_newXml_noMigration_showPermissionNotification() throws Exception {
         mXmlHelper = new PreferencesHelper(getContext(), mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                /* showReviewPermissionsNotification= */ true, mClock);
+                mUgmInternal, /* showReviewPermissionsNotification= */ true, mClock);
 
         String xml = "<ranking version=\"3\">\n"
                 + "<package name=\"" + PKG_N_MR1 + "\" show_badge=\"true\">\n"
@@ -987,7 +995,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     public void testReadXml_newXml_permissionNotificationOff() throws Exception {
         mHelper = new PreferencesHelper(getContext(), mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                /* showReviewPermissionsNotification= */ false, mClock);
+                mUgmInternal, /* showReviewPermissionsNotification= */ false, mClock);
 
         String xml = "<ranking version=\"3\">\n"
                 + "<package name=\"" + PKG_N_MR1 + "\" show_badge=\"true\">\n"
@@ -1046,7 +1054,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     public void testReadXml_newXml_noMigration_noPermissionNotification() throws Exception {
         mHelper = new PreferencesHelper(getContext(), mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                /* showReviewPermissionsNotification= */ true, mClock);
+                mUgmInternal, /* showReviewPermissionsNotification= */ true, mClock);
 
         String xml = "<ranking version=\"4\">\n"
                 + "<package name=\"" + PKG_N_MR1 + "\" show_badge=\"true\">\n"
@@ -1102,7 +1110,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
     @Test
     public void testReadXml_oldXml_migration_NoUid() throws Exception {
-        when(mPm.getPackageUidAsUser("something", USER_SYSTEM)).thenReturn(UNKNOWN_UID);
+        when(mPm.getPackageUidAsUser("something", USER_SYSTEM)).thenThrow(
+                new PackageManager.NameNotFoundException("Package something not found"));
         String xml = "<ranking version=\"2\">\n"
                 + "<package name=\"something\" show_badge=\"true\">\n"
                 + "<channel id=\"idn\" name=\"name\" importance=\"2\"/>\n"
@@ -1119,7 +1128,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         loadByteArrayXml(xml.getBytes(), true, USER_SYSTEM);
         verify(mPermissionHelper, never()).setNotificationPermission(any());
 
-        when(mPm.getPackageUidAsUser("something", USER_SYSTEM)).thenReturn(1234);
+        doReturn(1234).when(mPm).getPackageUidAsUser("something", USER_SYSTEM);
         final ApplicationInfo app = new ApplicationInfo();
         app.targetSdkVersion = Build.VERSION_CODES.N_MR1 + 1;
         when(mPm.getApplicationInfoAsUser(
@@ -1132,7 +1141,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
     @Test
     public void testReadXml_newXml_noMigration_NoUid() throws Exception {
-        when(mPm.getPackageUidAsUser("something", USER_SYSTEM)).thenReturn(UNKNOWN_UID);
+        when(mPm.getPackageUidAsUser("something", USER_SYSTEM)).thenThrow(
+                new PackageManager.NameNotFoundException("Package something not found"));
         String xml = "<ranking version=\"3\">\n"
                 + "<package name=\"something\" show_badge=\"true\">\n"
                 + "<channel id=\"idn\" name=\"name\" importance=\"2\"/>\n"
@@ -1148,7 +1158,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
         loadByteArrayXml(xml.getBytes(), true, USER_SYSTEM);
 
-        when(mPm.getPackageUidAsUser("something", USER_SYSTEM)).thenReturn(1234);
+        doReturn(1234).when(mPm).getPackageUidAsUser("something", USER_SYSTEM);
         final ApplicationInfo app = new ApplicationInfo();
         app.targetSdkVersion = Build.VERSION_CODES.N_MR1 + 1;
         when(mPm.getApplicationInfoAsUser(eq("something"), anyInt(), anyInt())).thenReturn(app);
@@ -1536,28 +1546,24 @@ public class PreferencesHelperTest extends UiServiceTestCase {
                 .when(mTestIContentProvider).uncanonicalize(any(), any());
 
         // simulate package not installed
-        when(mPm.getPackageUidAsUser(PKG_N_MR1, USER_SYSTEM)).thenReturn(UNKNOWN_UID);
+        when(mPm.getPackageUidAsUser(PKG_N_MR1, USER_SYSTEM)).thenThrow(
+                new PackageManager.NameNotFoundException("Package PKG_N_MR1 not found"));
         when(mPm.getApplicationInfoAsUser(eq(PKG_N_MR1), anyInt(), anyInt())).thenThrow(
                 new PackageManager.NameNotFoundException());
 
         loadStreamXml(baos, true, USER_SYSTEM);
 
-        // 1st restore pass fails
-        NotificationChannel actualChannel = mXmlHelper.getNotificationChannel(
-                PKG_N_MR1, UNKNOWN_UID, channel.getId(), false);
-        // sound is CANONICAL_SOUND_URI, unchanged from backup
-        assertEquals(CANONICAL_SOUND_URI, actualChannel.getSound());
-        // sound is flagged as not restored
-        assertFalse(actualChannel.isSoundRestored());
-
         // package is "installed"
-        when(mPm.getPackageUidAsUser(PKG_N_MR1, USER_SYSTEM)).thenReturn(UID_N_MR1);
+        doReturn(UID_N_MR1).when(mPm).getPackageUidAsUser(PKG_N_MR1, USER_SYSTEM);
 
         // Trigger 2nd restore pass
         mXmlHelper.onPackagesChanged(false, USER_SYSTEM, new String[]{PKG_N_MR1},
                 new int[]{UID_N_MR1});
 
         // sound is flagged as restored and set to default URI
+        NotificationChannel actualChannel = mXmlHelper.getNotificationChannel(
+                PKG_N_MR1, UID_N_MR1, channel.getId(), false);
+
         assertEquals(Settings.System.DEFAULT_NOTIFICATION_URI, actualChannel.getSound());
         assertTrue(actualChannel.isSoundRestored());
     }
@@ -1566,7 +1572,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     @EnableFlags(Flags.FLAG_PERSIST_INCOMPLETE_RESTORE_DATA)
     public void testRestoreXml_delayedRestore() throws Exception {
         // simulate package not installed
-        when(mPm.getPackageUidAsUser(PKG_R, USER_SYSTEM)).thenReturn(UNKNOWN_UID);
+        when(mPm.getPackageUidAsUser(PKG_R, USER_SYSTEM)).thenThrow(
+                new PackageManager.NameNotFoundException("Package PKG_R not found"));
         when(mPm.getApplicationInfoAsUser(eq(PKG_R), anyInt(), anyInt())).thenThrow(
                 new PackageManager.NameNotFoundException());
         when(mClock.millis()).thenReturn(System.currentTimeMillis());
@@ -1583,11 +1590,9 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
         // settings are not available with real uid because pkg is not installed
         assertThat(mXmlHelper.getNotificationChannel(PKG_R, UID_P, id, false)).isNull();
-        // but the settings are in memory with unknown_uid
-        assertThat(mXmlHelper.getNotificationChannel(PKG_R, UNKNOWN_UID, id, false)).isNotNull();
 
         // package is "installed"
-        when(mPm.getPackageUidAsUser(PKG_R, USER_SYSTEM)).thenReturn(UID_P);
+        doReturn(UID_P).when(mPm).getPackageUidAsUser(PKG_R, USER_SYSTEM);
 
         // Trigger 2nd restore pass
         mXmlHelper.onPackagesChanged(false, USER_SYSTEM, new String[]{PKG_R},
@@ -1600,7 +1605,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         assertThat(channel.canBypassDnd()).isFalse();
 
         // removed from 'pending install' set
-        assertThat(mXmlHelper.getNotificationChannel(PKG_R, UNKNOWN_UID, id,false)).isNull();
+        assertThat(mXmlHelper.getNotificationChannel(PKG_R, INVALID_UID, id, false)).isNull();
     }
 
     @Test
@@ -1613,7 +1618,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
                 .thenReturn(appPermissions);
 
         // simulate package not installed
-        when(mPm.getPackageUidAsUser(PKG_R, USER_SYSTEM)).thenReturn(UNKNOWN_UID);
+        when(mPm.getPackageUidAsUser(PKG_R, USER_SYSTEM)).thenThrow(
+                new PackageManager.NameNotFoundException("Package PKG_R not found"));
         when(mPm.getApplicationInfoAsUser(eq(PKG_R), anyInt(), anyInt())).thenThrow(
                 new PackageManager.NameNotFoundException());
         when(mClock.millis()).thenReturn(System.currentTimeMillis());
@@ -1640,11 +1646,11 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         // simulate load after reboot
         mXmlHelper = new PreferencesHelper(getContext(), mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                false, mClock);
+                mUgmInternal, false, mClock);
         loadByteArrayXml(baos.toByteArray(), false, USER_ALL);
 
         // Trigger 2nd restore pass
-        when(mPm.getPackageUidAsUser(PKG_R, USER_SYSTEM)).thenReturn(UID_R);
+        doReturn(UID_R).when(mPm).getPackageUidAsUser(PKG_R, USER_SYSTEM);
         mXmlHelper.onPackagesChanged(false, USER_SYSTEM, new String[]{PKG_R},
                 new int[]{UID_R});
 
@@ -1665,7 +1671,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
                 .thenReturn(appPermissions);
 
         // simulate package not installed
-        when(mPm.getPackageUidAsUser(PKG_R, USER_SYSTEM)).thenReturn(UNKNOWN_UID);
+        when(mPm.getPackageUidAsUser(PKG_R, USER_SYSTEM)).thenThrow(
+                new PackageManager.NameNotFoundException("Package PKG_R not found"));
         when(mPm.getApplicationInfoAsUser(eq(PKG_R), anyInt(), anyInt())).thenThrow(
                 new PackageManager.NameNotFoundException());
 
@@ -1695,7 +1702,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         // simulate load after reboot
         mXmlHelper = new PreferencesHelper(getContext(), mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                false, mClock);
+                mUgmInternal, false, mClock);
         loadByteArrayXml(xml.getBytes(), false, USER_ALL);
 
         // Trigger 2nd restore pass
@@ -1703,7 +1710,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
                 new int[]{UID_P});
 
         // verify the 2nd restore pass failed because the restore data had been removed
-        assertThat(mXmlHelper.getNotificationChannel(PKG_R, UNKNOWN_UID, id, false)).isNull();
+        assertThat(mXmlHelper.getNotificationChannel(PKG_R, INVALID_UID, id, false)).isNull();
     }
 
     /**
@@ -1773,10 +1780,10 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
         mHelper = new PreferencesHelper(mContext, mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                false, mClock);
+                mUgmInternal, false, mClock);
         mXmlHelper = new PreferencesHelper(mContext, mPm, mHandler, mMockZenModeHelper,
                 mPermissionHelper, mPermissionManager, mLogger, mAppOpsManager, mUserProfiles,
-                false, mClock);
+                mUgmInternal, false, mClock);
 
         NotificationChannel channel =
                 new NotificationChannel("id", "name", IMPORTANCE_LOW);
@@ -1787,27 +1794,23 @@ public class PreferencesHelperTest extends UiServiceTestCase {
                 USER_SYSTEM, channel.getId());
 
         // simulate package not installed
-        when(mPm.getPackageUidAsUser(PKG_N_MR1, USER_SYSTEM)).thenReturn(UNKNOWN_UID);
+        when(mPm.getPackageUidAsUser(PKG_N_MR1, USER_SYSTEM)).thenThrow(
+                new PackageManager.NameNotFoundException("Package PKG_N_MR1 not found"));
         when(mPm.getApplicationInfoAsUser(eq(PKG_N_MR1), anyInt(), anyInt())).thenThrow(
                 new PackageManager.NameNotFoundException());
 
         loadStreamXml(baos, true, USER_SYSTEM);
 
-        NotificationChannel actualChannel = mXmlHelper.getNotificationChannel(
-                PKG_N_MR1, UNKNOWN_UID, channel.getId(), false);
-        // sound is ANDROID_RES_SOUND_URI, unchanged from backup
-        assertEquals(ANDROID_RES_SOUND_URI, actualChannel.getSound());
-        // sound is flagged as not restored
-        assertFalse(actualChannel.isSoundRestored());
-
         // package is "installed"
-        when(mPm.getPackageUidAsUser(PKG_N_MR1, USER_SYSTEM)).thenReturn(UID_N_MR1);
+        doReturn(UID_N_MR1).when(mPm).getPackageUidAsUser(PKG_N_MR1, USER_SYSTEM);
 
         // Trigger 2nd restore pass
         mXmlHelper.onPackagesChanged(false, USER_SYSTEM, new String[]{PKG_N_MR1},
                 new int[]{UID_N_MR1});
 
         // sound is flagged as restored
+        NotificationChannel actualChannel = mXmlHelper.getNotificationChannel(
+                PKG_N_MR1, UID_N_MR1, channel.getId(), false);
         assertEquals(ANDROID_RES_SOUND_URI, actualChannel.getSound());
         assertTrue(actualChannel.isSoundRestored());
     }
@@ -3187,6 +3190,75 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     }
 
     @Test
+    public void testCreateChannel_hasSoundUriPermission_useCustomSound() {
+        final Uri sound = Uri.parse(SCHEME_CONTENT + "://media/test/sound/uri");
+
+        final NotificationChannel channel = new NotificationChannel("id2", "name2",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setSound(sound, mAudioAttributes);
+        mHelper.createNotificationChannel(PKG_N_MR1, UID_N_MR1, channel, true, false, UID_N_MR1,
+                false);
+        assertThat(mHelper.getNotificationChannel(PKG_N_MR1, UID_N_MR1, channel.getId(), true)
+                .getSound()).isEqualTo(sound);
+    }
+
+
+    @Test
+    public void testCreateChannel_noSoundUriPermission_replaceWithDefaultSound() {
+        final Uri sound = Uri.parse(SCHEME_CONTENT + "://media/test/sound/uri");
+
+        doThrow(new SecurityException("no access")).when(mUgmInternal)
+                .checkGrantUriPermission(eq(UID_N_MR1), any(), eq(sound),
+                    anyInt(), eq(Process.myUserHandle().getIdentifier()));
+
+        final NotificationChannel channel = new NotificationChannel("id2", "name2",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setSound(sound, mAudioAttributes);
+        mHelper.createNotificationChannel(PKG_N_MR1, UID_N_MR1, channel, true, false, UID_N_MR1,
+                false);
+        assertThat(mHelper.getNotificationChannel(PKG_N_MR1, UID_N_MR1, channel.getId(), true))
+                .isNotNull();
+        assertThat(mHelper.getNotificationChannel(PKG_N_MR1, UID_N_MR1, channel.getId(), true)
+                .getSound()).isEqualTo(Settings.System.DEFAULT_NOTIFICATION_URI);
+    }
+
+    @Test
+    public void testCreateChannel_noSoundUriPermission_fileSchemaIgnored() {
+        final Uri sound = Uri.parse(SCHEME_FILE + "://path/sound");
+
+        doThrow(new SecurityException("no access")).when(mUgmInternal)
+                .checkGrantUriPermission(eq(UID_N_MR1), any(), any(),
+                    anyInt(), eq(Process.myUserHandle().getIdentifier()));
+
+        final NotificationChannel channel = new NotificationChannel("id2", "name2",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setSound(sound, mAudioAttributes);
+
+        mHelper.createNotificationChannel(PKG_N_MR1, UID_N_MR1, channel, true, false, UID_N_MR1,
+                false);
+        assertThat(mHelper.getNotificationChannel(PKG_N_MR1, UID_N_MR1, channel.getId(), true)
+                .getSound()).isEqualTo(sound);
+    }
+
+    @Test
+    public void testCreateChannel_noSoundUriPermission_resourceSchemaIgnored() {
+        final Uri sound = Uri.parse(SCHEME_ANDROID_RESOURCE + "://resId/sound");
+
+        doThrow(new SecurityException("no access")).when(mUgmInternal)
+                .checkGrantUriPermission(eq(UID_N_MR1), any(), any(),
+                    anyInt(), eq(Process.myUserHandle().getIdentifier()));
+
+        final NotificationChannel channel = new NotificationChannel("id2", "name2",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setSound(sound, mAudioAttributes);
+
+        mHelper.createNotificationChannel(PKG_N_MR1, UID_N_MR1, channel, true, false, UID_N_MR1,
+                false);
+        assertThat(mHelper.getNotificationChannel(PKG_N_MR1, UID_N_MR1, channel.getId(), true)
+                .getSound()).isEqualTo(sound);
+    }
+
+    @Test
     public void testPermanentlyDeleteChannels() throws Exception {
         NotificationChannel channel1 =
                 new NotificationChannel("id1", "name1", NotificationManager.IMPORTANCE_HIGH);
@@ -3302,19 +3374,15 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         int[] user1Uids = new int[user0Uids.length];
         for (int i = 0; i < user0Uids.length; i++) {
             user1Uids[i] = UserHandle.PER_USER_RANGE + user0Uids[i];
-
             final ApplicationInfo legacy = new ApplicationInfo();
             legacy.targetSdkVersion = Build.VERSION_CODES.N_MR1;
             when(mPm.getApplicationInfoAsUser(eq(PKG_N_MR1), anyInt(), anyInt()))
                     .thenReturn(legacy);
-
             // create records with the default channel for all user 0 and user 1 uids
-            mHelper.canShowBadge(PKG_N_MR1, user0Uids[i]);
-            mHelper.canShowBadge(PKG_N_MR1, user1Uids[i]);
+            mHelper.setShowBadge(PKG_N_MR1, user0Uids[i], true);
+            mHelper.setShowBadge(PKG_N_MR1, user1Uids[i], true);
         }
-
         mHelper.onUserRemoved(1);
-
         // user 0 records remain
         for (int i = 0; i < user0Uids.length; i++) {
             assertEquals(1,
@@ -3421,6 +3489,9 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
     @Test
     public void testRecordDefaults() throws Exception {
+        // create package preferences
+        mHelper.setValidBubbleSent(PKG_N_MR1, UID_N_MR1);
+
         assertEquals(true, mHelper.canShowBadge(PKG_N_MR1, UID_N_MR1));
         assertEquals(1,
                 mHelper.getNotificationChannels(PKG_N_MR1, UID_N_MR1, false, true)
@@ -3751,8 +3822,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         // for some reason, even though in practice this should not be how one calls this method
 
         // some packages exist
-        mHelper.canShowBadge(PKG_O, UID_O);
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_O, UID_O, true);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
 
         JSONArray actual = (JSONArray) mHelper.dumpJson(
                 new NotificationManagerService.DumpFilter(), null)
@@ -3778,7 +3849,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         appPermissions.put(new Pair<>(3, "third"), new Pair<>(false, false)); // not in local prefs
         appPermissions.put(new Pair<>(UID_O, PKG_O), new Pair<>(false, false)); // in local prefs
 
-        mHelper.canShowBadge(PKG_O, UID_O);
+        mHelper.setShowBadge(PKG_O, UID_O, true);
 
         // expected output
         ArraySet<Pair<Integer, String>> expected = new ArraySet<>();
@@ -3816,8 +3887,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         appPermissions.put(new Pair<>(UID_O, PKG_O), new Pair<>(false, false)); // in local prefs
 
         // local package preferences
-        mHelper.canShowBadge(PKG_O, UID_O);
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_O, UID_O, true);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
 
         // get dump output as a string so we can inspect the contents later
         StringWriter sw = new StringWriter();
@@ -3852,8 +3923,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         // test that this doesn't choke on null input
 
         // local package preferences
-        mHelper.canShowBadge(PKG_O, UID_O);
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_O, UID_O, true);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
 
         // get dump output
         StringWriter sw = new StringWriter();
@@ -3877,8 +3948,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         appPermissions.put(new Pair<>(UID_O, PKG_O), new Pair<>(false, false)); // in local prefs
 
         // local package preferences
-        mHelper.canShowBadge(PKG_O, UID_O);
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_O, UID_O, true);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
 
         // expected output: all the packages, but only the ones provided via appPermissions
         // should have importance set (aka not PKG_P)
@@ -4267,7 +4338,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
     @Test
     public void testIsDelegateAllowed_noDelegate() {
-        mHelper.canShowBadge(PKG_O, UID_O);
+        mHelper.setShowBadge(PKG_O, UID_O, true);
 
         assertFalse(mHelper.isDelegateAllowed(PKG_O, UID_O, "whatever", 0));
     }
@@ -4297,7 +4368,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
 
     @Test
     public void testDelegateXml_noDelegate() throws Exception {
-        mHelper.canShowBadge(PKG_O, UID_O);
+        mHelper.setShowBadge(PKG_O, UID_O, true);
 
         ByteArrayOutputStream baos = writeXmlAndPurge(PKG_O, UID_O, false, UserHandle.USER_ALL);
         loadStreamXml(baos, false, UserHandle.USER_ALL);
@@ -4397,7 +4468,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     @Test
     public void testBubblePrefence_noSAWCheckForUnknownUid() throws Exception {
         final String xml = "<ranking version=\"1\">\n"
-                + "<package name=\"" + PKG_O + "\" uid=\"" + UNKNOWN_UID + "\">\n"
+                + "<package name=\"" + PKG_O + "\" uid=\"" + INVALID_UID + "\">\n"
                 + "<channel id=\"someId\" name=\"hi\""
                 + " importance=\"3\"/>"
                 + "</package>"
@@ -4992,7 +5063,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         String channelId = "channelId";
         int user0Importance = 3;
         int user10Importance = 4;
-        when(mPm.getPackageUidAsUser(eq(pkg), anyInt())).thenReturn(UserHandle.USER_NULL);
+        when(mPm.getPackageUidAsUser(eq(pkg), anyInt())).thenThrow(
+                new PackageManager.NameNotFoundException("Package pkg not found"));
 
         // both users have the same package, but different notification settings
         final String xmlUser0 = "<ranking version=\"1\">\n"
@@ -5024,8 +5096,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         String[] pkgList = new String[] {pkg};
         int[] uidList0 = new int[] {UserHandle.PER_USER_RANGE};
         int[] uidList10 = new int[] {UserHandle.PER_USER_RANGE + 1};
-        when(mPm.getPackageUidAsUser(pkg, 0)).thenReturn(uidList0[0]);
-        when(mPm.getPackageUidAsUser(pkg, 10)).thenReturn(uidList10[0]);
+        doReturn(uidList0[0]).when(mPm).getPackageUidAsUser(pkg, 0);
+        doReturn(uidList10[0]).when(mPm).getPackageUidAsUser(pkg, 10);
         ApplicationInfo info = new ApplicationInfo();
         info.targetSdkVersion = Build.VERSION_CODES.Q;
         when(mPm.getApplicationInfoAsUser(eq(pkg), anyInt(), anyInt())).thenReturn(info);
@@ -5848,7 +5920,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     @Test
     public void testInvalidMessageSent() {
         // create package preferences
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
 
         // check default value
         assertFalse(mHelper.isInInvalidMsgState(PKG_P, UID_P));
@@ -5862,7 +5934,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     @Test
     public void testValidMessageSent() {
         // create package preferences
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
 
         // get into the bad state
         mHelper.setInvalidMessageSent(PKG_P, UID_P);
@@ -5877,7 +5949,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     @Test
     public void testUserDemotedInvalidMsgApp() {
         // create package preferences
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
 
         // demotion means nothing before msg notif sent
         mHelper.setInvalidMsgAppDemoted(PKG_P, UID_P, true);
@@ -5895,7 +5967,7 @@ public class PreferencesHelperTest extends UiServiceTestCase {
     @Test
     public void testValidBubbleSent() {
         // create package preferences
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
         // false by default
         assertFalse(mHelper.hasSentValidBubble(PKG_P, UID_P));
 
@@ -6093,8 +6165,8 @@ public class PreferencesHelperTest extends UiServiceTestCase {
         appPermissions.put(new Pair<>(UID_O, PKG_O), new Pair<>(false, true)); // in local prefs
 
         // local preferences
-        mHelper.canShowBadge(PKG_O, UID_O);
-        mHelper.canShowBadge(PKG_P, UID_P);
+        mHelper.setShowBadge(PKG_O, UID_O, true);
+        mHelper.setShowBadge(PKG_P, UID_P, true);
 
         // expected output. format: uid -> importance, as only uid (and not package name)
         // is in PackageNotificationPreferences

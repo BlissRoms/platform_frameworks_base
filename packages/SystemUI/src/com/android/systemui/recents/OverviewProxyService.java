@@ -20,6 +20,7 @@ import static android.app.Flags.keyguardPrivateNotifications;
 import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.EXTRA_CHANGED_COMPONENT_NAME_LIST;
 import static android.content.pm.PackageManager.MATCH_SYSTEM_ONLY;
+import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
@@ -303,11 +304,18 @@ public class OverviewProxyService implements CallbackController<OverviewProxyLis
                 mBackAnimation.onBackMotion(/* touchX */ 0, /* touchY */ 0, keyEvent.getAction(),
                         EDGE_NONE);
             } else {
-                verifyCallerAndClearCallingIdentityPostMain("onBackPressed", () -> {
-                    sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK);
-                    sendEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK);
-                });
+                onKeyEvent(KEYCODE_BACK);
             }
+        }
+
+        @Override
+        public void onKeyEvent(int keycode) {
+            verifyCallerAndClearCallingIdentityPostMain(
+                    "onKeyEvent " + KeyEvent.keyCodeToString(keycode),
+                    () -> {
+                        sendEvent(KeyEvent.ACTION_DOWN, keycode);
+                        sendEvent(KeyEvent.ACTION_UP, keycode);
+                    });
         }
 
         @Override
@@ -318,14 +326,6 @@ public class OverviewProxyService implements CallbackController<OverviewProxyLis
                     sendEvent(KeyEvent.ACTION_DOWN, keyCode, 1, KeyEvent.FLAG_LONG_PRESS);
                     sendEvent(KeyEvent.ACTION_UP, keyCode, 0, KeyEvent.FLAG_CANCELED);
                 }, ViewConfiguration.getLongPressTimeout());
-            });
-        }
-
-        @Override
-        public void injectPress(int keyCode) throws RemoteException {
-            verifyCallerAndClearCallingIdentityPostMain("pressInjected", () -> {
-                sendEvent(KeyEvent.ACTION_DOWN, keyCode);
-                sendEvent(KeyEvent.ACTION_UP, keyCode);
             });
         }
 

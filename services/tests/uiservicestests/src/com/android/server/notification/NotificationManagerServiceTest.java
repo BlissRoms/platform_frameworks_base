@@ -95,6 +95,7 @@ import static android.os.Flags.FLAG_ALLOW_PRIVATE_PROFILE;
 import static android.os.PowerManager.PARTIAL_WAKE_LOCK;
 import static android.os.PowerWhitelistManager.REASON_NOTIFICATION_SERVICE;
 import static android.os.PowerWhitelistManager.TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_ALLOWED;
+import static android.os.Process.INVALID_UID;
 import static android.os.UserHandle.USER_SYSTEM;
 import static android.os.UserManager.USER_TYPE_FULL_SECONDARY;
 import static android.os.UserManager.USER_TYPE_FULL_SYSTEM;
@@ -214,6 +215,7 @@ import android.app.Person;
 import android.app.RemoteInput;
 import android.app.RemoteInputHistoryItem;
 import android.app.StatsManager;
+import android.app.WallpaperManager;
 import android.app.ZenBypassingApp;
 import android.app.admin.DevicePolicyManagerInternal;
 import android.app.backup.BackupRestoreEventLogger;
@@ -390,6 +392,7 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
     private static final String TEST_CHANNEL_ID = "NotificationManagerServiceTestChannelId";
     private static final String TEST_PACKAGE = "The.name.is.Package.Test.Package";
     private static final String PKG_NO_CHANNELS = "com.example.no.channels";
+    private static final String MISSING_PACKAGE = "MISSING!";
     private static final int TEST_TASK_ID = 1;
     private static final int UID_HEADLESS = 1_000_000;
     private static final int TOAST_DURATION = 2_000;
@@ -639,6 +642,7 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
         mContext.addMockSystemService(Context.USER_SERVICE, mUm);
         mContext.addMockSystemService(Context.ACCESSIBILITY_SERVICE,
                 mock(AccessibilityManager.class));
+        mContext.addMockSystemService(WallpaperManager.class, mock(WallpaperManager.class));
 
         doNothing().when(mContext).sendBroadcast(any(), anyString());
         doNothing().when(mContext).sendBroadcastAsUser(any(), any());
@@ -656,6 +660,9 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
         // MockPackageManager - default returns ApplicationInfo with matching calling UID
         mContext.setMockPackageManager(mPackageManagerClient);
 
+        when(mPackageManager.getPackageUid(eq(mPkg), anyLong(), eq(mUserId))).thenReturn(mUid);
+        when(mPackageManager.getPackageUid(eq(MISSING_PACKAGE), anyLong(), anyInt()))
+                .thenReturn(INVALID_UID);
         when(mPackageManager.getApplicationInfo(anyString(), anyLong(), anyInt()))
                 .thenAnswer((Answer<ApplicationInfo>) invocation -> {
                     Object[] args = invocation.getArguments();
@@ -667,6 +674,8 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
                     return getApplicationInfo((String) args[0], mUid);
                 });
         when(mPackageManagerClient.getPackageUidAsUser(any(), anyInt())).thenReturn(mUid);
+        when(mPackageManagerClient.getPackageUidAsUser(eq(MISSING_PACKAGE), anyInt()))
+                .thenThrow(new PackageManager.NameNotFoundException("Missing package!"));
         when(mPackageManagerInternal.isSameApp(anyString(), anyInt(), anyInt())).thenAnswer(
                 (Answer<Boolean>) invocation -> {
                     // TODO: b/317957802 - This is overly broad and basically makes ANY
@@ -5186,6 +5195,41 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
     }
 
     @Test
+    public void
+        testUpdateNotificationChannelFromPrivilegedListener_oldSoundNoUriPerm_newSoundHasUriPerm()
+                throws Exception {
+        mService.setPreferencesHelper(mPreferencesHelper);
+        when(mCompanionMgr.getAssociations(mPkg, mUserId))
+                .thenReturn(singletonList(mock(AssociationInfo.class)));
+        when(mPreferencesHelper.getNotificationChannel(eq(mPkg), anyInt(),
+                eq(mTestNotificationChannel.getId()), anyBoolean()))
+                .thenReturn(mTestNotificationChannel);
+
+        // Missing Uri permissions for the old channel sound
+        final Uri oldSoundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
+        doThrow(new SecurityException("no access")).when(mUgmInternal)
+                .checkGrantUriPermission(eq(Process.myUid()), any(), eq(oldSoundUri),
+                anyInt(), eq(Process.myUserHandle().getIdentifier()));
+
+        // Has Uri permissions for the old channel sound
+        final Uri newSoundUri = Uri.parse("content://media/test/sound/uri");
+        final NotificationChannel updatedNotificationChannel = new NotificationChannel(
+                TEST_CHANNEL_ID, TEST_CHANNEL_ID, IMPORTANCE_DEFAULT);
+        updatedNotificationChannel.setSound(newSoundUri,
+                updatedNotificationChannel.getAudioAttributes());
+
+        mBinderService.updateNotificationChannelFromPrivilegedListener(
+                null, mPkg, Process.myUserHandle(), updatedNotificationChannel);
+
+        verify(mPreferencesHelper, times(1)).updateNotificationChannel(
+                anyString(), anyInt(), any(), anyBoolean(),  anyInt(), anyBoolean());
+
+        verify(mListeners, never()).notifyNotificationChannelChanged(eq(mPkg),
+                eq(Process.myUserHandle()), eq(mTestNotificationChannel),
+                eq(NotificationListenerService.NOTIFICATION_CHANNEL_OR_GROUP_UPDATED));
+    }
+
+    @Test
     public void testGetNotificationChannelFromPrivilegedListener_cdm_success() throws Exception {
         mService.setPreferencesHelper(mPreferencesHelper);
         when(mCompanionMgr.getAssociations(mPkg, mUserId))
@@ -5320,6 +5364,50 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
         }
 
         verify(mPreferencesHelper, never()).getNotificationChannelGroups(anyString(), anyInt());
+    }
+
+    @Test
+    public void getNotificationChannelsFromPrivilegedListener_invalidPackage_returnsNull()
+            throws Exception {
+        when(mListeners.checkServiceTokenLocked(any())).thenReturn(mListener);
+        when(mCompanionMgr.getAssociations(mPkg, mUserId))
+                .thenReturn(singletonList(mock(AssociationInfo.class)));
+
+        ParceledListSlice<?> channels =
+                mBinderService.getNotificationChannelsFromPrivilegedListener(
+                        mock(INotificationListener.class), MISSING_PACKAGE, mUser);
+
+        assertThat(channels.getList()).isEmpty();
+    }
+
+    @Test
+    public void getNotificationChannelGroupsFromPrivilegedListener_invalidPackage_returnsEmpty()
+            throws Exception {
+        when(mListeners.checkServiceTokenLocked(any())).thenReturn(mListener);
+        when(mCompanionMgr.getAssociations(mPkg, mUserId))
+                .thenReturn(singletonList(mock(AssociationInfo.class)));
+
+        ParceledListSlice<?> groups =
+                mBinderService.getNotificationChannelGroupsFromPrivilegedListener(
+                        mock(INotificationListener.class), MISSING_PACKAGE, mUser);
+
+        assertThat(groups.getList()).isEmpty();
+    }
+
+    @Test
+    public void updateNotificationChannelFromPrivilegedListener_invalidPackage_throws()
+            throws Exception {
+        when(mListeners.checkServiceTokenLocked(any())).thenReturn(mListener);
+        when(mCompanionMgr.getAssociations(mPkg, mUserId))
+                .thenReturn(singletonList(mock(AssociationInfo.class)));
+
+        Exception e = assertThrows(IllegalArgumentException.class,
+                () -> mBinderService.updateNotificationChannelFromPrivilegedListener(
+                        mock(INotificationListener.class), MISSING_PACKAGE, mUser,
+                        mTestNotificationChannel));
+
+        assertThat(e).hasMessageThat().isEqualTo(
+                "Valid uid required to get settings of " + MISSING_PACKAGE);
     }
 
     @Test

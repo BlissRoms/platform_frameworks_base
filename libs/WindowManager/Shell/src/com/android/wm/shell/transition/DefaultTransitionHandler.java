@@ -118,7 +118,7 @@ import java.util.function.Consumer;
 
 /** The default handler that handles anything not already handled. */
 public class DefaultTransitionHandler implements Transitions.TransitionHandler {
-    private static final int MAX_ANIMATION_DURATION = 3000;
+    private static final int MAX_ANIMATION_DURATION = 1500;
 
     private final TransactionPool mTransactionPool;
     private final DisplayController mDisplayController;

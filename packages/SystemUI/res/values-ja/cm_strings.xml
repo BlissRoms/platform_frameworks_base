@@ -38,7 +38,7 @@
     <string name="accessibility_quick_settings_ambient_display_off">アンビエント表示は OFF です。</string>
     <string name="accessibility_quick_settings_ambient_display_on">アンビエント表示は ON です。</string>
     <string name="quick_settings_aod_label">AOD</string>
-    <string name="quick_settings_aod_off_powersave_label">AOD OFF\nバッテリー節約</string>
+    <string name="quick_settings_aod_off_powersave_label">AOD OFF\nバッテリーセーバー</string>
     <string name="quick_settings_caffeine_label">カフェイン</string>
     <string name="accessibility_quick_settings_caffeine_off">カフェインはOFFです。</string>
     <string name="accessibility_quick_settings_caffeine_on">カフェインはONです。</string>
@@ -46,7 +46,7 @@
     <string name="accessibility_quick_settings_heads_up_off">ヘッドアップはOFFです。</string>
     <string name="accessibility_quick_settings_heads_up_on">ヘッドアップはONです。</string>
     <string name="quick_settings_powershare_label">ワイヤレスバッテリー共有</string>
-    <string name="quick_settings_powershare_off_powersave_label">ワイヤレスバッテリー共有 OFF\nバッテリー節約</string>
+    <string name="quick_settings_powershare_off_powersave_label">ワイヤレスバッテリー共有 OFF\nバッテリーセーバー</string>
     <string name="quick_settings_powershare_off_low_battery_label">ワイヤレスバッテリー共有 OFF\nバッテリー残量低下</string>
     <string name="quick_settings_powershare_enabled_label">ワイヤレスバッテリー共有は有効です</string>
     <string name="quick_settings_reading_mode">読書モード</string>

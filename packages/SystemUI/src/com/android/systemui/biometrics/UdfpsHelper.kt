@@ -70,6 +70,7 @@ class UdfpsHelper(
             val (brightness, alpha) = it.split(",").map { value -> value.trim().toInt() }
             brightness to alpha
         }
+    val maxPanelBrightness: Int = brightnessAlphaMap.keys.max()
 
     private val dimLayoutParams = WindowManager.LayoutParams(
         WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
@@ -83,7 +84,7 @@ class UdfpsHelper(
         flags = Utils.FINGERPRINT_OVERLAY_LAYOUT_PARAM_FLAGS or
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         privateFlags = WindowManager.LayoutParams.PRIVATE_FLAG_TRUSTED_OVERLAY or
-                WindowManager.LayoutParams.PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION
+                WindowManager.LayoutParams.PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY
         // Avoid announcing window title
         accessibilityTitle = " "
         inputFeatures = WindowManager.LayoutParams.INPUT_FEATURE_SPY
@@ -148,7 +149,7 @@ class UdfpsHelper(
     // brightness_alpha_lut array from the kernel. This provides a comparable array.
     private fun brightnessToAlpha() {
         val adjustedBrightness =
-            (currentBrightness.coerceIn(minBrightness, maxBrightness) * 4095).toInt()
+            (currentBrightness.coerceIn(minBrightness, maxBrightness) * maxPanelBrightness).toInt()
 
         val targetAlpha = brightnessAlphaMap[adjustedBrightness]?.div(255.0f)
             ?: interpolateAlpha(adjustedBrightness)

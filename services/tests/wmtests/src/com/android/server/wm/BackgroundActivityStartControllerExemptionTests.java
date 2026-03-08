@@ -250,9 +250,9 @@ public class BackgroundActivityStartControllerExemptionTests {
 
         // assertions
         assertWithMessage(balState.toString()).that(callerVerdict.getCode()).isEqualTo(
-                BackgroundActivityStartController.BAL_BLOCK);
+                BAL_BLOCK);
         assertWithMessage(balState.toString()).that(realCallerVerdict.getCode()).isEqualTo(
-                BackgroundActivityStartController.BAL_BLOCK);
+                BAL_BLOCK);
     }
 
     @Test
@@ -300,6 +300,76 @@ public class BackgroundActivityStartControllerExemptionTests {
         // setup state
         when(mVisibleActivityProcessTracker.hasVisibleActivity(eq(realCallingUid))).thenReturn(
                 true);
+        when(mService.getBalAppSwitchesState()).thenReturn(APP_SWITCH_ALLOW);
+
+        // prepare call
+        PendingIntentRecord originatingPendingIntent = mPendingIntentRecord;
+        BackgroundStartPrivileges allowBalExemptionForSystemProcess =
+                BackgroundStartPrivileges.NONE;
+        Intent intent = TEST_INTENT;
+        ActivityOptions checkedOptions = mCheckedOptions;
+        BackgroundActivityStartController.BalState balState = mController.new BalState(callingUid,
+                callingPid, callingPackage, realCallingUid, realCallingPid, mCallerApp,
+                originatingPendingIntent, allowBalExemptionForSystemProcess, mResultRecord, intent,
+                checkedOptions);
+        assertThat(balState.toString()).contains("realCallingUidHasVisibleActivity: true");
+        assertThat(balState.toString()).contains("realCallingUidHasNonAppVisibleWindow: false");
+
+        // call
+        BalVerdict realCallerVerdict = mController.checkBackgroundActivityStartAllowedBySender(
+                balState);
+        balState.setResultForRealCaller(realCallerVerdict);
+
+        // assertions
+        assertWithMessage(balState.toString()).that(realCallerVerdict.getCode()).isEqualTo(
+                BAL_ALLOW_VISIBLE_WINDOW);
+    }
+
+    @Test
+    public void testCaller_appHasNonAppVisibleWindow() {
+        int callingUid = REGULAR_UID_1;
+        int callingPid = REGULAR_PID_1;
+        final String callingPackage = REGULAR_PACKAGE_1;
+        int realCallingUid = REGULAR_UID_2;
+        int realCallingPid = REGULAR_PID_2;
+
+        // setup state
+        mActiveUids.onNonAppSurfaceVisibilityChanged(callingUid, true);
+        when(mService.getBalAppSwitchesState()).thenReturn(APP_SWITCH_ALLOW);
+
+        // prepare call
+        PendingIntentRecord originatingPendingIntent = mPendingIntentRecord;
+        BackgroundStartPrivileges allowBalExemptionForSystemProcess =
+                BackgroundStartPrivileges.NONE;
+        Intent intent = TEST_INTENT;
+        ActivityOptions checkedOptions = mCheckedOptions;
+        BackgroundActivityStartController.BalState balState = mController.new BalState(callingUid,
+                callingPid, callingPackage, realCallingUid, realCallingPid, mCallerApp,
+                originatingPendingIntent, allowBalExemptionForSystemProcess, mResultRecord, intent,
+                checkedOptions);
+        assertThat(balState.toString()).contains("callingUidHasVisibleActivity: false");
+        assertThat(balState.toString()).contains("callingUidHasNonAppVisibleWindow: true");
+
+        // call
+        BalVerdict callerVerdict = mController.checkBackgroundActivityStartAllowedByCaller(
+                balState);
+        balState.setResultForCaller(callerVerdict);
+
+        // assertions
+        assertWithMessage(balState.toString()).that(callerVerdict.getCode()).isEqualTo(
+                BAL_ALLOW_NON_APP_VISIBLE_WINDOW);
+    }
+
+    @Test
+    public void testRealCaller_appHasNonAppVisibleWindow() {
+        int callingUid = REGULAR_UID_1;
+        int callingPid = REGULAR_PID_1;
+        final String callingPackage = REGULAR_PACKAGE_1;
+        int realCallingUid = REGULAR_UID_2;
+        int realCallingPid = REGULAR_PID_2;
+
+        // setup state
+        mActiveUids.onNonAppSurfaceVisibilityChanged(realCallingUid, true);
         when(mService.getBalAppSwitchesState()).thenReturn(APP_SWITCH_ALLOW);
 
         // prepare call
@@ -466,7 +536,7 @@ public class BackgroundActivityStartControllerExemptionTests {
 
         // assertions
         assertWithMessage(balState.toString()).that(realCallerVerdict.getCode()).isEqualTo(
-                BAL_ALLOW_VISIBLE_WINDOW);
+                BAL_ALLOW_NON_APP_VISIBLE_WINDOW);
     }
 
     @Test

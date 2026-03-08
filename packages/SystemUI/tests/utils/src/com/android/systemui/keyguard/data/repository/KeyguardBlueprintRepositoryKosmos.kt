@@ -91,6 +91,7 @@ val Kosmos.splitShadeBlueprint by
             clockSection = keyguardClockSection,
             smartspaceSection = keyguardSmartspaceSection,
             mediaSection = mock(),
+            keyguardSliceViewSection = mock(),
             accessibilityActionsSection = mock(),
         )
     }

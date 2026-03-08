@@ -145,7 +145,7 @@ class BackgroundLaunchProcessController {
         // Allow if the caller has an activity in any foreground task.
         if (checkConfiguration.checkOtherExemptions && hasActivityInVisibleTask
                 && appSwitchState != APP_SWITCH_DISALLOW) {
-            return new BalVerdict(BAL_ALLOW_FOREGROUND, /*background*/ false,
+            return new BalVerdict(BAL_ALLOW_FOREGROUND, /*background*/
                     "process has activity in foreground task");
         }
 

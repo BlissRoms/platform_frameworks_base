@@ -25,6 +25,7 @@ import static android.app.ActivityManagerInternal.ALLOW_FULL_ONLY;
 import static android.app.ActivityManagerInternal.ALLOW_NON_FULL;
 import static android.app.ActivityManagerInternal.ALLOW_NON_FULL_IN_PROFILE;
 import static android.app.ActivityManagerInternal.ALLOW_PROFILES_OR_NON_FULL;
+import static android.app.KeyguardManager.LOCK_ON_USER_SWITCH_CALLBACK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.testing.DexmakerShareClassLoaderRule.runWithDexmakerShareClassLoader;
 
@@ -115,7 +116,6 @@ import com.android.server.pm.UserManagerInternal;
 import com.android.server.pm.UserManagerService;
 import com.android.server.pm.UserTypeDetails;
 import com.android.server.pm.UserTypeFactory;
-import com.android.server.wm.ActivityTaskManagerInternal;
 import com.android.server.wm.WindowManagerService;
 
 import com.google.common.collect.Range;
@@ -1586,11 +1586,11 @@ public class UserControllerTest {
         // and the thread is still alive
         assertTrue(threadStartUser.isAlive());
 
-        // mock send the keyguard shown event
-        ArgumentCaptor<ActivityTaskManagerInternal.ScreenObserver> captor = ArgumentCaptor.forClass(
-                ActivityTaskManagerInternal.ScreenObserver.class);
-        verify(mInjector.mActivityTaskManagerInternal).registerScreenObserver(captor.capture());
-        captor.getValue().onKeyguardStateChanged(true);
+        // mock the binder response for the user switch completion
+        ArgumentCaptor<Bundle> captor = ArgumentCaptor.forClass(Bundle.class);
+        verify(mInjector.mWindowManagerMock).lockNow(captor.capture());
+        IRemoteCallback.Stub.asInterface(captor.getValue().getBinder(
+                LOCK_ON_USER_SWITCH_CALLBACK)).sendResult(null);
 
         // verify the switch now moves on...
         Thread.sleep(1000);
@@ -1780,7 +1780,6 @@ public class UserControllerTest {
         private final IStorageManager mStorageManagerMock;
         private final UserManagerInternal mUserManagerInternalMock;
         private final WindowManagerService mWindowManagerMock;
-        private final ActivityTaskManagerInternal mActivityTaskManagerInternal;
         private final PowerManagerInternal mPowerManagerInternal;
         private final AlarmManagerInternal mAlarmManagerInternal;
         private final KeyguardManager mKeyguardManagerMock;
@@ -1802,7 +1801,6 @@ public class UserControllerTest {
             mUserManagerMock = mock(UserManagerService.class);
             mUserManagerInternalMock = mock(UserManagerInternal.class);
             mWindowManagerMock = mock(WindowManagerService.class);
-            mActivityTaskManagerInternal = mock(ActivityTaskManagerInternal.class);
             mStorageManagerMock = mock(IStorageManager.class);
             mPowerManagerInternal = mock(PowerManagerInternal.class);
             mAlarmManagerInternal = mock(AlarmManagerInternal.class);
@@ -1863,11 +1861,6 @@ public class UserControllerTest {
         @Override
         WindowManagerService getWindowManager() {
             return mWindowManagerMock;
-        }
-
-        @Override
-        ActivityTaskManagerInternal getActivityTaskManagerInternal() {
-            return mActivityTaskManagerInternal;
         }
 
         @Override

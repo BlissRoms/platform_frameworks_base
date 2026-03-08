@@ -15,8 +15,6 @@
  */
 package com.android.systemui.tuner;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -24,14 +22,12 @@ import android.view.Window;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
-import java.util.ArrayDeque;
-
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity;
-
 import com.android.systemui.Dependency;
 import com.android.systemui.demomode.DemoModeController;
 import com.android.systemui.fragments.FragmentService;
@@ -43,14 +39,13 @@ import com.google.android.material.color.DynamicColors;
 import javax.inject.Inject;
 
 public class TunerActivity extends CollapsingToolbarBaseActivity implements
-        PreferenceFragment.OnPreferenceStartFragmentCallback,
-        PreferenceFragment.OnPreferenceStartScreenCallback {
+        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
+        PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
     private static final String TAG_TUNER = "tuner";
 
     private final DemoModeController mDemoModeController;
     private final GlobalSettings mGlobalSettings;
-    private final ArrayDeque<String> titleStack = new ArrayDeque<>();
 
     @Inject
     TunerActivity(
@@ -82,9 +77,9 @@ public class TunerActivity extends CollapsingToolbarBaseActivity implements
             return insets;
         });
 
-        if (getFragmentManager().findFragmentByTag(TAG_TUNER) == null) {
+        if (getSupportFragmentManager().findFragmentByTag(TAG_TUNER) == null) {
             final String action = getIntent().getAction();
-            final Fragment fragment;
+            final PreferenceFragmentCompat fragment;
             if ("com.android.settings.action.DEMO_MODE".equals(action)) {
                 fragment = new DemoModeFragment(mDemoModeController, mGlobalSettings);
             } else if ("com.android.settings.action.STATUS_BAR_TUNER".equals(action)) {
@@ -93,7 +88,7 @@ public class TunerActivity extends CollapsingToolbarBaseActivity implements
                 fragment = new TunerFragment();
             }
 
-            getFragmentManager().beginTransaction().replace(R.id.content_frame,
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
                     fragment, TAG_TUNER).commit();
         }
     }
@@ -106,39 +101,22 @@ public class TunerActivity extends CollapsingToolbarBaseActivity implements
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().popBackStackImmediate()) {
-            String title = titleStack.poll();
-            if (title != null) {
-                setTitle(title);
-            }
-            try {
-                Fragment f = getFragmentManager().findFragmentById(R.id.content_frame);
-                Fragment fragment = (Fragment) f.getClass().newInstance();
-                fragment.setArguments(f.getArguments());
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_frame, fragment);
-                transaction.commit();
-            } catch (InstantiationException | IllegalAccessException e) {
-                Log.d("TunerActivity", "Problem launching fragment", e);
-            }
-        } else {
+        if (!getSupportFragmentManager().popBackStackImmediate()) {
             super.onBackPressed();
         }
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragment caller, Preference pref) {
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         try {
             Class<?> cls = Class.forName(pref.getFragment());
-            Fragment fragment = (Fragment) cls.newInstance();
+            PreferenceFragmentCompat fragment = (PreferenceFragmentCompat) cls.newInstance();
             final Bundle b = new Bundle(1);
-            b.putString(PreferenceFragment.ARG_PREFERENCE_ROOT, pref.getKey());
+            b.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, pref.getKey());
             fragment.setArguments(b);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            titleStack.push(getTitle().toString());
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             setTitle(pref.getTitle());
             transaction.replace(R.id.content_frame, fragment);
-            transaction.addToBackStack("PreferenceFragment");
             transaction.commit();
             return true;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
@@ -148,26 +126,25 @@ public class TunerActivity extends CollapsingToolbarBaseActivity implements
     }
 
     @Override
-    public boolean onPreferenceStartScreen(PreferenceFragment caller, PreferenceScreen pref) {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+    public boolean onPreferenceStartScreen(PreferenceFragmentCompat caller, PreferenceScreen pref) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         SubSettingsFragment fragment = new SubSettingsFragment();
         final Bundle b = new Bundle(1);
-        b.putString(PreferenceFragment.ARG_PREFERENCE_ROOT, pref.getKey());
+        b.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, pref.getKey());
         fragment.setArguments(b);
         fragment.setTargetFragment(caller, 0);
         transaction.replace(R.id.content_frame, fragment);
-        transaction.addToBackStack("PreferenceFragment");
         transaction.commit();
         return true;
     }
 
-    public static class SubSettingsFragment extends PreferenceFragment {
+    public static class SubSettingsFragment extends PreferenceFragmentCompat {
         private PreferenceScreen mParentScreen;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             mParentScreen =
-                    (PreferenceScreen) ((PreferenceFragment) getTargetFragment())
+                    (PreferenceScreen) ((PreferenceFragmentCompat) getTargetFragment())
                             .getPreferenceScreen().findPreference(rootKey);
             PreferenceScreen screen =
                     getPreferenceManager().createPreferenceScreen(

@@ -115,6 +115,8 @@ public class BackgroundActivityStartControllerTests {
     VisibleActivityProcessTracker mVisibleActivityProcessTracker;
 
     WindowProcessControllerMap mProcessMap = new WindowProcessControllerMap();
+    @Mock
+    VisibleActivityProcessTracker mVisibleActivityProcessTracker;
 
     @Mock
     ActivityTaskSupervisor mSupervisor;

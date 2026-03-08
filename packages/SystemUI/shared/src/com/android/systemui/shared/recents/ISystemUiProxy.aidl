@@ -103,7 +103,7 @@ interface ISystemUiProxy {
     oneway void expandNotificationPanel() = 29;
 
     /**
-     * Notifies SystemUI of a back KeyEvent.
+     * Notifies SystemUI of KEYCODE_BACK, sending a ACTION_DOWN followed by ACTION_UP.
      */
     oneway void onBackEvent(in KeyEvent keyEvent) = 44;
 
@@ -112,9 +112,6 @@ interface ISystemUiProxy {
 
     /** Injects button long press. */
     oneway void injectLongPress(int keyCode) = 46;
-
-    /** Injects button press. */
-    oneway void injectPress(int keyCode) = 43;
 
     /** Notifies when taskbar status updated */
     oneway void notifyTaskbarStatus(boolean visible, boolean stashed) = 47;
@@ -184,5 +181,10 @@ interface ISystemUiProxy {
      */
     oneway void updateContextualEduStats(boolean isTrackpadGesture, String gestureType) = 58;
 
-    // Next id = 59
+    /**
+     * Notifies SystemUI of a KeyEvent of the specified type (e.g. KEYCODE_BACK, KEYCODE_HOME).
+     */
+    oneway void onKeyEvent(int keycode) = 60;
+
+    // Next id = 61
 }
