@@ -44,20 +44,21 @@ abstract class SettingsBasePreferenceFragment : PreferenceFragmentCompat() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
+        val view = super.onCreateView(inflater, container, savedInstanceState)
 
-    @CallSuper
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        if (shouldSkipTheming(this)) return
+        if (shouldSkipTheming(this))
 
         if (SettingsThemeHelper.isExpressiveTheme(requireContext()) && listView != null) {
             // Don't allow any divider in between the preferences in expressive design.
             setDivider(null)
             listView?.addItemDecoration(MarginItemDecoration())
         }
+        return view
+    }
+
+    @CallSuper
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onCreateAdapter(preferenceScreen: PreferenceScreen): RecyclerView.Adapter<*> {
