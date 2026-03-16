@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="remoteViewsCardCornerRadius" format="dimension" />
+    <attr name="backgroundCornerRadius" format="dimension" />
     <attr name="smartspaceSubtitleTextSize" format="dimension" />
     <attr name="smartspaceTitleTextSize" format="dimension" />
     <declare-styleable name="WeatherSmartspaceView">
