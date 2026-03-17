@@ -274,6 +274,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     // Power menu customizations
     private String[] mActions;
 
+    protected int mPowerMenuStyle;
     private boolean mKeyguardShowing = false;
     private boolean mDeviceProvisioned = false;
     private ToggleState mAirplaneState = ToggleState.Off;
@@ -625,6 +626,9 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     }
 
     protected void handleShow(@Nullable Expandable expandable, int displayId) {
+        mPowerMenuStyle = Settings.Secure.getIntForUser(
+                mContext.getContentResolver(), "power_menu_style",
+                0, UserHandle.USER_CURRENT);
         mDialog = createDialog(displayId);
         prepareDialog();
 
@@ -927,7 +931,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 mKeyguardUpdateMonitor,
                 mLockPatternUtils,
                 mSelectedUserInteractor,
-                mBlurUtils) {
+                mBlurUtils,
+                mPowerMenuStyle) {
             @Override
             public boolean dispatchTouchEvent(MotionEvent event) {
                 rescheduleBurninTimeout(mGlobalActionDialogTimeout);
@@ -2063,27 +2068,11 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 Log.w(TAG, "No power options action found at position: " + position);
                 return null;
             }
-            int viewLayoutResource = com.android.systemui.res.R.layout.global_actions_grid_item_lite;
-            View view = convertView != null ? convertView
-                    : LayoutInflater.from(mContext).inflate(viewLayoutResource, parent, false);
+            View view = action.create(mContext, convertView, parent,
+                    LayoutInflater.from(mContext));
             view.setOnClickListener(v -> onClickItem(position));
             if (action instanceof LongPressAction) {
                 view.setOnLongClickListener(v -> onLongClickItem(position));
-            }
-            ImageView icon = view.findViewById(R.id.icon);
-            TextView messageView = view.findViewById(R.id.message);
-            messageView.setSelected(true); // necessary for marquee to work
-            if (Flags.globalActionsEmphasizedFont()) {
-                messageView.setTypeface(
-                        Typeface.create(FontStyles.GSF_LABEL_LARGE_EMPHASIZED, Typeface.NORMAL));
-            }
-            icon.setImageDrawable(action.getIcon(mContext));
-            icon.setScaleType(ScaleType.CENTER_CROP);
-
-            if (action.getMessage() != null) {
-                messageView.setText(action.getMessage());
-            } else {
-                messageView.setText(action.getMessageResId());
             }
             return view;
         }
@@ -2454,7 +2443,12 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 messageView.setText(mMessageResId);
             }
 
-            if (QsInCompose.isEnabled()) {
+            if (mPowerMenuStyle == 1) {
+                int bgColor = getActionColor(context, this);
+                messageView.setTextColor(Color.WHITE);
+                mIconView.setBackgroundTintList(ColorStateList.valueOf(bgColor));
+                mIconView.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            } else if (QsInCompose.isEnabled()) {
                 int textAndIconColor = context.getColor(R.color.materialColorOnSurface);
                 messageView.setTextColor(textAndIconColor);
                 mIconView.setBackgroundTintList(
@@ -2485,7 +2479,31 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         }
     }
 
+    protected int getActionColor(Context context, Action action) {
+        if (action instanceof ShutDownAction || action instanceof PowerOptionsAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_power_off_color);
+        } else if (action instanceof RestartAction || action instanceof RestartSystemAction
+                || action instanceof RestartRecoveryAction || action instanceof RestartBootloaderAction
+                || action instanceof RestartFastbootAction || action instanceof RestartDownloadAction
+                || action instanceof RestartSystemUIAction
+                || mRestartItems.contains(action) || mPowerItems.contains(action)) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_restart_color);
+        } else if (action instanceof EmergencyDialerAction || action instanceof EmergencyAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_emergency_color);
+        } else if (action instanceof ScreenshotAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_screenshot_color);
+        } else if (action instanceof LockDownAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_lockdown_color);
+        } else if (action instanceof BugReportAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_bugreport_color);
+        }
+        return context.getColor(R.color.materialColorPrimaryContainer);
+    }
+
     protected int getGridItemLayoutResource() {
+        if (mPowerMenuStyle == 1) {
+            return com.android.systemui.res.R.layout.global_actions_grid_item_fullscreen;
+        }
         return com.android.systemui.res.R.layout.global_actions_grid_item_lite;
     }
 
@@ -2599,6 +2617,17 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             if (icon != null) {
                 icon.setImageDrawable(context.getDrawable(getIconResId()));
                 icon.setEnabled(enabled);
+            }
+
+            if (mPowerMenuStyle == 1) {
+                int bgColor = getActionColor(context, this);
+                if (messageView != null) {
+                    messageView.setTextColor(Color.WHITE);
+                }
+                if (icon != null) {
+                    icon.setBackgroundTintList(ColorStateList.valueOf(bgColor));
+                    icon.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+                }
             }
 
             v.setEnabled(enabled);
@@ -2944,6 +2973,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             ColorExtractor.OnColorsChangedListener {
 
         protected final Context mContext;
+        protected int mPowerMenuStyle;
         protected MultiListLayout mGlobalActionsLayout;
         protected final MyAdapter mAdapter;
         protected final MyOverflowAdapter mOverflowAdapter;
@@ -3056,11 +3086,13 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 KeyguardUpdateMonitor keyguardUpdateMonitor,
                 LockPatternUtils lockPatternUtils,
                 SelectedUserInteractor selectedUserInteractor,
-                BlurUtils blurUtils) {
+                BlurUtils blurUtils,
+                int powerMenuStyle) {
             // We set dismissOnDeviceLock to false because we have a custom broadcast receiver to
             // dismiss this dialog when the device is locked.
             super(context, themeRes, false /* dismissOnDeviceLock */);
             mContext = context;
+            mPowerMenuStyle = powerMenuStyle;
             mAdapter = adapter;
             mOverflowAdapter = overflowAdapter;
             mPowerOptionsAdapter = powerAdapter;
@@ -3152,13 +3184,13 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         public void showPowerOptionsMenu() {
             mPowerOptionsDialog = GlobalActionsPowerDialog.create(mContext,
-                    mPowerOptionsAdapter, mBlurUtils);
+                    mPowerOptionsAdapter, mBlurUtils, mPowerMenuStyle);
             mPowerOptionsDialog.show();
         }
 
         public void showRestartOptionsMenu() {
             mRestartOptionsDialog = GlobalActionsPowerDialog.create(mContext,
-                    mRestartOptionsAdapter, mBlurUtils);
+                    mRestartOptionsAdapter, mBlurUtils, mPowerMenuStyle);
             mRestartOptionsDialog.show();
         }
 
@@ -3169,11 +3201,14 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         public void showUsersMenu() {
             mUsersDialog = GlobalActionsPowerDialog.create(mContext,
-                    mUsersAdapter, mBlurUtils);
+                    mUsersAdapter, mBlurUtils, mPowerMenuStyle);
             mUsersDialog.show();
         }
 
         protected int getLayoutResource() {
+            if (mPowerMenuStyle == 1) {
+                return com.android.systemui.res.R.layout.global_actions_grid_fullscreen;
+            }
             return com.android.systemui.res.R.layout.global_actions_grid_lite;
         }
 
@@ -3240,7 +3275,10 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             } else {
                 window.setDimAmount(0.88f);
             }
-            if (QsInCompose.isEnabled()) {
+            if (mPowerMenuStyle == 1) {
+                View v = findViewById(R.id.list);
+                v.setBackground(null);
+            } else if (QsInCompose.isEnabled()) {
                 View v = findViewById(R.id.list);
                 v.setBackgroundTintList(ColorStateList.valueOf(
                         getContext().getColor(R.color.materialColorSurfaceContainerLow)
