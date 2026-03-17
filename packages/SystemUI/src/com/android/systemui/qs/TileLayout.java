@@ -52,6 +52,7 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
     private int mMinRows = 1;
     private int mMaxColumns = NO_MAX_COLUMNS;
     protected int mResourceColumns;
+    protected int mTileStyle = 0;
     private float mSquishinessFraction = 1f;
     protected int mLastTileBottom;
     protected TextView mTempTextView;
@@ -146,12 +147,27 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
         super.removeAllViews();
     }
 
+    public void setTileStyle(int style) {
+        if (mTileStyle != style) {
+            mTileStyle = style;
+            updateResources();
+            requestLayout();
+        }
+    }
+
     public boolean updateResources() {
         Resources res = getResources();
-        int columns = useSmallLandscapeLockscreenResources()
-                ? res.getInteger(R.integer.small_land_lockscreen_quick_settings_num_columns)
-                : res.getInteger(R.integer.quick_settings_num_columns);
-        mResourceColumns = Math.max(1, columns);
+        if (mTileStyle == 1) {
+            mResourceColumns = Math.max(1,
+                    res.getInteger(R.integer.quick_settings_num_columns_classic));
+            mResourceCellHeightResId = R.dimen.qs_tile_height_classic;
+        } else {
+            int columns = useSmallLandscapeLockscreenResources()
+                    ? res.getInteger(R.integer.small_land_lockscreen_quick_settings_num_columns)
+                    : res.getInteger(R.integer.quick_settings_num_columns);
+            mResourceColumns = Math.max(1, columns);
+            mResourceCellHeightResId = R.dimen.qs_tile_height;
+        }
         mResourceCellHeight = res.getDimensionPixelSize(mResourceCellHeightResId);
         mCellMarginHorizontal = res.getDimensionPixelSize(R.dimen.qs_tile_margin_horizontal);
         mSidePadding = useSidePadding() ? mCellMarginHorizontal / 2 : 0;
@@ -262,11 +278,23 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
 
     // Estimate the height for the tile with 2 labels (general case) under current font scaling.
     protected void estimateCellHeight() {
-        FontSizeUtils.updateFontSize(mTempTextView, R.dimen.qs_tile_text_size);
-        int unspecifiedSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-        mTempTextView.measure(unspecifiedSpec, unspecifiedSpec);
-        int padding = mContext.getResources().getDimensionPixelSize(R.dimen.qs_tile_padding);
-        mEstimatedCellHeight = mTempTextView.getMeasuredHeight() * 2 + padding * 2;
+        if (mTileStyle == 1) {
+            FontSizeUtils.updateFontSize(mTempTextView, R.dimen.qs_tile_text_size_classic);
+            int unspecifiedSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+            mTempTextView.measure(unspecifiedSpec, unspecifiedSpec);
+            int circleSize = mContext.getResources()
+                    .getDimensionPixelSize(R.dimen.qs_tile_circle_bg_size);
+            int circlePadding = mContext.getResources()
+                    .getDimensionPixelSize(R.dimen.qs_tile_circle_padding);
+            mEstimatedCellHeight = circleSize + mTempTextView.getMeasuredHeight()
+                    + circlePadding * 2;
+        } else {
+            FontSizeUtils.updateFontSize(mTempTextView, R.dimen.qs_tile_text_size);
+            int unspecifiedSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+            mTempTextView.measure(unspecifiedSpec, unspecifiedSpec);
+            int padding = mContext.getResources().getDimensionPixelSize(R.dimen.qs_tile_padding);
+            mEstimatedCellHeight = mTempTextView.getMeasuredHeight() * 2 + padding * 2;
+        }
     }
 
     protected int getCellHeight() {

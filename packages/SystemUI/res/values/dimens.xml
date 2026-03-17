@@ -765,6 +765,14 @@
     -->
     <dimen name="qs_page_indicator_dot_width">6.4dp</dimen>
     <dimen name="qs_tile_text_size">14sp</dimen>
+
+    <!-- Classic circular QS tile style -->
+    <dimen name="qs_tile_height_classic">100dp</dimen>
+    <dimen name="qs_tile_circle_bg_size">56dp</dimen>
+    <dimen name="qs_tile_circle_padding">4dp</dimen>
+    <dimen name="qs_tile_circle_label_margin_top">4dp</dimen>
+    <dimen name="qs_tile_text_size_classic">12sp</dimen>
+    <dimen name="qs_quick_tile_size_classic">48dp</dimen>
     <dimen name="qs_panel_padding">16dp</dimen>
     <dimen name="qs_dual_tile_padding_horizontal">6dp</dimen>
     <dimen name="qs_panel_elevation">4dp</dimen>

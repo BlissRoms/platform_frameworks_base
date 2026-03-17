@@ -74,6 +74,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.trace
 import com.android.app.tracing.coroutines.launchTraced as launch
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.platform.LocalContext
 import com.android.compose.animation.Expandable
 import com.android.compose.animation.bounceable
 import com.android.compose.animation.rememberExpandableController
@@ -108,6 +110,39 @@ import com.android.systemui.qs.ui.composable.QuickSettingsShade
 import com.android.systemui.qs.ui.compose.borderOnFocus
 import com.android.systemui.res.R
 import kotlinx.coroutines.CoroutineScope
+
+val LocalQSPanelStyle = compositionLocalOf { 0 }
+
+@Composable
+private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
+    val context = LocalContext.current
+    val value by produceState(
+        initialValue = android.provider.Settings.Secure.getIntForUser(
+            context.contentResolver, key, defaultValue,
+            android.os.UserHandle.USER_CURRENT,
+        )
+    ) {
+        val observer = object : android.database.ContentObserver(
+            android.os.Handler(android.os.Looper.getMainLooper())
+        ) {
+            override fun onChange(selfChange: Boolean) {
+                value = android.provider.Settings.Secure.getIntForUser(
+                    context.contentResolver, key, defaultValue,
+                    android.os.UserHandle.USER_CURRENT,
+                )
+            }
+        }
+        context.contentResolver.registerContentObserver(
+            android.provider.Settings.Secure.getUriFor(key),
+            false, observer, android.os.UserHandle.USER_ALL,
+        )
+        kotlinx.coroutines.awaitCancellation()
+    }
+    return value
+}
+
+@Composable
+fun rememberQSPanelStyle(): Int = rememberSecureIntSetting("qs_panel_style")
 
 @Composable
 fun TileLazyGrid(
@@ -215,9 +250,13 @@ fun ContentScope.Tile(
             contentRevealModifier = Modifier
         }
 
+        val isClassicStyle = LocalQSPanelStyle.current == 1
+        val effectiveColor = if (isClassicStyle) Color.Transparent else animatedColor
+        val effectiveShape = if (isClassicStyle) RoundedCornerShape(0.dp) else tileShape
+
         TileExpandable(
-            color = { animatedColor },
-            shape = tileShape,
+            color = { effectiveColor },
+            shape = effectiveShape,
             squishiness = squishiness,
             hapticsViewModel = hapticsViewModel,
             modifier =
@@ -305,7 +344,15 @@ fun ContentScope.Tile(
                 modifier = contentRevealModifier,
             ) {
                 val iconProvider: Context.() -> Icon = { getTileIcon(icon = icon) }
-                if (iconOnly) {
+                val isClassicStyle = LocalQSPanelStyle.current == 1
+                if (isClassicStyle) {
+                    ClassicCircleTileContent(
+                        label = uiState.label,
+                        iconProvider = iconProvider,
+                        colors = colors,
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                } else if (iconOnly) {
                     SmallTileContent(
                         iconProvider = iconProvider,
                         color = colors.icon,
@@ -375,10 +422,12 @@ fun TileContainer(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
 ) {
+    val tileHeight = if (LocalQSPanelStyle.current == 1)
+        CommonTileDefaults.ClassicTileHeight else TileHeight
     Box(
         modifier =
             modifier
-                .height(TileHeight)
+                .height(tileHeight)
                 .fillMaxWidth()
                 .tileCombinedClickable(
                     onClick = onClick ?: {},
