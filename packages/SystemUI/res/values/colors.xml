@@ -56,6 +56,14 @@
     <color name="global_actions_lite_emergency_background">#D8372D</color>
     <color name="global_actions_lite_emergency_icon">#FFFFFF</color>
 
+    <!-- Power Menu Fullscreen per-action colors -->
+    <color name="global_actions_power_off_color">#cd3333</color>
+    <color name="global_actions_restart_color">#1a73e8</color>
+    <color name="global_actions_emergency_color">#811b1b</color>
+    <color name="global_actions_screenshot_color">#088577</color>
+    <color name="global_actions_lockdown_color">#9e6300</color>
+    <color name="global_actions_bugreport_color">#1199a8</color>
+
     <color name="global_actions_shutdown_ui_text">@color/control_primary_text</color>
 
     <!-- Shadows under the clock, date and other keyguard text fields -->

@@ -19,8 +19,11 @@ import android.annotation.NonNull;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.view.CrossWindowBlurListeners;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -39,7 +42,10 @@ public class GlobalActionsPowerDialog {
     /**
      * Create a dialog for displaying Shut Down and Restart actions.
      */
-    public static Dialog create(@NonNull Context context, ListAdapter adapter, BlurUtils blurUtils) {
+    public static Dialog create(@NonNull Context context, ListAdapter adapter, BlurUtils blurUtils,
+            int powerMenuStyle) {
+        boolean isFullscreen = powerMenuStyle == 1;
+
         ViewGroup listView = (ViewGroup) LayoutInflater.from(context).inflate(
                 com.android.systemui.res.R.layout.global_actions_power_dialog_flow, null);
 
@@ -65,17 +71,67 @@ public class GlobalActionsPowerDialog {
         }
         flow.setMaxElementsWrap(nElementsWrap);
 
-        Dialog dialog = new Dialog(context,
-                com.android.systemui.res.R.style.Theme_SystemUI_Dialog_GlobalActionsLite);
+        if (isFullscreen) {
+            listView.setBackground(null);
+            int fullscreenPadding = res.getDimensionPixelSize(
+                    com.android.systemui.res.R.dimen.global_actions_fullscreen_padding);
+            listView.setPadding(fullscreenPadding, fullscreenPadding,
+                    fullscreenPadding, fullscreenPadding);
+            int fullscreenGap = res.getDimensionPixelSize(
+                    com.android.systemui.res.R.dimen.global_actions_fullscreen_gap);
+            flow.setHorizontalGap(fullscreenGap);
+            flow.setVerticalGap(fullscreenGap);
+        }
+
+        Dialog dialog;
+        if (isFullscreen) {
+            dialog = new Dialog(context,
+                    com.android.systemui.res.R.style.Theme_SystemUI_Dialog_GlobalActionsLite) {
+                @Override
+                public boolean dispatchTouchEvent(MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        View content = findViewById(com.android.systemui.res.R.id.power_actions_container);
+                        if (content != null) {
+                            boolean hitChild = false;
+                            for (int i = 0; i < ((ViewGroup) content).getChildCount(); i++) {
+                                View child = ((ViewGroup) content).getChildAt(i);
+                                if (child instanceof Flow) continue;
+                                Rect rect = new Rect();
+                                child.getGlobalVisibleRect(rect);
+                                if (rect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                                    hitChild = true;
+                                    break;
+                                }
+                            }
+                            if (!hitChild) {
+                                dismiss();
+                                return true;
+                            }
+                        }
+                    }
+                    return super.dispatchTouchEvent(event);
+                }
+            };
+        } else {
+            dialog = new Dialog(context,
+                    com.android.systemui.res.R.style.Theme_SystemUI_Dialog_GlobalActionsLite);
+        }
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(listView);
 
         Window window = dialog.getWindow();
         window.setType(WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY);
         window.setTitle(""); // prevent Talkback from speaking first item name twice
-        window.setBackgroundDrawable(res.getDrawable(
-                com.android.systemui.res.R.drawable.global_actions_lite_background,
-                context.getTheme()));
+        if (isFullscreen) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT);
+            window.setGravity(Gravity.CENTER);
+        } else {
+            window.setBackgroundDrawable(res.getDrawable(
+                    com.android.systemui.res.R.drawable.global_actions_lite_background,
+                    context.getTheme()));
+        }
         window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         if (blurUtils.supportsBlursOnWindows()) {

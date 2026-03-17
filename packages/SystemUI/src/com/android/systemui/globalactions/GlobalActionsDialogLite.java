@@ -351,6 +351,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         }
     };
 
+    protected int mPowerMenuStyle;
     private boolean mKeyguardShowing = false;
     private boolean mDeviceProvisioned = false;
     private ToggleState mAirplaneState = ToggleState.Off;
@@ -679,6 +680,9 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     }
 
     private void handleShow(@Nullable Expandable expandable, int displayId) {
+        mPowerMenuStyle = Settings.Secure.getIntForUser(
+                mContext.getContentResolver(), "power_menu_style",
+                0, UserHandle.USER_CURRENT);
         SystemUIDialog dialog = createDialog(displayId);
         prepareDialog();
 
@@ -986,7 +990,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 mStatusBarWindowControllerStore.forDisplay(context.getDisplayId()),
                 mKeyguardShowing,
                 this::onRefresh,
-                () -> rescheduleBurnInTimeout(mGlobalActionDialogTimeout)
+                () -> rescheduleBurnInTimeout(mGlobalActionDialogTimeout),
+                mPowerMenuStyle
         );
         SystemUIDialog dialog = mDelegate.createDialog();
 
@@ -2422,6 +2427,22 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 messageView.setText(mMessageResId);
             }
 
+            if (mPowerMenuStyle == 1) {
+                int bgColor = getActionColor(context, this);
+                messageView.setTextColor(Color.WHITE);
+                mIconView.setBackgroundTintList(ColorStateList.valueOf(bgColor));
+                mIconView.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            } else {
+                int textAndIconColor = context.getColor(R.color.materialColorOnSurface);
+                messageView.setTextColor(textAndIconColor);
+                mIconView.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                                context.getColor(R.color.materialColorSurfaceContainerHighest)
+                        )
+                );
+                mIconView.setImageTintList(ColorStateList.valueOf(textAndIconColor));
+            }
+
             return v;
         }
 
@@ -2441,7 +2462,31 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         }
     }
 
-    private int getGridItemLayoutResource() {
+    protected int getActionColor(Context context, Action action) {
+        if (action instanceof ShutDownAction || action instanceof PowerOptionsAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_power_off_color);
+        } else if (action instanceof RestartAction || action instanceof RestartSystemAction
+                || action instanceof RestartRecoveryAction || action instanceof RestartBootloaderAction
+                || action instanceof RestartFastbootAction || action instanceof RestartDownloadAction
+                || action instanceof RestartSystemUIAction
+                || mRestartItems.contains(action) || mPowerItems.contains(action)) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_restart_color);
+        } else if (action instanceof EmergencyDialerAction || action instanceof EmergencyAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_emergency_color);
+        } else if (action instanceof ScreenshotAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_screenshot_color);
+        } else if (action instanceof LockDownAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_lockdown_color);
+        } else if (action instanceof BugReportAction) {
+            return context.getColor(com.android.systemui.res.R.color.global_actions_bugreport_color);
+        }
+        return context.getColor(R.color.materialColorPrimaryContainer);
+    }
+
+    protected int getGridItemLayoutResource() {
+        if (mPowerMenuStyle == 1) {
+            return com.android.systemui.res.R.layout.global_actions_grid_item_fullscreen;
+        }
         return com.android.systemui.res.R.layout.global_actions_grid_item_lite;
     }
 
@@ -2466,7 +2511,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
      * A toggle action knows whether it is on or off, and displays an icon and status message
      * accordingly.
      */
-    private abstract static class ToggleAction implements Action {
+    private abstract class ToggleAction implements Action {
 
         ToggleState mState = ToggleState.Off;
 
@@ -2555,6 +2600,17 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             if (icon != null) {
                 icon.setImageDrawable(context.getDrawable(getIconResId()));
                 icon.setEnabled(enabled);
+            }
+
+            if (mPowerMenuStyle == 1) {
+                int bgColor = getActionColor(context, this);
+                if (messageView != null) {
+                    messageView.setTextColor(Color.WHITE);
+                }
+                if (icon != null) {
+                    icon.setBackgroundTintList(ColorStateList.valueOf(bgColor));
+                    icon.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+                }
             }
 
             v.setEnabled(enabled);
@@ -2935,13 +2991,13 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         @NonNull
         private final Context mContext;
+        private int mPowerMenuStyle;
         @NonNull
         private final MyAdapter mAdapter;
         @NonNull
         private final MyOverflowAdapter mOverflowAdapter;
         @NonNull
         private final MyPowerOptionsAdapter mPowerOptionsAdapter;
-        @NonNull
         private final MyRestartOptionsAdapter mRestartOptionsAdapter;
         @NonNull
         private final MyUsersAdapter mUsersAdapter;
@@ -3061,6 +3117,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 @Assisted boolean keyguardShowing,
                 @Assisted("onRefreshCallback") @NonNull Runnable onRefreshCallback,
                 @Assisted("rescheduleBurnInTimeout") @NonNull Runnable rescheduleBurnInTimeout,
+                @Assisted int powerMenuStyle,
                 @NonNull SysuiColorExtractor sysuiColorExtractor,
                 @NonNull LightBarController lightBarController,
                 @NonNull KeyguardStateController keyguardStateController,
@@ -3076,6 +3133,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 @NonNull DeviceEntryInteractor deviceEntryInteractor,
                 @NonNull BlurUtils blurUtils) {
             mContext = context;
+            mPowerMenuStyle = powerMenuStyle;
             mAdapter = adapter;
             mOverflowAdapter = overflowAdapter;
             mPowerOptionsAdapter = powerAdapter;
@@ -3183,18 +3241,24 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         public void showPowerOptionsMenu() {
             mPowerOptionsDialog = GlobalActionsPowerDialog.create(mContext,
-                    mPowerOptionsAdapter, mBlurUtils);
+                    mPowerOptionsAdapter, mBlurUtils, mPowerMenuStyle);
             mPowerOptionsDialog.show();
         }
 
         public void showRestartOptionsMenu() {
-            mAdapter.setShowingRestartOptions(true);
-            mGlobalActionsLayout.updateList();
+            if (mPowerMenuStyle == 1) {
+                mRestartOptionsDialog = GlobalActionsPowerDialog.create(mContext,
+                        mRestartOptionsAdapter, mBlurUtils, mPowerMenuStyle);
+                mRestartOptionsDialog.show();
+            } else {
+                mAdapter.setShowingRestartOptions(true);
+                mGlobalActionsLayout.updateList();
+            }
         }
 
         public void showUsersMenu() {
             mUsersDialog = GlobalActionsPowerDialog.create(mContext,
-                    mUsersAdapter, mBlurUtils);
+                    mUsersAdapter, mBlurUtils, mPowerMenuStyle);
             mUsersDialog.show();
         }
 
@@ -3203,8 +3267,15 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             mOverflowPopup.show();
         }
 
+        protected int getLayoutResource() {
+            if (mPowerMenuStyle == 1) {
+                return com.android.systemui.res.R.layout.global_actions_grid_fullscreen;
+            }
+            return com.android.systemui.res.R.layout.global_actions_grid_lite;
+        }
+
         private void initializeLayout(@NonNull SystemUIDialog dialog) {
-            dialog.setContentView(com.android.systemui.res.R.layout.global_actions_grid_lite);
+            dialog.setContentView(getLayoutResource());
             fixNavBarClipping(dialog);
 
             mGlobalActionsLayout =
@@ -3273,6 +3344,19 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                     window.setDimAmount(0.54f);
                 } else {
                     window.setDimAmount(0.88f);
+                }
+            }
+            if (mPowerMenuStyle == 1) {
+                View v = dialog.findViewById(R.id.list);
+                if (v != null) {
+                    v.setBackground(null);
+                }
+            } else {
+                View v = dialog.findViewById(R.id.list);
+                if (v != null) {
+                    v.setBackgroundTintList(ColorStateList.valueOf(
+                            dialog.getContext().getColor(R.color.materialColorSurfaceContainerLow)
+                    ));
                 }
             }
             // If user entered from the lock screen and smart lock was enabled, disable it
@@ -3397,7 +3481,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 return;
             }
             DialogTransitionAnimator.Controller controller =
-                    expandable != null ? expandable.dialogTransitionController(
+                    expandable != null && mPowerMenuStyle != 1 ? expandable.dialogTransitionController(
                             new DialogCuj(InteractionJankMonitor.CUJ_SHADE_DIALOG_OPEN,
                                     INTERACTION_JANK_TAG)) : null;
             if (controller != null) {
@@ -3616,7 +3700,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                     @NonNull StatusBarWindowController statusBarWindowController,
                     boolean keyguardShowing,
                     @Assisted("onRefreshCallback") @NonNull Runnable onRefreshCallback,
-                    @Assisted("rescheduleBurnInTimeout") @NonNull Runnable rescheduleBurnInTimeout);
+                    @Assisted("rescheduleBurnInTimeout") @NonNull Runnable rescheduleBurnInTimeout,
+                    @Assisted int powerMenuStyle);
         }
     }
 }

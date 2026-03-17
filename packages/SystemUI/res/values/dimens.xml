@@ -1128,6 +1128,13 @@
     <dimen name="global_actions_lite_padding">24dp</dimen>
     <dimen name="global_actions_info_margin">32dp</dimen>
 
+    <!-- Power Menu Fullscreen -->
+    <dimen name="global_actions_fullscreen_button_size">96dp</dimen>
+    <dimen name="global_actions_fullscreen_button_padding">38dp</dimen>
+    <dimen name="global_actions_fullscreen_padding">32dp</dimen>
+    <dimen name="global_actions_fullscreen_gap">28dp</dimen>
+    <dimen name="global_actions_fullscreen_icon_margin_bottom">12dp</dimen>
+
     <!-- The maximum offset in either direction that elements are moved horizontally to prevent
          burn-in on AOD. -->
     <dimen name="burn_in_prevention_offset_x">8dp</dimen>
