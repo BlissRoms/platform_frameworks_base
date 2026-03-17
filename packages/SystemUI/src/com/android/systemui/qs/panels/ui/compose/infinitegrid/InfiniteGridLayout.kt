@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.toMutableStateList
@@ -84,19 +85,26 @@ constructor(
                 textFeedbackContentViewModelFactory.create(context)
             }
 
-        val columns = viewModel.columnsWithMediaViewModel.columns
+        val panelStyle = rememberQSPanelStyle()
+        val isClassicStyle = panelStyle == 1
+
+        val baseColumns = viewModel.columnsWithMediaViewModel.columns
+        val columns = if (isClassicStyle) 4 else baseColumns
         val largeTilesSpan = viewModel.columnsWithMediaViewModel.largeSpan
         val largeTiles by viewModel.iconTilesViewModel.largeTilesState
         // Tiles or largeTiles may be updated while this is composed, so listen to any changes
         val sizedTiles =
-            remember(tiles, largeTiles, largeTilesSpan) {
+            remember(tiles, largeTiles, largeTilesSpan, isClassicStyle) {
                 tiles.map {
-                    SizedTileImpl(it, if (largeTiles.contains(it.spec)) largeTilesSpan else 1)
+                    val width = if (isClassicStyle) 1
+                        else if (largeTiles.contains(it.spec)) largeTilesSpan else 1
+                    SizedTileImpl(it, width)
                 }
             }
         val squishiness by viewModel.squishinessViewModel.squishiness.collectAsStateWithLifecycle()
         val scope = rememberCoroutineScope()
 
+        CompositionLocalProvider(LocalQSPanelStyle provides panelStyle) {
         if (QSMaterialExpressiveTiles.isEnabled) {
             ButtonGroupGrid(
                 sizedTiles = sizedTiles,
@@ -108,7 +116,7 @@ constructor(
             ) { sizedTile, interactionSource ->
                 Tile(
                     tile = sizedTile.tile,
-                    iconOnly = iconTilesViewModel.isIconTile(sizedTile.tile.spec),
+                    iconOnly = isClassicStyle || iconTilesViewModel.isIconTile(sizedTile.tile.spec),
                     squishiness = { squishiness },
                     tileHapticsViewModelFactoryProvider = tileHapticsViewModelFactoryProvider,
                     coroutineScope = scope,
@@ -137,7 +145,7 @@ constructor(
                 Element(it.tile.spec.toElementKey(), Modifier) {
                     Tile(
                         tile = it.tile,
-                        iconOnly = iconTilesViewModel.isIconTile(it.tile.spec),
+                        iconOnly = isClassicStyle || iconTilesViewModel.isIconTile(it.tile.spec),
                         squishiness = { squishiness },
                         tileHapticsViewModelFactoryProvider = tileHapticsViewModelFactoryProvider,
                         coroutineScope = scope,
@@ -158,6 +166,7 @@ constructor(
                     )
                 }
             }
+        }
         }
 
         TileListener(tiles, listening)

@@ -46,6 +46,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Switch
@@ -80,6 +81,7 @@ constructor(
     context: Context,
     private val collapsed: Boolean = false,
     private val longPressEffect: QSLongPressEffect? = null,
+    private val tileStyle: Int = QS_TILE_STYLE_CARD,
 ) : QSTileView(context), HeightOverrideable, LaunchableView {
 
     companion object {
@@ -94,10 +96,17 @@ constructor(
         @VisibleForTesting internal const val LONG_PRESS_EFFECT_WIDTH_SCALE = 1.1f
         @VisibleForTesting internal const val LONG_PRESS_EFFECT_HEIGHT_SCALE = 1.2f
         internal val EMPTY_RECT = Rect()
+
+        const val QS_TILE_STYLE_CARD = 0
+        const val QS_TILE_STYLE_CLASSIC_CIRCULAR = 1
     }
+
+    private val isCircularStyle = tileStyle == QS_TILE_STYLE_CLASSIC_CIRCULAR
 
     private val icon: QSIconViewImpl = QSIconViewImpl(context)
     private var position: Int = INVALID
+
+    private var iconCircleBackground: GradientDrawable? = null
     private var hasLongClickEffect: Boolean = true
 
     override fun setPosition(position: Int) {
@@ -226,24 +235,48 @@ constructor(
             )
         }
         setId(generateViewId())
-        orientation = LinearLayout.HORIZONTAL
-        gravity = Gravity.CENTER_VERTICAL or Gravity.START
         importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
         clipChildren = false
         clipToPadding = false
         isFocusable = true
-        background = createTileBackground()
-        setColor(getBackgroundColorForState(QSTile.State.DEFAULT_STATE))
 
-        val padding = resources.getDimensionPixelSize(R.dimen.qs_tile_padding)
-        val startPadding = resources.getDimensionPixelSize(R.dimen.qs_tile_start_padding)
-        setPaddingRelative(startPadding, padding, padding, padding)
+        if (isCircularStyle) {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
 
-        val iconSize = resources.getDimensionPixelSize(R.dimen.qs_icon_size)
-        addView(icon, LayoutParams(iconSize, iconSize))
+            val circlePadding = resources.getDimensionPixelSize(R.dimen.qs_tile_circle_padding)
+            setPadding(circlePadding, circlePadding, circlePadding, circlePadding)
 
-        createAndAddLabels()
-        createAndAddSideView()
+            val circleSize = resources.getDimensionPixelSize(R.dimen.qs_tile_circle_bg_size)
+            iconCircleBackground = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(getBackgroundColorForState(QSTile.State.DEFAULT_STATE))
+            }
+            icon.background = iconCircleBackground
+            val iconLp = LayoutParams(circleSize, circleSize)
+            iconLp.gravity = Gravity.CENTER_HORIZONTAL
+            addView(icon, iconLp)
+
+            createAndAddLabelsCircular()
+
+            background = createTileBackground()
+            setColor(getBackgroundColorForState(QSTile.State.DEFAULT_STATE))
+        } else {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL or Gravity.START
+            background = createTileBackground()
+            setColor(getBackgroundColorForState(QSTile.State.DEFAULT_STATE))
+
+            val padding = resources.getDimensionPixelSize(R.dimen.qs_tile_padding)
+            val startPadding = resources.getDimensionPixelSize(R.dimen.qs_tile_start_padding)
+            setPaddingRelative(startPadding, padding, padding, padding)
+
+            val iconSize = resources.getDimensionPixelSize(R.dimen.qs_icon_size)
+            addView(icon, LayoutParams(iconSize, iconSize))
+
+            createAndAddLabels()
+            createAndAddSideView()
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -267,32 +300,50 @@ constructor(
     }
 
     fun updateResources() {
-        FontSizeUtils.updateFontSize(label, R.dimen.qs_tile_text_size)
-        FontSizeUtils.updateFontSize(secondaryLabel, R.dimen.qs_tile_text_size)
+        if (isCircularStyle) {
+            FontSizeUtils.updateFontSize(label, R.dimen.qs_tile_text_size_classic)
 
-        val iconSize = context.resources.getDimensionPixelSize(R.dimen.qs_icon_size)
-        icon.layoutParams.apply {
-            height = iconSize
-            width = iconSize
-        }
+            val circleSize = context.resources.getDimensionPixelSize(R.dimen.qs_tile_circle_bg_size)
+            icon.layoutParams.apply {
+                height = circleSize
+                width = circleSize
+            }
 
-        val padding = resources.getDimensionPixelSize(R.dimen.qs_tile_padding)
-        val startPadding = resources.getDimensionPixelSize(R.dimen.qs_tile_start_padding)
-        setPaddingRelative(startPadding, padding, padding, padding)
+            val circlePadding = resources.getDimensionPixelSize(R.dimen.qs_tile_circle_padding)
+            setPadding(circlePadding, circlePadding, circlePadding, circlePadding)
 
-        val labelMargin = resources.getDimensionPixelSize(R.dimen.qs_label_container_margin)
-        (labelContainer.layoutParams as MarginLayoutParams).apply { marginStart = labelMargin }
+            val topMargin = resources.getDimensionPixelSize(R.dimen.qs_tile_circle_label_margin_top)
+            (labelContainer.layoutParams as MarginLayoutParams).apply {
+                this.topMargin = topMargin
+            }
+        } else {
+            FontSizeUtils.updateFontSize(label, R.dimen.qs_tile_text_size)
+            FontSizeUtils.updateFontSize(secondaryLabel, R.dimen.qs_tile_text_size)
 
-        (sideView.layoutParams as MarginLayoutParams).apply { marginStart = labelMargin }
-        (chevronView.layoutParams as MarginLayoutParams).apply {
-            height = iconSize
-            width = iconSize
-        }
+            val iconSize = context.resources.getDimensionPixelSize(R.dimen.qs_icon_size)
+            icon.layoutParams.apply {
+                height = iconSize
+                width = iconSize
+            }
 
-        val endMargin = resources.getDimensionPixelSize(R.dimen.qs_drawable_end_margin)
-        (customDrawableView.layoutParams as MarginLayoutParams).apply {
-            height = iconSize
-            marginEnd = endMargin
+            val padding = resources.getDimensionPixelSize(R.dimen.qs_tile_padding)
+            val startPadding = resources.getDimensionPixelSize(R.dimen.qs_tile_start_padding)
+            setPaddingRelative(startPadding, padding, padding, padding)
+
+            val labelMargin = resources.getDimensionPixelSize(R.dimen.qs_label_container_margin)
+            (labelContainer.layoutParams as MarginLayoutParams).apply { marginStart = labelMargin }
+
+            (sideView.layoutParams as MarginLayoutParams).apply { marginStart = labelMargin }
+            (chevronView.layoutParams as MarginLayoutParams).apply {
+                height = iconSize
+                width = iconSize
+            }
+
+            val endMargin = resources.getDimensionPixelSize(R.dimen.qs_drawable_end_margin)
+            (customDrawableView.layoutParams as MarginLayoutParams).apply {
+                height = iconSize
+                marginEnd = endMargin
+            }
         }
 
         background = createTileBackground()
@@ -330,13 +381,48 @@ constructor(
         addView(sideView)
     }
 
+    private fun createAndAddLabelsCircular() {
+        label = TextView(context).apply {
+            gravity = Gravity.CENTER_HORIZONTAL
+            maxLines = 2
+            ellipsize = TextUtils.TruncateAt.END
+            setTextAppearance(R.style.TextAppearance_QS_TileLabel)
+        }
+        FontSizeUtils.updateFontSize(label, R.dimen.qs_tile_text_size_classic)
+
+        secondaryLabel = TextView(context).apply {
+            visibility = GONE
+        }
+
+        labelContainer = IgnorableChildLinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            addView(label, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+            addView(secondaryLabel, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+        }
+
+        val topMargin = resources.getDimensionPixelSize(R.dimen.qs_tile_circle_label_margin_top)
+        val lp = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        (lp as MarginLayoutParams).topMargin = topMargin
+        addView(labelContainer, lp)
+
+        sideView = android.widget.FrameLayout(context).apply { visibility = GONE }
+        chevronView = ImageView(context)
+        customDrawableView = ImageView(context)
+
+        setLabelColor(getLabelColorForState(QSTile.State.DEFAULT_STATE))
+        setSecondaryLabelColor(getSecondaryLabelColorForState(QSTile.State.DEFAULT_STATE))
+    }
+
     private fun createTileBackground(): Drawable {
-        qsTileBackground =
-            if (Flags.qsTileFocusState()) {
-                mContext.getDrawable(R.drawable.qs_tile_background_flagged) as RippleDrawable
-            } else {
-                mContext.getDrawable(R.drawable.qs_tile_background) as RippleDrawable
-            }
+        val drawableRes = if (isCircularStyle) {
+            R.drawable.qs_tile_circle_background
+        } else if (Flags.qsTileFocusState()) {
+            R.drawable.qs_tile_background_flagged
+        } else {
+            R.drawable.qs_tile_background
+        }
+        qsTileBackground = mContext.getDrawable(drawableRes) as RippleDrawable
         qsTileFocusBackground = mContext.getDrawable(R.drawable.qs_tile_focused_background)!!
         backgroundDrawable =
             qsTileBackground.findDrawableByLayerId(R.id.background) as LayerDrawable
@@ -705,14 +791,16 @@ constructor(
         if (!Objects.equals(label.text, state.label)) {
             label.text = state.label
         }
-        if (!Objects.equals(secondaryLabel.text, state.secondaryLabel)) {
-            secondaryLabel.text = state.secondaryLabel
-            secondaryLabel.visibility =
-                if (TextUtils.isEmpty(state.secondaryLabel)) {
-                    GONE
-                } else {
-                    VISIBLE
-                }
+        if (!isCircularStyle) {
+            if (!Objects.equals(secondaryLabel.text, state.secondaryLabel)) {
+                secondaryLabel.text = state.secondaryLabel
+                secondaryLabel.visibility =
+                    if (TextUtils.isEmpty(state.secondaryLabel)) {
+                        GONE
+                    } else {
+                        VISIBLE
+                    }
+            }
         }
 
         // Colors
@@ -765,7 +853,9 @@ constructor(
         }
 
         // Right side icon
-        loadSideViewDrawableIfNecessary(state)
+        if (!isCircularStyle) {
+            loadSideViewDrawableIfNecessary(state)
+        }
 
         label.isEnabled = !state.disabledByPolicy
 
@@ -784,6 +874,11 @@ constructor(
                 longPressEffect?.state != QSLongPressEffect.State.CLICKED
         )
             return
+
+        if (isCircularStyle) {
+            showRippleEffect = isClickable
+            return
+        }
 
         longPressEffect.qsTile?.state?.handlesLongClick = handlesLongClick
         if (hasLongClickEffect && handlesLongClick &&
@@ -817,7 +912,12 @@ constructor(
     }
 
     private fun setColor(color: Int) {
-        backgroundBaseDrawable.mutate().setTint(color)
+        if (isCircularStyle) {
+            (iconCircleBackground?.mutate() as? GradientDrawable)?.setColor(color)
+            backgroundBaseDrawable.mutate().setTint(Color.TRANSPARENT)
+        } else {
+            backgroundBaseDrawable.mutate().setTint(color)
+        }
         backgroundColor = color
     }
 
@@ -834,7 +934,11 @@ constructor(
     }
 
     private fun setOverlayColor(overlayColor: Int) {
-        backgroundOverlayDrawable.setTint(overlayColor)
+        if (isCircularStyle) {
+            backgroundOverlayDrawable.setTint(Color.TRANSPARENT)
+        } else {
+            backgroundOverlayDrawable.setTint(overlayColor)
+        }
         backgroundOverlayColor = overlayColor
     }
 

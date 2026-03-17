@@ -86,6 +86,7 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
     private int mLastExcessHeight;
     private int mMinRows = 1;
     private int mMaxColumns = TileLayout.NO_MAX_COLUMNS;
+    private int mTileStyle = 0;
 
     /**
      * it's fine to read this value when class is initialized because SysUI is always restarted
@@ -339,6 +340,7 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
                 .inflate(R.layout.qs_paged_page, this, false);
         page.setMinRows(mMinRows);
         page.setMaxColumns(mMaxColumns);
+        page.setTileStyle(mTileStyle);
         page.setSelected(false);
 
         // All pages should have the same squishiness, so grabbing the value from the first page
@@ -540,6 +542,13 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
     @Override
     public int getMaxColumns() {
         return mMaxColumns;
+    }
+
+    public void setTileStyle(int style) {
+        mTileStyle = style;
+        for (int i = 0; i < mPages.size(); i++) {
+            mPages.get(i).setTileStyle(style);
+        }
     }
 
     /**

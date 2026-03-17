@@ -23,7 +23,12 @@ import android.annotation.Nullable;
 import android.content.ComponentName;
 import android.content.res.Configuration;
 import android.content.res.Configuration.Orientation;
+import android.database.ContentObserver;
 import android.metrics.LogMaker;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -104,6 +109,22 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
     private final Provider<QSLongPressEffect> mLongPressEffectProvider;
 
     private boolean mDestroyed = false;
+
+    protected int mQsTileStyle = 0;
+
+    private final ContentObserver mQsTileStyleObserver = new ContentObserver(
+            new Handler(Looper.getMainLooper())) {
+        @Override
+        public void onChange(boolean selfChange) {
+            int newStyle = Settings.Secure.getIntForUser(
+                    getContext().getContentResolver(), "qs_panel_style", 0,
+                    android.os.UserHandle.USER_CURRENT);
+            if (mQsTileStyle != newStyle) {
+                mQsTileStyle = newStyle;
+                recreateTiles();
+            }
+        }
+    };
 
     private boolean mMediaVisibleFromInteractor;
 
@@ -205,6 +226,9 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         mView.initialize(mQSLogger, mUsingMediaPlayer);
         mQSLogger.logAllTilesChangeListening(mView.isListening(), mView.getDumpableTag(), "");
         mHost.addCallback(mQSHostCallback);
+        mQsTileStyle = Settings.Secure.getIntForUser(
+                getContext().getContentResolver(), "qs_panel_style", 0,
+                android.os.UserHandle.USER_CURRENT);
         if (SceneContainerFlag.isEnabled()) {
             registerForMediaInteractorChanges();
         }
@@ -259,6 +283,12 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
                     getContext().getResources().getConfiguration()
             );
         }
+        QSPanel.QSTileLayout tileLayout = mView.getTileLayout();
+        if (tileLayout instanceof PagedTileLayout) {
+            ((PagedTileLayout) tileLayout).setTileStyle(mQsTileStyle);
+        } else if (tileLayout instanceof TileLayout) {
+            ((TileLayout) tileLayout).setTileStyle(mQsTileStyle);
+        }
         setTiles();
         mLastOrientation = getResources().getConfiguration().orientation;
         mLastScreenLayout = getResources().getConfiguration().screenLayout;
@@ -269,6 +299,10 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         switchTileLayout(true);
 
         mDumpManager.registerDumpable(mView.getDumpableTag(), this);
+
+        getContext().getContentResolver().registerContentObserver(
+                Settings.Secure.getUriFor("qs_panel_style"), false,
+                mQsTileStyleObserver, android.os.UserHandle.USER_ALL);
 
         setListening(mLastListening);
     }
@@ -297,6 +331,8 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         mView.setListening(false);
 
         mMediaHost.removeVisibilityChangeListener(mMediaHostVisibilityListener);
+
+        getContext().getContentResolver().unregisterContentObserver(mQsTileStyleObserver);
 
         mDumpManager.unregisterDumpable(mView.getDumpableTag());
     }
@@ -379,10 +415,30 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         }
     }
 
+    protected void recreateTiles() {
+        for (TileRecord record : mRecords) {
+            mView.removeTile(record);
+            record.tile.removeCallback(record.callback);
+        }
+        mRecords.clear();
+        mCachedSpecs = "";
+        QSPanel.QSTileLayout tileLayout = mView.getTileLayout();
+        if (tileLayout instanceof PagedTileLayout) {
+            ((PagedTileLayout) tileLayout).setTileStyle(mQsTileStyle);
+        } else if (tileLayout instanceof TileLayout) {
+            ((TileLayout) tileLayout).setTileStyle(mQsTileStyle);
+        }
+        setTiles();
+    }
+
+    public int getQsTileStyle() {
+        return mQsTileStyle;
+    }
+
     private void addTile(final QSTile tile, boolean collapsedView) {
         QSLongPressEffect longPressEffect = mLongPressEffectProvider.get();
         final QSTileViewImpl tileView = new QSTileViewImpl(
-                getContext(), collapsedView, longPressEffect);
+                getContext(), collapsedView, longPressEffect, mQsTileStyle);
         final TileRecord r = new TileRecord(tile, tileView);
         // TODO(b/250618218): Remove the QSLogger in QSTileViewImpl once we know the root cause of
         // b/250618218.

@@ -183,8 +183,22 @@ public class QuickQSPanel extends QSPanel {
         }
 
         @Override
+        public void setTileStyle(int style) {
+            super.setTileStyle(style);
+            if (style == 1) {
+                setMaxColumns(6);
+            } else {
+                setMaxColumns(4);
+            }
+        }
+
+        @Override
         public boolean updateResources() {
-            mResourceCellHeightResId = R.dimen.qs_quick_tile_size;
+            if (mTileStyle == 1) {
+                mResourceCellHeightResId = R.dimen.qs_quick_tile_size_classic;
+            } else {
+                mResourceCellHeightResId = R.dimen.qs_quick_tile_size;
+            }
             boolean b = super.updateResources();
             mMaxAllowedRows = getResources().getInteger(R.integer.quick_qs_panel_max_rows);
             return b;
@@ -192,12 +206,25 @@ public class QuickQSPanel extends QSPanel {
 
         @Override
         protected void estimateCellHeight() {
-            FontSizeUtils.updateFontSize(mTempTextView, R.dimen.qs_tile_text_size);
-            int unspecifiedSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-            mTempTextView.measure(unspecifiedSpec, unspecifiedSpec);
-            int padding = mContext.getResources().getDimensionPixelSize(R.dimen.qs_tile_padding);
-            // the QQS only have 1 label
-            mEstimatedCellHeight = mTempTextView.getMeasuredHeight() + padding * 2;
+            if (mTileStyle == 1) {
+                FontSizeUtils.updateFontSize(mTempTextView, R.dimen.qs_tile_text_size_classic);
+                int unspecifiedSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+                mTempTextView.measure(unspecifiedSpec, unspecifiedSpec);
+                int circlePadding = mContext.getResources()
+                        .getDimensionPixelSize(R.dimen.qs_tile_circle_padding);
+                int circleSize = mContext.getResources()
+                        .getDimensionPixelSize(R.dimen.qs_tile_circle_bg_size);
+                mEstimatedCellHeight = circleSize + mTempTextView.getMeasuredHeight()
+                        + circlePadding * 2;
+            } else {
+                FontSizeUtils.updateFontSize(mTempTextView, R.dimen.qs_tile_text_size);
+                int unspecifiedSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+                mTempTextView.measure(unspecifiedSpec, unspecifiedSpec);
+                int padding = mContext.getResources()
+                        .getDimensionPixelSize(R.dimen.qs_tile_padding);
+                // the QQS only have 1 label
+                mEstimatedCellHeight = mTempTextView.getMeasuredHeight() + padding * 2;
+            }
         }
 
         @Override
