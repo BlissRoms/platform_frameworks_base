@@ -112,6 +112,7 @@ import com.android.systemui.res.R
 import kotlinx.coroutines.CoroutineScope
 
 val LocalQSPanelStyle = compositionLocalOf { 0 }
+val LocalQSTileLabelHide = compositionLocalOf { false }
 
 @Composable
 private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
@@ -143,6 +144,9 @@ private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
 
 @Composable
 fun rememberQSPanelStyle(): Int = rememberSecureIntSetting("qs_panel_style")
+
+@Composable
+fun rememberQSTileLabelHide(): Boolean = rememberSecureIntSetting("qs_tile_label_hide") == 1
 
 @Composable
 fun TileLazyGrid(
@@ -350,6 +354,7 @@ fun ContentScope.Tile(
                         label = uiState.label,
                         iconProvider = iconProvider,
                         colors = colors,
+                        hideLabel = LocalQSTileLabelHide.current,
                         modifier = Modifier.align(Alignment.Center),
                     )
                 } else if (iconOnly) {
@@ -422,8 +427,12 @@ fun TileContainer(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val tileHeight = if (LocalQSPanelStyle.current == 1)
-        CommonTileDefaults.ClassicTileHeight else TileHeight
+    val isClassic = LocalQSPanelStyle.current == 1
+    val tileHeight = if (isClassic && LocalQSTileLabelHide.current)
+        CommonTileDefaults.ClassicCircleSize + 8.dp
+    else if (isClassic)
+        CommonTileDefaults.ClassicTileHeight
+    else TileHeight
     Box(
         modifier =
             modifier
