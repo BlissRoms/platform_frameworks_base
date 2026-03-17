@@ -34,8 +34,10 @@ import com.android.systemui.qs.flags.QSMaterialExpressiveTiles
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.systemui.qs.panels.shared.model.SizedTileImpl
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSPanelStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileLabelHide
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.Tile
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileLabelHide
 import com.android.systemui.qs.panels.ui.viewmodel.BounceableTileViewModel
 import com.android.systemui.qs.panels.ui.viewmodel.QuickQuickSettingsViewModel
 import com.android.systemui.qs.shared.ui.QuickSettings.Elements.toElementKey
@@ -49,6 +51,7 @@ fun ContentScope.QuickQuickSettings(
 ) {
     val panelStyle = rememberQSPanelStyle()
     val isClassicStyle = panelStyle == 1
+    val hideTileLabels = rememberQSTileLabelHide()
     val columns = viewModel.columns
     val sizedTiles = if (isClassicStyle) {
         val maxTiles = columns * 2
@@ -62,7 +65,10 @@ fun ContentScope.QuickQuickSettings(
     val squishiness by viewModel.squishinessViewModel.squishiness.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
-    CompositionLocalProvider(LocalQSPanelStyle provides panelStyle) {
+    CompositionLocalProvider(
+        LocalQSPanelStyle provides panelStyle,
+        LocalQSTileLabelHide provides hideTileLabels,
+    ) {
     Box(modifier = modifier) {
         GridAnchor()
 
