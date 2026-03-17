@@ -274,6 +274,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     // Power menu customizations
     private String[] mActions;
 
+    protected int mPowerMenuStyle;
     private boolean mKeyguardShowing = false;
     private boolean mDeviceProvisioned = false;
     private ToggleState mAirplaneState = ToggleState.Off;
@@ -625,6 +626,9 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     }
 
     protected void handleShow(@Nullable Expandable expandable, int displayId) {
+        mPowerMenuStyle = Settings.Secure.getIntForUser(
+                mContext.getContentResolver(), "power_menu_style",
+                0, UserHandle.USER_CURRENT);
         mDialog = createDialog(displayId);
         prepareDialog();
 
@@ -927,7 +931,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 mKeyguardUpdateMonitor,
                 mLockPatternUtils,
                 mSelectedUserInteractor,
-                mBlurUtils) {
+                mBlurUtils,
+                mPowerMenuStyle) {
             @Override
             public boolean dispatchTouchEvent(MotionEvent event) {
                 rescheduleBurninTimeout(mGlobalActionDialogTimeout);
@@ -2454,7 +2459,14 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 messageView.setText(mMessageResId);
             }
 
-            if (QsInCompose.isEnabled()) {
+            if (mPowerMenuStyle == 1) {
+                int iconColor = context.getColor(R.color.materialColorOnPrimaryContainer);
+                messageView.setTextColor(context.getColor(R.color.materialColorOnSurface));
+                mIconView.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                                context.getColor(R.color.materialColorPrimaryContainer)));
+                mIconView.setImageTintList(ColorStateList.valueOf(iconColor));
+            } else if (QsInCompose.isEnabled()) {
                 int textAndIconColor = context.getColor(R.color.materialColorOnSurface);
                 messageView.setTextColor(textAndIconColor);
                 mIconView.setBackgroundTintList(
@@ -2486,6 +2498,9 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     }
 
     protected int getGridItemLayoutResource() {
+        if (mPowerMenuStyle == 1) {
+            return com.android.systemui.res.R.layout.global_actions_grid_item_fullscreen;
+        }
         return com.android.systemui.res.R.layout.global_actions_grid_item_lite;
     }
 
@@ -2599,6 +2614,19 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             if (icon != null) {
                 icon.setImageDrawable(context.getDrawable(getIconResId()));
                 icon.setEnabled(enabled);
+            }
+
+            if (mPowerMenuStyle == 1) {
+                if (messageView != null) {
+                    messageView.setTextColor(context.getColor(R.color.materialColorOnSurface));
+                }
+                if (icon != null) {
+                    icon.setBackgroundTintList(
+                            ColorStateList.valueOf(
+                                    context.getColor(R.color.materialColorPrimaryContainer)));
+                    icon.setImageTintList(ColorStateList.valueOf(
+                            context.getColor(R.color.materialColorOnPrimaryContainer)));
+                }
             }
 
             v.setEnabled(enabled);
@@ -2944,6 +2972,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             ColorExtractor.OnColorsChangedListener {
 
         protected final Context mContext;
+        protected int mPowerMenuStyle;
         protected MultiListLayout mGlobalActionsLayout;
         protected final MyAdapter mAdapter;
         protected final MyOverflowAdapter mOverflowAdapter;
@@ -3056,11 +3085,13 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 KeyguardUpdateMonitor keyguardUpdateMonitor,
                 LockPatternUtils lockPatternUtils,
                 SelectedUserInteractor selectedUserInteractor,
-                BlurUtils blurUtils) {
+                BlurUtils blurUtils,
+                int powerMenuStyle) {
             // We set dismissOnDeviceLock to false because we have a custom broadcast receiver to
             // dismiss this dialog when the device is locked.
             super(context, themeRes, false /* dismissOnDeviceLock */);
             mContext = context;
+            mPowerMenuStyle = powerMenuStyle;
             mAdapter = adapter;
             mOverflowAdapter = overflowAdapter;
             mPowerOptionsAdapter = powerAdapter;
@@ -3152,13 +3183,13 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         public void showPowerOptionsMenu() {
             mPowerOptionsDialog = GlobalActionsPowerDialog.create(mContext,
-                    mPowerOptionsAdapter, mBlurUtils);
+                    mPowerOptionsAdapter, mBlurUtils, mPowerMenuStyle);
             mPowerOptionsDialog.show();
         }
 
         public void showRestartOptionsMenu() {
             mRestartOptionsDialog = GlobalActionsPowerDialog.create(mContext,
-                    mRestartOptionsAdapter, mBlurUtils);
+                    mRestartOptionsAdapter, mBlurUtils, mPowerMenuStyle);
             mRestartOptionsDialog.show();
         }
 
@@ -3169,11 +3200,14 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         public void showUsersMenu() {
             mUsersDialog = GlobalActionsPowerDialog.create(mContext,
-                    mUsersAdapter, mBlurUtils);
+                    mUsersAdapter, mBlurUtils, mPowerMenuStyle);
             mUsersDialog.show();
         }
 
         protected int getLayoutResource() {
+            if (mPowerMenuStyle == 1) {
+                return com.android.systemui.res.R.layout.global_actions_grid_fullscreen;
+            }
             return com.android.systemui.res.R.layout.global_actions_grid_lite;
         }
 
@@ -3240,7 +3274,10 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             } else {
                 window.setDimAmount(0.88f);
             }
-            if (QsInCompose.isEnabled()) {
+            if (mPowerMenuStyle == 1) {
+                View v = findViewById(R.id.list);
+                v.setBackground(null);
+            } else if (QsInCompose.isEnabled()) {
                 View v = findViewById(R.id.list);
                 v.setBackgroundTintList(ColorStateList.valueOf(
                         getContext().getColor(R.color.materialColorSurfaceContainerLow)

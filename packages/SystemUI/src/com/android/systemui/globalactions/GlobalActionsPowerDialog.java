@@ -39,7 +39,8 @@ public class GlobalActionsPowerDialog {
     /**
      * Create a dialog for displaying Shut Down and Restart actions.
      */
-    public static Dialog create(@NonNull Context context, ListAdapter adapter, BlurUtils blurUtils) {
+    public static Dialog create(@NonNull Context context, ListAdapter adapter, BlurUtils blurUtils,
+            int powerMenuStyle) {
         ViewGroup listView = (ViewGroup) LayoutInflater.from(context).inflate(
                 com.android.systemui.res.R.layout.global_actions_power_dialog_flow, null);
 
@@ -73,9 +74,13 @@ public class GlobalActionsPowerDialog {
         Window window = dialog.getWindow();
         window.setType(WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY);
         window.setTitle(""); // prevent Talkback from speaking first item name twice
-        window.setBackgroundDrawable(res.getDrawable(
-                com.android.systemui.res.R.drawable.global_actions_lite_background,
-                context.getTheme()));
+        if (powerMenuStyle == 1) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        } else {
+            window.setBackgroundDrawable(res.getDrawable(
+                    com.android.systemui.res.R.drawable.global_actions_lite_background,
+                    context.getTheme()));
+        }
         window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         if (blurUtils.supportsBlursOnWindows()) {
