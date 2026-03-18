@@ -34,10 +34,14 @@ import com.android.systemui.qs.flags.QSMaterialExpressiveTiles
 import androidx.compose.runtime.CompositionLocalProvider
 import com.android.systemui.qs.panels.shared.model.SizedTileImpl
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSPanelStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileColumns
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileLabelHide
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileQqsRows
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.Tile
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileColumns
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileLabelHide
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileQqsRows
 import com.android.systemui.qs.panels.ui.viewmodel.BounceableTileViewModel
 import com.android.systemui.qs.panels.ui.viewmodel.QuickQuickSettingsViewModel
 import com.android.systemui.qs.shared.ui.QuickSettings.Elements.toElementKey
@@ -52,9 +56,11 @@ fun ContentScope.QuickQuickSettings(
     val panelStyle = rememberQSPanelStyle()
     val isClassicStyle = panelStyle == 1
     val hideTileLabels = rememberQSTileLabelHide()
-    val columns = viewModel.columns
+    val customColumns = rememberQSTileColumns()
+    val customQqsRows = rememberQSTileQqsRows()
+    val columns = if (isClassicStyle) customColumns else viewModel.columns
     val sizedTiles = if (isClassicStyle) {
-        val maxTiles = columns * 2
+        val maxTiles = columns * customQqsRows
         viewModel.allTileViewModels
             .take(maxTiles)
             .fastMap { SizedTileImpl(it, 1) }
@@ -68,6 +74,8 @@ fun ContentScope.QuickQuickSettings(
     CompositionLocalProvider(
         LocalQSPanelStyle provides panelStyle,
         LocalQSTileLabelHide provides hideTileLabels,
+        LocalQSTileColumns provides customColumns,
+        LocalQSTileQqsRows provides customQqsRows,
     ) {
     Box(modifier = modifier) {
         GridAnchor()

@@ -88,14 +88,14 @@ constructor(
         val panelStyle = rememberQSPanelStyle()
         val isClassicStyle = panelStyle == 1
         val hideTileLabels = rememberQSTileLabelHide()
+        val customColumns = rememberQSTileColumns()
 
         val baseColumns = viewModel.columnsWithMediaViewModel.columns
-        val columns = if (isClassicStyle) 4 else baseColumns
+        val columns = if (isClassicStyle) customColumns else baseColumns
         val largeTilesSpan = viewModel.columnsWithMediaViewModel.largeSpan
         val largeTiles by viewModel.iconTilesViewModel.largeTilesState
-        // Tiles or largeTiles may be updated while this is composed, so listen to any changes
         val sizedTiles =
-            remember(tiles, largeTiles, largeTilesSpan, isClassicStyle) {
+            remember(tiles, largeTiles, largeTilesSpan, isClassicStyle, columns) {
                 tiles.map {
                     val width = if (isClassicStyle) 1
                         else if (largeTiles.contains(it.spec)) largeTilesSpan else 1
@@ -108,6 +108,7 @@ constructor(
         CompositionLocalProvider(
             LocalQSPanelStyle provides panelStyle,
             LocalQSTileLabelHide provides hideTileLabels,
+            LocalQSTileColumns provides customColumns,
         ) {
         if (QSMaterialExpressiveTiles.isEnabled) {
             ButtonGroupGrid(

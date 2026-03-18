@@ -7764,4 +7764,9 @@
         It can only contain non-AOSP permissions outside of the android.*
         and com.android.* namespace. -->
     <string-array name="config_watchFacePermissions" translatable="false"/>
+
+    <!-- QS tile grid limits for circular style. Maintainers can overlay these. -->
+    <integer name="config_qsTileColumnsMax">6</integer>
+    <integer name="config_qsTileQqsRowsMax">3</integer>
+    <integer name="config_qsTileQsRowsMax">5</integer>
 </resources>

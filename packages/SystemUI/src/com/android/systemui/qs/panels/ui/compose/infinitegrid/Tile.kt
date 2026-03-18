@@ -113,6 +113,9 @@ import kotlinx.coroutines.CoroutineScope
 
 val LocalQSPanelStyle = compositionLocalOf { 0 }
 val LocalQSTileLabelHide = compositionLocalOf { false }
+val LocalQSTileColumns = compositionLocalOf { 4 }
+val LocalQSTileQqsRows = compositionLocalOf { 2 }
+val LocalQSTileQsRows = compositionLocalOf { 4 }
 
 @Composable
 private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
@@ -147,6 +150,27 @@ fun rememberQSPanelStyle(): Int = rememberSecureIntSetting("qs_panel_style")
 
 @Composable
 fun rememberQSTileLabelHide(): Boolean = rememberSecureIntSetting("qs_tile_label_hide") == 1
+
+@Composable
+fun rememberQSTileColumns(): Int {
+    val max = LocalContext.current.resources.getInteger(
+        com.android.internal.R.integer.config_qsTileColumnsMax)
+    return rememberSecureIntSetting("qs_tile_columns", 4).coerceIn(3, max)
+}
+
+@Composable
+fun rememberQSTileQqsRows(): Int {
+    val max = LocalContext.current.resources.getInteger(
+        com.android.internal.R.integer.config_qsTileQqsRowsMax)
+    return rememberSecureIntSetting("qs_tile_qqs_rows", 2).coerceIn(1, max)
+}
+
+@Composable
+fun rememberQSTileQsRows(): Int {
+    val max = LocalContext.current.resources.getInteger(
+        com.android.internal.R.integer.config_qsTileQsRowsMax)
+    return rememberSecureIntSetting("qs_tile_qs_rows", 4).coerceIn(2, max)
+}
 
 @Composable
 fun TileLazyGrid(
