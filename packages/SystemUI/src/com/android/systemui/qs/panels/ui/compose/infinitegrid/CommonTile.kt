@@ -432,7 +432,7 @@ fun ClassicCircleTileContent(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(CommonTileDefaults.ClassicCircleSize)
-                .clip(RoundedCornerShape(50))
+                .clip(classicTileShape(LocalQSTileShape.current))
                 .drawBehind { drawRect(animatedBgColor) },
         ) {
             SmallTileContent(

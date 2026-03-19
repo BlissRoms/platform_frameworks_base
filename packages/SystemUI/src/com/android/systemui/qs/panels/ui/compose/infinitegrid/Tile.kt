@@ -116,6 +116,7 @@ val LocalQSTileLabelHide = compositionLocalOf { false }
 val LocalQSTileColumns = compositionLocalOf { 4 }
 val LocalQSTileQqsRows = compositionLocalOf { 2 }
 val LocalQSTileQsRows = compositionLocalOf { 4 }
+val LocalQSTileShape = compositionLocalOf { 0 }
 
 @Composable
 private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
@@ -171,6 +172,9 @@ fun rememberQSTileQsRows(): Int {
         com.android.internal.R.integer.config_qsTileQsRowsMax)
     return rememberSecureIntSetting("qs_tile_qs_rows", 4).coerceIn(2, max)
 }
+
+@Composable
+fun rememberQSTileShape(): Int = rememberSecureIntSetting("qs_tile_shape")
 
 @Composable
 fun TileLazyGrid(
