@@ -90,6 +90,7 @@ constructor(
         val hideTileLabels = rememberQSTileLabelHide()
         val customColumns = rememberQSTileColumns()
         val tileShape = rememberQSTileShape()
+        val tileOpacity = rememberQSTileOpacity()
 
         val baseColumns = viewModel.columnsWithMediaViewModel.columns
         val columns = if (isClassicStyle) customColumns else baseColumns
@@ -111,6 +112,7 @@ constructor(
             LocalQSTileLabelHide provides hideTileLabels,
             LocalQSTileColumns provides customColumns,
             LocalQSTileShape provides tileShape,
+            LocalQSTileOpacity provides tileOpacity,
         ) {
         if (QSMaterialExpressiveTiles.isEnabled) {
             ButtonGroupGrid(

@@ -427,13 +427,15 @@ fun ClassicCircleTileContent(
         verticalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxWidth(),
     ) {
+        val opacity = LocalQSTileOpacity.current / 100f
         val animatedBgColor by animateColorAsState(colors.background, label = "CircleBgColor")
+        val bgColor = animatedBgColor.copy(alpha = animatedBgColor.alpha * opacity)
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(CommonTileDefaults.ClassicCircleSize)
                 .clip(classicTileShape(LocalQSTileShape.current))
-                .drawBehind { drawRect(animatedBgColor) },
+                .drawBehind { drawRect(bgColor) },
         ) {
             SmallTileContent(
                 iconProvider = iconProvider,

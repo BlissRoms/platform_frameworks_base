@@ -117,6 +117,7 @@ val LocalQSTileColumns = compositionLocalOf { 4 }
 val LocalQSTileQqsRows = compositionLocalOf { 2 }
 val LocalQSTileQsRows = compositionLocalOf { 4 }
 val LocalQSTileShape = compositionLocalOf { 0 }
+val LocalQSTileOpacity = compositionLocalOf { 100 }
 
 @Composable
 private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
@@ -175,6 +176,9 @@ fun rememberQSTileQsRows(): Int {
 
 @Composable
 fun rememberQSTileShape(): Int = rememberSecureIntSetting("qs_tile_shape")
+
+@Composable
+fun rememberQSTileOpacity(): Int = rememberSecureIntSetting("qs_tile_opacity", 100).coerceIn(0, 100)
 
 @Composable
 fun TileLazyGrid(

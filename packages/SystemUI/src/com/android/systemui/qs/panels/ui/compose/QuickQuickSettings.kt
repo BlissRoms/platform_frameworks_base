@@ -38,12 +38,14 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileColumns
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileLabelHide
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileQqsRows
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileShape
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileOpacity
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.Tile
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileColumns
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileLabelHide
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileQqsRows
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileShape
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileOpacity
 import com.android.systemui.qs.panels.ui.viewmodel.BounceableTileViewModel
 import com.android.systemui.qs.panels.ui.viewmodel.QuickQuickSettingsViewModel
 import com.android.systemui.qs.shared.ui.QuickSettings.Elements.toElementKey
@@ -61,6 +63,7 @@ fun ContentScope.QuickQuickSettings(
     val customColumns = rememberQSTileColumns()
     val customQqsRows = rememberQSTileQqsRows()
     val tileShape = rememberQSTileShape()
+    val tileOpacity = rememberQSTileOpacity()
     val columns = if (isClassicStyle) customColumns else viewModel.columns
     val sizedTiles = if (isClassicStyle) {
         val maxTiles = columns * customQqsRows
@@ -80,6 +83,7 @@ fun ContentScope.QuickQuickSettings(
         LocalQSTileColumns provides customColumns,
         LocalQSTileQqsRows provides customQqsRows,
         LocalQSTileShape provides tileShape,
+        LocalQSTileOpacity provides tileOpacity,
     ) {
     Box(modifier = modifier) {
         GridAnchor()
