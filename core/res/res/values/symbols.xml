@@ -1778,6 +1778,8 @@
 
   <java-symbol type="raw" name="color_fade_vert" />
   <java-symbol type="raw" name="color_fade_frag" />
+  <java-symbol type="raw" name="screen_off_anim_vert" />
+  <java-symbol type="raw" name="screen_off_anim_frag" />
   <java-symbol type="raw" name="loaderror" />
   <java-symbol type="raw" name="nodomain" />
 
