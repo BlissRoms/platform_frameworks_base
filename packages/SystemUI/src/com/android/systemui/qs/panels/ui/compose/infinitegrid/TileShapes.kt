@@ -51,17 +51,6 @@ private val HexagonShape = GenericShape { size, _ ->
     close()
 }
 
-private val TeardropShape = GenericShape { size, _ ->
-    val r = min(size.width, size.height) / 2f
-    val cx = size.width / 2f
-    val cy = size.height * 0.45f
-    addOval(androidx.compose.ui.geometry.Rect(cx - r, cy - r, cx + r, cy + r))
-    moveTo(cx - r * 0.5f, cy + r * 0.7f)
-    lineTo(cx, size.height)
-    lineTo(cx + r * 0.5f, cy + r * 0.7f)
-    close()
-}
-
 private val CloverShape = GenericShape { size, _ ->
     val cx = size.width / 2f
     val cy = size.height / 2f
@@ -155,12 +144,11 @@ fun classicTileShape(style: Int): Shape = when (style) {
     2 -> RoundedSquareShape
     3 -> DiamondShape
     4 -> HexagonShape
-    5 -> TeardropShape
-    6 -> CloverShape
-    7 -> StarShape
-    8 -> PentagonShape
-    9 -> OctagonShape
-    10 -> FlowerShape
-    11 -> BlissShape
+    5 -> CloverShape
+    6 -> StarShape
+    7 -> PentagonShape
+    8 -> OctagonShape
+    9 -> FlowerShape
+    10 -> BlissShape
     else -> CircleShape
 }
