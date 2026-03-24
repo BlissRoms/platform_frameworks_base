@@ -85,7 +85,7 @@ constructor(
             else
                 View.LAYOUT_DIRECTION_LTR
 
-        if (volumePanelStyle == 1) {
+        if (volumePanelStyle == 1 || volumePanelStyle == 2) {
             win.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -134,7 +134,8 @@ constructor(
             0, UserHandle.USER_CURRENT
         )
         when {
-            volumePanelStyle == 1 -> setContentView(R.layout.volume_dialog_oneplus)
+            volumePanelStyle == 1 || volumePanelStyle == 2 ->
+                setContentView(R.layout.volume_dialog_oneplus)
             isVolumeDialogVertical -> setContentView(R.layout.volume_dialog)
             else -> setContentView(R.layout.volume_dialog_horizontal)
         }
@@ -143,6 +144,10 @@ constructor(
                 val component = componentFactory.create(this)
                 if (volumePanelStyle == 1) {
                     with(component.onePlusVolumeDialogViewBinder()) {
+                        bind(this@VolumeDialog, volumePanelOnLeft)
+                    }
+                } else if (volumePanelStyle == 2) {
+                    with(component.samsungVolumeDialogViewBinder()) {
                         bind(this@VolumeDialog, volumePanelOnLeft)
                     }
                 } else {

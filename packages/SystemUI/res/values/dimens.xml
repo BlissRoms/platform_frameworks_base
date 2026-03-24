@@ -2326,4 +2326,12 @@
     <dimen name="volume_dialog_oneplus_slider_spacing">20dp</dimen>
     <dimen name="volume_dialog_oneplus_expanded_horizontal_padding">40dp</dimen>
 
+    <dimen name="volume_dialog_samsung_collapsed_slider_width">48dp</dimen>
+    <dimen name="volume_dialog_samsung_collapsed_slider_height">280dp</dimen>
+    <dimen name="volume_dialog_samsung_collapsed_vertical_padding">60dp</dimen>
+    <dimen name="volume_dialog_samsung_expanded_slider_height">340dp</dimen>
+    <dimen name="volume_dialog_samsung_slider_spacing">3dp</dimen>
+    <dimen name="volume_dialog_samsung_card_horizontal_padding">12dp</dimen>
+    <dimen name="volume_dialog_samsung_card_vertical_padding">48dp</dimen>
+
 </resources>
