@@ -633,7 +633,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         prepareDialog();
 
         DialogTransitionAnimator.Controller controller =
-                expandable != null ? expandable.dialogTransitionController(
+                expandable != null && mPowerMenuStyle != 1
+                        ? expandable.dialogTransitionController(
                         new DialogCuj(InteractionJankMonitor.CUJ_SHADE_DIALOG_OPEN,
                                 INTERACTION_JANK_TAG)) : null;
         mUserTracker.addCallback(mOnUserSwitched, mBackgroundExecutor);
