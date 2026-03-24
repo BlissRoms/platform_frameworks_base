@@ -32,5 +32,13 @@
 
     <!-- Ongoing activity chips -->
     <dimen name="ongoing_activity_chip_max_text_width">98dp</dimen>
+
+    <dimen name="volume_dialog_oneplus_collapsed_slider_width">64dp</dimen>
+    <dimen name="volume_dialog_oneplus_collapsed_slider_height">360dp</dimen>
+    <dimen name="volume_dialog_oneplus_collapsed_vertical_padding">120dp</dimen>
+    <dimen name="volume_dialog_oneplus_expanded_slider_width">88dp</dimen>
+    <dimen name="volume_dialog_oneplus_expanded_slider_height">320dp</dimen>
+    <dimen name="volume_dialog_oneplus_slider_spacing">28dp</dimen>
+    <dimen name="volume_dialog_oneplus_expanded_horizontal_padding">120dp</dimen>
 </resources>
 

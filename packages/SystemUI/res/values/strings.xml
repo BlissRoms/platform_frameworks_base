@@ -4582,4 +4582,7 @@
 
     <!-- Description for the Ambient Cue accessibility action label for expanding. [CHAR LIMIT=NONE] -->
     <string name="ambient_cue_expand_action">expand</string>
+
+    <string name="volume_panel_system_volume">System volume</string>
+    <string name="volume_panel_settings">Settings</string>
 </resources>

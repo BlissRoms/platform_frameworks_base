@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.UserHandle
+import android.provider.Settings
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -53,6 +54,7 @@ constructor(
     private val isVolumeDialogVertical = !desktopAudioTileDetailsFeatureInteractor.isEnabled()
 
     private var volumePanelOnLeft: Boolean = false
+    private var volumePanelStyle: Int = 0
 
     private val volumePanelOnLeftObserver =
         object : ContentObserver(Handler(Looper.getMainLooper())) {
@@ -83,7 +85,13 @@ constructor(
             else
                 View.LAYOUT_DIRECTION_LTR
 
-        if (isVolumeDialogVertical) {
+        if (volumePanelStyle == 1) {
+            win.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            win.setGravity(Gravity.FILL)
+        } else if (isVolumeDialogVertical) {
             win.setLayout(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -121,16 +129,26 @@ constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isVolumeDialogVertical) {
-            setContentView(R.layout.volume_dialog)
-        } else {
-            setContentView(R.layout.volume_dialog_horizontal)
+        volumePanelStyle = Settings.System.getIntForUser(
+            context.contentResolver, "volume_panel_style",
+            0, UserHandle.USER_CURRENT
+        )
+        when {
+            volumePanelStyle == 1 -> setContentView(R.layout.volume_dialog_oneplus)
+            isVolumeDialogVertical -> setContentView(R.layout.volume_dialog)
+            else -> setContentView(R.layout.volume_dialog_horizontal)
         }
         requireViewById<View>(R.id.volume_dialog).repeatWhenAttached {
             coroutineScopeTraced("[Volume]dialog") {
                 val component = componentFactory.create(this)
-                with(component.volumeDialogViewBinder()) {
-                    bind(this@VolumeDialog, isVolumeDialogVertical)
+                if (volumePanelStyle == 1) {
+                    with(component.onePlusVolumeDialogViewBinder()) {
+                        bind(this@VolumeDialog, volumePanelOnLeft)
+                    }
+                } else {
+                    with(component.volumeDialogViewBinder()) {
+                        bind(this@VolumeDialog, isVolumeDialogVertical)
+                    }
                 }
 
                 awaitCancellation()

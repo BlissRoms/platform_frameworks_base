@@ -20,6 +20,7 @@ import com.android.systemui.volume.dialog.dagger.factory.VolumeDialogComponentFa
 import com.android.systemui.volume.dialog.dagger.module.VolumeDialogModule
 import com.android.systemui.volume.dialog.dagger.scope.VolumeDialog
 import com.android.systemui.volume.dialog.dagger.scope.VolumeDialogScope
+import com.android.systemui.volume.dialog.oneplus.ui.binder.OnePlusVolumeDialogViewBinder
 import com.android.systemui.volume.dialog.sliders.dagger.VolumeDialogSliderComponent
 import com.android.systemui.volume.dialog.ui.binder.VolumeDialogViewBinder
 import dagger.BindsInstance
@@ -35,6 +36,8 @@ import kotlinx.coroutines.CoroutineScope
 interface VolumeDialogComponent {
 
     fun volumeDialogViewBinder(): VolumeDialogViewBinder
+
+    fun onePlusVolumeDialogViewBinder(): OnePlusVolumeDialogViewBinder
 
     fun sliderComponentFactory(): VolumeDialogSliderComponent.Factory
 
