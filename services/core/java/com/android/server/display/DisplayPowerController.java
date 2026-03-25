@@ -314,6 +314,8 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
     // Whether or not the color fade on screen on / off is enabled.
     private final boolean mColorFadeEnabled;
 
+    private int mScreenOffAnimationStyle;
+
     @GuardedBy("mCachedBrightnessInfo")
     private final CachedBrightnessInfo mCachedBrightnessInfo = new CachedBrightnessInfo();
 
@@ -694,6 +696,10 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         mColorFadeFadesConfig = resources.getBoolean(
                 R.bool.config_animateScreenLights);
 
+        mScreenOffAnimationStyle = Settings.System.getIntForUser(
+                context.getContentResolver(), "screen_off_animation", 0,
+                UserHandle.USER_CURRENT);
+
         mDisplayBlanksAfterDozeConfig = resources.getBoolean(
                 R.bool.config_displayBlanksAfterDoze);
 
@@ -1019,10 +1025,11 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
     }
 
     private void initialize(int displayState) {
+        boolean needColorFade = mColorFadeEnabled || mScreenOffAnimationStyle != 0;
         mPowerState = mInjector.getDisplayPowerState(mBlanker,
-                mColorFadeEnabled ? new ColorFade(mDisplayId) : null, mDisplayId, displayState);
+                needColorFade ? new ColorFade(mDisplayId) : null, mDisplayId, displayState);
 
-        if (mColorFadeEnabled) {
+        if (needColorFade) {
             mColorFadeOffAnimator = ObjectAnimator.ofFloat(
                     mPowerState, DisplayPowerState.COLOR_FADE_LEVEL, 1.0f, 0.0f);
             mColorFadeOffAnimator.setDuration(COLOR_FADE_OFF_ANIMATION_DURATION_MILLIS);
@@ -1067,6 +1074,9 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         mContext.getContentResolver().registerContentObserver(
                 LineageSettings.System.getUriFor(LineageSettings.System.AUTO_BRIGHTNESS_ONE_SHOT),
                 false /*notifyForDescendants*/, mSettingsObserver, UserHandle.USER_ALL);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor("screen_off_animation"),
+                false, mSettingsObserver, UserHandle.USER_ALL);
         handleBrightnessModeChange();
     }
 
@@ -2479,7 +2489,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         } else {
             // Want screen off.
             mPendingScreenOff = true;
-            if (!mColorFadeEnabled) {
+            if (!mColorFadeEnabled && mScreenOffAnimationStyle == 0) {
                 mPowerState.setColorFadeLevel(0.0f);
             }
 
@@ -2491,16 +2501,48 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
                 mPowerState.dismissColorFadeResources();
             } else if (performScreenOffTransition
                     && mPowerState.prepareColorFade(mContext,
-                    mColorFadeFadesConfig
-                            ? ColorFade.MODE_FADE : ColorFade.MODE_COOL_DOWN)
+                    getColorFadeMode(mScreenOffAnimationStyle))
                     && mPowerState.getScreenState() != Display.STATE_OFF) {
                 // Perform the screen off animation.
+                mColorFadeOffAnimator.setDuration(
+                        getScreenOffAnimDuration(mScreenOffAnimationStyle));
                 mColorFadeOffAnimator.start();
             } else {
                 // Skip the screen off animation and add a black surface to hide the
                 // contents of the screen.
                 mColorFadeOffAnimator.end();
             }
+        }
+    }
+
+    private int getColorFadeMode(int style) {
+        switch (style) {
+            case 1: return ColorFade.MODE_CRT;
+            case 2: return ColorFade.MODE_SCALE_DOWN;
+            case 3: return ColorFade.MODE_FADE_OUT;
+            case 4: return ColorFade.MODE_COLLAPSE;
+            case 5: return ColorFade.MODE_RADIAL_WIPE;
+            case 6: return ColorFade.MODE_PIXEL_DISSOLVE;
+            case 7: return ColorFade.MODE_TV_STATIC;
+            case 8: return ColorFade.MODE_PIXELATE;
+            case 9: return ColorFade.MODE_BLINDS;
+            default: return mColorFadeFadesConfig
+                    ? ColorFade.MODE_FADE : ColorFade.MODE_COOL_DOWN;
+        }
+    }
+
+    private int getScreenOffAnimDuration(int style) {
+        switch (style) {
+            case 1: return 500;
+            case 2: return 350;
+            case 3: return 300;
+            case 4: return 400;
+            case 5: return 500;
+            case 6: return 600;
+            case 7: return 400;
+            case 8: return 500;
+            case 9: return 450;
+            default: return COLOR_FADE_OFF_ANIMATION_DURATION_MILLIS;
         }
     }
 
@@ -3311,6 +3353,11 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
                         Settings.Global.Wearable.BEDTIME_MODE, /* def= */ 0) == 1;
                 Slog.i(mTag, "Update for bedtime mode. Enable: " + mIsWearBedtimeModeEnabled);
                 sendUpdatePowerState();
+            } else if (uri.equals(
+                    Settings.System.getUriFor("screen_off_animation"))) {
+                mScreenOffAnimationStyle = Settings.System.getIntForUser(
+                        mContext.getContentResolver(), "screen_off_animation", 0,
+                        UserHandle.USER_CURRENT);
             } else {
                 handleSettingsChange();
             }

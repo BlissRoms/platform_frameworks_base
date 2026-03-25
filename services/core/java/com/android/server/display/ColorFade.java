@@ -117,6 +117,8 @@ final class ColorFade {
     private final int[] mGLBuffers = new int[2];
     private int mTexCoordLoc, mVertexLoc, mTexUnitLoc, mProjMatrixLoc, mTexMatrixLoc;
     private int mOpacityLoc, mGammaLoc;
+    private int mProgressLoc, mAnimStyleLoc;
+    private int mScreenWidthLoc, mScreenHeightLoc, mScaleLoc;
     private int mProgram;
 
     // Vertex and corresponding texture coordinates.
@@ -140,6 +142,16 @@ final class ColorFade {
      * Animates a simple dim layer to fade the contents of the screen in or out progressively.
      */
     public static final int MODE_FADE = 2;
+
+    public static final int MODE_CRT = 3;
+    public static final int MODE_SCALE_DOWN = 4;
+    public static final int MODE_FADE_OUT = 5;
+    public static final int MODE_COLLAPSE = 6;
+    public static final int MODE_RADIAL_WIPE = 7;
+    public static final int MODE_PIXEL_DISSOLVE = 8;
+    public static final int MODE_TV_STATIC = 9;
+    public static final int MODE_PIXELATE = 10;
+    public static final int MODE_BLINDS = 11;
 
     public ColorFade(int displayId) {
         this(displayId, LocalServices.getService(DisplayManagerInternal.class));
@@ -194,8 +206,7 @@ final class ColorFade {
             return false;
         }
 
-        // MODE_FADE use ColorLayer to implement.
-        if (mMode == MODE_FADE) {
+        if (mMode == MODE_FADE || mMode == MODE_FADE_OUT) {
             return true;
         }
 
@@ -231,7 +242,7 @@ final class ColorFade {
         // times.  The rest of the animation should run smoothly thereafter.
         // The frames we draw here aren't visible because we are essentially just
         // painting the screenshot as-is.
-        if (mode == MODE_COOL_DOWN) {
+        if (mode == MODE_COOL_DOWN || mode >= MODE_CRT) {
             for (int i = 0; i < DEJANK_FRAMES; i++) {
                 draw(1.0f);
             }
@@ -272,10 +283,16 @@ final class ColorFade {
     }
 
     private boolean initGLShaders(Context context) {
-        int vshader = loadShader(context, com.android.internal.R.raw.color_fade_vert,
-                GLES20.GL_VERTEX_SHADER);
-        int fshader = loadShader(context, com.android.internal.R.raw.color_fade_frag,
-                GLES20.GL_FRAGMENT_SHADER);
+        boolean useCustomShaders = mMode >= MODE_CRT && mMode != MODE_FADE_OUT;
+        int vertRes = useCustomShaders
+                ? com.android.internal.R.raw.screen_off_anim_vert
+                : com.android.internal.R.raw.color_fade_vert;
+        int fragRes = useCustomShaders
+                ? com.android.internal.R.raw.screen_off_anim_frag
+                : com.android.internal.R.raw.color_fade_frag;
+
+        int vshader = loadShader(context, vertRes, GLES20.GL_VERTEX_SHADER);
+        int fshader = loadShader(context, fragRes, GLES20.GL_FRAGMENT_SHADER);
         GLES20.glReleaseShaderCompiler();
         if (vshader == 0 || fshader == 0) return false;
 
@@ -297,6 +314,14 @@ final class ColorFade {
         mOpacityLoc = GLES20.glGetUniformLocation(mProgram, "opacity");
         mGammaLoc = GLES20.glGetUniformLocation(mProgram, "gamma");
         mTexUnitLoc = GLES20.glGetUniformLocation(mProgram, "texUnit");
+
+        if (useCustomShaders) {
+            mAnimStyleLoc = GLES20.glGetUniformLocation(mProgram, "anim_style");
+            mProgressLoc = GLES20.glGetUniformLocation(mProgram, "progress");
+            mScaleLoc = GLES20.glGetUniformLocation(mProgram, "scale");
+            mScreenWidthLoc = GLES20.glGetUniformLocation(mProgram, "screen_width");
+            mScreenHeightLoc = GLES20.glGetUniformLocation(mProgram, "screen_height");
+        }
 
         GLES20.glUseProgram(mProgram);
         GLES20.glUniform1i(mTexUnitLoc, 0);
@@ -453,7 +478,7 @@ final class ColorFade {
             return false;
         }
 
-        if (mMode == MODE_FADE) {
+        if (mMode == MODE_FADE || mMode == MODE_FADE_OUT) {
             return showSurface(1.0f - level);
         }
 
@@ -461,17 +486,72 @@ final class ColorFade {
             return false;
         }
         try {
-            // Clear frame to solid black.
             GLES20.glClearColor(0f, 0f, 0f, 1f);
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-            // Draw the frame.
-            double one_minus_level = 1 - level;
-            double cos = Math.cos(Math.PI * one_minus_level);
-            double sign = cos < 0 ? -1 : 1;
-            float opacity = (float) -Math.pow(one_minus_level, 2) + 1;
-            float gamma = (float) ((0.5d * sign * Math.pow(cos, 2) + 0.5d) * 0.9d + 0.1d);
-            drawFaded(opacity, 1.f / gamma);
+            if (mMode >= MODE_CRT) {
+                float progress = 1.0f - level;
+                float animStyle;
+                float scale = level;
+                float opacity;
+                float gamma = 1.0f;
+
+                switch (mMode) {
+                    case MODE_CRT:
+                        animStyle = 1.0f;
+                        if (progress > 0.7f) {
+                            scale = 0.01f;
+                        }
+                        opacity = level;
+                        break;
+                    case MODE_SCALE_DOWN:
+                        animStyle = 2.0f;
+                        opacity = (float) Math.pow(level, 0.5);
+                        break;
+                    case MODE_COLLAPSE:
+                        animStyle = 4.0f;
+                        opacity = level;
+                        break;
+                    case MODE_RADIAL_WIPE:
+                        animStyle = 5.0f;
+                        scale = 1.0f;
+                        opacity = 1.0f;
+                        break;
+                    case MODE_PIXEL_DISSOLVE:
+                        animStyle = 6.0f;
+                        scale = 1.0f;
+                        opacity = 1.0f;
+                        break;
+                    case MODE_TV_STATIC:
+                        animStyle = 7.0f;
+                        scale = 1.0f;
+                        opacity = 1.0f;
+                        break;
+                    case MODE_PIXELATE:
+                        animStyle = 8.0f;
+                        scale = 1.0f;
+                        opacity = 1.0f;
+                        break;
+                    case MODE_BLINDS:
+                        animStyle = 9.0f;
+                        scale = 1.0f;
+                        opacity = level;
+                        break;
+                    default:
+                        animStyle = 0.0f;
+                        opacity = level;
+                        break;
+                }
+                drawAnimated(opacity, gamma, progress, animStyle, scale);
+            } else {
+                double one_minus_level = 1 - level;
+                double cos = Math.cos(Math.PI * one_minus_level);
+                double sign = cos < 0 ? -1 : 1;
+                float opacity = (float) -Math.pow(one_minus_level, 2) + 1;
+                float gamma = (float) ((0.5d * sign * Math.pow(cos, 2) + 0.5d) * 0.9d + 0.1d);
+                drawFaded(opacity, 1.f / gamma);
+            }
+
             if (checkGlErrors("drawFrame")) {
                 return false;
             }
@@ -512,6 +592,37 @@ final class ColorFade {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 4);
 
         // clean up
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+    }
+
+    private void drawAnimated(float opacity, float gamma,
+            float progress, float animStyle, float scale) {
+        GLES20.glUseProgram(mProgram);
+
+        GLES20.glUniformMatrix4fv(mProjMatrixLoc, 1, false, mProjMatrix, 0);
+        GLES20.glUniformMatrix4fv(mTexMatrixLoc, 1, false, mTexMatrix, 0);
+        GLES20.glUniform1f(mOpacityLoc, opacity);
+        GLES20.glUniform1f(mGammaLoc, gamma);
+        GLES20.glUniform1f(mAnimStyleLoc, animStyle);
+        GLES20.glUniform1f(mProgressLoc, progress);
+        GLES20.glUniform1f(mScaleLoc, scale);
+        GLES20.glUniform1f(mScreenWidthLoc, mDisplayWidth);
+        GLES20.glUniform1f(mScreenHeightLoc, mDisplayHeight);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, mTexNames[0]);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mGLBuffers[0]);
+        GLES20.glEnableVertexAttribArray(mVertexLoc);
+        GLES20.glVertexAttribPointer(mVertexLoc, 2, GLES20.GL_FLOAT, false, 0, 0);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mGLBuffers[1]);
+        GLES20.glEnableVertexAttribArray(mTexCoordLoc);
+        GLES20.glVertexAttribPointer(mTexCoordLoc, 2, GLES20.GL_FLOAT, false, 0, 0);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 4);
+
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
     }
@@ -617,7 +728,7 @@ final class ColorFade {
                     .setName("ColorFade")
                     .setSecure(isSecure)
                     .setCallsite("ColorFade.createSurface");
-            if (mMode == MODE_FADE) {
+            if (mMode == MODE_FADE || mMode == MODE_FADE_OUT) {
                 builder.setColorLayer();
             } else {
                 builder.setContainerLayer();
@@ -635,7 +746,7 @@ final class ColorFade {
         mSurfaceLayout.onDisplayTransaction(mTransaction);
         mTransaction.apply();
 
-        if (mMode != MODE_FADE) {
+        if (mMode != MODE_FADE && mMode != MODE_FADE_OUT) {
             final SurfaceControl.Builder b = new SurfaceControl.Builder()
                     .setName("ColorFade BLAST")
                     .setParent(mSurfaceControl)
