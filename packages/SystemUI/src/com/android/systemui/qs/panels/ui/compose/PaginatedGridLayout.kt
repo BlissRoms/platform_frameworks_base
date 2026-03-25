@@ -88,7 +88,7 @@ constructor(
         val pages = if (isClassicStyle) {
             val maxTiles = customColumns * customQsRows
             remember(tiles, maxTiles) {
-                listOf(tiles.take(maxTiles))
+                tiles.chunked(maxTiles)
             }
         } else {
             remember(tiles, baseRows, *delegateGridViewModel.pageKeys) {
