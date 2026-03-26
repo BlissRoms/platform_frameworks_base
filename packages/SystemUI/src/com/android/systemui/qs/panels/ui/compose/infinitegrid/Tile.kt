@@ -118,6 +118,7 @@ val LocalQSTileQqsRows = compositionLocalOf { 2 }
 val LocalQSTileQsRows = compositionLocalOf { 4 }
 val LocalQSTileShape = compositionLocalOf { 0 }
 val LocalQSTileOpacity = compositionLocalOf { 100 }
+val LocalQSTileAnimationStyle = compositionLocalOf { 0 }
 
 @Composable
 private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
@@ -179,6 +180,9 @@ fun rememberQSTileShape(): Int = rememberSecureIntSetting("qs_tile_shape")
 
 @Composable
 fun rememberQSTileOpacity(): Int = rememberSecureIntSetting("qs_tile_opacity", 100).coerceIn(0, 100)
+
+@Composable
+fun rememberQSTileAnimationStyle(): Int = rememberSecureIntSetting("qs_tile_animation_style")
 
 @Composable
 fun TileLazyGrid(
@@ -289,6 +293,7 @@ fun ContentScope.Tile(
         val isClassicStyle = LocalQSPanelStyle.current == 1
         val effectiveColor = if (isClassicStyle) Color.Transparent else animatedColor
         val effectiveShape = if (isClassicStyle) RoundedCornerShape(0.dp) else tileShape
+        val tileAnimationStyle = LocalQSTileAnimationStyle.current
 
         TileExpandable(
             color = { effectiveColor },
@@ -300,6 +305,7 @@ fun ContentScope.Tile(
                     .then(surfaceRevealModifier)
                     .borderOnFocus(color = MaterialTheme.colorScheme.secondary, tileShape.topEnd)
                     .fillMaxWidth()
+                    .tileToggleAnimation(uiState.state, tileAnimationStyle)
                     .thenIf(currentBounceableInfo != null) {
                         Modifier.bounceable(
                             currentBounceableInfo!!.bounceable,
