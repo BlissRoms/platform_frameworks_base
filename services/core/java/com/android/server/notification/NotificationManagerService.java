@@ -3190,6 +3190,7 @@ public class NotificationManagerService extends SystemService {
 
         mZenModeHelper.initZenMode();
         mInterruptionFilter = mZenModeHelper.getZenModeListenerInterruptionFilter();
+        BlissNotificationScheduleHelper.init(getContext(), mHandler);
 
         mSettingsObserver = new SettingsObserver(mHandler);
 
@@ -11792,6 +11793,7 @@ public class NotificationManagerService extends SystemService {
         } else {
             record.setSuppressedVisualEffects(0);
         }
+        BlissNotificationScheduleHelper.applyScheduleLocked(record);
     }
 
     @GuardedBy("mNotificationLock")

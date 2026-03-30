@@ -3865,6 +3865,7 @@
         <!-- Depends on ZenModeExtractor -->
         <item>com.android.server.notification.BadgeExtractor</item>
         <item>com.android.server.notification.CriticalNotificationExtractor</item>
+        <item>com.android.server.notification.BlissScheduleExtractor</item>
 
     </string-array>
 
