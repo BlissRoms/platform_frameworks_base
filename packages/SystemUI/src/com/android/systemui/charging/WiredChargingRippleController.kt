@@ -18,8 +18,13 @@ package com.android.systemui.charging
 
 import android.content.Context
 import android.content.res.Configuration
+import android.database.ContentObserver
 import android.graphics.PixelFormat
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemProperties
+import android.os.UserHandle
+import android.provider.Settings
 import android.view.Surface
 import android.view.View
 import android.view.WindowManager
@@ -27,6 +32,7 @@ import com.android.internal.annotations.VisibleForTesting
 import com.android.internal.logging.UiEvent
 import com.android.internal.logging.UiEventLogger
 import com.android.settingslib.Utils
+import com.android.systemui.bliss.charging.BlissChargingAnimationView
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.flags.FeatureFlags
 import com.android.systemui.flags.Flags
@@ -63,8 +69,11 @@ constructor(
     private val uiEventLogger: UiEventLogger,
 ) {
     private var pluggedIn: Boolean = false
-    private val rippleEnabled: Boolean =
-        featureFlags.isEnabled(Flags.CHARGING_RIPPLE) &&
+    private var chargingAnimStyle: Int = Settings.System.getIntForUser(
+            context.contentResolver, Settings.System.CHARGING_ANIMATION_STYLE,
+            0, UserHandle.USER_CURRENT)
+    private val rippleEnabled: Boolean
+        get() = chargingAnimStyle > 0 &&
             !SystemProperties.getBoolean("persist.debug.suppress-charging-ripple", false)
     private var normalizedPortPosX: Float =
         context.resources.getFloat(R.dimen.physical_charger_port_location_normalized_x)
@@ -95,6 +104,17 @@ constructor(
         pluggedIn = batteryController.isPluggedIn
         commandRegistry.registerCommand("charging-ripple") { ChargingRippleCommand() }
         updateRippleColor()
+        context.contentResolver.registerContentObserver(
+            Settings.System.getUriFor(Settings.System.CHARGING_ANIMATION_STYLE),
+            false,
+            object : ContentObserver(Handler(Looper.getMainLooper())) {
+                override fun onChange(selfChange: Boolean) {
+                    chargingAnimStyle = Settings.System.getIntForUser(
+                        context.contentResolver, Settings.System.CHARGING_ANIMATION_STYLE,
+                        0, UserHandle.USER_CURRENT)
+                }
+            },
+            UserHandle.USER_ALL)
     }
 
     fun registerCallbacks() {
@@ -114,7 +134,7 @@ constructor(
                         return
                     }
 
-                    if (!pluggedIn && nowPluggedIn) {
+                    if (!pluggedIn && nowPluggedIn && rippleEnabled) {
                         startRippleWithDebounce()
                     }
                     pluggedIn = nowPluggedIn
@@ -165,10 +185,16 @@ constructor(
     }
 
     fun startRipple() {
+        if (!rippleEnabled) return
+        if (chargingAnimStyle == 1) {
+            startStockRipple()
+        } else if (chargingAnimStyle >= 2) {
+            startBlissAnimation()
+        }
+    }
+
+    private fun startStockRipple() {
         if (rippleView.rippleInProgress() || rippleView.parent != null) {
-            // Skip if ripple is still playing, or not playing but already added the parent
-            // (which might happen just before the animation starts or right after
-            // the animation ends.)
             return
         }
         windowLayoutParams.packageName = context.opPackageName
@@ -184,6 +210,38 @@ constructor(
             }
         )
         windowManager.addView(rippleView, windowLayoutParams)
+        uiEventLogger.log(WiredChargingRippleEvent.CHARGING_RIPPLE_PLAYED)
+    }
+
+    private fun startBlissAnimation() {
+        val animView = BlissChargingAnimationView(context)
+        val params = WindowManager.LayoutParams().apply {
+            width = WindowManager.LayoutParams.MATCH_PARENT
+            height = WindowManager.LayoutParams.MATCH_PARENT
+            layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+            format = PixelFormat.TRANSLUCENT
+            type = WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG
+            fitInsetsTypes = 0
+            title = "Bliss Charging Animation"
+            flags = (WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            setTrustedOverlay()
+            packageName = context.opPackageName
+        }
+        val bm = context.getSystemService(android.os.BatteryManager::class.java)
+        val level = bm?.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY) ?: 50
+        animView.configure(chargingAnimStyle, level) {
+            windowManager.removeView(animView)
+        }
+        animView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewDetachedFromWindow(view: View) {}
+            override fun onViewAttachedToWindow(view: View) {
+                animView.startAnimation()
+                animView.removeOnAttachStateChangeListener(this)
+            }
+        })
+        windowManager.addView(animView, params)
         uiEventLogger.log(WiredChargingRippleEvent.CHARGING_RIPPLE_PLAYED)
     }
 

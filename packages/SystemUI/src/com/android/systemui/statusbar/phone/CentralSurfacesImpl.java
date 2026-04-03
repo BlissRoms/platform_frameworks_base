@@ -1378,6 +1378,10 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
 
     @Override
     public void showWirelessChargingAnimation(int batteryLevel) {
+        // Skip system charging animation when a custom charging animation style is active
+        int chargingAnimStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.CHARGING_ANIMATION_STYLE, 0, UserHandle.USER_CURRENT);
+        if (chargingAnimStyle > 0) return;
         showChargingAnimation(batteryLevel, UNKNOWN_BATTERY_LEVEL, 0);
     }
 

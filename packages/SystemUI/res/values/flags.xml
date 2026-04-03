@@ -28,7 +28,7 @@
          icon is only shown if config_keyguardUserSwitcher=false in the frameworks config. -->
     <bool name="flag_lockscreen_qs_user_detail_shortcut">false</bool>
 
-    <bool name="flag_charging_ripple">false</bool>
+    <bool name="flag_charging_ripple">true</bool>
 
     <!--  Whether the user switcher chip shows in the status bar. When true, the multi user
       avatar will no longer show on the lockscreen -->
