@@ -119,7 +119,7 @@ public class HeadsUpManagerImpl
     private final int mMinimumDisplayTimeDefault;
     private final int mMinimumDisplayTimeForUserInitiated;
     private final int mStickyForSomeTimeAutoDismissTime;
-    private final int mAutoDismissTime;
+    private int mAutoDismissTime;
     private final DelayableExecutor mExecutor;
 
     private final int mExtensionTime;
@@ -204,7 +204,12 @@ public class HeadsUpManagerImpl
                 R.integer.heads_up_notification_minimum_time_for_user_initiated);
         mStickyForSomeTimeAutoDismissTime = resources.getInteger(
                 R.integer.sticky_heads_up_notification_time);
-        mAutoDismissTime = resources.getInteger(R.integer.heads_up_notification_decay);
+        final int defaultAutoDismissTime = resources.getInteger(R.integer.heads_up_notification_decay);
+        mAutoDismissTime = android.provider.Settings.System.getIntForUser(
+                context.getContentResolver(),
+                android.provider.Settings.System.HEADS_UP_TIMEOUT,
+                defaultAutoDismissTime,
+                android.os.UserHandle.USER_CURRENT);
         mExtensionTime = resources.getInteger(R.integer.ambient_notification_extension_time);
         mTouchAcceptanceDelay = resources.getInteger(R.integer.touch_acceptance_delay);
         mSnoozedPackages = new ArrayMap<>();
@@ -228,6 +233,21 @@ public class HeadsUpManagerImpl
                 globalSettings.getUriFor(SETTING_HEADS_UP_SNOOZE_LENGTH_MS),
                 /* notifyForDescendants= */ false,
                 settingsObserver);
+
+        ContentObserver timeoutObserver = new ContentObserver(handler) {
+            @Override
+            public void onChange(boolean selfChange) {
+                mAutoDismissTime = android.provider.Settings.System.getIntForUser(
+                        context.getContentResolver(),
+                        android.provider.Settings.System.HEADS_UP_TIMEOUT,
+                        defaultAutoDismissTime,
+                        android.os.UserHandle.USER_CURRENT);
+            }
+        };
+        context.getContentResolver().registerContentObserver(
+                android.provider.Settings.System.getUriFor(
+                        android.provider.Settings.System.HEADS_UP_TIMEOUT),
+                false, timeoutObserver, android.os.UserHandle.USER_ALL);
 
         statusBarStateController.addCallback(mStatusBarStateListener);
         updateResources();
