@@ -9,7 +9,6 @@ import android.app.NotificationManager.Policy;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -17,7 +16,6 @@ import android.provider.Settings;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -99,8 +97,12 @@ public class BlissNotificationScheduleHelper {
     }
 
     private static boolean isWithinSchedule() {
-        Calendar now = Calendar.getInstance();
-        int currentMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
+        long millis = System.currentTimeMillis();
+        int totalSeconds = (int) ((millis / 1000) % 86400);
+        int tzOffsetSeconds = java.util.TimeZone.getDefault().getOffset(millis) / 1000;
+        int localSeconds = (totalSeconds + tzOffsetSeconds) % 86400;
+        if (localSeconds < 0) localSeconds += 86400;
+        int currentMinutes = localSeconds / 60;
         int startMinutes = sStartHour * 60 + sStartMinute;
         int endMinutes = sEndHour * 60 + sEndMinute;
         if (startMinutes == endMinutes) return false;

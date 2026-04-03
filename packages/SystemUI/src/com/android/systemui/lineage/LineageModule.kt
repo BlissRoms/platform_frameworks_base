@@ -30,6 +30,7 @@ import com.android.systemui.qs.tiles.ReadingModeTile
 import com.android.systemui.qs.tiles.RefreshRateTile
 import com.android.systemui.qs.tiles.SyncTile
 import com.android.systemui.qs.tiles.UsbTetherTile
+import com.android.systemui.qs.tiles.NotificationScheduleTile
 import com.android.systemui.qs.tiles.VpnTile
 import com.android.systemui.qs.tiles.base.shared.model.QSTileConfig
 import com.android.systemui.qs.tiles.base.shared.model.QSTileUIConfig
@@ -103,6 +104,11 @@ interface LineageModule {
     @StringKey(UsbTetherTile.TILE_SPEC)
     fun bindUsbTetherTile(usbTetherTile: UsbTetherTile): QSTileImpl<*>
 
+    @Binds
+    @IntoMap
+    @StringKey(NotificationScheduleTile.TILE_SPEC)
+    fun bindNotificationScheduleTile(tile: NotificationScheduleTile): QSTileImpl<*>
+
     /** Inject VpnTile into tileMap in QSModule */
     @Binds
     @IntoMap
@@ -120,6 +126,7 @@ interface LineageModule {
         const val REFRESH_RATE_TILE_SPEC = "refresh_rate"
         const val SYNC_TILE_SPEC = "sync"
         const val USB_TETHER_TILE_SPEC = "usb_tether"
+        const val NOTIFICATION_SCHEDULE_TILE_SPEC = "notification_schedule"
         const val VPN_TILE_SPEC = "vpn"
 
         @Provides
@@ -270,6 +277,21 @@ interface LineageModule {
                     ),
                 instanceId = uiEventLogger.getNewInstanceId(),
                 category = TileCategory.CONNECTIVITY,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(NOTIFICATION_SCHEDULE_TILE_SPEC)
+        fun provideNotificationScheduleTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(NOTIFICATION_SCHEDULE_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_notification_schedule,
+                        labelRes = R.string.quick_settings_notification_schedule_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.UTILITIES,
             )
 
         @Provides

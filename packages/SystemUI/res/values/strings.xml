@@ -5062,4 +5062,6 @@
     <!-- Accessibility label for the thumbs down button on attribution dialog. [CHAR_LIMIT=NONE] -->
     <string name="ace_attribution_thumbs_down_button_accessibility_description">Thumbs down feedback button</string>
 
+    <string name="quick_settings_notification_schedule_label">Notification schedule</string>
+    <string name="quick_settings_notification_schedule_not_configured">Not configured</string>
 </resources>
