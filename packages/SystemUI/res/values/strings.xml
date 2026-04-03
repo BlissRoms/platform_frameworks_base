@@ -4585,4 +4585,7 @@
 
     <string name="volume_panel_system_volume">System volume</string>
     <string name="volume_panel_settings">Settings</string>
+
+    <string name="quick_settings_notification_schedule_label">Notification schedule</string>
+    <string name="quick_settings_notification_schedule_not_configured">Not configured</string>
 </resources>
