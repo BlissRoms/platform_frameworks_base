@@ -920,6 +920,18 @@ final class Session
                 Slog.v(TAG, "New structure for requestId " + requestId + ": " + structure);
             }
 
+            // Due to issues with the app itself,
+            // ensureDataForAutofill may hold an mLock lock for an extended duration,
+            // so we have temporarily moved it outside the lock.
+            try {
+                structure.ensureDataForAutofill();
+            } catch (RuntimeException e) {
+                wtf(e,
+                    "Exception lazy loading assist structure for %s: %s",
+                    structure.getActivityComponent(), e);
+                return;
+            }
+
             final FillRequest request;
             synchronized (mLock) {
                 // TODO(b/35708678): Must fetch the data so it's available later on handleSave(),
@@ -927,17 +939,6 @@ final class Session
                 // ONE_WAY warning because system_service could block on app calls. We need to
                 // change AssistStructure so it provides a "one-way" writeToParcel() method that
                 // sends all the data
-                try {
-                    structure.ensureDataForAutofill();
-                } catch (RuntimeException e) {
-                    wtf(
-                            e,
-                            "Exception lazy loading assist structure for %s: %s",
-                            structure.getActivityComponent(),
-                            e);
-                    return;
-                }
-
                 final ArrayList<AutofillId> ids =
                         Helper.getAutofillIds(structure, /* autofillableOnly= */ false);
                 for (int i = 0; i < ids.size(); i++) {
@@ -1156,6 +1157,17 @@ final class Session
                                 + ": "
                                 + structure);
             }
+            // Due to issues with the app itself,
+            // ensureDataForAutofill may hold an mLock lock for an extended duration.
+            // Therefore, we have temporarily moved it outside the lock.
+            try {
+                structure.ensureDataForAutofill();
+            } catch (RuntimeException e) {
+                wtf(e,
+                    "Exception lazy loading assist structure for %s: %s",
+                    structure.getActivityComponent(), e);
+                return;
+            }
 
             synchronized (mLock) {
                 // TODO(b/35708678): Must fetch the data so it's available later on handleSave(),
@@ -1163,17 +1175,6 @@ final class Session
                 // ONE_WAY warning because system_service could block on app calls. We need to
                 // change AssistStructure so it provides a "one-way" writeToParcel() method that
                 // sends all the data
-                try {
-                    structure.ensureDataForAutofill();
-                } catch (RuntimeException e) {
-                    wtf(
-                            e,
-                            "Exception lazy loading assist structure for %s: %s",
-                            structure.getActivityComponent(),
-                            e);
-                    return;
-                }
-
                 final ArrayList<AutofillId> ids =
                         Helper.getAutofillIds(structure, /* autofillableOnly= */ false);
                 for (int i = 0; i < ids.size(); i++) {
