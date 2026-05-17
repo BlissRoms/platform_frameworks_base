@@ -52,4 +52,7 @@
     <java-symbol type="string" name="unlock_application" />
     <java-symbol type="array" name="config_appLockAllowedSystemApps" />
 
+    <!-- Vibrator service -->
+    <java-symbol type="array" name="config_textureTickVibePattern" />
+
 </resources>
