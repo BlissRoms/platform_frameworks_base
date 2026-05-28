@@ -47,6 +47,7 @@
 #include <android-base/properties.h>
 
 #include <ui/DisplayMode.h>
+#include <ui/DisplayState.h>
 #include <ui/PixelFormat.h>
 #include <ui/Rect.h>
 #include <ui/Region.h>
@@ -455,6 +456,43 @@ ui::Size BootAnimation::limitSurfaceSize(int width, int height) const {
     return limited;
 }
 
+static bool shouldScaleBootAnimation() {
+    return android::base::GetIntProperty("ro.bliss.display.resolution_switch", 0) == TYPE_FORCED &&
+            android::base::GetIntProperty("persist.sys.bliss.bootanimation.scale", 0) == 1;
+}
+
+ui::Size BootAnimation::getDefaultResolution(const ui::Size& physicalResolution) const {
+    if (!shouldScaleBootAnimation()) {
+        return physicalResolution;
+    }
+    return ui::Size(static_cast<int>(physicalResolution.width * 0.75f),
+                    static_cast<int>(physicalResolution.height * 0.75f));
+}
+
+// Returns the size BootAnimation should render at. SurfaceFlinger's active
+// DisplayMode is the panel's physical resolution, but WindowManager may have
+// imposed a smaller layer-stack-space rect via setDisplayProjection (e.g. the
+// SystemUI resolution override on an 8K TV). Layers larger than the
+// layer-stack-space rect are clipped by SurfaceFlinger, so render at whichever
+// is in effect right now, constrained to the surface size limits.
+ui::Size BootAnimation::getEffectiveResolution(const sp<IBinder>& displayToken,
+                                               const ui::Size& physicalResolution) const {
+    ui::DisplayState state;
+    ui::Size result;
+    if (SurfaceComposerClient::getDisplayState(displayToken, &state) != NO_ERROR) {
+        result = getDefaultResolution(physicalResolution);
+    } else if (state.layerStackSpaceRect.width <= 0 || state.layerStackSpaceRect.height <= 0 ||
+               state.layerStackSpaceRect == physicalResolution) {
+        result = getDefaultResolution(physicalResolution);
+    } else {
+        result = state.layerStackSpaceRect;
+    }
+
+    result = limitSurfaceSize(result.width, result.height);
+
+    return result;
+}
+
 status_t BootAnimation::readyToRun() {
     ATRACE_CALL();
     mAssets.addDefaultAssets();
@@ -507,20 +545,11 @@ status_t BootAnimation::initDisplaysAndSurfaces() {
         if (error != NO_ERROR) {
             return error;
         }
-        ui::Size resolution = displayMode.resolution;
-        
-        // Apply custom display resolution switch if enabled
-        const bool shouldScale =
-                android::base::GetIntProperty("ro.bliss.display.resolution_switch", 0) == TYPE_FORCED &&
-                android::base::GetIntProperty("persist.sys.bliss.bootanimation.scale", 0) == 1;
-        if (shouldScale) {
-            resolution.width = (int) (resolution.width * 0.75f);
-            resolution.height = (int) (resolution.height * 0.75f);
-        }
-        
-        // Clamp each surface to max size
-        resolution = limitSurfaceSize(resolution.width, resolution.height);
-        
+        display.physicalResolution = displayMode.resolution;
+        // Honor any WindowManager layer-stack-space override that's already in
+        // effect (otherwise SurfaceFlinger clips our surface to it).
+        ui::Size resolution = getEffectiveResolution(display.displayToken,
+                                                    display.physicalResolution);
         // Create the native surface
         display.surfaceControl =
                 session()->createSurface(String8("BootAnimation"), resolution.width,
@@ -544,7 +573,7 @@ status_t BootAnimation::initDisplaysAndSurfaces() {
         mTargetInset = -1;
 
         // Scale forced resolution to physical resolution if needed
-        if (shouldScale) {
+        if (shouldScaleBootAnimation()) {
             Rect forcedRes(0, 0, resolution.width, resolution.height);
             Rect physRes(0, 0, displayMode.resolution.width, displayMode.resolution.height);
             SurfaceComposerClient::Transaction t;
@@ -691,9 +720,7 @@ bool BootAnimation::findBootAnimationFileInternal(const std::vector<std::string>
 
 void BootAnimation::findBootAnimationFile() {
     ATRACE_CALL();
-    const bool shouldScale =
-            android::base::GetIntProperty("ro.bliss.display.resolution_switch", 0) == TYPE_FORCED &&
-            android::base::GetIntProperty("persist.sys.bliss.bootanimation.scale", 0) == 1;
+    const bool shouldScale = shouldScaleBootAnimation();
     const std::string productBootanimationFile = PRODUCT_BOOTANIMATION_DIR +
         android::base::GetProperty("ro.product.bootanim.file", shouldScale ?
         PRODUCT_BOOTANIMATION_LOWER_RESOLUTION_FILE : PRODUCT_BOOTANIMATION_FILE);
@@ -1740,6 +1767,25 @@ void BootAnimation::processDisplayEvents() {
     // This will poll mDisplayEventReceiver and if there are new events it'll call
     // displayEventCallback synchronously.
     mLooper->pollOnce(0);
+    checkAndApplyResolutionOverride();
+}
+
+// SurfaceFlinger does not emit an event when WindowManager applies a
+// setDisplayProjection override (the only DisplayEventReceiver event types
+// cover VSYNC, hotplug, and mode change). Poll the current layer-stack-space
+// rect once per frame and resize our buffer to match if it has changed.
+void BootAnimation::checkAndApplyResolutionOverride() {
+    ATRACE_CALL();
+    for (auto& display : mDisplays) {
+        const ui::Size effective =
+                getEffectiveResolution(display.displayToken, display.physicalResolution);
+        if (effective.width == display.width && effective.height == display.height) {
+            continue;
+        }
+        SLOGV("Effective resolution changed to [%dx%d] from [%dx%d]",
+              effective.width, effective.height, display.width, display.height);
+        resizeSurface(effective.width, effective.height, display);
+    }
 }
 
 void BootAnimation::handleViewport(nsecs_t timestep, const Display& display) {
