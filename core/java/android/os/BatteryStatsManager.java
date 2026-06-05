@@ -368,6 +368,118 @@ public final class BatteryStatsManager {
     }
 
     /**
+     * Retrieves a since-last-charge summary for detailed battery stats.
+     *
+     * @hide
+     */
+    @RequiresPermission(android.Manifest.permission.BATTERY_STATS)
+    @NonNull
+    public BatterySummaryStats getBatterySummaryStats() {
+        try {
+            return mBatteryStats.getBatterySummaryStats();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Retrieves accumulated kernel/native wakeup source stats.
+     *
+     * @hide
+     */
+    @RequiresPermission(android.Manifest.permission.BATTERY_STATS)
+    @NonNull
+    public WakeupSourceStats[] getKernelWakeupStats() {
+        try {
+            return mBatteryStats.getKernelWakeupStats();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Retrieves system suspend counters from the suspend control service.
+     *
+     * @hide
+     */
+    @RequiresPermission(android.Manifest.permission.BATTERY_STATS)
+    @NonNull
+    public SuspendStats getSystemSuspendStats() {
+        try {
+            return mBatteryStats.getSystemSuspendStats();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Retrieves per-UID partial wakelock statistics accumulated since the last charge,
+     * sorted by cumulative hold-time descending.
+     *
+     * <p>Partial wakelocks keep the CPU running while the screen is off and are the
+     * most common cause of unexpected battery drain.
+     *
+     * @hide
+     */
+    @RequiresPermission(android.Manifest.permission.BATTERY_STATS)
+    @NonNull
+    public UidWakelockStats[] getUidWakelockStats() {
+        try {
+            return mBatteryStats.getUidWakelockStats();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Retrieves per-UID wakeup-alarm statistics accumulated since the last charge,
+     * sorted by wakeup count descending.
+     *
+     * <p>Alarm wakeups wake the device from deep sleep to deliver a pending alarm intent.
+     * High counts here indicate an app that is preventing efficient deep-sleep.
+     *
+     * @hide
+     */
+    @RequiresPermission(android.Manifest.permission.BATTERY_STATS)
+    @NonNull
+    public UidAlarmStats[] getUidAlarmStats() {
+        try {
+            return mBatteryStats.getUidAlarmStats();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Retrieves system-wide wakeup-reason statistics since the last charge — the IRQ /
+     * wake-source strings that the kernel reports as the resume reason — sorted by count
+     * descending.  Reuses {@link WakeupSourceStats} (name = reason string).
+     *
+     * @hide
+     */
+    @RequiresPermission(android.Manifest.permission.BATTERY_STATS)
+    @NonNull
+    public WakeupSourceStats[] getWakeupReasonStats() {
+        try {
+            return mBatteryStats.getWakeupReasonStats();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * @hide
+     */
+    @RequiresPermission(android.Manifest.permission.BATTERY_STATS)
+    public void resetStatistics() {
+        try {
+            mBatteryStats.resetStatistics();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Retrieves accumulated bluetooth stats.
      *
      * @hide

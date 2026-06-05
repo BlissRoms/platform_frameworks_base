@@ -19,10 +19,15 @@ package com.android.internal.app;
 import android.bluetooth.BluetoothActivityEnergyInfo;
 import android.os.BatteryUsageStats;
 import android.os.BatteryUsageStatsQuery;
+import android.os.BatterySummaryStats;
 import android.os.BluetoothBatteryStats;
 import android.os.ParcelFileDescriptor;
 import android.os.ResultReceiver;
+import android.os.SuspendStats;
+import android.os.UidAlarmStats;
+import android.os.UidWakelockStats;
 import android.os.WakeLockStats;
+import android.os.WakeupSourceStats;
 import android.os.WorkSource;
 import android.os.connectivity.CellularBatteryStats;
 import android.os.connectivity.WifiActivityEnergyInfo;
@@ -107,6 +112,34 @@ interface IBatteryStats {
     long computeBatteryScreenOffRealtimeMs();
     @EnforcePermission("BATTERY_STATS")
     long getScreenOffDischargeMah();
+    @EnforcePermission("BATTERY_STATS")
+    BatterySummaryStats getBatterySummaryStats();
+    @EnforcePermission("BATTERY_STATS")
+    WakeupSourceStats[] getKernelWakeupStats();
+    @EnforcePermission("BATTERY_STATS")
+    SuspendStats getSystemSuspendStats();
+    /**
+     * Returns per-UID partial wakelock statistics since last charge, sorted by
+     * cumulative hold time descending.  Empty array if no wakelocks were held.
+     */
+    @EnforcePermission("BATTERY_STATS")
+    UidWakelockStats[] getUidWakelockStats();
+    /**
+     * Returns per-UID wakeup-alarm statistics since last charge, sorted by
+     * wakeup count descending.  Empty array if no alarm wakeups were recorded.
+     */
+    @EnforcePermission("BATTERY_STATS")
+    UidAlarmStats[] getUidAlarmStats();
+    /**
+     * Returns system-wide wakeup-reason statistics since last charge (the IRQ /
+     * wake-source strings the kernel reports as the resume reason), sorted by
+     * count descending.  Reuses WakeupSourceStats (name=reason, count, totalTimeMs).
+     */
+    @EnforcePermission("BATTERY_STATS")
+    WakeupSourceStats[] getWakeupReasonStats();
+
+    @EnforcePermission("BATTERY_STATS")
+    void resetStatistics();
 
     @EnforcePermission("UPDATE_DEVICE_STATS")
     void noteEvent(int code, String name, int uid);

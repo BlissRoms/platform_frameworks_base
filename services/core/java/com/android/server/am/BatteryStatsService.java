@@ -53,6 +53,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.BatteryConsumer;
 import android.os.BatteryManagerInternal;
+import android.os.BatterySummaryStats;
 import android.os.BatteryStats;
 import android.os.BatteryStatsInternal;
 import android.os.BatteryStatsInternal.CpuWakeupSubsystem;
@@ -75,11 +76,15 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.os.ServiceManager;
+import android.os.SuspendStats;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.os.UidAlarmStats;
 import android.os.UidBatteryConsumer;
+import android.os.UidWakelockStats;
 import android.os.UserHandle;
 import android.os.WakeLockStats;
+import android.os.WakeupSourceStats;
 import android.os.WorkSource;
 import android.os.connectivity.CellularBatteryStats;
 import android.os.connectivity.GpsBatteryStats;
@@ -91,6 +96,8 @@ import android.os.health.UidHealthStats;
 import android.power.PowerStatsInternal;
 import android.provider.DeviceConfig;
 import android.provider.Settings;
+import android.system.suspend.internal.ISuspendControlServiceInternal;
+import android.system.suspend.internal.SuspendInfo;
 import android.telephony.DataConnectionRealTimeInfo;
 import android.telephony.ModemActivityInfo;
 import android.telephony.NetworkRegistrationInfo;
@@ -145,6 +152,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -195,6 +203,9 @@ public final class BatteryStatsService extends IBatteryStats.Stub
 
     private volatile boolean mMonitorEnabled = true;
     private boolean mRailsStatsCollectionEnabled = true;
+
+    /** Cached handle to the suspend-control service; populated lazily on first use. */
+    private volatile ISuspendControlServiceInternal mSuspendControlService;
 
     private native void getRailEnergyPowerStats(RailStats railStats);
     private CharsetDecoder mDecoderStat = StandardCharsets.UTF_8
@@ -1333,6 +1344,227 @@ public final class BatteryStatsService extends IBatteryStats.Stub
             long dischargeUah = mStats.getUahDischargeScreenOff(BatteryStats.STATS_SINCE_CHARGED);
             return dischargeUah / 1000;
         }
+    }
+
+    @Override
+    @EnforcePermission(BATTERY_STATS)
+    public BatterySummaryStats getBatterySummaryStats() {
+        super.getBatterySummaryStats_enforcePermission();
+
+        synchronized (mStats) {
+            final long elapsedRealtimeUs = mClock.elapsedRealtime() * 1000;
+            final long uptimeUs = mClock.uptimeMillis() * 1000;
+            final int which = BatteryStats.STATS_SINCE_CHARGED;
+            final long batteryRealtimeUs = mStats.computeBatteryRealtime(elapsedRealtimeUs, which);
+            final long batteryUptimeUs = mStats.computeBatteryUptime(uptimeUs, which);
+            final long screenOnTimeUs = mStats.getScreenOnTime(elapsedRealtimeUs, which);
+            final long screenOffRealtimeUs =
+                    mStats.computeBatteryScreenOffRealtime(elapsedRealtimeUs, which);
+            final long screenOffUptimeUs =
+                    mStats.computeBatteryScreenOffUptime(uptimeUs, which);
+            final long screenOffDeepSleepUs =
+                    Math.max(0, screenOffRealtimeUs - screenOffUptimeUs);
+            final long screenOffDischargeUah = mStats.getUahDischargeScreenOff(which);
+            final long screenOnDischargeUah = Math.max(0L,
+                    mStats.getUahDischarge(which)
+                    - screenOffDischargeUah
+                    - mStats.getUahDischargeScreenDoze(which));
+
+            return new BatterySummaryStats(
+                    screenOnTimeUs / 1000,
+                    screenOffRealtimeUs / 1000,
+                    batteryRealtimeUs / 1000,
+                    batteryUptimeUs / 1000,
+                    screenOffDeepSleepUs / 1000,
+                    screenOffUptimeUs / 1000,
+                    mStats.getDischargeAmountScreenOnSinceCharge(),
+                    mStats.getDischargeAmountScreenOffSinceCharge(),
+                    screenOffDischargeUah / 1000,
+                    screenOnDischargeUah / 1000,
+                    mStats.getLearnedBatteryCapacity(),
+                    mStats.getEstimatedBatteryCapacity());
+        }
+    }
+
+    @Override
+    @EnforcePermission(BATTERY_STATS)
+    public WakeupSourceStats[] getKernelWakeupStats() {
+        super.getKernelWakeupStats_enforcePermission();
+
+        synchronized (mStats) {
+            final long elapsedRealtimeUs = mClock.elapsedRealtime() * 1000;
+            final int which = BatteryStats.STATS_SINCE_CHARGED;
+            final Map<String, ? extends BatteryStats.Timer> kernelWakelockStats =
+                    mStats.getKernelWakelockStats();
+            final ArrayList<WakeupSourceStats> snapshot =
+                    new ArrayList<>(kernelWakelockStats.size());
+            for (Map.Entry<String, ? extends BatteryStats.Timer> entry
+                    : kernelWakelockStats.entrySet()) {
+                final BatteryStats.Timer timer = entry.getValue();
+                final int count = timer.getCountLocked(which);
+                final long totalTimeMs =
+                        (timer.getTotalTimeLocked(elapsedRealtimeUs, which) + 500) / 1000;
+                if (count != 0 || totalTimeMs != 0) {
+                    snapshot.add(new WakeupSourceStats(entry.getKey(), count, totalTimeMs));
+                }
+            }
+            snapshot.sort(Comparator.comparingLong(
+                    (WakeupSourceStats stats) -> stats.totalTimeMs).reversed());
+            final List<WakeupSourceStats> top = snapshot.size() > TOP_N_STATS
+                    ? snapshot.subList(0, TOP_N_STATS) : snapshot;
+            return top.toArray(new WakeupSourceStats[0]);
+        }
+    }
+
+    /** Maximum number of entries returned by any list-based stats accessor. */
+    private static final int TOP_N_STATS = 25;
+
+    @Override
+    @EnforcePermission(BATTERY_STATS)
+    public SuspendStats getSystemSuspendStats() {
+        super.getSystemSuspendStats_enforcePermission();
+
+        ISuspendControlServiceInternal suspendControl = mSuspendControlService;
+        if (suspendControl == null) {
+            final IBinder binder = ServiceManager.getService("suspend_control_internal");
+            if (binder == null) {
+                return SuspendStats.unavailable();
+            }
+            suspendControl = ISuspendControlServiceInternal.Stub.asInterface(binder);
+            mSuspendControlService = suspendControl;
+        }
+
+        try {
+            final SuspendInfo suspendInfo = suspendControl.getSuspendStats();
+            if (suspendInfo == null) {
+                return SuspendStats.unavailable();
+            }
+            return new SuspendStats(
+                    suspendInfo.suspendAttemptCount,
+                    suspendInfo.failedSuspendCount,
+                    suspendInfo.shortSuspendCount,
+                    suspendInfo.suspendTimeMillis,
+                    suspendInfo.shortSuspendTimeMillis,
+                    suspendInfo.suspendOverheadTimeMillis,
+                    suspendInfo.failedSuspendOverheadTimeMillis,
+                    suspendInfo.newBackoffCount,
+                    suspendInfo.backoffContinueCount,
+                    suspendInfo.sleepTimeMillis);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+
+    @Override
+    @EnforcePermission(BATTERY_STATS)
+    public UidWakelockStats[] getUidWakelockStats() {
+        super.getUidWakelockStats_enforcePermission();
+
+        synchronized (mStats) {
+            final long elapsedRealtimeUs = mClock.elapsedRealtime() * 1000;
+            final int which = BatteryStats.STATS_SINCE_CHARGED;
+            final android.util.SparseArray<? extends BatteryStats.Uid> uidStats =
+                    mStats.getUidStats();
+            final ArrayList<UidWakelockStats> snapshot = new ArrayList<>();
+            for (int i = 0, size = uidStats.size(); i < size; i++) {
+                final BatteryStats.Uid uid = uidStats.valueAt(i);
+                final int uidInt = uid.getUid();
+                final android.util.ArrayMap<String, ? extends BatteryStats.Uid.Wakelock>
+                        wakelocks = uid.getWakelockStats();
+                for (int j = 0, wlSize = wakelocks.size(); j < wlSize; j++) {
+                    final BatteryStats.Timer partialTimer =
+                            wakelocks.valueAt(j).getWakeTime(BatteryStats.WAKE_TYPE_PARTIAL);
+                    if (partialTimer == null) continue;
+                    final int count = partialTimer.getCountLocked(which);
+                    final long totalTimeMs =
+                            (partialTimer.getTotalTimeLocked(elapsedRealtimeUs, which) + 500)
+                                    / 1000;
+                    if (count == 0 && totalTimeMs == 0) continue;
+                    snapshot.add(new UidWakelockStats(
+                            uidInt, wakelocks.keyAt(j), totalTimeMs, count));
+                }
+            }
+            snapshot.sort(Comparator.comparingLong(
+                    (UidWakelockStats s) -> s.partialTimeMs).reversed());
+            final List<UidWakelockStats> top = snapshot.size() > TOP_N_STATS
+                    ? snapshot.subList(0, TOP_N_STATS) : snapshot;
+            return top.toArray(new UidWakelockStats[0]);
+        }
+    }
+
+    @Override
+    @EnforcePermission(BATTERY_STATS)
+    public UidAlarmStats[] getUidAlarmStats() {
+        super.getUidAlarmStats_enforcePermission();
+
+        synchronized (mStats) {
+            final int which = BatteryStats.STATS_SINCE_CHARGED;
+            final android.util.SparseArray<? extends BatteryStats.Uid> uidStats =
+                    mStats.getUidStats();
+            final ArrayList<UidAlarmStats> snapshot = new ArrayList<>();
+            for (int i = 0, size = uidStats.size(); i < size; i++) {
+                final BatteryStats.Uid uid = uidStats.valueAt(i);
+                final int uidInt = uid.getUid();
+                final android.util.ArrayMap<String, ? extends BatteryStats.Uid.Pkg>
+                        pkgs = uid.getPackageStats();
+                for (int j = 0, pkgSize = pkgs.size(); j < pkgSize; j++) {
+                    final String pkgName = pkgs.keyAt(j);
+                    final android.util.ArrayMap<String, ? extends BatteryStats.Counter>
+                            alarms = pkgs.valueAt(j).getWakeupAlarmStats();
+                    for (int k = 0, alarmSize = alarms.size(); k < alarmSize; k++) {
+                        final int count = alarms.valueAt(k).getCountLocked(which);
+                        if (count == 0) continue;
+                        snapshot.add(new UidAlarmStats(
+                                uidInt, pkgName, alarms.keyAt(k), count));
+                    }
+                }
+            }
+            snapshot.sort(Comparator.comparingInt(
+                    (UidAlarmStats s) -> s.count).reversed());
+            final List<UidAlarmStats> top = snapshot.size() > TOP_N_STATS
+                    ? snapshot.subList(0, TOP_N_STATS) : snapshot;
+            return top.toArray(new UidAlarmStats[0]);
+        }
+    }
+
+    @Override
+    @EnforcePermission(BATTERY_STATS)
+    public WakeupSourceStats[] getWakeupReasonStats() {
+        super.getWakeupReasonStats_enforcePermission();
+
+        synchronized (mStats) {
+            final long elapsedRealtimeUs = mClock.elapsedRealtime() * 1000;
+            final int which = BatteryStats.STATS_SINCE_CHARGED;
+            final Map<String, ? extends BatteryStats.Timer> reasons =
+                    mStats.getWakeupReasonStats();
+            final ArrayList<WakeupSourceStats> snapshot = new ArrayList<>(reasons.size());
+            for (Map.Entry<String, ? extends BatteryStats.Timer> entry : reasons.entrySet()) {
+                final BatteryStats.Timer timer = entry.getValue();
+                final int count = timer.getCountLocked(which);
+                final long totalTimeMs =
+                        (timer.getTotalTimeLocked(elapsedRealtimeUs, which) + 500) / 1000;
+                if (count == 0 && totalTimeMs == 0) continue;
+                snapshot.add(new WakeupSourceStats(entry.getKey(), count, totalTimeMs));
+            }
+            snapshot.sort(Comparator.comparingInt(
+                    (WakeupSourceStats s) -> s.count).reversed());
+            final List<WakeupSourceStats> top = snapshot.size() > TOP_N_STATS
+                    ? snapshot.subList(0, TOP_N_STATS) : snapshot;
+            return top.toArray(new WakeupSourceStats[0]);
+        }
+    }
+
+    @Override
+    @EnforcePermission(BATTERY_STATS)
+    public void resetStatistics() {
+        super.resetStatistics_enforcePermission();
+        awaitCompletion();
+        synchronized (mStats) {
+            mStats.resetAllStatsAndHistoryLocked(
+                    BatteryStatsImpl.RESET_REASON_ADB_COMMAND);
+        }
+        scheduleWriteToDisk();
     }
 
     @Override
