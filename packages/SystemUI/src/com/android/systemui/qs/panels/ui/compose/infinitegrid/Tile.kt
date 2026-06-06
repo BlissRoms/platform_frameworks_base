@@ -369,6 +369,7 @@ fun ContentScope.Tile(
         TileExpandable(
             color = { effectiveColor },
             shape = effectiveShape,
+            animationShape = if (effectiveShape is RoundedCornerShape) effectiveShape else tileShape,
             squishiness = squishiness,
             hapticsViewModel = hapticsViewModel,
             modifier =
@@ -515,10 +516,11 @@ private fun TileExpandable(
     squishiness: () -> Float,
     hapticsViewModel: TileHapticsViewModel?,
     modifier: Modifier = Modifier,
+    animationShape: Shape = shape,
     content: @Composable (Expandable) -> Unit,
 ) {
     Expandable(
-        controller = rememberExpandableController(color = color, shape = shape),
+        controller = rememberExpandableController(color = color, shape = animationShape),
         modifier = modifier.clip(shape).verticalSquish(squishiness),
         useModifierBasedImplementation = true,
     ) {
