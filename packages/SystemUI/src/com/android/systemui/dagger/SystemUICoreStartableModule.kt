@@ -23,6 +23,7 @@ import com.android.systemui.SliceBroadcastRelayHandler
 import com.android.systemui.accessibility.Magnification
 import com.android.systemui.back.domain.interactor.BackActionInteractor
 import com.android.systemui.biometrics.BiometricNotificationService
+import com.android.systemui.bliss.BatteryInfoNotificationController
 import com.android.systemui.bouncer.domain.startable.BouncerStartable
 import com.android.systemui.clipboardoverlay.ClipboardListener
 import com.android.systemui.complication.ComplicationTypesUpdater
@@ -328,5 +329,12 @@ abstract class SystemUICoreStartableModule {
     @ClassKey(SysUIKeyGestureEventInitializer::class)
     abstract fun bindSysUIKeyGestureEventInitializer(
         keyGestureEventInitializer: SysUIKeyGestureEventInitializer
+    ): CoreStartable
+
+    @Binds
+    @IntoMap
+    @ClassKey(BatteryInfoNotificationController::class)
+    abstract fun bindBatteryInfoNotificationController(
+        impl: BatteryInfoNotificationController
     ): CoreStartable
 }

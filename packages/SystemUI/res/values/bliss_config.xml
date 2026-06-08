@@ -24,4 +24,9 @@
 
     <!-- Show 5G toggle in internet dialog when available -->
     <bool name="config_supportsVONR">true</bool>
+
+    <!-- Sign applied to BATTERY_PROPERTY_CURRENT_NOW before unit conversion.
+         1  = kernel uses Android convention (positive = charging).
+         -1 = kernel inverts the sign (positive = discharging). -->
+    <integer name="config_batteryCurrentNowSign" translatable="false">1</integer>
 </resources>

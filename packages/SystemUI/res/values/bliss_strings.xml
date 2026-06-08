@@ -132,4 +132,14 @@
     <string name="screenrecord_delete_label">Delete</string>
     <!-- A toast message shown after successfully deleting a screen recording [CHAR LIMIT=NONE] -->
     <string name="screenrecord_delete_description">Screen recording deleted</string>
+
+    <!-- Battery stats notification -->
+    <string name="battery_info_channel_name">Battery stats</string>
+    <string name="battery_info_notif_title">Battery</string>
+    <string name="battery_info_notif_now"><xliff:g id="current" example="775 mA">%1$s</xliff:g> · <xliff:g id="power" example="2.8 W">%2$s</xliff:g> · <xliff:g id="temp" example="36.5°">%3$s</xliff:g></string>
+    <string name="battery_info_notif_rates">Active <xliff:g id="active_rate" example="11.2%/h">%1$s</xliff:g>  ·  Idle <xliff:g id="idle_rate" example="4.1%/h">%2$s</xliff:g></string>
+    <string name="battery_info_notif_screen_on">Screen on <xliff:g id="duration" example="6h 10m 46s">%1$s</xliff:g>  ·  <xliff:g id="pct" example="69%">%2$s</xliff:g> (<xliff:g id="mah" example="3772 mAh">%3$s</xliff:g>)</string>
+    <string name="battery_info_notif_screen_off">Screen off <xliff:g id="duration" example="5h 5m 14s">%1$s</xliff:g>  ·  <xliff:g id="pct" example="20%">%2$s</xliff:g> (<xliff:g id="mah" example="1133 mAh">%3$s</xliff:g>)</string>
+    <string name="battery_info_notif_deep_sleep">Deep sleep <xliff:g id="duration" example="4h 0m 43s">%1$s</xliff:g>  ·  <xliff:g id="pct" example="78%">%2$s</xliff:g></string>
+    <string name="battery_info_notif_awake">Awake <xliff:g id="duration" example="1h 4m 31s">%1$s</xliff:g>  ·  <xliff:g id="pct" example="21%">%2$s</xliff:g></string>
 </resources>
