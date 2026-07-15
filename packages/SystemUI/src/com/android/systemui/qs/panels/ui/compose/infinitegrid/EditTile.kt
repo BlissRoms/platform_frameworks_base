@@ -670,26 +670,6 @@ private fun CurrentTilesGrid(
 }
 
 @Composable
-private fun TileLazyGrid(
-    columns: GridCells,
-    modifier: Modifier = Modifier,
-    state: LazyGridState = rememberLazyGridState(),
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-    content: LazyGridScope.() -> Unit,
-) {
-    LazyVerticalGrid(
-        state = state,
-        columns = columns,
-        verticalArrangement = spacedBy(TileArrangementPadding),
-        horizontalArrangement = spacedBy(TileArrangementPadding),
-        contentPadding = contentPadding,
-        userScrollEnabled = false,
-        modifier = modifier,
-        content = content,
-    )
-}
-
-@Composable
 private fun AnimatedAvailableTilesGrid(
     allTiles: List<EditTileViewModel>,
     listState: EditTileListState,

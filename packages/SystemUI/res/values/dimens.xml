@@ -705,6 +705,14 @@
     <dimen name="qs_corner_radius">28dp</dimen>
     <dimen name="qs_tile_margin_horizontal">8dp</dimen>
     <dimen name="qs_tile_margin_vertical">@dimen/qs_tile_margin_horizontal</dimen>
+
+    <!-- Classic circular QS tile style -->
+    <dimen name="qs_tile_height_classic">100dp</dimen>
+    <dimen name="qs_tile_circle_bg_size">56dp</dimen>
+    <dimen name="qs_tile_circle_padding">4dp</dimen>
+    <dimen name="qs_tile_text_size_classic">12sp</dimen>
+    <dimen name="qs_quick_tile_size_classic">48dp</dimen>
+
     <dimen name="qs_brightness_margin_top">8dp</dimen>
     <dimen name="brightness_dialog_expanded_width">364dp</dimen>
     <dimen name="brightness_dialog_margin_end">24dp</dimen>

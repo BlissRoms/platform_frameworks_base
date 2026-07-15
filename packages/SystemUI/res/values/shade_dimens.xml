@@ -37,6 +37,8 @@
     <dimen name="common_tile_default_large_tile_icon_size">28dp</dimen>
     <dimen name="common_tile_default_start_padding">8dp</dimen>
     <dimen name="common_tile_default_tile_height">72dp</dimen>
+    <dimen name="common_tile_default_classic_circle_size">52dp</dimen>
+    <dimen name="common_tile_default_classic_tile_height">72dp</dimen>
     <dimen name="common_tile_default_toggle_target_size">56dp</dimen>
 
     <!-- QS shade overlay brightness bar -->

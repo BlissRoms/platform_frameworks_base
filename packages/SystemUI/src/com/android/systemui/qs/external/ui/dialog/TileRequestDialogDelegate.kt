@@ -178,9 +178,7 @@ constructor(
                 SmallStaticTile(
                     uiState = viewModel.uiState,
                     iconProvider = viewModel.iconProvider,
-                ) {
-                    selectedLargeFormat.value = false
-                }
+                )
             }
 
             TileFormatRadioButton(
@@ -199,9 +197,7 @@ constructor(
                         Modifier.width(
                             dimensionResource(id = R.dimen.qs_tile_service_request_tile_width)
                         ),
-                ) {
-                    selectedLargeFormat.value = true
-                }
+                )
             }
         }
     }

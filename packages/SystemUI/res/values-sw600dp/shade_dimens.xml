@@ -50,6 +50,12 @@
         name="common_tile_default_tile_height"
         android:featureFlag="com.android.systemui.desktop_sizing">56dp</dimen>
     <dimen
+        name="common_tile_default_classic_circle_size"
+        android:featureFlag="com.android.systemui.desktop_sizing">48dp</dimen>
+    <dimen
+        name="common_tile_default_classic_tile_height"
+        android:featureFlag="com.android.systemui.desktop_sizing">56dp</dimen>
+    <dimen
         name="common_tile_default_toggle_target_size"
         android:featureFlag="com.android.systemui.desktop_sizing">44dp</dimen>
 

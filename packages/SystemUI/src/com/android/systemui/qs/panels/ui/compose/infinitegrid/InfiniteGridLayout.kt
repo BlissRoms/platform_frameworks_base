@@ -16,11 +16,13 @@
 
 package com.android.systemui.qs.panels.ui.compose.infinitegrid
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
@@ -29,10 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.util.fastMap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.compose.animation.scene.ContentScope
 import com.android.systemui.dagger.SysUISingleton
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import com.android.systemui.grid.ui.compose.VerticalSpannedGrid
 import com.android.systemui.haptics.msdl.qs.TileHapticsViewModel
 import com.android.systemui.lifecycle.rememberViewModel
@@ -52,6 +59,17 @@ import com.android.systemui.qs.pipeline.shared.TileSpec
 import com.android.systemui.qs.shared.ui.QuickSettings.Elements.toElementKey
 import com.android.systemui.res.R
 import com.android.systemui.shade.shared.flag.DualShadeFlag
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSPanelStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileLabelHide
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileShape
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileOpacity
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileAnimationStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileLabelHide
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileShape
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileOpacity
+
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.Tile
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -84,53 +102,74 @@ constructor(
                 textFeedbackContentViewModelFactory.create(context)
             }
 
-        val columns = viewModel.columnsWithMediaViewModel.columns
-        val largeTilesSpan = viewModel.columnsWithMediaViewModel.largeSpan
+        val customColumns = rememberQSTileColumns()
+        val customRows = rememberQSTileQsRows() // expanded QS rows for classic (4)
+        val panelStyle = rememberQSPanelStyle()
+        val isClassicStyle = panelStyle == 1
+        val hideTileLabels = rememberQSTileLabelHide()
+        val tileShape = rememberQSTileShape()
+        val tileOpacity = rememberQSTileOpacity()
+        val tileAnimationStyle = rememberQSTileAnimationStyle()
+        val columns = if (isClassicStyle) customColumns else viewModel.columnsWithMediaViewModel.columns
+        val rows = if (isClassicStyle) customRows else viewModel.columnsWithMediaViewModel.columns // fallback
+        val largeTilesSpan = if (isClassicStyle) 1 else viewModel.columnsWithMediaViewModel.largeSpan
         val largeTiles by viewModel.iconTilesViewModel.largeTilesState
         // Tiles or largeTiles may be updated while this is composed, so listen to any changes
         val sizedTiles =
             remember(tiles, largeTiles, largeTilesSpan) {
                 tiles.map {
-                    SizedTileImpl(it, if (largeTiles.contains(it.spec)) largeTilesSpan else 1)
+                    SizedTileImpl(it, if (isClassicStyle) 1 else if (largeTiles.contains(it.spec)) largeTilesSpan else 1)
                 }
             }
         val squishiness by viewModel.squishinessViewModel.squishiness.collectAsStateWithLifecycle()
         val scope = rememberCoroutineScope()
 
+        val limitedTiles = sizedTiles
         val bounceables =
-            remember(sizedTiles) { List(sizedTiles.size) { BounceableTileViewModel() } }
-        val spans by remember(sizedTiles) { derivedStateOf { sizedTiles.fastMap { it.width } } }
+            remember(limitedTiles) { List(limitedTiles.size) { BounceableTileViewModel() } }
+
+        val spans by remember(limitedTiles) { derivedStateOf { limitedTiles.fastMap { it.width } } }
         VerticalSpannedGrid(
             columns = columns,
             columnSpacing = dimensionResource(R.dimen.qs_tile_margin_horizontal),
             rowSpacing = dimensionResource(R.dimen.qs_tile_margin_vertical),
             spans = spans,
-            keys = { sizedTiles[it].tile.spec },
+            keys = { limitedTiles[it].tile.spec },
             modifier = modifier,
         ) { spanIndex, column, isFirstInColumn, isLastInColumn ->
-            val it = sizedTiles[spanIndex]
+            val it = limitedTiles[spanIndex]
+            val interactionSource = remember(it.tile.spec) { MutableInteractionSource() }
 
             Element(it.tile.spec.toElementKey(), Modifier) {
-                Tile(
-                    tile = it.tile,
-                    iconOnly = iconTilesViewModel.isIconTile(it.tile.spec),
-                    squishiness = { squishiness },
-                    tileHapticsViewModelFactory = tileHapticsViewModelFactory,
-                    coroutineScope = scope,
-                    bounceableInfo =
-                        bounceables.bounceableInfo(
-                            it,
-                            index = spanIndex,
-                            column = column,
-                            columns = columns,
-                            isFirstInRow = isFirstInColumn,
-                            isLastInRow = isLastInColumn,
-                        ),
-                    detailsViewModel = detailsViewModel,
-                    isVisible = listening,
-                    requestToggleTextFeedback = textFeedbackViewModel::requestShowFeedback,
-                    enableRevealEffect = enableRevealEffect,
-                )
+                CompositionLocalProvider(
+                    LocalQSPanelStyle provides panelStyle,
+                    LocalQSTileLabelHide provides hideTileLabels,
+                    LocalQSTileShape provides tileShape,
+                    LocalQSTileOpacity provides tileOpacity,
+                    LocalQSTileAnimationStyle provides tileAnimationStyle,
+                ) {
+                    Tile(
+                        tile = it.tile,
+                        iconOnly = isClassicStyle || iconTilesViewModel.isIconTile(it.tile.spec),
+                        squishiness = { squishiness },
+                        coroutineScope = scope,
+                        bounceableInfo =
+                            bounceables.bounceableInfo(
+                                it,
+                                index = spanIndex,
+                                column = column,
+                                columns = columns,
+                                isFirstInRow = isFirstInColumn,
+                                isLastInRow = isLastInColumn,
+                            ),
+                        tileHapticsViewModelFactory = tileHapticsViewModelFactory,
+                        interactionSource = interactionSource,
+                        detailsViewModel = detailsViewModel,
+                        isVisible = listening,
+                        requestToggleTextFeedback = textFeedbackViewModel::requestShowFeedback,
+                        enableRevealEffect = enableRevealEffect,
+                    )
+                }
             }
         }
 

@@ -79,6 +79,10 @@ constructor(
             .let { splitInRowsSequence(it, columns).take(rows).toList().flatten() }
     }
 
+    val allTileViewModels by derivedStateOf {
+        currentTiles.map { SizedTileImpl(TileViewModel(it.tile, it.spec, it.expandable), 1) }
+    }
+
     override suspend fun onActivated() {
         coroutineScope {
             launch { qsColumnsViewModel.activate() }

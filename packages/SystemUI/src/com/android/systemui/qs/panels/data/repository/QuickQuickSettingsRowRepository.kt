@@ -21,9 +21,11 @@ import com.android.systemui.common.ui.data.repository.ConfigurationRepository
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.res.R
 import com.android.systemui.shade.ShadeDisplayAware
+import com.android.systemui.shared.settings.data.repository.SecureSettingsRepository
 import com.android.systemui.util.kotlin.emitOnStart
 import javax.inject.Inject
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
 
 @SysUISingleton
 class QuickQuickSettingsRowRepository
@@ -31,9 +33,14 @@ class QuickQuickSettingsRowRepository
 constructor(
     @ShadeDisplayAware private val resources: Resources,
     @ShadeDisplayAware configurationRepository: ConfigurationRepository,
+    private val secureSettingsRepository: SecureSettingsRepository,
 ) {
+    @OptIn(ExperimentalCoroutinesApi::class)
     val rows =
-        configurationRepository.onConfigurationChange.emitOnStart().map {
-            resources.getInteger(R.integer.quick_qs_paginated_grid_num_rows)
-        }
+        configurationRepository.onConfigurationChange
+            .emitOnStart()
+            .flatMapLatest {
+                val defaultRows = resources.getInteger(R.integer.quick_qs_paginated_grid_num_rows)
+                secureSettingsRepository.intSetting("qs_tile_qqs_rows", defaultRows)
+            }
 }

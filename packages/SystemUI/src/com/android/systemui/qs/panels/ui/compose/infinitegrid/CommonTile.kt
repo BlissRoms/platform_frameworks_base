@@ -27,6 +27,7 @@ import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -64,7 +66,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.ColorProducer
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.DefaultAlpha
@@ -85,6 +89,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -237,6 +243,103 @@ fun LargeTileLabels(
 }
 
 @Composable
+fun ClassicCircleTileContent(
+    label: String,
+    secondaryLabel: String? = null,
+    iconProvider: Context.() -> Icon,
+    colors: TileColors,
+    hideLabel: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val icon = iconProvider(context)
+    val animatedColor by animateColorAsState(colors.icon, label = "QSTileIconColor")
+    val circleSize = CommonTileDefaults.ClassicCircleSize
+    val tileHeight = CommonTileDefaults.ClassicTileHeight
+    val iconSize = 28.dp
+
+    val iconModifier = modifier
+        .size({ iconSize.roundToPx() }, { iconSize.roundToPx() })
+        .sysuiResTag(TEST_TAG_TILE_ICON)
+
+    val loadedDrawable =
+        remember(icon, context) {
+            when (icon) {
+                is Icon.Loaded -> icon.drawable
+                is Icon.Resource -> context.getDrawable(icon.resId)
+            }
+        }
+
+    val opacity = LocalQSTileOpacity.current / 100f
+    val bgColor = colors.background.copy(alpha = colors.background.alpha * opacity)
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(tileHeight),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        // Circle with icon
+        Box(
+            modifier = Modifier
+                .size(circleSize)
+                .clip(classicTileShape(LocalQSTileShape.current))
+                .background(bgColor)
+        ) {
+            NonClippedImage(
+                painter = rememberDrawablePainter(loadedDrawable),
+                contentDescription = icon.contentDescription?.load(),
+                colorFilter = ColorFilter.tint(color = animatedColor),
+                modifier = iconModifier.align(Alignment.Center),
+                contentScale = ContentScale.Fit,
+            )
+        }
+
+        // Label below circle - main title on line 1, status (secondaryLabel) on line 2, both with marquee
+        if (!hideLabel) {
+            Text(
+                text = label,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 11.sp,
+                    textAlign = TextAlign.Center,
+                ),
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Clip,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .basicMarquee(
+                        iterations = Int.MAX_VALUE,
+                        initialDelayMillis = 1000,
+                    ),
+            )
+            if (!secondaryLabel.isNullOrEmpty() && secondaryLabel != label) {
+                Text(
+                    text = secondaryLabel,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 10.sp,
+                        textAlign = TextAlign.Center,
+                    ),
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Clip,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 1.dp)
+                        .basicMarquee(
+                            iterations = Int.MAX_VALUE,
+                            initialDelayMillis = 1000,
+                        ),
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun SmallTileContent(
     iconProvider: Context.() -> Icon,
     color: Color,
@@ -317,6 +420,7 @@ private fun TileLabel(
     style: TextStyle,
     modifier: Modifier = Modifier,
     isVisible: () -> Boolean = { true },
+    maxLines: Int = 1,
 ) {
     var textSize by remember { mutableIntStateOf(0) }
 
@@ -326,7 +430,7 @@ private fun TileLabel(
         text = text,
         color = color,
         style = style,
-        maxLines = 1,
+        maxLines = maxLines,
         onTextLayout = { textSize = it.size.width },
         modifier =
             modifier
@@ -338,7 +442,7 @@ private fun TileLabel(
                 }
                 .drawWithContent {
                     drawContent()
-                    if (textSize > size.width) {
+                    if (textSize > size.width && maxLines == 1) {
                         // Draw a blur over the end of the text
                         val edgeWidthPx = TileLabelBlurWidth.toPx()
                         if (layoutDirection == LayoutDirection.Rtl) {
@@ -478,6 +582,21 @@ object CommonTileDefaults {
         @Composable
         @ReadOnlyComposable
         get() = dimensionResource(id = R.dimen.common_tile_default_tile_height)
+
+    val ClassicCircleSize: Dp
+        @Composable
+        @ReadOnlyComposable
+        get() = dimensionResource(id = R.dimen.common_tile_default_classic_circle_size)
+
+    val ClassicTileHeight: Dp
+        @Composable
+        @ReadOnlyComposable
+        get() = dimensionResource(id = R.dimen.qs_tile_height_classic)
+
+    val ClassicCircleShape: Shape
+        @Composable
+        @ReadOnlyComposable
+        get() = RoundedCornerShape(50)
 
     val ToggleTargetSize: Dp
         @Composable

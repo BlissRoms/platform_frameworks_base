@@ -8074,4 +8074,9 @@
 
     <!-- Whether to explicitly disable the Video capability over IWLAN when Wi-Fi Calling is turned off. -->
     <bool name="config_disable_video_capability_when_wfc_off">false</bool>
+
+    <!-- QS tile grid limits for circular style. Maintainers can overlay these. -->
+    <integer name="config_qsTileColumnsMax">6</integer>
+    <integer name="config_qsTileQqsRowsMax">3</integer>
+    <integer name="config_qsTileQsRowsMax">5</integer>
 </resources>

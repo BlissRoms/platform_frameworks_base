@@ -6626,4 +6626,9 @@
   <java-symbol type="drawable" name="ic_cross_device_sync_airplane" />
   <!-- Disable the Video Capability over IWLAN when Wi-Fi Calling is turned off  -->
   <java-symbol type="bool" name="config_disable_video_capability_when_wfc_off" />
+
+  <!-- QS tile grid limits for circular style -->
+  <java-symbol type="integer" name="config_qsTileColumnsMax" />
+  <java-symbol type="integer" name="config_qsTileQqsRowsMax" />
+  <java-symbol type="integer" name="config_qsTileQsRowsMax" />
   </resources>
