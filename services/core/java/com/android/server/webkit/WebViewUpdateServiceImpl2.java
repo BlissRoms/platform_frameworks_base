@@ -15,7 +15,7 @@
  */
 package com.android.server.webkit;
 
-import static com.android.server.pm.ComputerEngine.isDebuggable;
+import static android.os.Build.isDebuggable;
 
 import android.app.AppGlobals;
 import android.annotation.Nullable;
