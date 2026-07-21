@@ -37,7 +37,9 @@ import android.provider.Settings.Secure.LOCKSCREEN_SMARTSPACE_ENABLED
 import android.provider.Settings.System.LOCKSCREEN_WEATHER_ENABLED
 import android.util.Log
 import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
 import android.view.View
+import com.android.systemui.weather.WeatherInfoView
 import androidx.annotation.VisibleForTesting
 import com.android.internal.colorextraction.ColorExtractor
 import com.android.keyguard.KeyguardUpdateMonitor
@@ -336,11 +338,11 @@ constructor(
                     0,
                     userTracker.userId,
                 ) == 1
-            return showCustomWeather && !isWeatherEnabled
+            return showCustomWeather
         }
 
     val isEnabled: Boolean
-        get() = plugin != null && isWeatherEnabled
+        get() = (plugin != null || datePlugin != null) && (isWeatherEnabled || isOmniWeatherEnabled)
 
     private fun updateBypassEnabled() {
         val bypassEnabled = bypassController.bypassEnabled
@@ -375,16 +377,24 @@ constructor(
             throw RuntimeException("Cannot build view when not enabled")
         }
 
-        val view =
-            buildView(
-                surfaceName = SmartspaceViewModel.SURFACE_WEATHER_VIEW,
-                context = context,
-                plugin = weatherPlugin,
-                isLargeClock = isLargeClock,
-            )
-        connectSession()
+        if (weatherPlugin != null && isWeatherEnabled) {
+            val view =
+                buildView(
+                    surfaceName = SmartspaceViewModel.SURFACE_WEATHER_VIEW,
+                    context = context,
+                    plugin = weatherPlugin,
+                    isLargeClock = isLargeClock,
+                )
+            connectSession()
+            return view
+        } else if (isOmniWeatherEnabled) {
+            val ctx = context ?: this.context
+            val weatherView = LayoutInflater.from(ctx).inflate(R.layout.keyguard_weather_area, null, false) as WeatherInfoView
+            weatherView.init()
+            return weatherView
+        }
 
-        return view
+        return null
     }
 
     /** Constructs the smartspace view and connects it to the smartspace service. */

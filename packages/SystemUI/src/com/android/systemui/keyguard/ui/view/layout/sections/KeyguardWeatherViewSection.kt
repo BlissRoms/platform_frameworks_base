@@ -59,25 +59,25 @@ constructor(
         if (!smartspaceController.isOmniWeatherEnabled || smartspaceController.isEnabled) return
 
         constraintSet.apply {
-            connect(
-                R.id.keyguard_weather_area,
-                ConstraintSet.START,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.START,
-                context.resources.getDimensionPixelSize(clocksR.dimen.clock_padding_start) +
-                    context.resources.getDimensionPixelSize(clocksR.dimen.status_view_margin_horizontal),
-            )
-            connect(
-                R.id.keyguard_weather_area,
-                ConstraintSet.END,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.END
-            )
+            constrainWidth(R.id.keyguard_weather_area, ConstraintSet.WRAP_CONTENT)
             constrainHeight(R.id.keyguard_weather_area, ConstraintSet.WRAP_CONTENT)
 
             connect(
                 R.id.keyguard_weather_area,
+                ConstraintSet.START,
+                R.id.keyguard_slice_view,
+                ConstraintSet.END,
+                context.resources.getDimensionPixelSize(R.dimen.enhanced_smartspace_base_action_icon_margin),
+            )
+            connect(
+                R.id.keyguard_weather_area,
                 ConstraintSet.TOP,
+                R.id.keyguard_slice_view,
+                ConstraintSet.TOP
+            )
+            connect(
+                R.id.keyguard_weather_area,
+                ConstraintSet.BOTTOM,
                 R.id.keyguard_slice_view,
                 ConstraintSet.BOTTOM
             )
@@ -86,7 +86,7 @@ constructor(
                 R.id.smart_space_barrier_bottom,
                 Barrier.BOTTOM,
                 0,
-                *intArrayOf(R.id.keyguard_weather_area)
+                *intArrayOf(R.id.keyguard_slice_view, R.id.keyguard_weather_area)
             )
         }
     }
