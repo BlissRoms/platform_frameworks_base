@@ -74,7 +74,7 @@ constructor(
                                     add(Swipe.Up to Scenes.Lockscreen)
                                 }
 
-                                add(Swipe.End to Scenes.Lockscreen)
+                                add(Swipe.Start to Scenes.Lockscreen)
 
                                 addAll(
                                     when (shadeMode) {

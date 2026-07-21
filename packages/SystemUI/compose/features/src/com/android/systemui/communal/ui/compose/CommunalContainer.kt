@@ -115,7 +115,7 @@ val sceneTransitionsV2 = transitions {
     }
     to(CommunalScenes.Communal, key = CommunalTransitionKeys.Swipe) {
         spec = tween(durationMillis = TransitionDuration.TO_GLANCEABLE_HUB_DURATION_MS)
-        translate(Communal.Elements.Grid, Edge.End)
+        translate(Communal.Elements.Grid, Edge.Start)
         if (Flags.gestureBetweenHubAndLockscreenMotion()) {
             distance = UserActionDistance { fromContent, _, _ ->
                 // fromContent size can be null if it hasn't been compose yet, in which case we
@@ -137,7 +137,7 @@ val sceneTransitionsV2 = transitions {
     }
     to(CommunalScenes.Blank, key = CommunalTransitionKeys.SwipeInLandscape) {
         spec = tween(durationMillis = TO_LOCKSCREEN_DURATION.toInt(DurationUnit.MILLISECONDS))
-        translate(Communal.Elements.Grid, Edge.End)
+        translate(Communal.Elements.Grid, Edge.Start)
         timestampRange(endMillis = 167) {
             fade(Communal.Elements.Grid)
             fade(Communal.Elements.IndicationArea)
@@ -148,7 +148,7 @@ val sceneTransitionsV2 = transitions {
     }
     to(CommunalScenes.Blank, key = CommunalTransitionKeys.Swipe) {
         spec = tween(durationMillis = TransitionDuration.TO_GLANCEABLE_HUB_DURATION_MS)
-        translate(Communal.Elements.Grid, Edge.End)
+        translate(Communal.Elements.Grid, Edge.Start)
         if (!Flags.gestureBetweenHubAndLockscreenMotion()) {
             timestampRange(endMillis = 167) {
                 fade(Communal.Elements.Grid)
@@ -182,12 +182,12 @@ val sceneTransitions = transitions {
     }
     to(CommunalScenes.Communal) {
         spec = tween(durationMillis = 1000)
-        translate(Communal.Elements.Grid, Edge.End)
+        translate(Communal.Elements.Grid, Edge.Start)
         timestampRange(startMillis = 167, endMillis = 334) { fade(AllElements) }
     }
     to(CommunalScenes.Blank) {
         spec = tween(durationMillis = 1000)
-        translate(Communal.Elements.Grid, Edge.End)
+        translate(Communal.Elements.Grid, Edge.Start)
         timestampRange(endMillis = 167) {
             fade(Communal.Elements.Grid)
             fade(Communal.Elements.IndicationArea)
@@ -282,7 +282,7 @@ fun CommunalContainer(
             userActions =
                 if (swipeToHubEnabled) {
                     mapOf(
-                        Swipe.Start(fromSource = Edge.End) to
+                        Swipe.End(fromSource = Edge.Start) to
                             UserActionResult(CommunalScenes.Communal, CommunalTransitionKeys.Swipe)
                     )
                 } else {
@@ -297,7 +297,7 @@ fun CommunalContainer(
             CommunalScenes.Communal,
             userActions =
                 mapOf(
-                    Swipe.End to
+                    Swipe.Start to
                         UserActionResult(
                             CommunalScenes.Blank,
                             if (swipeFromHubInLandscape) {
