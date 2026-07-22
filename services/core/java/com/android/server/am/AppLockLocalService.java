@@ -21,24 +21,34 @@ import static android.app.ActivityManager.PROCESS_STATE_TOP;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.ActivityManager.ProcessState;
+import android.app.AppLockExtras;
 import android.app.AppLockInternal;
 import android.app.KeyguardManager;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManagerInternal;
 import android.content.pm.UserInfo;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Process;
 import android.os.Trace;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
+import android.util.SparseLongArray;
 
 import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
@@ -49,7 +59,6 @@ import com.android.server.pm.UserManagerInternal;
 import com.android.server.wm.ActivityAssistInfo;
 import com.android.server.wm.ActivityTaskManagerInternal;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -82,8 +91,6 @@ public final class AppLockLocalService implements AppLockInternal,
         KeyguardManager.DeviceLockedStateListener {
     private static final String TAG = "AppLockLocalService";
     private static final boolean DEBUG = Build.isDebuggable() && Log.isLoggable(TAG, Log.DEBUG);
-    // TODO(b/454308946): Update grace period to be configurable
-    private static final Duration DEFAULT_APP_LOCK_GRACE_PERIOD_MS = Duration.ofMillis(5000L);
 
     private final Object mLock = new Object();
 
@@ -109,6 +116,17 @@ public final class AppLockLocalService implements AppLockInternal,
     // getPackageManagerInternal() to access it.
     private PackageManagerInternal mPmInternal;
 
+    @GuardedBy("mLock")
+    private AppLockCredentialStore mCredentialStore;
+
+    private final Object mSettingsCacheLock = new Object();
+    @GuardedBy("mSettingsCacheLock")
+    private final SparseLongArray mGracePeriodCache = new SparseLongArray();
+    @GuardedBy("mSettingsCacheLock")
+    private final SparseIntArray mRelockBehaviorCache = new SparseIntArray();
+
+    private static final long MIN_SCHEDULED_GRACE_PERIOD_MS = 250L;
+
     AppLockLocalService(final ActivityManagerService service) {
         this(service, new InjectorImpl(service));
     }
@@ -133,6 +151,30 @@ public final class AppLockLocalService implements AppLockInternal,
             final KeyguardManager keyguardManager = context.getSystemService(KeyguardManager.class);
             keyguardManager.addDeviceLockedStateListener(BackgroundThread.getExecutor(),
                     /* listener= */ this);
+            final ContentResolver resolver = context.getContentResolver();
+            final ContentObserver settingsObserver = new ContentObserver(mInjector.getHandler()) {
+                @Override
+                public void onChange(boolean selfChange, Uri uri, int userId) {
+                    reloadSettingsForUser(userId);
+                }
+            };
+            resolver.registerContentObserver(
+                    Settings.Secure.getUriFor(AppLockExtras.SETTING_GRACE_PERIOD_MS),
+                    /* notifyForDescendants= */ false, settingsObserver, UserHandle.USER_ALL);
+            resolver.registerContentObserver(
+                    Settings.Secure.getUriFor(AppLockExtras.SETTING_RELOCK_BEHAVIOR),
+                    /* notifyForDescendants= */ false, settingsObserver, UserHandle.USER_ALL);
+            mInjector.getHandler().post(() -> {
+                reloadSettingsForUser(UserHandle.myUserId());
+                getCredentialStore().getCredentialType(UserHandle.myUserId());
+            });
+            context.registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context receiverContext, Intent intent) {
+                    handleScreenOff();
+                }
+            }, new IntentFilter(Intent.ACTION_SCREEN_OFF), /* broadcastPermission= */ null,
+                    mInjector.getHandler());
         } finally {
             Trace.endSection();
         }
@@ -264,6 +306,19 @@ public final class AppLockLocalService implements AppLockInternal,
                 return false;
             }
 
+            synchronized (mLock) {
+                final ArrayMap<String, AppLockLockedState> userStates =
+                        mAppLockLockedStatesForUser.get(userId);
+                final AppLockLockedState forceState =
+                        userStates == null ? null : userStates.get(packageName);
+                if (forceState != null && forceState.mForceLocked) {
+                    if (DEBUG) {
+                        Slog.d(TAG, "isPackageLocked: package is force-locked, returning true");
+                    }
+                    return true;
+                }
+            }
+
             // 2. Check if the last successful authentication is within the grace period. Note that
             //    the grace period associated with the package's last visibility in the foreground
             //    is checked below with pending locked jobs.
@@ -342,9 +397,73 @@ public final class AppLockLocalService implements AppLockInternal,
     private boolean isLastAuthWithinGracePeriod(String packageName, int userId) {
         final long lastSuccessfulAuth = getLastSuccessfulAuthTimeForLockedPackage(packageName,
                 userId);
-        return lastSuccessfulAuth + DEFAULT_APP_LOCK_GRACE_PERIOD_MS.toMillis()
-                > System.currentTimeMillis()
+        return lastSuccessfulAuth + getGracePeriodMs(userId) > System.currentTimeMillis()
                 && lastSuccessfulAuth != AppLockLockedState.INVALID_AUTH_TIME_MS;
+    }
+
+    private long getGracePeriodMs(int userId) {
+        synchronized (mSettingsCacheLock) {
+            final int index = mGracePeriodCache.indexOfKey(userId);
+            if (index >= 0) {
+                return mGracePeriodCache.valueAt(index);
+            }
+        }
+        mInjector.getHandler().post(() -> reloadSettingsForUser(userId));
+        return AppLockExtras.DEFAULT_GRACE_PERIOD_MS;
+    }
+
+    private int getRelockBehavior(int userId) {
+        synchronized (mSettingsCacheLock) {
+            final int index = mRelockBehaviorCache.indexOfKey(userId);
+            if (index >= 0) {
+                return mRelockBehaviorCache.valueAt(index);
+            }
+        }
+        mInjector.getHandler().post(() -> reloadSettingsForUser(userId));
+        return AppLockExtras.DEFAULT_RELOCK_BEHAVIOR;
+    }
+
+    /** Must never be called with mLock or the ActivityManagerService lock held. */
+    private void reloadSettingsForUser(int userId) {
+        if (userId < 0) {
+            return;
+        }
+        final ContentResolver resolver = mAmService.mContext.getContentResolver();
+        final long gracePeriodMs = Settings.Secure.getLongForUser(resolver,
+                AppLockExtras.SETTING_GRACE_PERIOD_MS,
+                AppLockExtras.DEFAULT_GRACE_PERIOD_MS, userId);
+        final int relockBehavior = Settings.Secure.getIntForUser(resolver,
+                AppLockExtras.SETTING_RELOCK_BEHAVIOR,
+                AppLockExtras.DEFAULT_RELOCK_BEHAVIOR, userId);
+        final boolean clearForceLocked;
+        synchronized (mSettingsCacheLock) {
+            final int index = mRelockBehaviorCache.indexOfKey(userId);
+            clearForceLocked = index >= 0
+                    && mRelockBehaviorCache.valueAt(index)
+                            == AppLockExtras.RELOCK_BEHAVIOR_SCREEN_OFF
+                    && relockBehavior != AppLockExtras.RELOCK_BEHAVIOR_SCREEN_OFF;
+            mGracePeriodCache.put(userId, gracePeriodMs);
+            mRelockBehaviorCache.put(userId, relockBehavior);
+        }
+        if (clearForceLocked) {
+            clearForceLockedStateForUser(userId);
+        }
+    }
+
+    private void clearForceLockedStateForUser(int userId) {
+        synchronized (mLock) {
+            final ArrayMap<String, AppLockLockedState> userPackages =
+                    mAppLockLockedStatesForUser.get(userId);
+            if (userPackages == null) {
+                return;
+            }
+            for (int i = 0; i < userPackages.size(); i++) {
+                final AppLockLockedState state = userPackages.valueAt(i);
+                if (state != null) {
+                    state.mForceLocked = false;
+                }
+            }
+        }
     }
 
     @GuardedBy("mAmService")
@@ -638,7 +757,7 @@ public final class AppLockLocalService implements AppLockInternal,
         getOrCreateAppLockLockedStateLocked(packageName, userId).mLockedUpdateRunnable =
                 setPackageLocked;
         mInjector.getHandler().postDelayed(setPackageLocked,
-                DEFAULT_APP_LOCK_GRACE_PERIOD_MS.toMillis());
+                Math.max(MIN_SCHEDULED_GRACE_PERIOD_MS, getGracePeriodMs(userId)));
     }
 
     @Override
@@ -698,6 +817,69 @@ public final class AppLockLocalService implements AppLockInternal,
         }
     }
 
+    private void handleScreenOff() {
+        final SparseArray<ArraySet<String>> targets = new SparseArray<>();
+        synchronized (mLock) {
+            for (int i = 0; i < mAppLockLockedStatesForUser.size(); i++) {
+                final int userId = mAppLockLockedStatesForUser.keyAt(i);
+                if (getRelockBehavior(userId) != AppLockExtras.RELOCK_BEHAVIOR_SCREEN_OFF) {
+                    continue;
+                }
+                final ArrayMap<String, AppLockLockedState> userPackages =
+                        mAppLockLockedStatesForUser.valueAt(i);
+                if (userPackages == null || userPackages.isEmpty()) {
+                    continue;
+                }
+                targets.put(userId, new ArraySet<>(userPackages.keySet()));
+            }
+        }
+        if (targets.size() == 0) {
+            return;
+        }
+        mInjector.getHandler().post(() -> forceLockPackages(targets));
+    }
+
+    private void forceLockPackages(SparseArray<ArraySet<String>> targets) {
+        final ArrayList<PackageLockedStateListener> listeners;
+        final SparseArray<ArraySet<String>> packagesByUserIdToNotify = new SparseArray<>();
+        synchronized (mAmService) {
+            synchronized (mLock) {
+                for (int i = 0; i < targets.size(); i++) {
+                    final int userId = targets.keyAt(i);
+                    final ArraySet<String> packages = targets.valueAt(i);
+                    for (int j = 0; j < packages.size(); j++) {
+                        final String packageName = packages.valueAt(j);
+                        final AppLockLockedState state =
+                                getOrCreateAppLockLockedStateLocked(packageName, userId);
+                        state.mForceLocked = true;
+                        state.mLastAuthTimeSinceDeviceUnlock =
+                                AppLockLockedState.INVALID_AUTH_TIME_MS;
+                        if (updatePackageLockedStateLocked(packageName, userId,
+                                /* locked= */ true)) {
+                            if (!packagesByUserIdToNotify.contains(userId)) {
+                                packagesByUserIdToNotify.put(userId, new ArraySet<>());
+                            }
+                            packagesByUserIdToNotify.get(userId).add(packageName);
+                        }
+                    }
+                }
+                if (packagesByUserIdToNotify.size() == 0) {
+                    return;
+                }
+                listeners = copyPackageLockedStateListenersLocked();
+            }
+        }
+
+        for (int i = 0; i < packagesByUserIdToNotify.size(); i++) {
+            final int userId = packagesByUserIdToNotify.keyAt(i);
+            final ArraySet<String> packages = packagesByUserIdToNotify.valueAt(i);
+            for (int j = 0; j < packages.size(); j++) {
+                dispatchPackageLockedStateChanged(listeners, packages.valueAt(j), userId,
+                        /* locked= */ true);
+            }
+        }
+    }
+
     @Override
     public void setAppLockEnabledPackageSuccessfullyAuthenticated(@NonNull String packageName,
             int userId) {
@@ -753,6 +935,7 @@ public final class AppLockLocalService implements AppLockInternal,
                     final AppLockLockedState state = getOrCreateAppLockLockedStateLocked(
                             packageToAuthenticate, userId);
                     state.mLastAuthTimeSinceDeviceUnlock = authTime;
+                    state.mForceLocked = false;
                     if (updatePackageLockedStateLocked(packageToAuthenticate, userId,
                             /* locked= */ false)) {
                         packagesToNotify.add(packageToAuthenticate);
@@ -772,6 +955,52 @@ public final class AppLockLocalService implements AppLockInternal,
         } finally {
             Trace.endSection();
         }
+    }
+
+    private AppLockCredentialStore getCredentialStore() {
+        synchronized (mLock) {
+            if (mCredentialStore == null) {
+                mCredentialStore = new AppLockCredentialStore(mAmService.mContext);
+            }
+            return mCredentialStore;
+        }
+    }
+
+    @Override
+    public boolean hasSeparateCredential(int userId) {
+        return getCredentialStore().getCredentialType(userId)
+                != AppLockExtras.CREDENTIAL_TYPE_NONE;
+    }
+
+    @Override
+    public int getSeparateCredentialType(int userId) {
+        return getCredentialStore().getCredentialType(userId);
+    }
+
+    @Override
+    public long verifySeparateCredential(@NonNull byte[] credential, int userId) {
+        return getCredentialStore().verifyCredential(credential, userId);
+    }
+
+    @Override
+    public boolean setSeparateCredential(int type, @NonNull byte[] credential, int userId) {
+        final boolean success = getCredentialStore().setCredential(type, credential, userId);
+        if (success) {
+            Settings.Secure.putIntForUser(mAmService.mContext.getContentResolver(),
+                    AppLockExtras.SETTING_SEPARATE_CREDENTIAL_TYPE, type, userId);
+        }
+        return success;
+    }
+
+    @Override
+    public boolean clearSeparateCredential(int userId) {
+        final boolean success = getCredentialStore().clearCredential(userId);
+        if (success) {
+            Settings.Secure.putIntForUser(mAmService.mContext.getContentResolver(),
+                    AppLockExtras.SETTING_SEPARATE_CREDENTIAL_TYPE,
+                    AppLockExtras.CREDENTIAL_TYPE_NONE, userId);
+        }
+        return success;
     }
 
     @VisibleForTesting
@@ -846,11 +1075,13 @@ public final class AppLockLocalService implements AppLockInternal,
         private Runnable mLockedUpdateRunnable;
         // Last sent locked state to locked state listeners.
         private Boolean mLastSentLockedState;
+        private boolean mForceLocked;
 
         AppLockLockedState() {
             mLastAuthTimeSinceDeviceUnlock = INVALID_AUTH_TIME_MS;
             mLockedUpdateRunnable = null;
             mLastSentLockedState = null;
+            mForceLocked = false;
         }
     }
 

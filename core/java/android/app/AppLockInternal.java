@@ -100,6 +100,16 @@ public interface AppLockInternal {
      */
     void unregisterPackageLockedStateListener(@NonNull PackageLockedStateListener listener);
 
+    boolean hasSeparateCredential(int userId);
+
+    int getSeparateCredentialType(int userId);
+
+    long verifySeparateCredential(@NonNull byte[] credential, int userId);
+
+    boolean setSeparateCredential(int type, @NonNull byte[] credential, int userId);
+
+    boolean clearSeparateCredential(int userId);
+
     /**
      * Listener for changes in the App Lock locked state of packages.
      */

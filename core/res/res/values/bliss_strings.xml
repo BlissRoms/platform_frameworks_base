@@ -11,4 +11,20 @@
     <!-- GameSpace -->
     <string name="gamespace_new_game_added"><xliff:g id="name" example="MyApp">%s</xliff:g> added to GameSpace</string>
 
+    <!-- App Lock -->
+    <string name="app_lock_use_credential_button">Use App Lock PIN or pattern</string>
+    <string name="app_lock_credential_enter_pin">Enter your App Lock PIN</string>
+    <string name="app_lock_credential_enter_pattern">Draw your App Lock pattern</string>
+    <string name="app_lock_credential_choose_new_pin">Choose your new App Lock PIN</string>
+    <string name="app_lock_credential_choose_new_pattern">Draw your new App Lock pattern</string>
+    <string name="app_lock_credential_confirm_new_pin">Re-enter your new PIN</string>
+    <string name="app_lock_credential_confirm_new_pattern">Draw your new pattern again</string>
+    <string name="app_lock_credential_wrong">Wrong credential. Try again</string>
+    <string name="app_lock_credential_mismatch">They don\u2019t match. Try again</string>
+    <string name="app_lock_credential_too_short">Must contain at least 4 digits or dots</string>
+    <string name="app_lock_credential_lockout">Too many attempts. Try again in <xliff:g id="seconds" example="30">%1$d</xliff:g> seconds</string>
+    <string name="app_lock_credential_continue">Continue</string>
+    <string name="app_lock_credential_set_done">App Lock credential set</string>
+    <string name="app_lock_credential_cleared">App Lock credential removed</string>
+
 </resources>

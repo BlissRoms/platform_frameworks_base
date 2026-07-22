@@ -51,4 +51,27 @@
     <!-- Vibrator service -->
     <java-symbol type="array" name="config_textureTickVibePattern" />
 
+    <!-- App Lock -->
+    <java-symbol type="layout" name="app_lock_credential_activity" />
+    <java-symbol type="id" name="app_lock_credential_header" />
+    <java-symbol type="id" name="app_lock_credential_error" />
+    <java-symbol type="id" name="app_lock_credential_pin_entry" />
+    <java-symbol type="id" name="app_lock_credential_pattern_view" />
+    <java-symbol type="id" name="app_lock_credential_cancel_button" />
+    <java-symbol type="id" name="app_lock_credential_continue_button" />
+    <java-symbol type="string" name="app_lock_use_credential_button" />
+    <java-symbol type="string" name="app_lock_credential_enter_pin" />
+    <java-symbol type="string" name="app_lock_credential_enter_pattern" />
+    <java-symbol type="string" name="app_lock_credential_choose_new_pin" />
+    <java-symbol type="string" name="app_lock_credential_choose_new_pattern" />
+    <java-symbol type="string" name="app_lock_credential_confirm_new_pin" />
+    <java-symbol type="string" name="app_lock_credential_confirm_new_pattern" />
+    <java-symbol type="string" name="app_lock_credential_wrong" />
+    <java-symbol type="string" name="app_lock_credential_mismatch" />
+    <java-symbol type="string" name="app_lock_credential_too_short" />
+    <java-symbol type="string" name="app_lock_credential_lockout" />
+    <java-symbol type="string" name="app_lock_credential_continue" />
+    <java-symbol type="string" name="app_lock_credential_set_done" />
+    <java-symbol type="string" name="app_lock_credential_cleared" />
+
 </resources>

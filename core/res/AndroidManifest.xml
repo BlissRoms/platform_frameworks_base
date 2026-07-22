@@ -10865,6 +10865,15 @@
                   android:enableOnBackInvokedCallback="true"
                   android:featureFlag="android.security.app_lock_core" />
 
+        <activity android:name="com.android.internal.app.AppLockCredentialActivity"
+                  android:permission="android.permission.LOCK_APPS"
+                  android:theme="@style/Theme.DeviceDefault.DayNight"
+                  android:windowSoftInputMode="stateVisible|adjustResize"
+                  android:excludeFromRecents="true"
+                  android:exported="false"
+                  android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboard|keyboardHidden|uiMode"
+                  android:featureFlag="android.security.app_lock_core" />
+
         <activity android:name="com.android.internal.app.UnlaunchableAppActivity"
                 android:theme="@style/Theme.Dialog.Confirmation"
                 android:excludeFromRecents="true"
