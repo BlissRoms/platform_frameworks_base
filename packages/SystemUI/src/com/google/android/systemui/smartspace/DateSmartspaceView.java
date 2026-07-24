@@ -226,6 +226,8 @@ public class DateSmartspaceView extends LinearLayout
             mNextAlarmIconDrawable.setIcon(mNextAlarmData.mImage);
             mNextAlarmTextView.setCompoundDrawablesRelative(
                     mNextAlarmIconDrawable, null, null, null);
+            mNextAlarmTextView.setCompoundDrawablePadding(
+                    getContext().getResources().getDimensionPixelSize(R.dimen.enhanced_smartspace_icon_margin));
             BcSmartspaceTemplateDataUtils.updateVisibility(mNextAlarmTextView, View.VISIBLE);
             BcSmartspaceDataPlugin.SmartspaceEventNotifier eventNotifier =
                     mDataProvider == null ? null : mDataProvider.getEventNotifier();

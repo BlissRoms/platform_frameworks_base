@@ -38,6 +38,7 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
+        android:layout_marginStart="@dimen/enhanced_smartspace_base_action_icon_margin"
         android:layout_marginEnd="@dimen/enhanced_smartspace_base_action_icon_margin"
         style="@style/DateWeatherText" />
 </com.google.android.systemui.smartspace.DateSmartspaceView>

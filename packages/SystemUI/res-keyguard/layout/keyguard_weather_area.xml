@@ -6,6 +6,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:layout_marginStart="@dimen/enhanced_smartspace_base_action_icon_margin"
+    android:layout_marginEnd="@dimen/enhanced_smartspace_base_action_icon_margin"
     android:minHeight="@dimen/date_weather_view_height">
 
     <!-- Weather Info -->
