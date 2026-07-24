@@ -94,7 +94,7 @@ constructor(
     fun showAlarm(alarmTime: Long?): Job = applicationScope.launch {
         val time = alarmTime ?: getNextAlarmTime()
         val alarmString =
-            if (time > 0 && time <= System.currentTimeMillis() + TimeUnit.HOURS.toMillis(12L)) {
+            if (time > 0) {
                 val pattern =
                     if (DateFormat.is24HourFormat(context, ActivityManager.getCurrentUser()))
                         "HH:mm"
@@ -105,18 +105,10 @@ constructor(
         smartspaceViews.forEach { view ->
             if (alarmString != null) {
                 view.setNextAlarm(alarmImage, alarmString)
-                // StateFlowImpl stateFlowImpl =
-                // this.this$0.zenModeInteractor.zenModeRepository.hasNextAlarm;
-                // Boolean bool = Boolean.TRUE;
-                // stateFlowImpl.getClass();
-                // stateFlowImpl.updateState(null, bool);
+                zenModeInteractor.setHasNextAlarm(true)
             } else {
                 view.setNextAlarm(null, null)
-                // StateFlowImpl stateFlowImpl2 =
-                // this.this$0.zenModeInteractor.zenModeRepository.hasNextAlarm;
-                // Boolean bool2 = Boolean.FALSE;
-                // stateFlowImpl2.getClass();
-                // stateFlowImpl2.updateState(null, bool2);
+                zenModeInteractor.setHasNextAlarm(false)
             }
         }
     }
