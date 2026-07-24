@@ -26,6 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:orientation="horizontal" >
 
         <FrameLayout
@@ -75,6 +77,8 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:layout_gravity="center_vertical">
             <com.android.systemui.statusbar.AnimatedImageView
                 android:id="@+id/mobile_signal"
@@ -86,9 +90,10 @@
             <!-- TODO(b/314812750): this can be removed once the flag is rolled out -->
             <ImageView
                 android:id="@+id/mobile_hd"
-                android:layout_width="12dp"
-                android:layout_height="8dp"
-                android:layout_marginTop="1dp"
+                android:layout_width="9dp"
+                android:layout_height="6dp"
+                android:layout_marginTop="-3.5dp"
+                android:layout_marginStart="0dp"
                 android:layout_gravity="start|top"
                 android:src="@drawable/ic_hd_calling"
                 android:adjustViewBounds="true"
