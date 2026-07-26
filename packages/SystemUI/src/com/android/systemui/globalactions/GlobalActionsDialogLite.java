@@ -2110,7 +2110,9 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 Log.w(TAG, "No power options action found at position: " + position);
                 return null;
             }
-            int viewLayoutResource = com.android.systemui.res.R.layout.global_actions_power_item;
+            int viewLayoutResource = mPowerMenuStyle == 1
+                    ? com.android.systemui.res.R.layout.global_actions_grid_item_fullscreen
+                    : com.android.systemui.res.R.layout.global_actions_power_item;
             View view = convertView != null ? convertView
                     : LayoutInflater.from(mContext).inflate(viewLayoutResource, parent, false);
             view.setOnClickListener(v -> onClickItem(position));
@@ -2125,6 +2127,13 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
             icon.setImageDrawable(action.getIcon(mContext));
             icon.setScaleType(ScaleType.CENTER_CROP);
+
+            if (mPowerMenuStyle == 1) {
+                int bgColor = getActionColor(mContext, action);
+                messageView.setTextColor(Color.WHITE);
+                icon.setBackgroundTintList(ColorStateList.valueOf(bgColor));
+                icon.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            }
 
             if (action.getMessage() != null) {
                 messageView.setText(action.getMessage());
@@ -2186,8 +2195,11 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Action action = getItem(position);
+            int viewLayoutResource = mPowerMenuStyle == 1
+                    ? com.android.systemui.res.R.layout.global_actions_grid_item_fullscreen
+                    : com.android.systemui.res.R.layout.global_actions_grid_item_lite;
             View view = convertView != null ? convertView : LayoutInflater.from(mContext).inflate(
-                    com.android.systemui.res.R.layout.global_actions_grid_item_lite, parent, false);
+                    viewLayoutResource, parent, false);
             view.setOnClickListener(v -> {
                 if (mDelegate != null) {
                     mDelegate.dismissWithoutAnimation();
@@ -2196,10 +2208,17 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             });
             ImageView icon = view.findViewById(R.id.icon);
             icon.setImageDrawable(action.getIcon(mContext));
-            icon.setColorFilter(Color.TRANSPARENT);
             TextView messageView = view.findViewById(R.id.message);
             messageView.setText(action.getMessage() != null
                     ? action.getMessage() : mContext.getText(action.getMessageResId()));
+            if (mPowerMenuStyle == 1) {
+                int bgColor = getActionColor(mContext, action);
+                messageView.setTextColor(Color.WHITE);
+                icon.setBackgroundTintList(ColorStateList.valueOf(bgColor));
+                icon.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+            } else {
+                icon.setColorFilter(Color.TRANSPARENT);
+            }
             return view;
         }
     }
