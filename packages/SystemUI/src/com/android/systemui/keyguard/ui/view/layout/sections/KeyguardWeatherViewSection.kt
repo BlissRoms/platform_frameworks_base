@@ -30,6 +30,9 @@ import com.android.systemui.res.R
 import com.android.systemui.statusbar.lockscreen.LockscreenSmartspaceController
 import javax.inject.Inject
 
+import android.os.UserHandle
+import android.provider.Settings
+import com.android.systemui.keyguard.ui.viewmodel.KeyguardSmartspaceViewModel
 import com.android.systemui.weather.WeatherInfoView
 
 class KeyguardWeatherViewSection
@@ -38,6 +41,7 @@ constructor(
     private val context: Context,
     val layoutInflater: LayoutInflater,
     val smartspaceController: LockscreenSmartspaceController,
+    val keyguardSmartspaceViewModel: KeyguardSmartspaceViewModel,
 ) : KeyguardSection() {
     private lateinit var weatherView: WeatherInfoView
 
@@ -55,32 +59,84 @@ constructor(
         weatherView.init()
     }
 
+    private fun hasExtraWeatherOptions(): Boolean {
+        val resolver = context.contentResolver
+        val showLocation = Settings.System.getIntForUser(
+            resolver, "lockscreen_weather_location", 0, UserHandle.USER_CURRENT
+        ) != 0
+        val showText = Settings.System.getIntForUser(
+            resolver, "lockscreen_weather_text", 1, UserHandle.USER_CURRENT
+        ) != 0
+        val showWind = Settings.System.getIntForUser(
+            resolver, "lockscreen_weather_wind_info", 0, UserHandle.USER_CURRENT
+        ) != 0
+        val showHumidity = Settings.System.getIntForUser(
+            resolver, "lockscreen_weather_humidity_info", 0, UserHandle.USER_CURRENT
+        ) != 0
+        return showLocation || showText || showWind || showHumidity
+    }
+
     override fun applyConstraints(constraintSet: ConstraintSet) {
         if (!smartspaceController.isOmniWeatherEnabled || smartspaceController.isEnabled) return
+
+        val dateWeatherPaddingStart = KeyguardSmartspaceViewModel.getDateWeatherStartMargin(context)
+        val endGuideline = if (keyguardSmartspaceViewModel.isFullWidthShade.value) {
+            ConstraintSet.PARENT_ID
+        } else {
+            R.id.split_shade_guideline
+        }
+
+        val useOwnLine = hasExtraWeatherOptions()
 
         constraintSet.apply {
             constrainWidth(R.id.keyguard_weather_area, ConstraintSet.WRAP_CONTENT)
             constrainHeight(R.id.keyguard_weather_area, ConstraintSet.WRAP_CONTENT)
 
+            if (useOwnLine) {
+                connect(
+                    R.id.keyguard_weather_area,
+                    ConstraintSet.START,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.START,
+                    dateWeatherPaddingStart,
+                )
+                connect(
+                    R.id.keyguard_weather_area,
+                    ConstraintSet.TOP,
+                    R.id.keyguard_slice_view,
+                    ConstraintSet.BOTTOM,
+                )
+            } else {
+                connect(
+                    R.id.keyguard_weather_area,
+                    ConstraintSet.START,
+                    R.id.keyguard_slice_view,
+                    ConstraintSet.END,
+                    context.resources.getDimensionPixelSize(R.dimen.enhanced_smartspace_base_action_icon_margin),
+                )
+                connect(
+                    R.id.keyguard_weather_area,
+                    ConstraintSet.TOP,
+                    R.id.keyguard_slice_view,
+                    ConstraintSet.TOP
+                )
+                connect(
+                    R.id.keyguard_weather_area,
+                    ConstraintSet.BOTTOM,
+                    R.id.keyguard_slice_view,
+                    ConstraintSet.BOTTOM
+                )
+            }
+
             connect(
                 R.id.keyguard_weather_area,
-                ConstraintSet.START,
-                R.id.keyguard_slice_view,
                 ConstraintSet.END,
-                context.resources.getDimensionPixelSize(R.dimen.enhanced_smartspace_base_action_icon_margin),
+                endGuideline,
+                ConstraintSet.END,
+                dateWeatherPaddingStart,
             )
-            connect(
-                R.id.keyguard_weather_area,
-                ConstraintSet.TOP,
-                R.id.keyguard_slice_view,
-                ConstraintSet.TOP
-            )
-            connect(
-                R.id.keyguard_weather_area,
-                ConstraintSet.BOTTOM,
-                R.id.keyguard_slice_view,
-                ConstraintSet.BOTTOM
-            )
+            setHorizontalBias(R.id.keyguard_weather_area, 0f)
+            constrainedWidth(R.id.keyguard_weather_area, true)
 
             createBarrier(
                 R.id.smart_space_barrier_bottom,

@@ -146,6 +146,20 @@ constructor(
         constraintSet.apply {
             constrainHeight(sharedR.id.date_smartspace_view, ConstraintSet.WRAP_CONTENT)
             constrainWidth(sharedR.id.date_smartspace_view, ConstraintSet.WRAP_CONTENT)
+            connect(
+                sharedR.id.date_smartspace_view,
+                ConstraintSet.END,
+                if (keyguardSmartspaceViewModel.isFullWidthShade.value) {
+                    ConstraintSet.PARENT_ID
+                } else {
+                    R.id.split_shade_guideline
+                },
+                ConstraintSet.END,
+                dateWeatherPaddingStart,
+            )
+            setHorizontalBias(sharedR.id.date_smartspace_view, 0f)
+            constrainedWidth(sharedR.id.date_smartspace_view, true)
+
             if (dateWeatherBelowSmallClock || !dateWeatherBelowLargeClock) {
                 connect(
                     sharedR.id.date_smartspace_view,
@@ -269,6 +283,17 @@ constructor(
                     )
                     connect(
                         sharedR.id.date_smartspace_view,
+                        ConstraintSet.END,
+                        if (keyguardSmartspaceViewModel.isFullWidthShade.value) {
+                            ConstraintSet.PARENT_ID
+                        } else {
+                            R.id.split_shade_guideline
+                        },
+                        ConstraintSet.END,
+                        dateWeatherPaddingStart,
+                    )
+                    connect(
+                        sharedR.id.date_smartspace_view,
                         ConstraintSet.TOP,
                         ClockViewIds.LOCKSCREEN_CLOCK_VIEW_SMALL,
                         ConstraintSet.TOP,
@@ -279,6 +304,8 @@ constructor(
                         ClockViewIds.LOCKSCREEN_CLOCK_VIEW_SMALL,
                         ConstraintSet.BOTTOM,
                     )
+                    setHorizontalBias(sharedR.id.date_smartspace_view, 0f)
+                    constrainedWidth(sharedR.id.date_smartspace_view, true)
                 }
             }
 

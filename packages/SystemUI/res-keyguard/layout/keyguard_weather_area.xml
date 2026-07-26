@@ -43,6 +43,7 @@
         systemui:layout_constraintTop_toTopOf="parent"
         systemui:layout_constraintBottom_toBottomOf="parent"
         systemui:layout_constraintEnd_toEndOf="parent"
+        systemui:layout_constrainedWidth="true"
         android:layout_marginStart="@dimen/enhanced_smartspace_icon_margin" />
 
 </com.android.systemui.weather.WeatherInfoView>
