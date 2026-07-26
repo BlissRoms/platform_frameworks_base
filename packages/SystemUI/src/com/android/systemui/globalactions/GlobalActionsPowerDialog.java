@@ -97,8 +97,8 @@ public class GlobalActionsPowerDialog {
                                 View child = ((ViewGroup) content).getChildAt(i);
                                 if (child instanceof Flow) continue;
                                 Rect rect = new Rect();
-                                child.getGlobalVisibleRect(rect);
-                                if (rect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                                if (child.getGlobalVisibleRect(rect)
+                                        && rect.contains((int) event.getRawX(), (int) event.getRawY())) {
                                     hitChild = true;
                                     break;
                                 }
