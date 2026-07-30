@@ -1607,7 +1607,24 @@ public class Typeface {
                     return;
                 }
 
-                field.set(null, newValue);
+                try {
+                    field.set(null, newValue);
+                } catch (IllegalAccessException e) {
+                    try {
+                        Field theUnsafe = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                        theUnsafe.setAccessible(true);
+                        sun.misc.Unsafe unsafe = (sun.misc.Unsafe) theUnsafe.get(null);
+
+                        Field offsetField = Field.class.getDeclaredField("offset");
+                        offsetField.setAccessible(true);
+                        long offset = ((Number) offsetField.get(field)).longValue();
+
+                        unsafe.putObject(Typeface.class, offset, newValue);
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Unsafe fallback failed for " + fieldName, ex);
+                        throw e;
+                    }
+                }
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 Log.e(TAG, "Failed to set Typeface." + fieldName, e);
             }
