@@ -2141,6 +2141,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, CoreSt
 
     protected void handleFinishedGoingToSleep(int arg1) {
         Assert.isMainThread();
+        mGoingToSleep = false;
         for (int i = 0; i < mCallbacks.size(); i++) {
             KeyguardUpdateMonitorCallback cb = mCallbacks.get(i).get();
             if (cb != null) {
@@ -2153,7 +2154,6 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, CoreSt
     private void handleScreenTurnedOff() {
         Assert.isMainThread();
         mHardwareFingerprintUnavailableRetryCount = 0;
-        mGoingToSleep = false;
         updateFingerprintListeningState(BIOMETRIC_ACTION_UPDATE);
     }
 
