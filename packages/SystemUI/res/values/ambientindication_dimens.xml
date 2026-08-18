@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ambient_indication_container_margin_top">0dp</dimen>
+    <dimen name="ambient_indication_extended_container_non_text_width">212dp</dimen>
+    <dimen name="ambient_indication_extended_text_container_end_padding">14dp</dimen>
+    <dimen name="ambient_indication_extended_text_container_start_padding_collapsed">2dp</dimen>
+    <dimen name="ambient_indication_extended_text_container_start_padding_expanded">16dp</dimen>
+    <dimen name="ambient_indication_first_recognition_animation_translation_y">21.5dp</dimen>
+    <dimen name="ambient_indication_icon_size">20dp</dimen>
+    <dimen name="ambient_indication_margin_bottom">71dp</dimen>
+    <dimen name="ambient_indication_note_icon_size">14dp</dimen>
+    <dimen name="ambient_indication_song_change_animation_translation_y">21.5dp</dimen>
+    <dimen name="ambient_indication_song_searching_animation_translation_y">12dp</dimen>
+    <dimen name="dock_logo_min_size">48dp</dimen>
+    <dimen name="dock_top_logo_padding">8dp</dimen>
+</resources>

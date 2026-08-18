@@ -453,6 +453,16 @@
     <protected-broadcast android:name="com.android.systemui.action.LAUNCH_SYSTEM_MEDIA_OUTPUT_DIALOG" />
     <protected-broadcast android:name="com.android.systemui.STARTED" />
 
+    <!-- Ambient Indication -->
+    <permission
+        android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION"
+        android:protectionLevel="system|signature" />
+    <uses-permission android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION" />
+
+    <permission
+        android:name="com.google.android.systemui.permission.WIRELESS_CHARGER_STATUS"
+        android:protectionLevel="system|signature" />
+
     <application
         android:name=".application.impl.SystemUIApplicationImpl"
         android:persistent="true"

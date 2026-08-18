@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_action_expand">Expand</string>
+    <string name="accessibility_now_playing_container_recognition_result_content_description">Identified song. %1$s, %2$s.</string>
+    <string name="accessibility_now_playing_container_song_searching_content_description">Identifying song</string>
+    <string name="accessibility_now_playing_like_icon">Add to favorites</string>
+    <string name="accessibility_now_playing_play_icon">Play on Default Music Player</string>
+    <string name="accessibility_now_playing_unlike_icon">Remove from favorites</string>
+    <string name="now_playing_label">Now Playing</string>
+</resources>
