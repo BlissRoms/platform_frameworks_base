@@ -136,6 +136,11 @@ public class MusicRecognitionManager {
             @NonNull RecognitionRequest recognitionRequest,
             @NonNull @CallbackExecutor Executor callbackExecutor,
             @NonNull RecognitionCallback callback) {
+        if (mService == null) {
+            callbackExecutor.execute(() -> callback.onRecognitionFailed(
+                    recognitionRequest, RECOGNITION_FAILED_SERVICE_UNAVAILABLE));
+            return;
+        }
         try {
             mService.beginRecognition(
                     requireNonNull(recognitionRequest),

@@ -458,6 +458,11 @@
         android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION"
         android:protectionLevel="system|signature" />
     <uses-permission android:name="com.google.android.ambientindication.permission.AMBIENT_INDICATION" />
+    <permission
+        android:name="org.blissroms.ambientmusic.permission.AMBIENT_INDICATION"
+        android:protectionLevel="normal" />
+    <uses-permission android:name="org.blissroms.ambientmusic.permission.AMBIENT_INDICATION" />
+    <uses-permission android:name="android.permission.MANAGE_MUSIC_RECOGNITION" />
 
     <permission
         android:name="com.google.android.systemui.permission.WIRELESS_CHARGER_STATUS"
@@ -1379,6 +1384,12 @@
             android:singleUser="true"
             android:exported="true"
            />
+
+        <service
+            android:name="org.blissroms.systemui.ambientmusic.engine.AmbientMusicShardSyncJob"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:singleUser="true"
+            android:exported="true" />
 
     </application>
 </manifest>

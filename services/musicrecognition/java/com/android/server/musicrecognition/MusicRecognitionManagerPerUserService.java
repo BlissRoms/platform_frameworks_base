@@ -126,7 +126,23 @@ public final class MusicRecognitionManagerPerUserService extends
     private RemoteMusicRecognitionService ensureRemoteServiceLocked(
             IMusicRecognitionManagerCallback clientCallback) {
         if (mRemoteService == null) {
-            final String serviceName = getComponentNameLocked();
+            String serviceName = getComponentNameLocked();
+            if (serviceName == null) {
+                String[] candidateComponents = new String[] {
+                    "com.google.android.as/com.google.intelligence.sense.ambientmusic.MusicRecognitionService"
+                };
+                for (String candidate : candidateComponents) {
+                    ComponentName cn = ComponentName.unflattenFromString(candidate);
+                    if (cn != null) {
+                        try {
+                            getContext().getPackageManager().getServiceInfo(cn, 0);
+                            serviceName = candidate;
+                            break;
+                        } catch (Exception ignored) {
+                        }
+                    }
+                }
+            }
             if (serviceName == null) {
                 if (mMaster.verbose) {
                     Slog.v(TAG, "ensureRemoteServiceLocked(): not set");

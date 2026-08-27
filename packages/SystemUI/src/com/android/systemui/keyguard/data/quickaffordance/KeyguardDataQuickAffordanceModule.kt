@@ -17,11 +17,13 @@
 
 package com.android.systemui.keyguard.data.quickaffordance
 
+import android.os.Build
 import com.google.android.systemui.keyguard.data.quickaffordance.NowPlayingQuickAffordanceConfig
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.ElementsIntoSet
+import org.blissroms.systemui.keyguard.data.quickaffordance.BlissNowPlayingQuickAffordanceConfig
 
 @Module
 interface KeyguardDataQuickAffordanceModule {
@@ -40,17 +42,20 @@ interface KeyguardDataQuickAffordanceModule {
             home: HomeControlsKeyguardQuickAffordanceConfig,
             mute: MuteQuickAffordanceConfig,
             nowPlaying: NowPlayingQuickAffordanceConfig,
+            blissNowPlaying: BlissNowPlayingQuickAffordanceConfig,
             quickAccessWallet: QuickAccessWalletKeyguardQuickAffordanceConfig,
             qrCodeScanner: QrCodeScannerKeyguardQuickAffordanceConfig,
             videoCamera: VideoCameraQuickAffordanceConfig,
         ): Set<KeyguardQuickAffordanceConfig> {
+            val isPixel = "google".equals(Build.BRAND, ignoreCase = true) || "google".equals(Build.MANUFACTURER, ignoreCase = true)
+            val selectedNowPlaying = if (isPixel) nowPlaying else blissNowPlaying
             return setOf(
                 camera,
                 doNotDisturb,
                 flashlight,
                 home,
                 mute,
-                nowPlaying,
+                selectedNowPlaying,
                 quickAccessWallet,
                 qrCodeScanner,
                 videoCamera,

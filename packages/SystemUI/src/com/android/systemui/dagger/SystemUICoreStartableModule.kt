@@ -61,6 +61,7 @@ import com.android.systemui.util.NotificationChannels
 import com.android.systemui.wmshell.WMShell
 import com.google.android.systemui.keyguard.AmbientIndicationCoreStartable
 import com.google.android.systemui.smartspace.KeyguardSmartspaceStartable
+import org.blissroms.systemui.ambientmusic.NonPixelAmbientIndicationCoreStartable
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
@@ -344,5 +345,13 @@ abstract class SystemUICoreStartableModule {
     @ClassKey(AmbientIndicationCoreStartable::class)
     abstract fun bindAmbientIndicationCoreStartable(
         impl: AmbientIndicationCoreStartable
+    ): CoreStartable
+
+    /** Inject into NonPixelAmbientIndicationCoreStartable. */
+    @Binds
+    @IntoMap
+    @ClassKey(NonPixelAmbientIndicationCoreStartable::class)
+    abstract fun bindNonPixelAmbientIndicationCoreStartable(
+        impl: NonPixelAmbientIndicationCoreStartable
     ): CoreStartable
 }

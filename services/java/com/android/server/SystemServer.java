@@ -2111,15 +2111,13 @@ public final class SystemServer implements Dumpable {
             }
             t.traceEnd();
 
-            if (deviceHasConfigString(context,
-                    R.string.config_defaultMusicRecognitionService)) {
-                t.traceBegin("StartMusicRecognitionManagerService");
+            t.traceBegin("StartMusicRecognitionManagerService");
+            try {
                 mSystemServiceManager.startService(MusicRecognitionManagerService.class);
-                t.traceEnd();
-            } else {
-                Slog.d(TAG,
-                        "MusicRecognitionManagerService not defined by OEM or disabled by flag");
+            } catch (Throwable e) {
+                reportWtf("starting MusicRecognitionManagerService", e);
             }
+            t.traceEnd();
 
             startContentCaptureService(context, t);
             startAttentionService(context, t);

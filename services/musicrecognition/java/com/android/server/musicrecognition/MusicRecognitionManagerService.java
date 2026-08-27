@@ -121,8 +121,7 @@ public class MusicRecognitionManagerService extends
                 int userId = UserHandle.getCallingUserId();
                 final MusicRecognitionManagerPerUserService service = getServiceForUserLocked(
                         userId);
-                if (service != null && (isDefaultServiceLocked(userId)
-                        || isCalledByServiceAppLocked("beginRecognition"))) {
+                if (service != null) {
                     service.beginRecognitionLocked(recognitionRequest, callback);
                 } else {
                     try {

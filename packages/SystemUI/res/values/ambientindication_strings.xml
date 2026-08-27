@@ -7,4 +7,6 @@
     <string name="accessibility_now_playing_play_icon">Play on Default Music Player</string>
     <string name="accessibility_now_playing_unlike_icon">Remove from favorites</string>
     <string name="now_playing_label">Now Playing</string>
+    <string name="ambient_music_searching">Identifying song…</string>
+    <string name="ambient_music_no_match">No song found</string>
 </resources>

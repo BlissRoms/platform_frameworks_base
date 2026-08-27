@@ -465,11 +465,11 @@ public final class DozeServiceHost implements DozeHost {
                 // Dispatch a tap
                 long now = SystemClock.elapsedRealtime();
                 MotionEvent ev = MotionEvent.obtain(
-                        now, now, MotionEvent.ACTION_DOWN, screenX, screenY, 0);
+                        now, now, MotionEvent.ACTION_DOWN, viewX, viewY, 0);
                 mAmbientIndicationContainer.dispatchTouchEvent(ev);
                 ev.recycle();
                 ev = MotionEvent.obtain(
-                        now, now, MotionEvent.ACTION_UP, screenX, screenY, 0);
+                        now, now, MotionEvent.ACTION_UP, viewX, viewY, 0);
                 mAmbientIndicationContainer.dispatchTouchEvent(ev);
                 ev.recycle();
             }

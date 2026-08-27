@@ -148,8 +148,6 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
             findViewById(R.id.ambient_indication_extended_container)
 
         if (mEnabledExtendedInteraction) {
-            val wrapperContainer = mAmbientIndicationWrapperContainer
-            wrapperContainer.post { applyRoundedOutline(wrapperContainer, 32) }
             val iconView = mIconView
             iconView.post { applyRoundedOutline(iconView, 12) }
         }
@@ -328,7 +326,14 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
 
     fun onTextClick() {
         val falsingManager = mFalsingManager
-        if ((falsingManager == null || !falsingManager.isFalseTap(1)) && mOpenIntent != null) {
+        if (falsingManager != null && falsingManager.isFalseTap(1)) {
+            return
+        }
+        if (mUsingExtendedIndication && !mIsCurrentlyInExpandedState && mExtendedIndication?.expandedIndicationData != null) {
+            performExpandAnimation()
+            return
+        }
+        if (mOpenIntent != null) {
             mPowerInteractor?.wakeUpIfDozing("AMBIENT_MUSIC_CLICK", 4)
             if (mAmbientSkipUnlock) {
                 sendBroadcastWithoutDismissingKeyguard(mOpenIntent!!)
@@ -341,11 +346,8 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
     private fun onIconClick() {
         val falsingManager = mFalsingManager
         if (falsingManager == null || !falsingManager.isFalseTap(1)) {
-            if (
-                mUsingExtendedIndication &&
-                    !mIsCurrentlyInExpandedState &&
-                    isExtendedIndicationRecognitionResult()
-            ) {
+            if (mUsingExtendedIndication && !mIsCurrentlyInExpandedState && mExtendedIndication?.expandedIndicationData != null) {
+                performExpandAnimation()
                 return
             }
             val favoritingIntent = mFavoritingIntent
@@ -372,7 +374,11 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
                     sendBroadcastWithoutDismissingKeyguard(expandIntent)
                 }
             } else {
-                onTextClick()
+                if (mOpenIntent != null) {
+                    onTextClick()
+                } else {
+                    performCollapseAnimation()
+                }
             }
         }
     }
@@ -461,6 +467,8 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
         mAnimationState = 2
         Trace.beginAsyncSection("collapse_animation", 4)
         mIsCurrentlyInExpandedState = false
+        mAmbientIndicationWrapperContainer.clipToOutline = false
+        mAmbientIndicationWrapperContainer.outlineProvider = null
         setContentDescriptionForOuterContainer()
         val hadLoadedArt = mCurrentLoadedAlbumArtUri != null
         mCurrentLoadedAlbumArtUri = null
@@ -479,6 +487,9 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
         mAmbientIndicationPlayIcon.alpha = 0.0f
         mAmbientIndicationLikeIcon.alpha = 0.0f
         updateIcons()
+        if (mEnabledExtendedInteraction) {
+            applyRoundedOutline(mAmbientIndicationWrapperContainer, 32)
+        }
         mAmbientIndicationContainerBackground.visibility = View.VISIBLE
         mIsCurrentlyInExpandedState = true
         setContentDescriptionForOuterContainer()
@@ -500,6 +511,8 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
         }
         mAmbientIndicationActionContainer.visibility = View.GONE
         mAmbientIndicationExtendedContainer.background = null
+        mAmbientIndicationWrapperContainer.clipToOutline = false
+        mAmbientIndicationWrapperContainer.outlineProvider = null
         mIsCurrentlyInExpandedState = false
         adjustTextContainerPadding()
         mCurrentLoadedAlbumArtUri = null
@@ -1238,9 +1251,7 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
 
         if (mUsingExtendedIndication && hasContent && isExtendedIndicationRecognitionResult()) {
             val expandedIndicationData = mExtendedIndication?.expandedIndicationData
-            if (!mIsCurrentlyInExpandedState && isExtendedIndicationToBeExpanded()) {
-                performExpandAnimation()
-            } else if (mIsCurrentlyInExpandedState && isExtendedIndicationToBeExpanded()) {
+            if (mIsCurrentlyInExpandedState) {
                 updateIcons()
                 val newAlbumArtUri = expandedIndicationData?.albumArtUri
                 if (
@@ -1256,10 +1267,8 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
                         800L,
                     )
                 }
-            } else if (!mIsCurrentlyInExpandedState || isExtendedIndicationToBeExpanded()) {
-                adjustTextContainerPadding()
             } else {
-                performCollapseAnimation()
+                adjustTextContainerPadding()
             }
         } else {
             restoreToCollapsedState()

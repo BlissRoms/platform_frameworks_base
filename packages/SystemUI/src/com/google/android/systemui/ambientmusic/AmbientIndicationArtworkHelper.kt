@@ -31,6 +31,8 @@ object AmbientIndicationArtworkHelper {
         @JvmField val smallIcon: Drawable,
     )
 
+    private val memoryCache = android.util.LruCache<String, ArtworkResult>(20)
+
     fun processArtwork(
         context: Context,
         imageLoader: ImageLoader,
@@ -51,14 +53,55 @@ object AmbientIndicationArtworkHelper {
             return
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val bitmap =
-                imageLoader.loadBitmapSync(
-                    ImageLoader.Uri(albumArtUri),
-                    targetWidth,
-                    targetWidth,
-                    android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE,
+        val cacheKey = albumArtUri.toString()
+        val cachedResult = memoryCache.get(cacheKey)
+        if (cachedResult != null) {
+            lastArtworkResult = cachedResult
+            mainHandler.post {
+                callback(
+                    cachedResult.artwork as? LayerDrawable,
+                    cachedResult.colorScheme,
+                    cachedResult.albumArtUri,
+                    cachedResult.smallIcon,
                 )
+            }
+            return
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val validWidth = if (targetWidth > 0) targetWidth else (200f * context.resources.displayMetrics.density).toInt()
+            val validHeight = if (targetHeight > 0) targetHeight else (100f * context.resources.displayMetrics.density).toInt()
+
+            val cacheDir = java.io.File(context.cacheDir, "ambient_art").apply { mkdirs() }
+            val diskCacheFile = java.io.File(cacheDir, Integer.toHexString(cacheKey.hashCode()) + ".png")
+
+            val bitmap = try {
+                if (diskCacheFile.exists()) {
+                    android.graphics.BitmapFactory.decodeFile(diskCacheFile.absolutePath)
+                } else if (albumArtUri.scheme == "http" || albumArtUri.scheme == "https") {
+                    val url = java.net.URL(cacheKey)
+                    val connection = url.openConnection() as java.net.HttpURLConnection
+                    connection.connectTimeout = 5000
+                    connection.readTimeout = 5000
+                    connection.doInput = true
+                    val bytes = connection.inputStream.use { it.readBytes() }
+                    try {
+                        diskCacheFile.writeBytes(bytes)
+                    } catch (e: Exception) {
+                        // Non-critical cache write error
+                    }
+                    android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                } else {
+                    imageLoader.loadBitmapSync(
+                        ImageLoader.Uri(albumArtUri),
+                        validWidth,
+                        validHeight,
+                        android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE,
+                    )
+                }
+            } catch (e: Exception) {
+                null
+            }
 
             if (bitmap == null) {
                 mainHandler.post { callback(null, null, albumArtUri, null) }
@@ -69,8 +112,9 @@ object AmbientIndicationArtworkHelper {
                 context,
                 bitmap,
                 albumArtUri,
-                targetWidth,
-                targetHeight,
+                cacheKey,
+                validWidth,
+                validHeight,
                 mainHandler,
                 callback,
             )
@@ -81,6 +125,7 @@ object AmbientIndicationArtworkHelper {
         context: Context,
         bitmap: Bitmap,
         albumArtUri: Uri,
+        cacheKey: String,
         targetWidth: Int,
         targetHeight: Int,
         mainHandler: Handler,
@@ -135,6 +180,7 @@ object AmbientIndicationArtworkHelper {
 
         val result = ArtworkResult(albumArtUri, layeredArtwork, colorScheme, smallIcon)
         lastArtworkResult = result
+        memoryCache.put(cacheKey, result)
 
         bitmap.recycle()
 
