@@ -1,12 +1,15 @@
 package com.google.android.systemui.keyguard.ui.sections
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.android.keyguard.KeyguardUpdateMonitor
+import com.android.systemui.biometrics.AuthController
 import com.android.systemui.common.ui.domain.interactor.ConfigurationInteractor
 import com.android.systemui.dagger.SysUISingleton
+import com.android.systemui.dagger.qualifiers.Application
 import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.graphics.ImageLoader
@@ -29,6 +32,8 @@ import kotlinx.coroutines.DisposableHandle
 class DefaultAmbientIndicationAreaSection
 @Inject
 constructor(
+    @Application private val context: Context,
+    private val authController: AuthController,
     private val keyguardAmbientIndicationViewModel: KeyguardAmbientIndicationViewModel,
     private val powerInteractor: PowerInteractor,
     private val keyguardUpdateMonitor: KeyguardUpdateMonitor,
@@ -45,6 +50,18 @@ constructor(
 
     private var ambientIndicationAreaHandle: DisposableHandle? = null
 
+    private fun isUdfpsSensorLow(): Boolean {
+        if (!keyguardUpdateMonitor.isUdfpsSupported()) {
+            return false
+        }
+        val udfpsLocation = authController.udfpsLocation
+        if (udfpsLocation != null) {
+            val displayHeight = context.resources.displayMetrics.heightPixels
+            return udfpsLocation.y > (displayHeight * 0.78f)
+        }
+        return false
+    }
+
     override fun addViews(constraintLayout: ConstraintLayout) {
         val view =
             LayoutInflater.from(constraintLayout.context)
@@ -57,7 +74,8 @@ constructor(
             R.id.ambient_indication_container,
             ConstraintLayout.LayoutParams.MATCH_PARENT,
         )
-        if (keyguardUpdateMonitor.isUdfpsSupported()) {
+        if (keyguardUpdateMonitor.isUdfpsSupported() && !isUdfpsSensorLow()) {
+            // High/center mounted UDFPS (e.g. Pixel devices): place below device_entry_icon_view
             constraintSet.constrainHeight(R.id.ambient_indication_container, 0)
             constraintSet.connect(
                 R.id.ambient_indication_container,
@@ -84,6 +102,7 @@ constructor(
                 ConstraintSet.END,
             )
         } else {
+            // Low mounted UDFPS or non-UDFPS: place above device_entry_icon_view
             constraintSet.constrainHeight(
                 R.id.ambient_indication_container,
                 ConstraintSet.WRAP_CONTENT,
