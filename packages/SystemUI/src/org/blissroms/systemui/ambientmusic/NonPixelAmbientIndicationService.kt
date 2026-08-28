@@ -77,8 +77,7 @@ class NonPixelAmbientIndicationService(
 
             override fun onKeyguardVisibilityChanged(showing: Boolean) {
                 if (showing && isContinuousRecognitionEnabled()) {
-                    consecutiveSilentPasses = 0
-                    scheduleNextPeriodicRecognition(5000L)
+                    scheduleNextPeriodicRecognition(20000L)
                 } else if (!showing) {
                     cancelPeriodicRecognition()
                 }
@@ -86,8 +85,7 @@ class NonPixelAmbientIndicationService(
 
             override fun onDreamingStateChanged(dreaming: Boolean) {
                 if (dreaming && isContinuousRecognitionEnabled()) {
-                    consecutiveSilentPasses = 0
-                    scheduleNextPeriodicRecognition(5000L)
+                    scheduleNextPeriodicRecognition(20000L)
                 }
             }
         }
@@ -184,10 +182,10 @@ class NonPixelAmbientIndicationService(
         }
         val actualDelay = delayMillis ?: when {
             consecutiveSilentPasses == 0 -> PERIODIC_INTERVAL_MILLIS
-            consecutiveSilentPasses == 1 -> 90000L
-            consecutiveSilentPasses == 2 -> 180000L
-            consecutiveSilentPasses == 3 -> 300000L
-            else -> 600000L
+            consecutiveSilentPasses == 1 -> 180000L
+            consecutiveSilentPasses == 2 -> 300000L
+            consecutiveSilentPasses == 3 -> 600000L
+            else -> 900000L
         }
         val isAodOrKeyguard = keyguardUpdateMonitor.isKeyguardVisible || keyguardUpdateMonitor.isDreaming
         val alarmType = if (isAodOrKeyguard) {
@@ -195,9 +193,10 @@ class NonPixelAmbientIndicationService(
         } else {
             AlarmManager.ELAPSED_REALTIME
         }
-        alarmManager.setExact(
+        alarmManager.setWindow(
             alarmType,
             SystemClock.elapsedRealtime() + actualDelay,
+            30000L,
             TAG_PERIODIC,
             periodicRecognitionListener,
             null,
@@ -218,7 +217,15 @@ class NonPixelAmbientIndicationService(
 
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as? PowerManager
         if (powerManager?.isPowerSaveMode == true) {
-            scheduleNextPeriodicRecognition(300000L)
+            scheduleNextPeriodicRecognition(600000L)
+            return
+        }
+
+        val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as? android.os.BatteryManager
+        val batteryLevel = batteryManager?.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY) ?: 100
+        val isCharging = batteryManager?.isCharging == true
+        if (!isCharging && batteryLevel <= 15) {
+            scheduleNextPeriodicRecognition(900000L)
             return
         }
 
@@ -733,7 +740,7 @@ class NonPixelAmbientIndicationService(
         private const val TAG_PERIODIC = "NonPixelAmbientIndication_Periodic"
         private const val DEFAULT_TTL_MILLIS = 180000L
         private const val SEARCH_TIMEOUT_MILLIS = 20000L
-        private const val PERIODIC_INTERVAL_MILLIS = 60000L
+        private const val PERIODIC_INTERVAL_MILLIS = 120000L
 
         const val ACTION_AMBIENT_INDICATION_SHOW = "com.google.android.ambientindication.action.AMBIENT_INDICATION_SHOW"
         const val ACTION_AMBIENT_INDICATION_EXPAND = "com.google.android.ambientindication.action.AMBIENT_INDICATION_EXPAND"

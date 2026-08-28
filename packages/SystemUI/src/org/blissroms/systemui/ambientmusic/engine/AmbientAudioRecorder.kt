@@ -25,6 +25,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 class AmbientAudioRecorder {
 
@@ -34,6 +36,19 @@ class AmbientAudioRecorder {
         const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
         const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
         const val SILENCE_RMS_THRESHOLD = 180.0
+        private const val EARLY_SILENCE_CHECK_BYTES = SAMPLE_RATE * 2 * 1 // 1.0 second of audio
+    }
+
+    private fun calculateRms(pcmBytes: ByteArray, length: Int): Double {
+        if (length < 2) return 0.0
+        var sumSquare = 0.0
+        val numShorts = length / 2
+        val byteBuffer = ByteBuffer.wrap(pcmBytes, 0, length).order(ByteOrder.LITTLE_ENDIAN)
+        for (i in 0 until numShorts) {
+            val sample = byteBuffer.short.toDouble()
+            sumSquare += sample * sample
+        }
+        return Math.sqrt(sumSquare / numShorts)
     }
 
     @SuppressLint("MissingPermission")
@@ -53,13 +68,35 @@ class AmbientAudioRecorder {
         var audioRecord: AudioRecord? = null
 
         try {
-            audioRecord = AudioRecord(
-                MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE,
-                CHANNEL_CONFIG,
-                AUDIO_FORMAT,
-                bufferSize,
-            )
+            // Try VOICE_RECOGNITION first to avoid heavy DSP audio processing routes; fallback to MIC
+            val audioSource = try {
+                val testRecord = AudioRecord(
+                    MediaRecorder.AudioSource.VOICE_RECOGNITION,
+                    SAMPLE_RATE,
+                    CHANNEL_CONFIG,
+                    AUDIO_FORMAT,
+                    bufferSize,
+                )
+                if (testRecord.state == AudioRecord.STATE_INITIALIZED) {
+                    audioRecord = testRecord
+                    MediaRecorder.AudioSource.VOICE_RECOGNITION
+                } else {
+                    testRecord.release()
+                    MediaRecorder.AudioSource.MIC
+                }
+            } catch (e: Exception) {
+                MediaRecorder.AudioSource.MIC
+            }
+
+            if (audioRecord == null) {
+                audioRecord = AudioRecord(
+                    audioSource,
+                    SAMPLE_RATE,
+                    CHANNEL_CONFIG,
+                    AUDIO_FORMAT,
+                    bufferSize,
+                )
+            }
 
             if (audioRecord.state != AudioRecord.STATE_INITIALIZED) {
                 Log.e(TAG, "AudioRecord failed to initialize")
@@ -72,6 +109,7 @@ class AmbientAudioRecorder {
 
             audioRecord.startRecording()
             var bytesReadTotal = 0
+            var earlySilenceChecked = false
 
             while (bytesReadTotal < totalBytesTarget && isActive) {
                 val bytesToRead = (totalBytesTarget - bytesReadTotal).coerceAtMost(buffer.size)
@@ -79,6 +117,17 @@ class AmbientAudioRecorder {
                 if (read > 0) {
                     outputStream.write(buffer, 0, read)
                     bytesReadTotal += read
+
+                    // Early silence detection: check RMS after ~1 second of recorded audio
+                    if (!earlySilenceChecked && bytesReadTotal >= EARLY_SILENCE_CHECK_BYTES) {
+                        earlySilenceChecked = true
+                        val earlyBytes = outputStream.toByteArray()
+                        val earlyRms = calculateRms(earlyBytes, earlyBytes.size)
+                        if (earlyRms < SILENCE_RMS_THRESHOLD) {
+                            Log.d(TAG, "Early silence detected (RMS: $earlyRms < $SILENCE_RMS_THRESHOLD), aborting capture early to save battery")
+                            return@withContext null
+                        }
+                    }
                 } else if (read < 0) {
                     Log.e(TAG, "Error while reading audio buffer: $read")
                     break
@@ -87,14 +136,7 @@ class AmbientAudioRecorder {
 
             if (bytesReadTotal >= totalBytesTarget / 2) {
                 val recordedBytes = outputStream.toByteArray()
-                var sumSquare = 0.0
-                val numShorts = recordedBytes.size / 2
-                val byteBuffer = java.nio.ByteBuffer.wrap(recordedBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN)
-                for (i in 0 until numShorts) {
-                    val sample = byteBuffer.short.toDouble()
-                    sumSquare += sample * sample
-                }
-                val rms = Math.sqrt(sumSquare / numShorts)
+                val rms = calculateRms(recordedBytes, recordedBytes.size)
                 if (rms < SILENCE_RMS_THRESHOLD) {
                     Log.d(TAG, "Audio sample RMS ($rms) is below silence threshold ($SILENCE_RMS_THRESHOLD), ignoring silence")
                     return@withContext null
