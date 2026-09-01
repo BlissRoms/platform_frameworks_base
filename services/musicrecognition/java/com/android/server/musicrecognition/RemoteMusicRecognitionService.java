@@ -54,9 +54,12 @@ public class RemoteMusicRecognitionService extends
         super(context, MusicRecognitionService.ACTION_MUSIC_SEARCH_LOOKUP, serviceName, userId,
                 perUserService,
                 context.getMainThreadHandler(),
-                // Prevents the service from having its permissions stripped while in background.
-                Context.BIND_INCLUDE_CAPABILITIES | (bindInstantServiceAllowed
-                        ? Context.BIND_ALLOW_INSTANT : 0), verbose,
+                // Prevents the service from having its permissions stripped while in background
+                // and ensures the host process is not frozen during audio analysis / network RPCs.
+                Context.BIND_INCLUDE_CAPABILITIES
+                        | Context.BIND_FOREGROUND_SERVICE
+                        | Context.BIND_IMPORTANT
+                        | (bindInstantServiceAllowed ? Context.BIND_ALLOW_INSTANT : 0), verbose,
                 /* initialCapacity= */ 1);
         mServerCallback = callback;
     }

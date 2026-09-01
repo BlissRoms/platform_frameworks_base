@@ -126,50 +126,50 @@ public final class MusicRecognitionManagerPerUserService extends
     private RemoteMusicRecognitionService ensureRemoteServiceLocked(
             IMusicRecognitionManagerCallback clientCallback) {
         if (mRemoteService == null) {
-            String serviceName = getComponentNameLocked();
-            if (serviceName == null) {
-                String[] candidateComponents = new String[] {
-                    "com.google.android.as/com.google.intelligence.sense.ambientmusic.MusicRecognitionService"
-                };
-                for (String candidate : candidateComponents) {
-                    ComponentName cn = ComponentName.unflattenFromString(candidate);
-                    if (cn != null) {
-                        try {
-                            getContext().getPackageManager().getServiceInfo(cn, 0);
-                            serviceName = candidate;
+            String configName = getComponentNameLocked();
+            String[] candidateComponents = new String[] {
+                configName,
+                "com.google.android.googlequicksearchbox/com.google.android.apps.search.soundsearch.service.SoundSearchService",
+                "com.google.android.as/com.google.intelligence.sense.ambientmusic.MusicRecognitionService"
+            };
+
+            ServiceInfo targetServiceInfo = null;
+            ComponentName targetComponent = null;
+
+            for (String candidate : candidateComponents) {
+                if (candidate == null) continue;
+                ComponentName cn = ComponentName.unflattenFromString(candidate);
+                if (cn != null) {
+                    try {
+                        ServiceInfo si = getContext()
+                                .createContextAsUser(UserHandle.of(mUserId), 0)
+                                .getPackageManager()
+                                .getServiceInfo(cn, PackageManager.GET_META_DATA);
+                        if (si != null) {
+                            targetServiceInfo = si;
+                            targetComponent = cn;
                             break;
-                        } catch (Exception ignored) {
                         }
+                    } catch (Exception ignored) {
                     }
                 }
             }
-            if (serviceName == null) {
+
+            if (targetComponent == null || targetServiceInfo == null) {
                 if (mMaster.verbose) {
-                    Slog.v(TAG, "ensureRemoteServiceLocked(): not set");
+                    Slog.v(TAG, "ensureRemoteServiceLocked(): not set or no valid service found");
                 }
                 return null;
             }
-            ComponentName serviceComponent = ComponentName.unflattenFromString(serviceName);
 
+            mServiceInfo = targetServiceInfo;
             mRemoteService = new RemoteMusicRecognitionService(getContext(),
-                    serviceComponent, mUserId, this,
+                    targetComponent, mUserId, this,
                     new MusicRecognitionServiceCallback(clientCallback),
                     mMaster.isBindInstantServiceAllowed(),
                     mMaster.verbose);
-
-            try {
-                mServiceInfo =
-                        getContext()
-                                .createContextAsUser(UserHandle.of(mUserId), 0)
-                                .getPackageManager()
-                                .getServiceInfo(
-                                        mRemoteService.getComponentName(),
-                                        PackageManager.GET_META_DATA);
-                mAttributionTagFuture = mRemoteService.getAttributionTag();
-                Slog.i(TAG, "Remote service bound: " + mRemoteService.getComponentName());
-            } catch (PackageManager.NameNotFoundException e) {
-                Slog.e(TAG, "Service was not found.", e);
-            }
+            mAttributionTagFuture = mRemoteService.getAttributionTag();
+            Slog.i(TAG, "Remote service bound: " + mRemoteService.getComponentName());
         }
 
         return mRemoteService;
@@ -186,7 +186,7 @@ public final class MusicRecognitionManagerPerUserService extends
         IMusicRecognitionManagerCallback clientCallback =
                 IMusicRecognitionManagerCallback.Stub.asInterface(callback);
         mRemoteService = ensureRemoteServiceLocked(clientCallback);
-        if (mRemoteService == null) {
+        if (mRemoteService == null || mAttributionTagFuture == null) {
             try {
                 clientCallback.onRecognitionFailed(
                         RECOGNITION_FAILED_SERVICE_UNAVAILABLE);
@@ -292,24 +292,32 @@ public final class MusicRecognitionManagerPerUserService extends
         int ignoreBytes =
                 recognitionRequest.getIgnoreBeginningFrames() * BYTES_PER_SAMPLE;
         audioRecord.startRecording();
-        while (bytesRead >= 0 && totalBytesRead
-                < audioRecord.getBufferSizeInFrames() * BYTES_PER_SAMPLE
-                && mRemoteService != null) {
-            bytesRead = audioRecord.read(byteBuffer, 0, byteBuffer.length);
-            if (bytesRead > 0) {
-                totalBytesRead += bytesRead;
-                // If we are ignoring the first x bytes, update that counter.
-                if (ignoreBytes > 0) {
-                    ignoreBytes -= bytesRead;
-                    // If we've dipped negative, we've skipped through all ignored bytes
-                    // and then some.  Write out the bytes we shouldn't have skipped.
-                    if (ignoreBytes < 0) {
-                        outputStream.write(byteBuffer, bytesRead + ignoreBytes, -ignoreBytes);
+        try {
+            while (bytesRead >= 0 && totalBytesRead
+                    < audioRecord.getBufferSizeInFrames() * BYTES_PER_SAMPLE
+                    && mRemoteService != null) {
+                bytesRead = audioRecord.read(byteBuffer, 0, byteBuffer.length);
+                if (bytesRead > 0) {
+                    totalBytesRead += bytesRead;
+                    // If we are ignoring the first x bytes, update that counter.
+                    if (ignoreBytes > 0) {
+                        ignoreBytes -= bytesRead;
+                        // If we've dipped negative, we've skipped through all ignored bytes
+                        // and then some.  Write out the bytes we shouldn't have skipped.
+                        if (ignoreBytes < 0) {
+                            outputStream.write(byteBuffer, bytesRead + ignoreBytes, -ignoreBytes);
+                            outputStream.flush();
+                        }
+                    } else {
+                        outputStream.write(byteBuffer, 0, bytesRead);
+                        outputStream.flush();
                     }
-                } else {
-                    outputStream.write(byteBuffer);
                 }
             }
+            outputStream.flush();
+        } catch (IOException e) {
+            // EPIPE is expected if the receiving service closes the pipe early after sufficient audio
+            Slog.i(TAG, "Audio stream pipe closed by consumer (streamed " + totalBytesRead + " bytes)");
         }
         Slog.i(TAG,
                 String.format("Streamed %s bytes from audio record", totalBytesRead));
@@ -373,6 +381,8 @@ public final class MusicRecognitionManagerPerUserService extends
                 mRemoteService.destroy();
                 mRemoteService = null;
             }
+            mAttributionTagFuture = null;
+            mServiceInfo = null;
         }
     }
 
