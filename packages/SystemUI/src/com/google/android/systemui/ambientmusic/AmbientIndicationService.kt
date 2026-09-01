@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.SystemClock
+import android.os.UserHandle
 import android.text.TextUtils
 import android.util.Log
 import com.android.keyguard.KeyguardUpdateMonitor
@@ -34,17 +35,33 @@ class AmbientIndicationService(
             override fun onUserSwitchComplete(userId: Int) {
                 onUserSwitched()
             }
+
+            override fun onKeyguardVisibilityChanged(showing: Boolean) {
+                if (showing && isOnDemandEnabled()) {
+                    showOnDemandSearchIcon()
+                }
+            }
         }
 
     private val mHideIndicationListener: AlarmManager.OnAlarmListener =
         AlarmManager.OnAlarmListener {
-            ambientIndicationInteractor.hideAmbientMusic()
+            if (isOnDemandEnabled()) {
+                showOnDemandSearchIcon()
+            } else {
+                ambientIndicationInteractor.hideAmbientMusic()
+            }
         }
 
     fun getCurrentUser(): Int = selectedUserInteractor.getSelectedUserId()
 
     fun isForCurrentUser(): Boolean {
-        return sendingUserId == getCurrentUser() || sendingUserId == -1
+        return try {
+            val current = getCurrentUser()
+            val sender = sendingUserId
+            sender == current || sender <= 0 || sender == -10000 || sender == -1 || sender == -2
+        } catch (e: Exception) {
+            true
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -92,7 +109,11 @@ class AmbientIndicationService(
         when (action) {
             "com.google.android.ambientindication.action.AMBIENT_INDICATION_HIDE" -> {
                 alarmManager.cancel(mHideIndicationListener)
-                ambientIndicationInteractor.hideAmbientMusic()
+                if (isOnDemandEnabled()) {
+                    showOnDemandSearchIcon()
+                } else {
+                    ambientIndicationInteractor.hideAmbientMusic()
+                }
                 Log.i(TAG, "Hiding ambient indication.")
             }
             "com.google.android.ambientindication.action.AMBIENT_INDICATION_SHOW" -> {
@@ -238,7 +259,66 @@ class AmbientIndicationService(
         }
     }
 
+    fun isOnDemandEnabled(): Boolean {
+        return android.provider.Settings.System.getIntForUser(
+            context.contentResolver,
+            "now_playing_on_demand",
+            0,
+            UserHandle.USER_CURRENT,
+        ) == 1 ||
+            android.provider.Settings.Secure.getIntForUser(
+                context.contentResolver,
+                "now_playing_on_demand",
+                0,
+                UserHandle.USER_CURRENT,
+            ) == 1
+    }
+
+    fun showOnDemandSearchIcon() {
+        if (!isOnDemandEnabled()) {
+            ambientIndicationInteractor.hideAmbientMusic()
+            return
+        }
+        val onDemandPendingIntent =
+            PendingIntent.getBroadcast(
+                context,
+                0,
+                Intent("com.google.intelligence.sense.ambientmusic.ondemand.AQA_CLICK")
+                    .setPackage("com.google.android.as"),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+        ambientIndicationInteractor.setAmbientMusic(
+            "",
+            onDemandPendingIntent,
+            null,
+            1,
+            true,
+            "Search for music",
+            ExtendedIndication(
+                null,
+                null,
+                null,
+                isRecognitionResult = false,
+                isSongSearching = false,
+                null,
+            ),
+        )
+    }
+
+    fun onSettingsChanged() {
+        val onDemandEnabled = isOnDemandEnabled()
+        val status = AmbientIndicationMusicStatus(isEnabled = onDemandEnabled, isActive = false)
+        ambientIndicationInteractor.ambientIndicationRepository.ambientMusicStatus.value = status
+        if (onDemandEnabled) {
+            showOnDemandSearchIcon()
+            Log.d(TAG, "Enabled on-demand recognition lockscreen button via settings toggle")
+        } else {
+            ambientIndicationInteractor.hideAmbientMusic()
+        }
+    }
+
     fun onUserSwitched() {
         ambientIndicationInteractor.hideAmbientMusic()
+        onSettingsChanged()
     }
 }
