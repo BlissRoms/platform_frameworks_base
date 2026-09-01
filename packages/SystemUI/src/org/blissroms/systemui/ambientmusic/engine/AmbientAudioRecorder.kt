@@ -35,7 +35,7 @@ class AmbientAudioRecorder {
         const val SAMPLE_RATE = 16000
         const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
         const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
-        const val SILENCE_RMS_THRESHOLD = 180.0
+        const val SILENCE_RMS_THRESHOLD = 25.0
         private const val EARLY_SILENCE_CHECK_BYTES = SAMPLE_RATE * 2 * 1 // 1.0 second of audio
     }
 
