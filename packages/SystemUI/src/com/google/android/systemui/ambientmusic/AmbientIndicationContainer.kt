@@ -335,7 +335,7 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
         }
         if (mOpenIntent != null) {
             mPowerInteractor?.wakeUpIfDozing("AMBIENT_MUSIC_CLICK", 4)
-            if (mAmbientSkipUnlock) {
+            if (mAmbientSkipUnlock && mOpenIntent?.isBroadcast == true) {
                 sendBroadcastWithoutDismissingKeyguard(mOpenIntent!!)
             } else {
                 mActivityStarter?.startPendingIntentDismissingKeyguard(mOpenIntent)
@@ -362,23 +362,23 @@ open class AmbientIndicationContainer(context: Context, attrs: AttributeSet) :
 
     private fun onWrapperClick() {
         val falsingManager = mFalsingManager
-        if ((falsingManager == null || !falsingManager.isFalseTap(1)) && mUsingExtendedIndication) {
-            val expanded = mIsCurrentlyInExpandedState
-            if (!expanded) {
+        if (falsingManager == null || !falsingManager.isFalseTap(1)) {
+            if (mUsingExtendedIndication && !mIsCurrentlyInExpandedState) {
                 if (mExtendedIndication?.expandedIndicationData != null) {
                     performExpandAnimation()
+                    return
                 }
                 val expandIntent = mExtendedIndication?.expandIntent
                 if (expandIntent != null) {
                     mPowerInteractor?.wakeUpIfDozing("AMBIENT_MUSIC_CLICK", 4)
                     sendBroadcastWithoutDismissingKeyguard(expandIntent)
+                    return
                 }
-            } else {
-                if (mOpenIntent != null) {
-                    onTextClick()
-                } else {
-                    performCollapseAnimation()
-                }
+            }
+            if (mOpenIntent != null) {
+                onTextClick()
+            } else if (mIsCurrentlyInExpandedState) {
+                performCollapseAnimation()
             }
         }
     }

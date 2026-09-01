@@ -47,9 +47,22 @@ constructor(
 ) : CoreStartable {
 
     override fun start() {
-        val isPixel = "google".equals(android.os.Build.BRAND, ignoreCase = true) || "google".equals(android.os.Build.MANUFACTURER, ignoreCase = true)
+        val isPixel =
+            "google".equals(android.os.Build.BRAND, ignoreCase = true) ||
+                "google".equals(android.os.Build.MANUFACTURER, ignoreCase = true)
+
+        // On Pixels, only yield to Google AmbientIndication if com.google.android.as is installed (GApps builds)
         if (isPixel) {
-            return
+            val hasGoogleAs =
+                try {
+                    context.packageManager.getPackageInfo("com.google.android.as", 0)
+                    true
+                } catch (e: Exception) {
+                    false
+                }
+            if (hasGoogleAs) {
+                return
+            }
         }
 
         val nonPixelAmbientIndicationService =
