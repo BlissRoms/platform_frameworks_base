@@ -72,7 +72,7 @@ constructor(
     override fun applyConstraints(constraintSet: ConstraintSet) {
         constraintSet.constrainWidth(
             R.id.ambient_indication_container,
-            ConstraintLayout.LayoutParams.MATCH_PARENT,
+            ConstraintSet.WRAP_CONTENT,
         )
         if (keyguardUpdateMonitor.isUdfpsSupported() && !isUdfpsSensorLow()) {
             // High/center mounted UDFPS (e.g. Pixel devices): place below device_entry_icon_view

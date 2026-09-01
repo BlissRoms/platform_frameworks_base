@@ -54,7 +54,7 @@ constructor(
                 R.id.nssl_placeholder_barrier_bottom,
                 Barrier.TOP,
                 0,
-                *intArrayOf(R.id.device_entry_icon_view, R.id.ambient_indication_container),
+                *intArrayOf(R.id.device_entry_icon_view),
             )
             connect(placeHolderId, BOTTOM, R.id.nssl_placeholder_barrier_bottom, TOP)
         }
