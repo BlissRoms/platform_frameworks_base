@@ -74,4 +74,8 @@
     <java-symbol type="string" name="app_lock_credential_set_done" />
     <java-symbol type="string" name="app_lock_credential_cleared" />
 
+    <!-- Dual USB Controller -->
+    <java-symbol type="bool" name="config_dualUsbController"/>
+    <java-symbol type="array" name="config_usbPortControllers"/>
+
 </resources>

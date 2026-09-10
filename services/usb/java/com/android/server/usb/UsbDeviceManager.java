@@ -90,6 +90,7 @@ import android.provider.Settings;
 import android.service.usb.UsbDeviceManagerProto;
 import android.service.usb.UsbHandlerProto;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Pair;
 import android.util.Slog;
 
@@ -253,7 +254,7 @@ public class UsbDeviceManager implements ActivityTaskManagerInternal.ScreenObser
     private static UsbGadgetHal mUsbGadgetHal;
 
     private final boolean mEnableUdcSysfsUsbStateUpdate;
-    private String mUdcName = "";
+    /* package */ String mUdcName = "";
 
     private static final String DEVICE_UAOA_ENABLED_PROPERTY = "ro.usb.userspace.aoa.enabled";
     private static final String KERNEL_AOA_ENABLED_PATH =
@@ -635,6 +636,13 @@ public class UsbDeviceManager implements ActivityTaskManagerInternal.ScreenObser
         );
     }
 
+    /* package */ void restartGadgetMonitor(String udcName) {
+        if (mEnableUdcSysfsUsbStateUpdate) {
+            nativeStopGadgetMonitor();
+            nativeStartGadgetMonitor(udcName);
+        }
+    }
+
     UsbProfileGroupSettingsManager getCurrentSettings() {
         synchronized (mLock) {
             return mCurrentSettings;
@@ -877,6 +885,10 @@ public class UsbDeviceManager implements ActivityTaskManagerInternal.ScreenObser
 
         private boolean mIsMtpServiceBound = false;
 
+        private final boolean mDualUsbEnabled;
+        private final ArrayMap<String, String> mPortToControllerMap = new ArrayMap<>();
+        private String mCurrentUsbController = "";
+
         /**
          * {@link ServiceConnection} for {@link MtpService}.
          */
@@ -920,6 +932,26 @@ public class UsbDeviceManager implements ActivityTaskManagerInternal.ScreenObser
             boolean massStorageSupported = primary != null && primary.allowMassStorage();
             mUseUsbNotification = !massStorageSupported && mContext.getResources().getBoolean(
                     com.android.internal.R.bool.config_usbChargingMessage);
+
+            mDualUsbEnabled = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_dualUsbController);
+            if (mDualUsbEnabled) {
+                String[] portControllers = mContext.getResources().getStringArray(
+                        com.android.internal.R.array.config_usbPortControllers);
+                if (portControllers != null) {
+                    for (String pc : portControllers) {
+                        int idx = pc.indexOf(':');
+                        if (idx > 0 && idx < pc.length() - 1) {
+                            String portId = pc.substring(0, idx).trim();
+                            String controller = pc.substring(idx + 1).trim();
+                            mPortToControllerMap.put(portId, controller);
+                            Slog.i(TAG, "Dual USB mapping: " + portId + " -> " + controller);
+                        }
+                    }
+                }
+                mCurrentUsbController = getSystemProperty(USB_CONTROLLER_NAME_PROPERTY,
+                        getSystemProperty("vendor.usb.controller", ""));
+            }
         }
 
         public void sendMessage(int what, boolean arg) {
@@ -1057,8 +1089,8 @@ public class UsbDeviceManager implements ActivityTaskManagerInternal.ScreenObser
 
             removeMessages(MSG_UPDATE_PORT_STATE);
             Message msg = obtainMessage(MSG_UPDATE_PORT_STATE, args);
-            // debounce rapid transitions of connect/disconnect on type-c ports
-            sendMessageDelayed(msg, HOST_STATE_UPDATE_DELAY);
+            boolean isConnected = status != null && status.isConnected();
+            sendMessageDelayed(msg, isConnected ? 0 : HOST_STATE_UPDATE_DELAY);
         }
 
         private void setAdbEnabled(boolean enable, int operationId) {
@@ -1483,6 +1515,39 @@ public class UsbDeviceManager implements ActivityTaskManagerInternal.ScreenObser
                                 status.getUsbDataStatus() != UsbPortStatus.DATA_STATUS_ENABLED;
                         mConnectedToDataDisabledPort = status.isConnected() && usbDataDisabled;
                         mPowerBrickConnectionStatus = status.getPowerBrickConnectionStatus();
+
+                        if (mDualUsbEnabled && port != null && status.isConnected()) {
+                            String portId = port.getId();
+                            int dataRole = status.getCurrentDataRole();
+                            int powerRole = status.getCurrentPowerRole();
+                            int mode = status.getCurrentMode();
+                            boolean isDevice = (dataRole == DATA_ROLE_DEVICE)
+                                    || (dataRole != DATA_ROLE_HOST && (powerRole == UsbPortStatus.POWER_ROLE_SINK || mode == UsbPortStatus.MODE_UFP));
+                            if (isDevice && mPortToControllerMap.containsKey(portId)) {
+                                String targetController = mPortToControllerMap.get(portId);
+                                if (TextUtils.isEmpty(mCurrentUsbController)) {
+                                    mCurrentUsbController = getSystemProperty(
+                                            USB_CONTROLLER_NAME_PROPERTY, "");
+                                }
+                                boolean controllerChanged = !TextUtils.isEmpty(targetController)
+                                        && !targetController.equals(mCurrentUsbController);
+                                if (controllerChanged) {
+                                    Slog.i(TAG, "Dual USB: switching active controller from "
+                                            + mCurrentUsbController + " to " + targetController
+                                            + " for " + portId);
+                                    mCurrentUsbController = targetController;
+                                    setSystemProperty(USB_CONTROLLER_NAME_PROPERTY, targetController);
+                                    mUsbDeviceManager.mUdcName = targetController;
+                                    mUsbDeviceManager.restartGadgetMonitor(targetController);
+                                }
+                                if (controllerChanged || !mConnected) {
+                                    long functions = (!mScreenLocked && mScreenUnlockedFunctions != UsbManager.FUNCTION_NONE)
+                                            ? mScreenUnlockedFunctions : mCurrentFunctions;
+                                    setEnabledFunctions(functions, true,
+                                            /* operationId */ sUsbOperationCount.incrementAndGet());
+                                }
+                            }
+                        }
                     } else {
                         mHostConnected = false;
                         mSourcePower = false;

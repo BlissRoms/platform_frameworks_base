@@ -88,4 +88,11 @@
         <item>10</item>
         -->
     </integer-array>
+
+    <!-- Whether the device has multiple USB controllers mapped to different physical Type-C ports (e.g. ASUS ROG devices) -->
+    <bool name="config_dualUsbController">false</bool>
+
+    <!-- Mapping between Type-C port IDs and their UDC controller names (format: "portId:udcName") -->
+    <string-array name="config_usbPortControllers" translatable="false">
+    </string-array>
 </resources>
