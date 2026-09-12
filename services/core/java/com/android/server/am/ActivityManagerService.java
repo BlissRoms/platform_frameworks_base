@@ -21109,7 +21109,7 @@ public class ActivityManagerService extends IActivityManager.Stub
 
         String targetPackage = intent.getComponent() != null
                 ? intent.getComponent().getPackageName()
-                : intent.getPackage();
+                : null;
         final boolean isCreatorSameAsTarget = creatorPackage != null && creatorPackage.equals(
                 targetPackage);
         final boolean noExtraIntentKeys =
