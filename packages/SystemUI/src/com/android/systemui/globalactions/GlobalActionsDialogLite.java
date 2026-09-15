@@ -2479,11 +2479,15 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             } else if (QsInCompose.isEnabled()) {
                 int textAndIconColor = context.getColor(R.color.materialColorOnSurface);
                 messageView.setTextColor(textAndIconColor);
-                mIconView.setBackgroundTintList(
-                        ColorStateList.valueOf(
-                                context.getColor(R.color.materialColorSurfaceContainerHighest)
-                        )
-                );
+                if (!isTv()) {
+                    // On TV the background is a state list that highlights the focused item, so
+                    // a single color tint would flatten it and hide the focus indication.
+                    mIconView.setBackgroundTintList(
+                            ColorStateList.valueOf(
+                                    context.getColor(R.color.materialColorSurfaceContainerHighest)
+                            )
+                    );
+                }
                 mIconView.setImageTintList(ColorStateList.valueOf(textAndIconColor));
             }
 
