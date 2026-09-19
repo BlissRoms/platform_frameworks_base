@@ -17,12 +17,16 @@
 package com.android.systemui.qs.panels.ui.compose.selection
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateOffset
 import androidx.compose.animation.core.animateSize
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
@@ -58,6 +62,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
@@ -81,6 +86,7 @@ import com.android.systemui.compose.modifiers.sysuiResTag
 import com.android.systemui.qs.flags.QsEditModeFocusFixes
 import com.android.systemui.qs.flags.QsEditModeHoverFixes
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.InactiveTileCornerRadius
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileHeight
 import com.android.systemui.qs.panels.ui.compose.selection.SelectionDefaults.BADGE_ANGLE_RAD
 import com.android.systemui.qs.panels.ui.compose.selection.SelectionDefaults.BadgeIconSize
 import com.android.systemui.qs.panels.ui.compose.selection.SelectionDefaults.BadgeSize
@@ -122,7 +128,9 @@ fun InteractiveTileContainer(
     contentDescription: String? = null,
     content: @Composable BoxScope.() -> Unit = {},
 ) {
-    val transition: Transition<Decoration> = updateTransition(tileState.decoration())
+    val panelStyle = rememberQSPanelStyle()
+    val isNothing = panelStyle == 5
+    val transition: Transition<Decoration> = updateTransition(tileState.decoration(isNothing))
     val decorationColor by transition.animateColor()
     val decorationAngle by transition.animateAngle()
     val decorationSize by transition.animateSize { it.size }
@@ -134,11 +142,28 @@ fun InteractiveTileContainer(
     val isDraggable = tileState == Selected
     val isClickable = tileState == Selected || tileState == Removable
 
+    val inactiveRadius = InactiveTileCornerRadius
+    val tileHeight = TileHeight
+    val currentAnchor = resizingState.anchoredDraggableState.currentValue
+    val targetCornerRadius = if (isNothing) {
+        when (currentAnchor) {
+            QSDragAnchor.Quad -> 28.dp
+            else -> tileHeight / 2
+        }
+    } else {
+        inactiveRadius
+    }
+    val animatedCornerRadius by animateDpAsState(
+        targetValue = targetCornerRadius,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "SelectionCornerRadius",
+    )
+
     Box(
         modifier.resizable(tileState == Selected, resizingState).selectionBorder(
             selectionColor = MaterialTheme.colorScheme.primary,
             selectionBorderWidth = SelectedBorderWidth,
-            cornerRadius = InactiveTileCornerRadius,
+            cornerRadius = if (isNothing) animatedCornerRadius else targetCornerRadius,
         ) {
             selectionBorderAlpha
         }
@@ -149,35 +174,58 @@ fun InteractiveTileContainer(
          * We need to hide the decoration if there is none this prevents the decoration from
          * blocking a hover/click of the tile
          */
-        if (!QsEditModeHoverFixes.isEnabled || tileState.decoration() !is NoDecoration) {
+        if (!QsEditModeHoverFixes.isEnabled || tileState.decoration(isNothing) !is NoDecoration) {
             MinimumInteractiveSizeComponent(
                 angle = { decorationAngle },
                 offset = { decorationOffset },
                 excludeSystemGesture = isIdle && isDraggable,
                 isClickable = isClickable,
                 onClick = onClick,
-                rippleRadius = tileState.decoration().rippleRadius,
+                rippleRadius = tileState.decoration(isNothing).rippleRadius,
+                isNothing = isNothing,
+                cornerRadius = { if (isNothing) animatedCornerRadius else inactiveRadius },
                 modifier = Modifier.sysuiResTag("EditTileDecoration"),
             ) {
                 Box(
                     Modifier.fillMaxSize()
                         .drawWithCache {
+                            val isNothingCornerHandle = isNothing && isDraggable && decorationAngle > 0.5f
+                            val cornerRadiusPx = (if (isNothing) animatedCornerRadius else inactiveRadius).toPx().coerceAtLeast(16.dp.toPx())
+                            val arcRadius = cornerRadiusPx - SelectedBorderWidth.toPx() / 2f
+                            val centerOffset = size.center
+                            val arcCenter = Offset(centerOffset.x - cornerRadiusPx * 0.7071f, centerOffset.y - cornerRadiusPx * 0.7071f)
+                            val sweepAngleDeg = (18.dp.toPx() / cornerRadiusPx) * (180f / Math.PI.toFloat())
+                            val startAngleDeg = 45f - sweepAngleDeg / 2f
+                            val strokeWidth = 6.5f.dp.toPx()
+
                             val radius = min(decorationSize.width, decorationSize.height) / 2f
                             val cornerRadius = CornerRadius(radius)
                             val path = Path()
                             onDrawWithContent {
-                                val rect = Rect(center - decorationSize.center, decorationSize)
+                                if (isNothingCornerHandle) {
+                                    drawArc(
+                                        color = decorationColor,
+                                        startAngle = startAngleDeg,
+                                        sweepAngle = sweepAngleDeg,
+                                        useCenter = false,
+                                        topLeft = Offset(arcCenter.x - arcRadius, arcCenter.y - arcRadius),
+                                        size = Size(arcRadius * 2f, arcRadius * 2f),
+                                        style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
+                                    )
+                                } else {
+                                    val rect = Rect(center - decorationSize.center, decorationSize)
 
-                                drawRoundRect(
-                                    color = decorationColor,
-                                    topLeft = rect.topLeft,
-                                    size = rect.size,
-                                    cornerRadius = cornerRadius,
-                                )
+                                    drawRoundRect(
+                                        color = decorationColor,
+                                        topLeft = rect.topLeft,
+                                        size = rect.size,
+                                        cornerRadius = cornerRadius,
+                                    )
 
-                                path.reset()
-                                path.addRoundRect(RoundRect(rect, cornerRadius))
-                                clipPath(path) { this@onDrawWithContent.drawContent() }
+                                    path.reset()
+                                    path.addRoundRect(RoundRect(rect, cornerRadius))
+                                    clipPath(path) { this@onDrawWithContent.drawContent() }
+                                }
                             }
                         }
                         .graphicsLayer { this.alpha = decorationAlpha }
@@ -290,6 +338,8 @@ private fun MinimumInteractiveSizeComponent(
     isClickable: Boolean,
     onClick: () -> Unit = {},
     rippleRadius: Dp,
+    isNothing: Boolean = false,
+    cornerRadius: () -> Dp = { 0.dp },
     content: @Composable BoxScope.() -> Unit = {},
 ) {
     // Use a higher zIndex than the tile to draw over it, and manually create the touch target
@@ -306,9 +356,17 @@ private fun MinimumInteractiveSizeComponent(
                     val size = minTouchTargetSize.roundToPx()
                     val placeable = measurable.measure(Constraints.fixed(size, size))
                     layout(placeable.width, placeable.height) {
-                        val radius = constraints.maxHeight / 2f
-                        val rotationCenter = Offset(constraints.maxWidth - radius, radius)
-                        val position = offsetForAngle(angle(), radius, rotationCenter) + offset()
+                        val cr = if (isNothing) cornerRadius().roundToPx().toFloat() else (constraints.maxHeight / 2f)
+                        val position = if (isNothing && angle() > 0.5f) {
+                            Offset(
+                                x = constraints.maxWidth - cr + cr * cos(angle()),
+                                y = constraints.maxHeight - cr + cr * sin(angle()),
+                            ) + offset()
+                        } else {
+                            val radius = constraints.maxHeight / 2f
+                            val aospCenter = Offset(constraints.maxWidth - radius, radius)
+                            offsetForAngle(angle(), radius, aospCenter) + offset()
+                        }
                         placeable.placeRelative(
                             position.x.roundToInt() - placeable.width / 2,
                             position.y.roundToInt() - placeable.height / 2,
@@ -345,7 +403,8 @@ private fun Modifier.resizable(selected: Boolean, state: ResizingState): Modifie
         val width =
             state.anchoredDraggableState.offset.takeIf { !it.isNaN() }?.roundToInt()
                 ?: constraints.maxWidth
-        val placeable = measurable.measure(constraints.copy(minWidth = width, maxWidth = width))
+        val clampedWidth = width.coerceIn(0, constraints.maxWidth)
+        val placeable = measurable.measure(constraints.copy(minWidth = clampedWidth, maxWidth = clampedWidth))
         layout(constraints.maxWidth, placeable.height) { placeable.placeRelative(0, 0) }
     }
 }
@@ -468,10 +527,10 @@ private object SelectionDefaults {
 
     @Composable
     @ReadOnlyComposable
-    fun TileState.decoration(): Decoration {
+    fun TileState.decoration(isNothing: Boolean = false): Decoration {
         return when (this) {
             Removable -> removalBadge()
-            Selected -> resizingHandle()
+            Selected -> resizingHandle(isNothing)
             Placeable -> placeable()
             New,
             None,
@@ -497,7 +556,7 @@ private object SelectionDefaults {
 
     @Composable
     @ReadOnlyComposable
-    fun resizingHandle(): VisibleDecoration {
+    fun resizingHandle(isNothing: Boolean = false): VisibleDecoration {
         return with(LocalDensity.current) {
             VisibleDecoration(
                 iconAlpha = 0f,
@@ -505,8 +564,8 @@ private object SelectionDefaults {
                 color = MaterialTheme.colorScheme.primary,
                 size = Size(ResizingPillWidth.toPx(), ResizingPillHeight.toPx()),
                 rippleRadius = ResizingPillRippleRadius,
-                angle = RESIZING_PILL_ANGLE_RAD,
-                offset = Offset(-SelectedBorderWidth.toPx(), 0f),
+                angle = if (isNothing) 0.785f else RESIZING_PILL_ANGLE_RAD,
+                offset = if (isNothing) Offset.Zero else Offset(-SelectedBorderWidth.toPx(), 0f),
             )
         }
     }

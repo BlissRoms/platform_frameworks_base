@@ -117,6 +117,8 @@ class MutableSelectionState {
         }
     }
 
+    var onSelectedTileTapped: ((TileSpec) -> Unit)? = null
+
     /**
      * Tap callback on a tile.
      *
@@ -129,6 +131,9 @@ class MutableSelectionState {
             }
             placementEnabled -> {
                 placeTileAt(tileSpec)
+            }
+            selection == tileSpec -> {
+                onSelectedTileTapped?.invoke(tileSpec)
             }
             else -> {
                 select(tileSpec)

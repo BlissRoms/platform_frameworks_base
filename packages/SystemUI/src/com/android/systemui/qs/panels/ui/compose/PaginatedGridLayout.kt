@@ -52,6 +52,14 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileColu
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileQsRows
 import com.android.systemui.qs.panels.ui.compose.Dimensions.FooterHeight
 import com.android.systemui.qs.panels.ui.compose.Dimensions.InterPageSpacing
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.android.systemui.grid.ui.compose.GridSpan
+import com.android.systemui.grid.ui.compose.calculate2DPlacements
+import com.android.systemui.qs.panels.shared.model.SizedTileImpl
+import com.android.systemui.qs.panels.shared.model.autoArrangeTiles
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQuadTiles
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileLayout
 import com.android.systemui.qs.panels.ui.compose.toolbar.EditModeButton
 import com.android.systemui.qs.panels.ui.viewmodel.PaginatedGridViewModel
 import com.android.systemui.qs.panels.ui.viewmodel.TileViewModel
@@ -82,17 +90,53 @@ constructor(
             }
 
         val baseRows = integerResource(R.integer.quick_settings_paginated_grid_num_rows)
-        val isClassicStyle = rememberQSPanelStyle() == 1
+        val panelStyle = rememberQSPanelStyle()
+        val isClassicStyle = panelStyle == 1
+        val isNothingStyle = panelStyle == 5
         val customQsRows = rememberQSTileQsRows()
-        val customColumns = rememberQSTileColumns()
-        val pages = if (isClassicStyle) {
+        val customColumns = if (isNothingStyle) 4 else rememberQSTileColumns()
+        val quadTiles = rememberQuadTiles()
+        val largeTiles by viewModel.largeTiles.collectAsStateWithLifecycle()
+        val pages = if (isNothingStyle) {
+            val maxRowsPerPage = 4
+            val tileLayout = rememberQSTileLayout()
+            remember(tiles, largeTiles, quadTiles, maxRowsPerPage, tileLayout) {
+                if (tiles.isEmpty()) {
+                    listOf(emptyList())
+                } else {
+                    val spans = tiles.map {
+                        if (quadTiles.contains(it.spec)) GridSpan(colSpan = 2, rowSpan = 2)
+                        else if (largeTiles.contains(it.spec)) GridSpan(colSpan = 2, rowSpan = 1)
+                        else GridSpan(colSpan = 1, rowSpan = 1)
+                    }
+                    val preferredPlacements = tiles.mapIndexedNotNull { index, tile ->
+                        tileLayout[tile.spec]?.let { index to it }
+                    }.toMap()
+                    val placements = calculate2DPlacements(
+                        spans,
+                        customColumns,
+                        preferredPlacements = preferredPlacements,
+                        maxRowsPerPage = maxRowsPerPage,
+                    )
+                    val grouped = placements.groupBy { it.row / maxRowsPerPage }
+                    grouped.keys.sorted().map { pageIndex ->
+                        grouped[pageIndex]!!.map { tiles[it.index] }
+                    }.ifEmpty { listOf(emptyList()) }
+                }
+            }
+        } else if (isClassicStyle) {
             val maxTilesPerPage = customColumns * customQsRows
             remember(tiles, maxTilesPerPage) {
                 if (tiles.isEmpty()) listOf(emptyList()) else tiles.chunked(maxTilesPerPage)
             }
         } else {
-            remember(tiles, baseRows, *delegateGridViewModel.pageKeys) {
-                delegateGridViewModel.splitIntoPages(tiles, baseRows)
+            remember(tiles, baseRows, customColumns, largeTiles, *delegateGridViewModel.pageKeys) {
+                val arranged = autoArrangeTiles(
+                    tiles.map { SizedTileImpl(it, if (largeTiles.contains(it.spec)) 2 else 1) },
+                    customColumns,
+                    2,
+                ).map { it.tile }
+                delegateGridViewModel.splitIntoPages(arranged, baseRows)
             }
         }
 

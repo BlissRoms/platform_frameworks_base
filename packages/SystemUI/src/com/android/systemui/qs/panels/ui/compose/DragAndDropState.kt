@@ -228,7 +228,7 @@ fun Modifier.dragAndDropTileSource(
     )
 }
 
-private object QsDragAndDrop {
+internal object QsDragAndDrop {
     const val CLIPDATA_LABEL = "tilespec"
     const val TILESPEC_MIME_TYPE = "qstile/tilespec"
 }

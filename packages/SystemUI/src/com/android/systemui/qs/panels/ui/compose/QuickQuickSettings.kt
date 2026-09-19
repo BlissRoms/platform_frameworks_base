@@ -31,10 +31,14 @@ import androidx.compose.ui.util.fastMap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.compose.animation.scene.ContentScope
 import com.android.systemui.compose.modifiers.sysuiResTag
+import com.android.systemui.grid.ui.compose.GridSpan
+import com.android.systemui.grid.ui.compose.TwoDimensionalSpannedGrid
 import com.android.systemui.grid.ui.compose.VerticalSpannedGrid
+import com.android.systemui.grid.ui.compose.calculate2DPlacements
 import com.android.systemui.qs.composefragment.ui.GridAnchor
 import com.android.systemui.qs.panels.shared.model.SizedTileImpl
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSPanelStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSQuadTiles
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileAnimationStyle
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileLabelHide
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileOpacity
@@ -48,6 +52,9 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileOpac
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileQqsRows
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileQsRows
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileShape
+import androidx.compose.ui.unit.dp
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQuadTiles
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileLayout
 import com.android.systemui.qs.panels.ui.viewmodel.BounceableTileViewModel
 import com.android.systemui.qs.panels.ui.viewmodel.QuickQuickSettingsViewModel
 import com.android.systemui.qs.shared.ui.QuickSettings.Elements.toElementKey
@@ -65,76 +72,154 @@ fun ContentScope.QuickQuickSettings(
     val tileShape = rememberQSTileShape()
     val tileOpacity = rememberQSTileOpacity()
     val tileAnimationStyle = rememberQSTileAnimationStyle()
-    val isClassicStyle = rememberQSPanelStyle() == 1
-    val columns = if (isClassicStyle) customColumns else viewModel.columns
+    val panelStyle = rememberQSPanelStyle()
+    val isClassicStyle = panelStyle == 1
+    val isNothingStyle = panelStyle == 5
+    val quadTiles = rememberQuadTiles()
+    val columns = if (isNothingStyle) 4 else if (isClassicStyle) customColumns else viewModel.columns
     val squishiness by viewModel.squishinessViewModel.squishiness.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+    val largeTiles by viewModel.iconTilesViewModel.largeTiles.collectAsStateWithLifecycle()
 
-    val sizedTiles = if (isClassicStyle) {
-        val maxTiles = customColumns * customQqsRows
-        viewModel.allTileViewModels.take(maxTiles)
-    } else {
-        viewModel.tileViewModels
-    }
-    
-    val classicMaxTiles = customColumns * customQsRows
-    val nonClassicMaxTiles = columns * customQqsRows
+    if (isNothingStyle) {
+        val qqsMaxRows = 2
+        val tileLayout = rememberQSTileLayout()
+        val allTiles = viewModel.allTileViewModels.map { it.tile }
+        val allSpans = remember(allTiles, largeTiles, quadTiles) {
+            allTiles.map {
+                if (quadTiles.contains(it.spec)) GridSpan(colSpan = 2, rowSpan = 2)
+                else if (largeTiles.contains(it.spec)) GridSpan(colSpan = 2, rowSpan = 1)
+                else GridSpan(colSpan = 1, rowSpan = 1)
+            }
+        }
+        val preferredPlacements = remember(allTiles, tileLayout) {
+            allTiles.mapIndexedNotNull { index, tile ->
+                tileLayout[tile.spec]?.let { index to it }
+            }.toMap()
+        }
+        val qqsPlacements = remember(allSpans, columns, qqsMaxRows, preferredPlacements) {
+            calculate2DPlacements(
+                allSpans,
+                columns,
+                preferredPlacements = preferredPlacements,
+                maxRows = qqsMaxRows,
+            )
+        }
+        val qqsTiles = remember(qqsPlacements, allTiles) {
+            qqsPlacements.map { allTiles[it.index] }
+        }
+        val qqsSpans = remember(qqsPlacements, allSpans) {
+            qqsPlacements.map { allSpans[it.index] }
+        }
 
-    val filteredSizedTiles = if (isClassicStyle) {
-        sizedTiles.take(classicMaxTiles)
-    } else {
-        sizedTiles.take(nonClassicMaxTiles)
-    }
+        Box(modifier = modifier) {
+            GridAnchor()
 
-    Box(modifier = modifier) {
-        GridAnchor()
-
-        val bounceables =
-            remember(filteredSizedTiles) { List(filteredSizedTiles.size) { BounceableTileViewModel() } }
-        val spans by remember(filteredSizedTiles) { derivedStateOf { filteredSizedTiles.fastMap { it.width } } }
-
-        VerticalSpannedGrid(
-            columns = columns,
-            columnSpacing = dimensionResource(R.dimen.qs_tile_margin_horizontal),
-            rowSpacing = dimensionResource(R.dimen.qs_tile_margin_vertical),
-            spans = spans,
-            modifier = Modifier.sysuiResTag("qqs_tile_layout"),
-            keys = { filteredSizedTiles[it].tile.spec },
-        ) { spanIndex, column, isFirstInColumn, isLastInColumn ->
-            val it = filteredSizedTiles[spanIndex]
-            val interactionSource = remember(it.tile.spec) { MutableInteractionSource() }
-            Element(it.tile.spec.toElementKey(), Modifier) {
-                CompositionLocalProvider(
-                    LocalQSPanelStyle provides rememberQSPanelStyle(),
-                    LocalQSTileLabelHide provides rememberQSTileLabelHide(),
-                    LocalQSTileShape provides tileShape,
-                    LocalQSTileOpacity provides tileOpacity,
-                    LocalQSTileAnimationStyle provides tileAnimationStyle,
-                ) {
-                    Tile(
-                        tile = it.tile,
-                        iconOnly = isClassicStyle || it.isIcon,
-                        squishiness = { squishiness },
-                        coroutineScope = scope,
-                        bounceableInfo =
-                            bounceables.bounceableInfo(
-                                it,
-                                index = spanIndex,
-                                column = column,
-                                columns = columns,
-                                isFirstInRow = isFirstInColumn,
-                                isLastInRow = isLastInColumn,
-                            ),
-                        tileHapticsViewModelFactory = viewModel.tileHapticsViewModelFactory,
-                        interactionSource = interactionSource,
-                        detailsViewModel = null,
-                        isVisible = listening,
-                    )
+            TwoDimensionalSpannedGrid(
+                columns = columns,
+                columnSpacing = 16.dp,
+                rowSpacing = 16.dp,
+                spans = qqsSpans,
+                customPlacements = qqsPlacements.mapIndexed { idx, p -> p.copy(index = idx) },
+                useSquareCells = true,
+                keys = { qqsTiles[it].spec },
+                modifier = Modifier.sysuiResTag("qqs_tile_layout"),
+            ) { spanIndex, placement ->
+                val it = qqsTiles[spanIndex]
+                val interactionSource = remember(it.spec) { MutableInteractionSource() }
+                Element(it.spec.toElementKey(), Modifier) {
+                    CompositionLocalProvider(
+                        LocalQSPanelStyle provides panelStyle,
+                        LocalQSTileLabelHide provides rememberQSTileLabelHide(),
+                        LocalQSTileShape provides tileShape,
+                        LocalQSTileOpacity provides tileOpacity,
+                        LocalQSTileAnimationStyle provides tileAnimationStyle,
+                        LocalQSQuadTiles provides quadTiles,
+                    ) {
+                        Tile(
+                            tile = it,
+                            iconOnly = !largeTiles.contains(it.spec) && !quadTiles.contains(it.spec),
+                            squishiness = { squishiness },
+                            coroutineScope = scope,
+                            bounceableInfo = null,
+                            tileHapticsViewModelFactory = viewModel.tileHapticsViewModelFactory,
+                            interactionSource = interactionSource,
+                            detailsViewModel = null,
+                            isVisible = listening,
+                        )
+                    }
                 }
             }
         }
-    }
 
-    val tilesOnly = filteredSizedTiles.fastMap { it.tile }
-    TileListener(tilesOnly, listening)
+        TileListener(qqsTiles, listening)
+    } else {
+        val sizedTiles = if (isClassicStyle) {
+            val maxTiles = customColumns * customQqsRows
+            viewModel.allTileViewModels.take(maxTiles)
+        } else {
+            viewModel.tileViewModels
+        }
+        
+        val classicMaxTiles = customColumns * customQsRows
+        val nonClassicMaxTiles = columns * customQqsRows
+
+        val filteredSizedTiles = if (isClassicStyle) {
+            sizedTiles.take(classicMaxTiles)
+        } else {
+            sizedTiles.take(nonClassicMaxTiles)
+        }
+
+        Box(modifier = modifier) {
+            GridAnchor()
+
+            val bounceables =
+                remember(filteredSizedTiles) { List(filteredSizedTiles.size) { BounceableTileViewModel() } }
+            val spans by remember(filteredSizedTiles) { derivedStateOf { filteredSizedTiles.fastMap { it.width } } }
+
+            VerticalSpannedGrid(
+                columns = columns,
+                columnSpacing = dimensionResource(R.dimen.qs_tile_margin_horizontal),
+                rowSpacing = dimensionResource(R.dimen.qs_tile_margin_vertical),
+                spans = spans,
+                modifier = Modifier.sysuiResTag("qqs_tile_layout"),
+                keys = { filteredSizedTiles[it].tile.spec },
+            ) { spanIndex, column, isFirstInColumn, isLastInColumn ->
+                val it = filteredSizedTiles[spanIndex]
+                val interactionSource = remember(it.tile.spec) { MutableInteractionSource() }
+                Element(it.tile.spec.toElementKey(), Modifier) {
+                    CompositionLocalProvider(
+                        LocalQSPanelStyle provides rememberQSPanelStyle(),
+                        LocalQSTileLabelHide provides rememberQSTileLabelHide(),
+                        LocalQSTileShape provides tileShape,
+                        LocalQSTileOpacity provides tileOpacity,
+                        LocalQSTileAnimationStyle provides tileAnimationStyle,
+                    ) {
+                        Tile(
+                            tile = it.tile,
+                            iconOnly = isClassicStyle || it.isIcon,
+                            squishiness = { squishiness },
+                            coroutineScope = scope,
+                            bounceableInfo =
+                                bounceables.bounceableInfo(
+                                    it,
+                                    index = spanIndex,
+                                    column = column,
+                                    columns = columns,
+                                    isFirstInRow = isFirstInColumn,
+                                    isLastInRow = isLastInColumn,
+                                ),
+                            tileHapticsViewModelFactory = viewModel.tileHapticsViewModelFactory,
+                            interactionSource = interactionSource,
+                            detailsViewModel = null,
+                            isVisible = listening,
+                        )
+                    }
+                }
+            }
+        }
+
+        val tilesOnly = filteredSizedTiles.fastMap { it.tile }
+        TileListener(tilesOnly, listening)
+    }
 }

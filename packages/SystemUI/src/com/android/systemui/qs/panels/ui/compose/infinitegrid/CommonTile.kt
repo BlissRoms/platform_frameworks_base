@@ -16,6 +16,7 @@
 
 package com.android.systemui.qs.panels.ui.compose.infinitegrid
 
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -23,25 +24,32 @@ import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
@@ -335,6 +343,329 @@ fun ClassicCircleTileContent(
                         ),
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun NothingCircleTileContent(
+    iconProvider: Context.() -> Icon,
+    visualState: Int,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val icon = iconProvider(context)
+    val isActive = visualState == android.service.quicksettings.Tile.STATE_ACTIVE
+    val iconColor = if (isActive) Color.Black else Color.White
+    val animatedIconColor by animateColorAsState(iconColor, label = "NothingCircleIconColor")
+    val iconSize = 28.dp
+
+    val loadedDrawable = remember(icon, context) {
+        when (icon) {
+            is Icon.Loaded -> icon.drawable
+            is Icon.Resource -> context.getDrawable(icon.resId)
+        }
+    }
+
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        NonClippedImage(
+            painter = rememberDrawablePainter(loadedDrawable),
+            contentDescription = icon.contentDescription?.load(),
+            colorFilter = ColorFilter.tint(color = animatedIconColor),
+            modifier = Modifier.size(iconSize),
+            contentScale = ContentScale.Fit,
+        )
+    }
+}
+
+@Composable
+fun NothingPillTileContent(
+    label: String,
+    secondaryLabel: String? = null,
+    iconProvider: Context.() -> Icon,
+    visualState: Int,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val icon = iconProvider(context)
+    val isActive = visualState == android.service.quicksettings.Tile.STATE_ACTIVE
+    val contentColor = if (isActive) Color.Black else Color.White
+    val dividerColor = if (isActive) Color(0x33000000) else Color(0x33FFFFFF)
+    val iconSize = 26.dp
+
+    val loadedDrawable = remember(icon, context) {
+        when (icon) {
+            is Icon.Loaded -> icon.drawable
+            is Icon.Resource -> context.getDrawable(icon.resId)
+        }
+    }
+
+    Row(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 18.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        // Left Icon
+        NonClippedImage(
+            painter = rememberDrawablePainter(loadedDrawable),
+            contentDescription = icon.contentDescription?.load(),
+            colorFilter = ColorFilter.tint(color = contentColor),
+            modifier = Modifier.size(iconSize),
+            contentScale = ContentScale.Fit,
+        )
+
+        // Vertical divider |
+        Spacer(modifier = Modifier.width(14.dp))
+        Box(
+            modifier = Modifier
+                .width(1.dp)
+                .height(22.dp)
+                .background(dividerColor)
+        )
+        Spacer(modifier = Modifier.width(14.dp))
+
+        // Title and Subtitle
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = label,
+                color = contentColor,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                ),
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis,
+            )
+            if (!secondaryLabel.isNullOrEmpty() && secondaryLabel != label) {
+                Text(
+                    text = secondaryLabel,
+                    color = contentColor.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 12.sp,
+                    ),
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun NothingQuadTileContent(
+    tileSpec: String? = null,
+    label: String,
+    secondaryLabel: String? = null,
+    iconProvider: Context.() -> Icon,
+    visualState: Int,
+    onClick: () -> Unit = {},
+    onLongClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val icon = iconProvider(context)
+    val isActive = visualState == android.service.quicksettings.Tile.STATE_ACTIVE
+    val iconBtnBg = if (isActive) Color.White else Color(0xFF383838)
+    val iconTint = if (isActive) Color.Black else Color.White
+    val iconSize = 28.dp
+
+    val isBluetooth = tileSpec == "bt" || label.contains("Bluetooth", ignoreCase = true)
+    val connectedDevices: List<String> = if (isBluetooth) {
+        remember(context) {
+            try {
+                val btManager = context.getSystemService(BluetoothManager::class.java)
+                val adapter = btManager?.adapter
+                if (adapter != null && adapter.isEnabled) {
+                    val bonded = adapter.bondedDevices ?: emptySet()
+                    bonded.filter { device ->
+                        try {
+                            device.isConnected
+                        } catch (e: Exception) {
+                            false
+                        }
+                    }.map { it.alias ?: it.name ?: "Bluetooth Device" }
+                } else {
+                    emptyList()
+                }
+            } catch (e: Exception) {
+                emptyList()
+            }
+        }
+    } else {
+        emptyList()
+    }
+
+    val loadedDrawable = remember(icon, context) {
+        when (icon) {
+            is Icon.Loaded -> icon.drawable
+            is Icon.Resource -> context.getDrawable(icon.resId)
+        }
+    }
+
+    if (isBluetooth && connectedDevices.size > 1) {
+        val pagerState = rememberPagerState { connectedDevices.size }
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            // Top circular action button
+            Box(
+                modifier = Modifier
+                    .size(54.dp)
+                    .clip(CircleShape)
+                    .background(iconBtnBg)
+                    .clickable { onClick() },
+                contentAlignment = Alignment.Center,
+            ) {
+                NonClippedImage(
+                    painter = rememberDrawablePainter(loadedDrawable),
+                    contentDescription = icon.contentDescription?.load(),
+                    colorFilter = ColorFilter.tint(color = iconTint),
+                    modifier = Modifier.size(iconSize),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+
+            // Swipeable pager for multiple connected devices
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth(),
+            ) { page ->
+                val deviceName = connectedDevices.getOrNull(page) ?: label
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = deviceName,
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                        ),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        text = "Connected",
+                        color = Color.White.copy(alpha = 0.65f),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center,
+                        ),
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+
+            // Bottom device pager dots (only shown when multiple devices connected)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                repeat(connectedDevices.size) { i ->
+                    Box(
+                        modifier = Modifier
+                            .size(5.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (i == pagerState.currentPage) Color.White
+                                else Color.White.copy(alpha = 0.35f)
+                            )
+                    )
+                }
+            }
+        }
+    } else {
+        // Standard view: 0 or 1 device connected, or not bluetooth
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            // Top circular action button
+            Box(
+                modifier = Modifier
+                    .size(54.dp)
+                    .clip(CircleShape)
+                    .background(iconBtnBg)
+                    .clickable { onClick() },
+                contentAlignment = Alignment.Center,
+            ) {
+                NonClippedImage(
+                    painter = rememberDrawablePainter(loadedDrawable),
+                    contentDescription = icon.contentDescription?.load(),
+                    colorFilter = ColorFilter.tint(color = iconTint),
+                    modifier = Modifier.size(iconSize),
+                    contentScale = ContentScale.Fit,
+                )
+            }
+
+            // Center Title & Status (NO pager, NO dots)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                val primaryText = if (isBluetooth && connectedDevices.size == 1) {
+                    connectedDevices[0]
+                } else if (!secondaryLabel.isNullOrEmpty() && secondaryLabel != label) {
+                    secondaryLabel
+                } else {
+                    label
+                }
+                Text(
+                    text = primaryText,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                    ),
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                val subtext = if (isBluetooth && connectedDevices.size == 1) {
+                    "Connected"
+                } else if (!secondaryLabel.isNullOrEmpty() && secondaryLabel != label) {
+                    label
+                } else if (isActive) {
+                    "On"
+                } else {
+                    "Off"
+                }
+                Text(
+                    text = subtext,
+                    color = Color.White.copy(alpha = 0.65f),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                    ),
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(5.dp))
         }
     }
 }

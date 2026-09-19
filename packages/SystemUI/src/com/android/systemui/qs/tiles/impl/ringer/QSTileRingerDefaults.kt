@@ -25,34 +25,36 @@ import com.android.systemui.common.ringer.RingerSliderDimens
 import com.android.systemui.common.ringer.RingerSliderTheme
 
 class QSTileRingerTheme(
+    private val isNothing: Boolean = false,
 ) : RingerSliderTheme {
     override val activeBg: Color
-        @Composable get() = MaterialTheme.colorScheme.primary
+        @Composable get() = if (isNothing) Color.White else MaterialTheme.colorScheme.primary
     
     override val neutralBg: Color
-        @Composable get() = LocalAndroidColorScheme.current.surfaceEffect1
+        @Composable get() = if (isNothing) Color(0xFF262626) else LocalAndroidColorScheme.current.surfaceEffect1
     
     override val activeIcon: Color
-        @Composable get() = MaterialTheme.colorScheme.onPrimary
+        @Composable get() = if (isNothing) Color.Black else MaterialTheme.colorScheme.onPrimary
     
     override val neutralIcon: Color
-        @Composable get() = MaterialTheme.colorScheme.onSurface
+        @Composable get() = if (isNothing) Color.White.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurface
 
     override val dndBg: Color
-        @Composable get() = MaterialTheme.colorScheme.primary
+        @Composable get() = if (isNothing) Color.White else MaterialTheme.colorScheme.primary
     
     override val dndIcon: Color
-        @Composable get() = MaterialTheme.colorScheme.onPrimary
+        @Composable get() = if (isNothing) Color(0xFFD71921) else MaterialTheme.colorScheme.onPrimary
     
     override val dozeStroke: Dp = 2.dp
 }
 
 class QSTileRingerDimens(
-    private val tileHeight: Dp
+    private val tileHeight: Dp,
+    private val isNothing: Boolean = false,
 ) : RingerSliderDimens {
     override val totalWidth: Dp? = null
     override val thumbSize: Dp = tileHeight
-    override val iconSize: Dp = 24.dp
+    override val iconSize: Dp = if (isNothing) 26.dp else 24.dp
     override val thumbPadding: Dp = 8.dp
     override val dotSize: Dp = 6.dp
 }

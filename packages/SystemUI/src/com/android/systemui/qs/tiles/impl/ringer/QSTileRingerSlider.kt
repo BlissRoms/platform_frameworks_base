@@ -25,13 +25,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.android.systemui.common.ringer.RingerSliderWidget
 import com.android.systemui.common.ringer.RingerModeInteractorImpl
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.dp
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSPanelStyle
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CommonTileDefaults.TileHeight
 
 @Composable
 fun QSTileRingerSlider(
-    border: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    border: Modifier = Modifier,
+    panelStyle: Int = LocalQSPanelStyle.current,
 ) {
     val context = LocalContext.current
+    val isNothing = panelStyle == 5
 
     val interactor = remember {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -39,13 +46,19 @@ fun QSTileRingerSlider(
         RingerModeInteractorImpl(context, audioManager, notificationManager)
     }
     
+    val containerShape = if (isNothing) RoundedCornerShape(50) else RoundedCornerShape(24.dp)
+    val thumbShape = if (isNothing) CircleShape else RoundedCornerShape(16.dp)
+
     RingerSliderWidget(
         interactor = interactor,
-        theme = QSTileRingerTheme(),
-        dimens = QSTileRingerDimens(TileHeight),
-        modifier = Modifier.fillMaxWidth(),
+        theme = QSTileRingerTheme(isNothing = isNothing),
+        dimens = QSTileRingerDimens(TileHeight, isNothing = isNothing),
+        modifier = modifier,
         isDozing = false,
         border = border,
+        containerShape = containerShape,
+        thumbShape = thumbShape,
+        isNothing = isNothing,
         onLongClick = {
             interactor.toggleDnd()
         }

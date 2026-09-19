@@ -46,7 +46,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -76,6 +79,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -130,6 +134,7 @@ import platform.test.motion.compose.values.MotionTestValueKey
 import platform.test.motion.compose.values.motionTestValues
 
 val LocalQSPanelStyle = compositionLocalOf { 0 }
+val LocalQSQuadTiles = compositionLocalOf { emptySet<TileSpec>() }
 val LocalQSTileLabelHide = compositionLocalOf { false }
 val LocalQSTileColumns = compositionLocalOf { 4 }
 val LocalQSTileQqsRows = compositionLocalOf { 2 }
@@ -137,6 +142,79 @@ val LocalQSTileQsRows = compositionLocalOf { 4 }
 val LocalQSTileShape = compositionLocalOf { 0 }
 val LocalQSTileOpacity = compositionLocalOf { 100 }
 val LocalQSTileAnimationStyle = compositionLocalOf { 0 }
+
+@Composable
+fun rememberSecureStringSetting(key: String, defaultValue: String = ""): String {
+    val context = LocalContext.current
+    val value by produceState(
+        initialValue = Settings.Secure.getStringForUser(
+            context.contentResolver, key,
+            android.os.UserHandle.USER_CURRENT,
+        ) ?: defaultValue
+    ) {
+        val observer = object : android.database.ContentObserver(
+            android.os.Handler(android.os.Looper.getMainLooper())
+        ) {
+            override fun onChange(selfChange: Boolean) {
+                value = Settings.Secure.getStringForUser(
+                    context.contentResolver, key,
+                    android.os.UserHandle.USER_CURRENT,
+                ) ?: defaultValue
+            }
+        }
+        context.contentResolver.registerContentObserver(
+            Settings.Secure.getUriFor(key),
+            false, observer, android.os.UserHandle.USER_ALL,
+        )
+        kotlinx.coroutines.awaitCancellation()
+    }
+    return value
+}
+
+@Composable
+fun rememberQuadTiles(): Set<TileSpec> {
+    val raw = rememberSecureStringSetting("qs_tile_quad_specs", "bt")
+    return remember(raw) {
+        if (raw.isBlank()) emptySet()
+        else raw.split(",").mapNotNull { it.trim().takeIf(String::isNotEmpty)?.let(TileSpec::create) }.toSet()
+    }
+}
+
+@Composable
+fun rememberQSTileLayout(): Map<TileSpec, Pair<Int, Int>> {
+    val raw = rememberSecureStringSetting("qs_tile_layout", "")
+    return remember(raw) {
+        if (raw.isBlank()) emptyMap()
+        else {
+            raw.split(",")
+                .mapNotNull { item ->
+                    val parts = item.trim().split(":")
+                    if (parts.size == 3) {
+                        val spec = TileSpec.create(parts[0])
+                        val row = parts[1].toIntOrNull()
+                        val col = parts[2].toIntOrNull()
+                        if (row != null && col != null) {
+                            spec to (row to col)
+                        } else null
+                    } else null
+                }
+                .toMap()
+        }
+    }
+}
+
+fun saveQSTileLayout(
+    resolver: android.content.ContentResolver,
+    layout: Map<TileSpec, Pair<Int, Int>>,
+) {
+    val serialized = layout.entries.joinToString(",") { "${it.key.spec}:${it.value.first}:${it.value.second}" }
+    Settings.Secure.putStringForUser(
+        resolver,
+        "qs_tile_layout",
+        serialized,
+        android.os.UserHandle.USER_CURRENT,
+    )
+}
 
 @Composable
 private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
@@ -222,14 +300,18 @@ fun TileLazyGrid(
     modifier: Modifier = Modifier,
     state: LazyGridState = rememberLazyGridState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    userScrollEnabled: Boolean = true,
+    verticalArrangement: Arrangement.Vertical = spacedBy(CommonTileDefaults.TileArrangementPadding),
+    horizontalArrangement: Arrangement.Horizontal = spacedBy(CommonTileDefaults.TileArrangementPadding),
     content: LazyGridScope.() -> Unit,
 ) {
     LazyVerticalGrid(
         state = state,
         columns = columns,
-        verticalArrangement = spacedBy(CommonTileDefaults.TileArrangementPadding),
-        horizontalArrangement = spacedBy(CommonTileDefaults.TileArrangementPadding),
+        verticalArrangement = verticalArrangement,
+        horizontalArrangement = horizontalArrangement,
         contentPadding = contentPadding,
+        userScrollEnabled = userScrollEnabled,
         modifier = modifier,
         content = content,
     )
@@ -317,17 +399,6 @@ fun ContentScope.Tile(
                 tileHapticsViewModelFactory.create(tile)
             }
 
-        if (tile.spec.spec == "sound" && !iconOnly && panelStyle != 1) {
-            QSTileRingerSlider()
-            return@trace
-        }
-        
-        // TODO(b/361789146): Draw the shapes instead of clipping
-        val animatedTileShape by TileDefaults.animateTileShapeAsState(uiState.visualState)
-        val classicTileShape = classicTileShape(LocalQSTileShape.current)
-        val animatedColor by animateColorAsState(colors.background, label = "QSTileBackgroundColor")
-        val isDualTarget = uiState.handlesToggleClick
-
         val surfaceRevealModifier: Modifier
         val contentRevealModifier: Modifier
         if (enableRevealEffect) {
@@ -341,6 +412,32 @@ fun ContentScope.Tile(
             surfaceRevealModifier = Modifier
             contentRevealModifier = Modifier
         }
+
+        if (tile.spec.spec == "sound" && !iconOnly && panelStyle != 1) {
+            val isNothing = panelStyle == 5
+            val sliderModifier = if (isNothing) {
+                modifier
+                    .then(surfaceRevealModifier)
+                    .fillMaxSize()
+                    .verticalSquish(squishiness)
+            } else {
+                modifier
+                    .then(surfaceRevealModifier)
+                    .fillMaxWidth()
+                    .verticalSquish(squishiness)
+            }
+            QSTileRingerSlider(
+                modifier = sliderModifier,
+                panelStyle = panelStyle,
+            )
+            return@trace
+        }
+        
+        // TODO(b/361789146): Draw the shapes instead of clipping
+        val animatedTileShape by TileDefaults.animateTileShapeAsState(uiState.visualState)
+        val classicTileShape = classicTileShape(LocalQSTileShape.current)
+        val animatedColor by animateColorAsState(colors.background, label = "QSTileBackgroundColor")
+        val isDualTarget = uiState.handlesToggleClick
 
         val effectiveColor: Color
         val effectiveShape: Shape
@@ -404,6 +501,32 @@ fun ContentScope.Tile(
                 val accentColor = MaterialTheme.colorScheme.tertiary
                 styleModifier = Modifier.border(1.5.dp, accentColor, CyberPunkTileShape)
             }
+            5 -> {
+                // Nothing OS style
+                val isQuadTile = LocalQSQuadTiles.current.contains(tile.spec)
+                val isPillTile = !iconOnly && !isQuadTile
+                effectiveShape = if (isQuadTile) {
+                    RoundedCornerShape(28.dp)
+                } else if (isPillTile) {
+                    RoundedCornerShape(50)
+                } else {
+                    androidx.compose.foundation.shape.CircleShape
+                }
+                effectiveCornerSize = if (isQuadTile) {
+                    androidx.compose.foundation.shape.CornerSize(28.dp)
+                } else {
+                    androidx.compose.foundation.shape.CornerSize(50)
+                }
+                val isActive = uiState.visualState == STATE_ACTIVE
+                effectiveColor = if (isQuadTile) {
+                    Color(0xFF262626)
+                } else if (isActive) {
+                    Color.White
+                } else {
+                    Color(0xFF262626)
+                }
+                styleModifier = Modifier
+            }
             else -> {
                 // Default style
                 effectiveColor = animatedColor.copy(alpha = animatedColor.alpha * opacity)
@@ -417,7 +540,7 @@ fun ContentScope.Tile(
             color = { effectiveColor },
             shape = effectiveShape,
             animationShape = if (effectiveShape is RoundedCornerShape) effectiveShape else animatedTileShape,
-            squishiness = squishiness,
+            squishiness = if (panelStyle == 5 && iconOnly) { { 1f } } else squishiness,
             hapticsViewModel = hapticsViewModel,
             modifier =
                 modifier
@@ -460,8 +583,11 @@ fun ContentScope.Tile(
                 remember(currentBounceableInfo) {
                     currentBounceableInfo?.bounceable ?: BounceableTileViewModel()
                 }
+            val isNothing = panelStyle == 5
+            val isQuad = isNothing && LocalQSQuadTiles.current.contains(tile.spec)
             TileContainer(
                 interactionSource = interactionSource.takeIf { bounceContainer },
+                isQuad = isQuad,
                 onClick = onClick@{
                         if (!isClickable) return@onClick
 
@@ -507,7 +633,35 @@ fun ContentScope.Tile(
             ) {
                 val iconProvider: Context.() -> Icon = { getTileIcon(icon = icon) }
                 val isClassicStyle = panelStyle == 1
-                if (isClassicStyle) {
+                val isNothingStyle = panelStyle == 5
+                if (isNothingStyle) {
+                    if (isQuad) {
+                        NothingQuadTileContent(
+                            tileSpec = tile.spec.spec,
+                            label = uiState.label,
+                            secondaryLabel = uiState.secondaryLabel,
+                            iconProvider = iconProvider,
+                            visualState = uiState.visualState,
+                            onClick = { tile.toggleClick() },
+                            onLongClick = longClick,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    } else if (!iconOnly) {
+                        NothingPillTileContent(
+                            label = uiState.label,
+                            secondaryLabel = uiState.secondaryLabel,
+                            iconProvider = iconProvider,
+                            visualState = uiState.visualState,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    } else {
+                        NothingCircleTileContent(
+                            iconProvider = iconProvider,
+                            visualState = uiState.visualState,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
+                } else if (isClassicStyle) {
                     ClassicCircleTileContent(
                         label = uiState.label,
                         secondaryLabel = uiState.secondaryLabel,
@@ -585,20 +739,37 @@ fun TileContainer(
     isDualTarget: Boolean,
     interactionSource: MutableInteractionSource?,
     modifier: Modifier = Modifier,
+    isQuad: Boolean = false,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val isClassic = LocalQSPanelStyle.current == 1
-    val tileHeight = if (isClassic && LocalQSTileLabelHide.current)
+    val isNothing = LocalQSPanelStyle.current == 5
+    val verticalMargin = dimensionResource(R.dimen.qs_tile_margin_vertical)
+    val tileHeight = if (isNothing && isQuad)
+        TileHeight * 2 + verticalMargin
+    else if (isClassic && LocalQSTileLabelHide.current)
         CommonTileDefaults.ClassicCircleSize + 8.dp
     else if (isClassic)
         CommonTileDefaults.ClassicTileHeight
     else
         TileHeight
+    val boxModifier = if (isNothing) {
+        if (iconOnly) {
+            modifier
+                .fillMaxSize()
+                .wrapContentSize(Alignment.Center)
+                .aspectRatio(1f)
+        } else {
+            modifier.fillMaxSize()
+        }
+    } else {
+        modifier
+            .height(tileHeight)
+            .fillMaxWidth()
+    }
     Box(
         modifier =
-            modifier
-                .height(tileHeight)
-                .fillMaxWidth()
+            boxModifier
                 .tileCombinedClickable(
                     onClick = onClick ?: {},
                     onLongClick = onLongClick,

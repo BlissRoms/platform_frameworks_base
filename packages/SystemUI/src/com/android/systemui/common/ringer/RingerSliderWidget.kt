@@ -33,6 +33,8 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
@@ -44,6 +46,9 @@ fun RingerSliderWidget(
     modifier: Modifier = Modifier,
     isDozing: Boolean = false,
     border: Modifier = Modifier,
+    containerShape: Shape = RoundedCornerShape(24.dp),
+    thumbShape: Shape = RoundedCornerShape(16.dp),
+    isNothing: Boolean = false,
     onLongClick: (() -> Unit)? = null
 ) {
     val mode by interactor.ringerMode.collectAsState(initial = interactor.getCurrentMode())
@@ -74,86 +79,99 @@ fun RingerSliderWidget(
 
     val interactionSource = remember { MutableInteractionSource() }
 
-    Box(
-        modifier = modifier
-            .height(dimens.thumbSize)
-            .background(
-                when {
-                    isDozing -> Color.Transparent
-                    isDndEnabled -> theme.dndBg
-                    else -> theme.neutralBg
-                },
-                RoundedCornerShape(24.dp)
-            )
-            .clip(RoundedCornerShape(24.dp))
-            .then(
-                if (isDozing)
-                    Modifier.border(theme.dozeStroke, Color.White, RoundedCornerShape(24.dp))
-                else border
-            )
-.pointerInput(Unit) {
-    detectTapGestures(
-        onTap = { tapOffset ->
-            if (isDndEnabled) return@detectTapGestures
-            val sectionWidth = size.width / 3f
+    val density = LocalDensity.current
 
-            val snappedIndex = when {
-                tapOffset.x < sectionWidth -> 0
-                tapOffset.x < sectionWidth * 2 -> 1
-                else -> 2
-            }
-
-            dragOffset = snappedIndex.toFloat()
-
-            val snappedMode = when (snappedIndex) {
-                0 -> AudioManager.RINGER_MODE_SILENT
-                1 -> AudioManager.RINGER_MODE_VIBRATE
-                else -> AudioManager.RINGER_MODE_NORMAL
-            }
-
-            interactor.setRingerMode(snappedMode)
-        },
-        onLongPress = {
-            onLongClick?.invoke()
+    BoxWithConstraints(
+        modifier = if (isNothing) {
+            modifier.fillMaxSize()
+        } else {
+            modifier.height(dimens.thumbSize).fillMaxWidth()
         }
-    )
-}
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { isDragging = true },
-                    onDragEnd = {
-                        isDragging = false
-                        val snappedMode = when {
-                            dragOffset < 0.5f -> AudioManager.RINGER_MODE_SILENT
-                            dragOffset < 1.5f -> AudioManager.RINGER_MODE_VIBRATE
-                            else -> AudioManager.RINGER_MODE_NORMAL
-                        }
-                        if (isDndEnabled) return@detectDragGestures
-
-                        interactor.setRingerMode(snappedMode)
-                    },
-                    onDragCancel = { 
-                        isDragging = false
-                    }
-                ) { change, dragAmount ->
-                    if (isDndEnabled) {
-                        change.consume()
-                        return@detectDragGestures
-                    }
-                    change.consume()
-                    val trackWidth = size.width - dimens.thumbSize.toPx()
-                    val maxOffset = 2f
-                    val pixelPerUnit = trackWidth / maxOffset
-                    dragOffset = (dragOffset + (dragAmount.x / pixelPerUnit))
-                        .coerceIn(0f, maxOffset)
-                }
-            },
-        contentAlignment = Alignment.CenterStart
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+        val totalWidth = maxWidth
+        val actualThumbSize = if (isNothing && maxHeight != Dp.Infinity && maxHeight > 0.dp) {
+            maxHeight
+        } else {
+            dimens.thumbSize
+        }
+        val actualThumbSizePx = with(density) { actualThumbSize.toPx() }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    when {
+                        isDozing -> Color.Transparent
+                        isDndEnabled && isNothing -> theme.neutralBg
+                        isDndEnabled -> theme.dndBg
+                        else -> theme.neutralBg
+                    },
+                    containerShape
+                )
+                .clip(containerShape)
+                .then(
+                    if (isDozing)
+                        Modifier.border(theme.dozeStroke, Color.White, containerShape)
+                    else border
+                )
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = { tapOffset ->
+                            if (isDndEnabled) return@detectTapGestures
+                            val sectionWidth = size.width / 3f
+
+                            val snappedIndex = when {
+                                tapOffset.x < sectionWidth -> 0
+                                tapOffset.x < sectionWidth * 2 -> 1
+                                else -> 2
+                            }
+
+                            dragOffset = snappedIndex.toFloat()
+
+                            val snappedMode = when (snappedIndex) {
+                                0 -> AudioManager.RINGER_MODE_SILENT
+                                1 -> AudioManager.RINGER_MODE_VIBRATE
+                                else -> AudioManager.RINGER_MODE_NORMAL
+                            }
+
+                            interactor.setRingerMode(snappedMode)
+                        },
+                        onLongPress = {
+                            onLongClick?.invoke()
+                        }
+                    )
+                }
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragStart = { isDragging = true },
+                        onDragEnd = {
+                            isDragging = false
+                            val snappedMode = when {
+                                dragOffset < 0.5f -> AudioManager.RINGER_MODE_SILENT
+                                dragOffset < 1.5f -> AudioManager.RINGER_MODE_VIBRATE
+                                else -> AudioManager.RINGER_MODE_NORMAL
+                            }
+                            if (isDndEnabled) return@detectDragGestures
+
+                            interactor.setRingerMode(snappedMode)
+                        },
+                        onDragCancel = { 
+                            isDragging = false
+                        }
+                    ) { change, dragAmount ->
+                        if (isDndEnabled) {
+                            change.consume()
+                            return@detectDragGestures
+                        }
+                        change.consume()
+                        val trackWidth = size.width - actualThumbSizePx
+                        val maxOffset = 2f
+                        val pixelPerUnit = trackWidth / maxOffset
+                        dragOffset = (dragOffset + (dragAmount.x / pixelPerUnit))
+                            .coerceIn(0f, maxOffset)
+                    }
+                },
+            contentAlignment = Alignment.CenterStart
         ) {
             val currentIndex = animatedPosition.roundToInt()
             repeat(3) { index ->
@@ -162,9 +180,16 @@ fun RingerSliderWidget(
                     animationSpec = tween(durationMillis = 200),
                     label = "dot_alpha"
                 )
+                val dotOffset = when (index) {
+                    0 -> (actualThumbSize - dimens.dotSize) / 2f
+                    1 -> (totalWidth - dimens.dotSize) / 2f
+                    else -> totalWidth - (actualThumbSize + dimens.dotSize) / 2f
+                }
                 Box(
                     modifier = Modifier
+                        .offset(x = dotOffset)
                         .size(dimens.dotSize)
+                        .align(Alignment.CenterStart)
                         .graphicsLayer { alpha = dotAlpha }
                         .background(
                             if (isDozing) Color.White else if (isDndEnabled) theme.dndIcon else theme.neutralIcon,
@@ -172,20 +197,17 @@ fun RingerSliderWidget(
                         )
                 )
             }
-        }
 
-        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-            val totalWidth = maxWidth
             val thumbOffset = if (isDndEnabled) {
-                (totalWidth - dimens.thumbSize) / 2f
+                (totalWidth - actualThumbSize) / 2f
             } else {
-                ((totalWidth - dimens.thumbSize) / 2f) * animatedPosition
+                ((totalWidth - actualThumbSize) / 2f) * animatedPosition
             }
             
             Box(
                 modifier = Modifier
                     .offset(x = thumbOffset)
-                    .size(dimens.thumbSize)
+                    .size(actualThumbSize)
                     .padding(dimens.thumbPadding)
                     .background(
                         when {
@@ -193,16 +215,18 @@ fun RingerSliderWidget(
                             isDndEnabled -> theme.dndBg
                             else -> theme.activeBg
                         },
-                        RoundedCornerShape(16.dp)
+                        thumbShape
                     )
                     .then(
                         when {
                             isDozing ->
-                            Modifier.border(theme.dozeStroke, Color.White, RoundedCornerShape(16.dp))
+                                Modifier.border(theme.dozeStroke, Color.White, thumbShape)
+                            isNothing ->
+                                Modifier
                             isDndEnabled ->
-                                Modifier.border(2.dp, theme.dndBg, RoundedCornerShape(16.dp))
+                                Modifier.border(2.dp, theme.dndBg, thumbShape)
                             else ->
-                                Modifier.border(2.dp, theme.activeBg, RoundedCornerShape(16.dp))
+                                Modifier.border(2.dp, theme.activeBg, thumbShape)
                         }
                     ),
                 contentAlignment = Alignment.Center

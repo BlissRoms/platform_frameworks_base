@@ -84,3 +84,53 @@ fun <T> splitInRowsSequence(
         yield(row.tiles)
     }
 }
+
+/**
+ * Auto-arranges sized tiles for a standard grid so that rows are cleanly filled to [columns]
+ * without leaving single-column holes/empty spaces.
+ */
+fun <T> autoArrangeTiles(
+    tiles: List<SizedTile<T>>,
+    columns: Int,
+    largeSpan: Int = 2,
+): List<SizedTile<T>> {
+    if (columns <= 0 || tiles.isEmpty() || largeSpan <= 1) return tiles
+
+    val remaining = tiles.toMutableList()
+    val result = mutableListOf<SizedTile<T>>()
+
+    while (remaining.isNotEmpty()) {
+        val rowTiles = mutableListOf<SizedTile<T>>()
+        var rowSpace = columns
+
+        while (rowSpace > 0 && remaining.isNotEmpty()) {
+            if (rowSpace >= largeSpan) {
+                val tile = remaining.removeAt(0)
+                rowTiles.add(tile)
+                rowSpace -= tile.width
+            } else {
+                // Exactly 1 space left in this row (rowSpace == 1)
+                val iconIdx = remaining.indexOfFirst { it.width == 1 }
+                if (iconIdx != -1) {
+                    val iconTile = remaining.removeAt(iconIdx)
+                    rowTiles.add(iconTile)
+                    rowSpace -= 1
+                } else {
+                    // No more width 1 tiles in remaining.
+                    // To prevent an incomplete row with an empty hole,
+                    // expand an icon tile already placed in this row to largeSpan if possible.
+                    val iconInRowIdx = rowTiles.indexOfLast { it.width == 1 }
+                    if (iconInRowIdx != -1) {
+                        val iconToExpand = rowTiles.removeAt(iconInRowIdx)
+                        rowTiles.add(iconInRowIdx, SizedTileImpl(iconToExpand.tile, largeSpan))
+                        rowSpace -= (largeSpan - 1)
+                    } else {
+                        break
+                    }
+                }
+            }
+        }
+        result.addAll(rowTiles)
+    }
+    return result
+}

@@ -30,13 +30,21 @@ import com.android.systemui.qs.panels.ui.compose.selection.ResizingState.ResizeO
 import com.android.systemui.qs.pipeline.shared.TileSpec
 
 @Composable
-fun rememberResizingState(tileSpec: TileSpec, startsAsIcon: Boolean): ResizingState {
-    return remember(tileSpec) { ResizingState(tileSpec, startsAsIcon) }
+fun rememberResizingState(
+    tileSpec: TileSpec,
+    startsAsIcon: Boolean,
+    startsAsQuad: Boolean = false,
+    allowQuad: Boolean = false,
+): ResizingState {
+    return remember(tileSpec) {
+        ResizingState(tileSpec, startsAsIcon, startsAsQuad, allowQuad)
+    }
 }
 
 enum class QSDragAnchor {
     Icon,
     Large,
+    Quad,
 }
 
 /**
@@ -45,11 +53,26 @@ enum class QSDragAnchor {
  * @property isIcon whether or not the tile is currently an icon or a large tile
  * @property width the current width in pixel of the tile
  */
-data class QSDragAnchorsData(val isIcon: Boolean, val width: Int)
+data class QSDragAnchorsData(
+    val isIcon: Boolean,
+    val isQuad: Boolean = false,
+    val width: Int,
+)
 
-class ResizingState(tileSpec: TileSpec, startsAsIcon: Boolean) {
+class ResizingState(
+    tileSpec: TileSpec,
+    startsAsIcon: Boolean,
+    startsAsQuad: Boolean = false,
+    val allowQuad: Boolean = false,
+) {
     val anchoredDraggableState =
-        AnchoredDraggableState(if (startsAsIcon) QSDragAnchor.Icon else QSDragAnchor.Large)
+        AnchoredDraggableState(
+            when {
+                allowQuad && startsAsQuad -> QSDragAnchor.Quad
+                startsAsIcon -> QSDragAnchor.Icon
+                else -> QSDragAnchor.Large
+            }
+        )
 
     val bounds by derivedStateOf {
         anchoredDraggableState.anchors.minPosition().takeIf { !it.isNaN() } to
@@ -67,6 +90,7 @@ class ResizingState(tileSpec: TileSpec, startsAsIcon: Boolean) {
         TemporaryResizeOperation(
             tileSpec,
             toIcon = anchoredDraggableState.currentValue == QSDragAnchor.Icon,
+            toQuad = anchoredDraggableState.currentValue == QSDragAnchor.Quad,
         )
     }
 
@@ -74,6 +98,7 @@ class ResizingState(tileSpec: TileSpec, startsAsIcon: Boolean) {
         FinalResizeOperation(
             tileSpec,
             toIcon = anchoredDraggableState.settledValue == QSDragAnchor.Icon,
+            toQuad = anchoredDraggableState.settledValue == QSDragAnchor.Quad,
         )
     }
 
@@ -90,37 +115,66 @@ class ResizingState(tileSpec: TileSpec, startsAsIcon: Boolean) {
         val totalPadding = (maxSpan - 1) * padding
         val min = if (data.isIcon) data.width else (data.width - totalPadding) / maxSpan
         val max = if (data.isIcon) (data.width * maxSpan) + totalPadding else data.width
-        updateAnchors(min.toFloat(), max.toFloat())
+        if (allowQuad) {
+            val quadPos = max + (min * 0.75f)
+            anchoredDraggableState.updateAnchors(
+                DraggableAnchors {
+                    QSDragAnchor.Icon at min.toFloat()
+                    QSDragAnchor.Large at max.toFloat()
+                    QSDragAnchor.Quad at quadPos
+                }
+            )
+        } else {
+            anchoredDraggableState.updateAnchors(
+                DraggableAnchors {
+                    QSDragAnchor.Icon at min.toFloat()
+                    QSDragAnchor.Large at max.toFloat()
+                }
+            )
+        }
     }
 
-    private fun updateAnchors(min: Float, max: Float) {
-        anchoredDraggableState.updateAnchors(
-            DraggableAnchors {
-                QSDragAnchor.Icon at min
-                QSDragAnchor.Large at max
-            }
-        )
+    suspend fun updateCurrentValue(anchor: QSDragAnchor) {
+        anchoredDraggableState.animateTo(anchor)
     }
 
-    suspend fun updateCurrentValue(isIcon: Boolean) {
-        anchoredDraggableState.animateTo(if (isIcon) QSDragAnchor.Icon else QSDragAnchor.Large)
+    suspend fun updateCurrentValue(isIcon: Boolean, isQuad: Boolean = false) {
+        val anchor = when {
+            allowQuad && isQuad -> QSDragAnchor.Quad
+            isIcon -> QSDragAnchor.Icon
+            else -> QSDragAnchor.Large
+        }
+        anchoredDraggableState.animateTo(anchor)
     }
 
     suspend fun toggleCurrentValue() {
-        val isIcon = anchoredDraggableState.currentValue == QSDragAnchor.Icon
-        updateCurrentValue(!isIcon)
+        val current = anchoredDraggableState.settledValue
+        val nextAnchor = if (allowQuad) {
+            when (current) {
+                QSDragAnchor.Icon -> QSDragAnchor.Large
+                QSDragAnchor.Large -> QSDragAnchor.Quad
+                QSDragAnchor.Quad -> QSDragAnchor.Icon
+            }
+        } else {
+            val isIcon = current == QSDragAnchor.Icon
+            if (isIcon) QSDragAnchor.Large else QSDragAnchor.Icon
+        }
+        anchoredDraggableState.animateTo(nextAnchor)
     }
 
     fun progress(): Float {
         // Check if anchors are defined before calculating progress since it defaults to 1f
         // otherwise.
-        return if (
-            anchoredDraggableState.anchors.positionOf(QSDragAnchor.Icon).isNaN() ||
-                anchoredDraggableState.anchors.positionOf(QSDragAnchor.Large).isNaN()
-        ) {
+        val iconPos = anchoredDraggableState.anchors.positionOf(QSDragAnchor.Icon)
+        val largePos = anchoredDraggableState.anchors.positionOf(QSDragAnchor.Large)
+        return if (iconPos.isNaN() || largePos.isNaN()) {
             if (anchoredDraggableState.currentValue == QSDragAnchor.Icon) 0f else 1f
         } else {
-            anchoredDraggableState.progress(QSDragAnchor.Icon, QSDragAnchor.Large)
+            if (anchoredDraggableState.currentValue == QSDragAnchor.Quad) {
+                1f
+            } else {
+                anchoredDraggableState.progress(QSDragAnchor.Icon, QSDragAnchor.Large)
+            }
         }
     }
 
@@ -129,13 +183,19 @@ class ResizingState(tileSpec: TileSpec, startsAsIcon: Boolean) {
      *
      * @property spec The tile's [TileSpec]
      * @property toIcon The new size for the tile.
+     * @property toQuad Whether the tile is resizing to 2x2 quad size.
      */
-    sealed class ResizeOperation private constructor(val spec: TileSpec, val toIcon: Boolean) {
+    sealed class ResizeOperation(
+        val spec: TileSpec,
+        val toIcon: Boolean,
+        val toQuad: Boolean = false,
+    ) {
         /** A temporary resizing operation, used while a resizing movement is in motion. */
-        class TemporaryResizeOperation(spec: TileSpec, toIcon: Boolean) :
-            ResizeOperation(spec, toIcon)
+        class TemporaryResizeOperation(spec: TileSpec, toIcon: Boolean, toQuad: Boolean = false) :
+            ResizeOperation(spec, toIcon, toQuad)
 
         /** A final resizing operation, used while a resizing movement is done. */
-        class FinalResizeOperation(spec: TileSpec, toIcon: Boolean) : ResizeOperation(spec, toIcon)
+        class FinalResizeOperation(spec: TileSpec, toIcon: Boolean, toQuad: Boolean = false) :
+            ResizeOperation(spec, toIcon, toQuad)
     }
 }
