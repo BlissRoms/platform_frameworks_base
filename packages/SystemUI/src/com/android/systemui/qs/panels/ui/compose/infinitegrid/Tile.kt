@@ -297,7 +297,7 @@ fun ContentScope.Tile(
                 tile.state.collect { value = it.toIconProvider() }
             }
 
-        val panelStyle = LocalQSPanelStyle.current
+        val panelStyle = LocalQSPanelStyle.current.let { if (it != 0) it else rememberQSPanelStyle() }
         val tileAnimationStyle = LocalQSTileAnimationStyle.current
         val density = LocalDensity.current
 
@@ -317,7 +317,7 @@ fun ContentScope.Tile(
                 tileHapticsViewModelFactory.create(tile)
             }
 
-        if (tile.spec.spec == "sound" && !iconOnly) {
+        if (tile.spec.spec == "sound" && !iconOnly && panelStyle != 1) {
             QSTileRingerSlider()
             return@trace
         }
@@ -506,7 +506,7 @@ fun ContentScope.Tile(
                 modifier = contentRevealModifier,
             ) {
                 val iconProvider: Context.() -> Icon = { getTileIcon(icon = icon) }
-                val isClassicStyle = LocalQSPanelStyle.current == 1
+                val isClassicStyle = panelStyle == 1
                 if (isClassicStyle) {
                     ClassicCircleTileContent(
                         label = uiState.label,
