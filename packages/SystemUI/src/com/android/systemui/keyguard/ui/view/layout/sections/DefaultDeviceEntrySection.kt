@@ -26,11 +26,11 @@ import androidx.annotation.VisibleForTesting
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.android.systemui.biometrics.AuthController
+import com.android.systemui.common.ui.domain.interactor.ConfigurationInteractor
 import com.android.systemui.customization.clocks.R as clocksR
 import com.android.systemui.dagger.qualifiers.Application
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.flags.FeatureFlags
-import com.android.systemui.flags.Flags
 import com.android.systemui.keyguard.shared.model.KeyguardSection
 import com.android.systemui.keyguard.ui.binder.DeviceEntryIconViewBinder
 import com.android.systemui.keyguard.ui.view.DeviceEntryIconView
@@ -66,6 +66,7 @@ constructor(
     private val windowManager: WindowManager,
     private val windowRootViewBlurInteractor: WindowRootViewBlurInteractor,
     @ShadeDisplayAware private val context: Context,
+    @ShadeDisplayAware private val configurationInteractor: ConfigurationInteractor,
     private val notificationPanelView: NotificationPanelView,
     private val featureFlags: FeatureFlags,
     private val deviceEntryIconViewModel: Lazy<DeviceEntryIconViewModel>,
@@ -119,18 +120,9 @@ constructor(
         val isUdfpsSupported = deviceEntryIconViewModel.get().isUdfpsSupported.value
         blueprintLogger.d({ "isUdfpsSupported=$bool1" }) { bool1 = isUdfpsSupported }
 
-        val scaleFactor: Float = authController.scaleFactor
+        val scaleFactor: Float = configurationInteractor.getScaleForResolution()
         val mBottomPaddingPx =
             context.resources.getDimensionPixelSize(clocksR.dimen.lock_icon_margin_bottom)
-        val bounds = windowManager.currentWindowMetrics.bounds
-        var widthPixels = bounds.right.toFloat()
-        if (featureFlags.isEnabled(Flags.LOCKSCREEN_ENABLE_LANDSCAPE)) {
-            // Assumed to be initially neglected as there are no left or right insets in portrait.
-            // However, on landscape, these insets need to included when calculating the midpoint.
-            val insets = windowManager.currentWindowMetrics.windowInsets
-            widthPixels -= (insets.systemWindowInsetLeft + insets.systemWindowInsetRight).toFloat()
-        }
-        val heightPixels = bounds.bottom.toFloat()
         val defaultDensity =
             DisplayMetrics.DENSITY_DEVICE_STABLE.toFloat() /
                 DisplayMetrics.DENSITY_DEFAULT.toFloat()
@@ -152,13 +144,29 @@ constructor(
                 )
             }
         } else {
-            centerIcon(
-                Point(
-                    (widthPixels / 2).toInt(),
-                    (heightPixels - ((mBottomPaddingPx + iconRadiusPx) * scaleFactor)).toInt(),
-                ),
-                iconRadiusPx * scaleFactor,
+            anchorIconToBottom(
+                (iconRadiusPx * scaleFactor).toInt(),
+                (mBottomPaddingPx * scaleFactor).toInt(),
                 constraintSet,
+            )
+        }
+    }
+
+    @VisibleForTesting
+    internal fun anchorIconToBottom(radius: Int, bottomMargin: Int, constraintSet: ConstraintSet) {
+        val iconId = deviceEntryIconViewId
+
+        constraintSet.apply {
+            constrainWidth(iconId, radius * 2)
+            constrainHeight(iconId, radius * 2)
+            connect(iconId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(iconId, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(
+                iconId,
+                ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.BOTTOM,
+                bottomMargin,
             )
         }
     }

@@ -25,6 +25,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.systemui.SysuiTestCase
 import com.android.systemui.biometrics.AuthController
+import com.android.systemui.common.ui.domain.interactor.ConfigurationInteractor
 import com.android.systemui.flags.FakeFeatureFlags
 import com.android.systemui.flags.FakeFeatureFlagsClassic
 import com.android.systemui.flags.Flags
@@ -38,6 +39,7 @@ import com.android.systemui.res.R
 import com.android.systemui.shade.NotificationPanelView
 import com.android.systemui.statusbar.VibratorHelper
 import com.android.systemui.testKosmos
+import com.android.systemui.tuner.TunerService
 import com.android.systemui.util.mockito.whenever
 import com.android.systemui.window.domain.interactor.WindowRootViewBlurInteractor
 import com.google.android.msdl.domain.MSDLPlayer
@@ -63,11 +65,14 @@ class DefaultDeviceEntrySectionTest : SysuiTestCase() {
     @Mock private lateinit var falsingManager: FalsingManager
     @Mock private lateinit var deviceEntryIconViewModel: DeviceEntryIconViewModel
     @Mock private lateinit var msdlPlayer: MSDLPlayer
+    @Mock private lateinit var configurationInteractor: ConfigurationInteractor
+    @Mock private lateinit var tunerService: TunerService
     private lateinit var underTest: DefaultDeviceEntrySection
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
+        whenever(configurationInteractor.getScaleForResolution()).thenReturn(1f)
 
         featureFlags =
             FakeFeatureFlagsClassic().apply { set(Flags.LOCKSCREEN_ENABLE_LANDSCAPE, false) }
@@ -79,6 +84,7 @@ class DefaultDeviceEntrySectionTest : SysuiTestCase() {
                 windowManager,
                 windowRootViewBlurInteractor,
                 context,
+                configurationInteractor,
                 notificationPanelView,
                 featureFlags,
                 { deviceEntryIconViewModel },
@@ -89,6 +95,7 @@ class DefaultDeviceEntrySectionTest : SysuiTestCase() {
                 { msdlPlayer },
                 logcatLogBuffer(),
                 logcatLogBuffer("blueprints"),
+                tunerService,
             )
     }
 
@@ -107,8 +114,25 @@ class DefaultDeviceEntrySectionTest : SysuiTestCase() {
 
         val constraint = cs.getConstraint(R.id.device_entry_icon_view)
 
-        assertThat(constraint.layout.topToTop).isEqualTo(ConstraintSet.PARENT_ID)
+        assertThat(constraint.layout.bottomToBottom).isEqualTo(ConstraintSet.PARENT_ID)
         assertThat(constraint.layout.startToStart).isEqualTo(ConstraintSet.PARENT_ID)
+        assertThat(constraint.layout.endToEnd).isEqualTo(ConstraintSet.PARENT_ID)
+        assertThat(constraint.layout.topToTop).isEqualTo(ConstraintSet.UNSET)
+    }
+
+    @Test
+    fun testAnchorIconToBottom() {
+        val cs = ConstraintSet()
+        underTest.anchorIconToBottom(3, 7, cs)
+
+        val constraint = cs.getConstraint(R.id.device_entry_icon_view)
+
+        assertThat(constraint.layout.mWidth).isEqualTo(6)
+        assertThat(constraint.layout.mHeight).isEqualTo(6)
+        assertThat(constraint.layout.bottomToBottom).isEqualTo(ConstraintSet.PARENT_ID)
+        assertThat(constraint.layout.bottomMargin).isEqualTo(7)
+        assertThat(constraint.layout.startToStart).isEqualTo(ConstraintSet.PARENT_ID)
+        assertThat(constraint.layout.endToEnd).isEqualTo(ConstraintSet.PARENT_ID)
     }
 
     @Test

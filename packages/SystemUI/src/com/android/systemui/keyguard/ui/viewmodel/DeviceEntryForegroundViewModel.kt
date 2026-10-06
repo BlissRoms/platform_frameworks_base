@@ -100,10 +100,14 @@ constructor(
             if (udfpsSupported) {
                 udfpsOverlayInteractor.iconPadding.debounce(udfpsPaddingDebounceDuration.toLong())
             } else {
-                configurationInteractor.scaleForResolution.map { scale ->
-                    (context.resources.getDimensionPixelSize(R.dimen.lock_icon_padding) * scale)
-                        .roundToInt()
-                }
+                configurationInteractor.onAnyConfigurationChange
+                    .onStart { emit(Unit) }
+                    .map {
+                        (context.resources.getDimensionPixelSize(R.dimen.lock_icon_padding) *
+                                configurationInteractor.getScaleForResolution())
+                            .roundToInt()
+                    }
+                    .distinctUntilChanged()
             }
         }
 
