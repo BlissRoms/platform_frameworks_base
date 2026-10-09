@@ -8,8 +8,10 @@ import android.os.Looper
 import android.os.UserHandle
 import android.provider.Settings
 import com.android.systemui.dagger.qualifiers.Application
+import com.android.systemui.volume.Events
 import com.android.systemui.volume.dialog.dagger.scope.VolumeDialog
 import com.android.systemui.volume.dialog.dagger.scope.VolumeDialogScope
+import com.android.systemui.volume.dialog.domain.interactor.VolumeDialogVisibilityInteractor
 import com.android.systemui.volume.domain.interactor.VolumePanelNavigationInteractor
 import com.android.systemui.volume.ui.navigation.VolumeNavigator
 import javax.inject.Inject
@@ -29,6 +31,7 @@ constructor(
     @VolumeDialog private val coroutineScope: CoroutineScope,
     private val volumeNavigator: VolumeNavigator,
     private val volumePanelNavigationInteractor: VolumePanelNavigationInteractor,
+    private val visibilityInteractor: VolumeDialogVisibilityInteractor,
 ) {
     private fun shouldShowAppVolume(): Boolean {
         val showAppVolume = Settings.System.getIntForUser(
@@ -73,5 +76,6 @@ constructor(
         volumeNavigator.openVolumePanel(
             volumePanelNavigationInteractor.getAppVolumePanelRoute()
         )
+        visibilityInteractor.dismissDialog(Events.DISMISS_REASON_SETTINGS_CLICKED)
     }
 }

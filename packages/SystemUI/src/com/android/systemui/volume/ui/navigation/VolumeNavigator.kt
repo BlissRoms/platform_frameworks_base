@@ -35,6 +35,8 @@ import com.android.systemui.statusbar.phone.SystemUIDialogFactory
 import com.android.systemui.statusbar.phone.createBottomSheet
 import com.android.systemui.utils.coroutines.flow.conflatedCallbackFlow
 import com.android.systemui.volume.VolumePanelDialogManager
+import com.android.systemui.volume.appvolume.ui.composable.AppVolumePanel
+import com.android.systemui.volume.appvolume.ui.viewmodel.AppVolumePanelViewModel
 import com.android.systemui.volume.dialog.domain.interactor.ExpandedAudioTileDetailsFeatureInteractor
 import com.android.systemui.volume.domain.model.VolumePanelRoute
 import com.android.systemui.volume.panel.domain.interactor.VolumePanelGlobalStateInteractor
@@ -65,7 +67,10 @@ constructor(
     private val uiEventLogger: UiEventLogger,
     private val volumePanelGlobalStateInteractor: VolumePanelGlobalStateInteractor,
     private val expandedAudioTileDetailsFeatureInteractor: ExpandedAudioTileDetailsFeatureInteractor,
+    private val appVolumePanelViewModelFactory: AppVolumePanelViewModel.Factory,
 ) {
+
+    private var appVolumePanelDialog: Dialog? = null
 
     fun start() {
         volumePanelGlobalStateInteractor.globalState
@@ -97,12 +102,42 @@ constructor(
                 )
             VolumePanelRoute.SYSTEM_UI_VOLUME_PANEL ->
                 volumePanelDialogManager.create(aboveStatusBar = true, view = null)
-            VolumePanelRoute.APP_VOLUME_PANEL ->
-                activityStarter.startActivity(
-                    /* intent= */ Intent(Settings.Panel.ACTION_APP_VOLUME),
-                    /* dismissShade= */ true
-                )
+            VolumePanelRoute.APP_VOLUME_PANEL -> showAppVolumePanel()
         }
+    }
+
+    private fun showAppVolumePanel() {
+        activityStarter.dismissKeyguardThenExecute(
+            /* action = */ {
+                if (appVolumePanelDialog == null) {
+                    appVolumePanelDialog =
+                        createAppVolumePanelDialog().apply {
+                            setOnDismissListener { appVolumePanelDialog = null }
+                            show()
+                        }
+                }
+                false
+            },
+            /* cancel = */ {},
+            /* afterKeyguardGone = */ true,
+        )
+    }
+
+    private fun createAppVolumePanelDialog(): Dialog {
+        return dialogFactory.createBottomSheet(
+            content = { dialog ->
+                val coroutineScope = rememberCoroutineScope()
+                AppVolumePanel(
+                    remember(coroutineScope) {
+                        appVolumePanelViewModelFactory.create(coroutineScope, dialog::dismiss)
+                    },
+                    Modifier.sysUiResTagContainer(),
+                )
+            },
+            isDraggable = false,
+            maxWidth = 800.dp,
+            containerColorProvider = { MaterialTheme.colorScheme.surface },
+        )
     }
 
     private fun showNewVolumePanel() {

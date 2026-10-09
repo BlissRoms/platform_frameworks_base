@@ -121,4 +121,15 @@
     <string name="flashlight_strength_title">Flashlight Strength</string>
     <string name="flashlight_strength_turn_off">Turn off</string>
     <string name="flashlight_strength_turn_on">Turn on</string>
+
+    <!-- Per-app volume panel -->
+    <string name="app_volume_panel_title">App volume</string>
+    <string name="app_volume_panel_subtitle_idle">Adjust volume for each app playing audio</string>
+    <plurals name="app_volume_panel_subtitle_active">
+        <item quantity="one"><xliff:g id="count" example="1">%d</xliff:g> app playing audio</item>
+        <item quantity="other"><xliff:g id="count" example="3">%d</xliff:g> apps playing audio</item>
+    </plurals>
+    <string name="app_volume_panel_empty">No apps are playing audio right now</string>
+    <!-- Accessibility state description of an app volume slider [CHAR LIMIT=NONE] -->
+    <string name="app_volume_panel_percent"><xliff:g id="percent" example="50">%d</xliff:g> percent</string>
 </resources>
