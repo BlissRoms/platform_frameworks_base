@@ -44,10 +44,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.input.pointer.pointerInput
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberNothingQSMaxContentWidth
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -612,8 +615,13 @@ private fun NothingBrightnessSlider(
     val totalRange = (valueRange.endInclusive - valueRange.start).coerceAtLeast(1f)
     val fraction = ((value - valueRange.start) / totalRange).coerceIn(0f, 1f)
 
+    val maxContentWidth = rememberNothingQSMaxContentWidth()
+
     BoxWithConstraints(
         modifier = modifier
+            .fillMaxWidth()
+            .wrapContentWidth()
+            .widthIn(max = maxContentWidth)
             .fillMaxWidth()
             .height(52.dp)
             .clip(RoundedCornerShape(50))

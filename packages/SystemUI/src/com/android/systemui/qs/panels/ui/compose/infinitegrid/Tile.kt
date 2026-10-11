@@ -248,6 +248,18 @@ private fun rememberSecureIntSetting(key: String, defaultValue: Int = 0): Int {
 fun rememberQSPanelStyle(): Int = rememberSecureIntSetting("qs_panel_style")
 
 @Composable
+fun rememberNothingQSMaxCellSize(): Dp {
+    val maxCellSize = dimensionResource(R.dimen.qs_nothing_max_cell_size)
+    return if (maxCellSize > 0.dp) maxCellSize else Dp.Unspecified
+}
+
+@Composable
+fun rememberNothingQSMaxContentWidth(): Dp {
+    val maxCellSize = rememberNothingQSMaxCellSize()
+    return if (maxCellSize == Dp.Unspecified) Dp.Unspecified else maxCellSize * 4 + 16.dp * 3
+}
+
+@Composable
 fun rememberQSTileLabelHide(): Boolean = rememberSecureIntSetting("qs_tile_label_hide") == 1
 
 @Composable

@@ -53,4 +53,6 @@
 
     <!-- Biometric view -->
     <dimen name="biometric_indicator_above_margin_bottom">8dp</dimen>
+
+    <dimen name="qs_nothing_max_cell_size">0dp</dimen>
 </resources>

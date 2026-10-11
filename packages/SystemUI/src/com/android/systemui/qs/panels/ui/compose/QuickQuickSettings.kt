@@ -44,6 +44,7 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileLabelHi
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileOpacity
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileShape
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.Tile
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberNothingQSMaxCellSize
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileAnimationStyle
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileColumns
@@ -122,6 +123,7 @@ fun ContentScope.QuickQuickSettings(
                 spans = qqsSpans,
                 customPlacements = qqsPlacements.mapIndexed { idx, p -> p.copy(index = idx) },
                 useSquareCells = true,
+                maxCellSize = rememberNothingQSMaxCellSize(),
                 keys = { qqsTiles[it].spec },
                 modifier = Modifier.sysuiResTag("qqs_tile_layout"),
             ) { spanIndex, placement ->

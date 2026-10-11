@@ -473,6 +473,7 @@ fun TwoDimensionalSpannedGrid(
     useSquareCells: Boolean = false,
     horizontalPadding: Dp = 0.dp,
     targetCellSize: Dp = Dp.Unspecified,
+    maxCellSize: Dp = Dp.Unspecified,
     modifier: Modifier = Modifier,
     keys: (index: Int) -> Any = { it },
     content: @Composable BoxScope.(index: Int, placement: PlacedGridItem) -> Unit,
@@ -510,9 +511,12 @@ fun TwoDimensionalSpannedGrid(
         val rowSpacingPx = rowSpacing.roundToPx()
 
         val targetCellSizePx = if (targetCellSize != Dp.Unspecified) targetCellSize.roundToPx() else 0
+        val maxCellSizePx =
+            if (maxCellSize != Dp.Unspecified && maxCellSize > 0.dp) maxCellSize.roundToPx() else 0
+        val cellSizeLimitPx = if (targetCellSizePx > 0) targetCellSizePx else maxCellSizePx
         val baseHPaddingPx = horizontalPadding.roundToPx()
-        val hPaddingPx = if (targetCellSizePx > 0) {
-            val contentW = columns * targetCellSizePx + (columns - 1) * colSpacingPx
+        val hPaddingPx = if (cellSizeLimitPx > 0) {
+            val contentW = columns * cellSizeLimitPx + (columns - 1) * colSpacingPx
             maxOf(baseHPaddingPx, (totalWidth - contentW) / 2)
         } else {
             baseHPaddingPx

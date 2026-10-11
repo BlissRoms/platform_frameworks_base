@@ -70,6 +70,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -821,6 +823,9 @@ private fun NothingCurrentTilesGrid(
 
     Box(
         modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentWidth()
+            .widthIn(max = rememberNothingQSMaxContentWidth())
             .fillMaxWidth()
             .height { totalHeight.roundToPx() }
             .onGloballyPositioned { coordinates ->
