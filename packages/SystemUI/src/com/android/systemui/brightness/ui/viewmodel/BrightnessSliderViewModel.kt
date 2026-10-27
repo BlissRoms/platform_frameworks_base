@@ -35,6 +35,8 @@ import com.android.systemui.lifecycle.HydratedActivatable
 import com.android.systemui.res.R
 import com.android.systemui.settings.brightness.ui.BrightnessWarningToast
 import com.android.systemui.util.policy.PolicyRestriction
+import com.google.android.msdl.data.model.MSDLToken
+import com.google.android.msdl.domain.MSDLPlayer
 import dagger.Lazy
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -61,6 +63,7 @@ constructor(
     private val falsingInteractor: FalsingInteractor,
     @Assisted val supportsMirroring: Boolean,
     private val brightnessWarningToast: BrightnessWarningToast,
+    private val msdlPlayer: MSDLPlayer,
 ) : HydratedActivatable() {
 
     init {
@@ -121,7 +124,9 @@ constructor(
     }
 
     fun onIconClick() {
+        val token = if (autoMode) MSDLToken.SWITCH_OFF else MSDLToken.SWITCH_ON
         screenBrightnessInteractor.toggleBrightnessMode()
+        msdlPlayer.playToken(token)
     }
 
     fun setIsDragging(dragging: Boolean) {
