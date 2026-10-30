@@ -58,6 +58,7 @@ constructor(
     private var smartspaceView: View? = null
     private var dateView: LinearLayout? = null
     private var dateViewLargeClock: ViewGroup? = null
+    private var isSmartspaceShown = false
 
     private val smartspaceVisibilityListener = OnGlobalLayoutListener {
         smartspaceView?.let {
@@ -82,6 +83,7 @@ constructor(
 
     override fun addViews(constraintLayout: ConstraintLayout) {
         if (!keyguardSmartspaceViewModel.isSmartspaceEnabled) return
+        isSmartspaceShown = true
 
         smartspaceView =
             smartspaceController.buildAndConnectView(context)?.also {
@@ -115,7 +117,7 @@ constructor(
     }
 
     override fun bindData(constraintLayout: ConstraintLayout) {
-        if (!keyguardSmartspaceViewModel.isSmartspaceEnabled) return
+        if (!isSmartspaceShown) return
         disposableHandle?.dispose()
         disposableHandle =
             KeyguardSmartspaceViewBinder.bind(
@@ -127,7 +129,7 @@ constructor(
     }
 
     override fun applyConstraints(constraintSet: ConstraintSet) {
-        if (!keyguardSmartspaceViewModel.isSmartspaceEnabled) return
+        if (!isSmartspaceShown) return
         val dateWeatherPaddingStart = KeyguardSmartspaceViewModel.getDateWeatherStartMargin(context)
         val smartspaceHorizontalPadding =
             KeyguardSmartspaceViewModel.getSmartspaceHorizontalMargin(context)
@@ -341,7 +343,8 @@ constructor(
     }
 
     override fun removeViews(constraintLayout: ConstraintLayout) {
-        if (!keyguardSmartspaceViewModel.isSmartspaceEnabled) return
+        if (!isSmartspaceShown) return
+        isSmartspaceShown = false
 
         // The viewTreeObserver listener need to be removed before the view is detached, because the
         // viewTreeObserver is reset when the view is detached. See [View::getViewTreeObserver].
@@ -355,9 +358,13 @@ constructor(
                 }
             }
         }
+        smartspaceView = null
+        dateView = null
+        dateViewLargeClock = null
         keyguardUnlockAnimationController.lockscreenSmartspace = null
 
         disposableHandle?.dispose()
+        disposableHandle = null
     }
 
     private fun updateVisibility(constraintSet: ConstraintSet, isLargeClockVisible: Boolean) {

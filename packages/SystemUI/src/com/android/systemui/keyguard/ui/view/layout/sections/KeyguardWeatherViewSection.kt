@@ -25,6 +25,7 @@ import androidx.constraintlayout.widget.Barrier
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.android.systemui.customization.clocks.R as clocksR
+import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.keyguard.shared.model.KeyguardSection
 import com.android.systemui.res.R
 import com.android.systemui.statusbar.lockscreen.LockscreenSmartspaceController
@@ -35,6 +36,7 @@ import android.provider.Settings
 import com.android.systemui.keyguard.ui.viewmodel.KeyguardSmartspaceViewModel
 import com.android.systemui.weather.WeatherInfoView
 
+@SysUISingleton
 class KeyguardWeatherViewSection
 @Inject
 constructor(
@@ -43,20 +45,18 @@ constructor(
     val smartspaceController: LockscreenSmartspaceController,
     val keyguardSmartspaceViewModel: KeyguardSmartspaceViewModel,
 ) : KeyguardSection() {
-    private lateinit var weatherView: WeatherInfoView
+    private var weatherView: WeatherInfoView? = null
 
     override fun addViews(constraintLayout: ConstraintLayout) {
         if (!smartspaceController.isOmniWeatherEnabled || smartspaceController.isEnabled) return
 
         weatherView =
-            layoutInflater.inflate(R.layout.keyguard_weather_area, null, false) as WeatherInfoView
-        constraintLayout.addView(weatherView)
+            (layoutInflater.inflate(R.layout.keyguard_weather_area, null, false) as WeatherInfoView)
+                .also { constraintLayout.addView(it) }
     }
 
     override fun bindData(constraintLayout: ConstraintLayout) {
-        if (!smartspaceController.isOmniWeatherEnabled || smartspaceController.isEnabled) return
-
-        weatherView.init()
+        weatherView?.init()
     }
 
     private fun hasExtraWeatherOptions(): Boolean {
@@ -77,7 +77,7 @@ constructor(
     }
 
     override fun applyConstraints(constraintSet: ConstraintSet) {
-        if (!smartspaceController.isOmniWeatherEnabled || smartspaceController.isEnabled) return
+        if (weatherView == null) return
 
         val dateWeatherPaddingStart = KeyguardSmartspaceViewModel.getDateWeatherStartMargin(context)
         val endGuideline = if (keyguardSmartspaceViewModel.isFullWidthShade.value) {
@@ -148,11 +148,10 @@ constructor(
     }
 
     override fun removeViews(constraintLayout: ConstraintLayout) {
-        if (!smartspaceController.isOmniWeatherEnabled || smartspaceController.isEnabled) return
-
-        constraintLayout.findViewById<WeatherInfoView?>(R.id.keyguard_weather_area)?.let { weatherArea ->
-            weatherArea.cleanup()
-            constraintLayout.removeView(weatherArea)
+        weatherView?.let {
+            it.cleanup()
+            constraintLayout.removeView(it)
         }
+        weatherView = null
     }
 }

@@ -140,6 +140,17 @@ class SmartspaceSectionTest : SysuiTestCase() {
     }
 
     @Test
+    fun testRemoveViews_removesViews_whenSmartspaceDisabledAfterAdd() {
+        underTest.addViews(constraintLayout)
+        whenever(keyguardSmartspaceViewModel.isSmartspaceEnabled).thenReturn(false)
+
+        underTest.removeViews(constraintLayout)
+
+        assertThat(smartspaceView.parent).isNull()
+        assertThat(dateView.parent).isNull()
+    }
+
+    @Test
     fun testConstraintsWhenShadeLayoutIsNotWide() {
         underTest.addViews(constraintLayout)
         underTest.applyConstraints(constraintSet)

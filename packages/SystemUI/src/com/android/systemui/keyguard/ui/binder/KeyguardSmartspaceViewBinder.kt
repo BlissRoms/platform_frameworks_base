@@ -99,12 +99,9 @@ object KeyguardSmartspaceViewBinder {
                                 keyguardRootView.findViewById<View>(smallViewId)?.let {
                                     it.visibility = View.GONE
                                 }
-                                removeDateWeatherFromBurnInLayer(
-                                    keyguardRootView,
-                                    smartspaceViewModel,
-                                )
+                                removeDateWeatherFromBurnInLayer(keyguardRootView)
                             } else {
-                                addDateWeatherToBurnInLayer(keyguardRootView, smartspaceViewModel)
+                                addDateWeatherToBurnInLayer(keyguardRootView)
                             }
                             clockViewModel.burnInLayer?.updatePostLayout(keyguardRootView)
                         }
@@ -198,34 +195,24 @@ object KeyguardSmartspaceViewBinder {
         smartspaceViewModel: KeyguardSmartspaceViewModel,
     ) {
         if (clockViewModel.hasCustomWeatherDataDisplay.value) {
-            removeDateWeatherFromBurnInLayer(keyguardRootView, smartspaceViewModel)
+            removeDateWeatherFromBurnInLayer(keyguardRootView)
         } else {
-            addDateWeatherToBurnInLayer(keyguardRootView, smartspaceViewModel)
+            addDateWeatherToBurnInLayer(keyguardRootView)
         }
         clockViewModel.burnInLayer?.updatePostLayout(keyguardRootView)
     }
 
-    private fun addDateWeatherToBurnInLayer(
-        constraintLayout: ConstraintLayout,
-        smartspaceViewModel: KeyguardSmartspaceViewModel,
-    ) {
+    private fun addDateWeatherToBurnInLayer(constraintLayout: ConstraintLayout) {
         constraintLayout.findViewById<Layer>(R.id.burn_in_layer)?.apply {
-            if (smartspaceViewModel.isSmartspaceEnabled) {
-                val dateView =
-                    constraintLayout.requireViewById<View>(sharedR.id.date_smartspace_view)
+            constraintLayout.findViewById<View>(sharedR.id.date_smartspace_view)?.let { dateView ->
                 addView(dateView)
             }
         }
     }
 
-    private fun removeDateWeatherFromBurnInLayer(
-        constraintLayout: ConstraintLayout,
-        smartspaceViewModel: KeyguardSmartspaceViewModel,
-    ) {
+    private fun removeDateWeatherFromBurnInLayer(constraintLayout: ConstraintLayout) {
         constraintLayout.findViewById<Layer>(R.id.burn_in_layer)?.apply {
-            if (smartspaceViewModel.isSmartspaceEnabled) {
-                val dateView =
-                    constraintLayout.requireViewById<View>(sharedR.id.date_smartspace_view)
+            constraintLayout.findViewById<View>(sharedR.id.date_smartspace_view)?.let { dateView ->
                 removeView(dateView)
             }
         }

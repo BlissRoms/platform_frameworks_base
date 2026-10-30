@@ -21,6 +21,7 @@ import com.android.systemui.CoreStartable
 import com.android.systemui.keyguard.domain.interactor.KeyguardBlueprintInteractor
 import com.android.systemui.keyguard.shared.model.KeyguardBlueprint
 import com.android.systemui.keyguard.ui.view.layout.KeyguardBlueprintCommandListener
+import com.android.systemui.keyguard.ui.view.layout.KeyguardWeatherLayoutRefresher
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
@@ -53,5 +54,12 @@ abstract class KeyguardBlueprintModule {
     @ClassKey(KeyguardBlueprintCommandListener::class)
     abstract fun bindsKeyguardBlueprintCommandListener(
         keyguardBlueprintCommandListener: KeyguardBlueprintCommandListener
+    ): CoreStartable
+
+    @Binds
+    @IntoMap
+    @ClassKey(KeyguardWeatherLayoutRefresher::class)
+    abstract fun bindsKeyguardWeatherLayoutRefresher(
+        keyguardWeatherLayoutRefresher: KeyguardWeatherLayoutRefresher
     ): CoreStartable
 }
