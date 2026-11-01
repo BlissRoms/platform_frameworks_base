@@ -46,6 +46,8 @@ import com.android.systemui.qs.ui.viewmodel.QuickSettingsContainerViewModel
 import com.android.systemui.res.R
 import com.android.systemui.shade.domain.interactor.disableDualShade
 import com.android.systemui.shade.domain.interactor.enableDualShade
+import com.android.systemui.shared.settings.data.repository.fakeSecureSettingsRepository
+import com.android.systemui.shared.settings.data.repository.secureSettingsRepository
 import com.android.systemui.testKosmos
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -59,22 +61,23 @@ class QSColumnsViewModelTest : SysuiTestCase() {
         testKosmos().useUnconfinedTestDispatcher().apply {
             usingMediaInComposeFragment = true
             testCase.context.orCreateTestableResources.addOverride(
-                R.integer.quick_settings_infinite_grid_num_columns,
-                SINGLE_SPLIT_SHADE_COLUMNS,
+                com.android.internal.R.integer.config_qsTileColumnsMax,
+                MAX_USER_COLUMNS,
             )
             testCase.context.orCreateTestableResources.addOverride(
                 R.integer.quick_settings_dual_shade_num_columns,
                 DUAL_SHADE_COLUMNS,
             )
             testCase.context.orCreateTestableResources.addOverride(
-                R.integer.quick_settings_split_shade_num_columns,
-                SINGLE_SPLIT_SHADE_COLUMNS,
-            )
-            testCase.context.orCreateTestableResources.addOverride(
                 R.integer.quick_settings_infinite_grid_tile_max_width,
                 4,
             )
-            qsColumnsRepository = QSColumnsRepository(mainResources, configurationRepository)
+            qsColumnsRepository =
+                QSColumnsRepository(
+                    mainResources,
+                    configurationRepository,
+                    secureSettingsRepository,
+                )
         }
 
     @Test
@@ -255,8 +258,8 @@ class QSColumnsViewModelTest : SysuiTestCase() {
             // same as the columns if equal or under 4, otherwise we divide it in half
             assertThat(underTest.largeSpan).isEqualTo(4)
 
-            setColumns(2)
-            assertThat(underTest.largeSpan).isEqualTo(2)
+            setColumns(3)
+            assertThat(underTest.largeSpan).isEqualTo(3)
 
             setColumns(6)
             assertThat(underTest.largeSpan).isEqualTo(3)
@@ -317,8 +320,11 @@ class QSColumnsViewModelTest : SysuiTestCase() {
             assertThat(underTest.largeSpan).isEqualTo(4)
         }
 
-    private fun setColumns(columns: Int) =
-        setValueInConfig(columns, R.integer.quick_settings_infinite_grid_num_columns)
+    private suspend fun setColumns(columns: Int) =
+        kosmos.fakeSecureSettingsRepository.setInt(
+            QSColumnsRepository.USER_COLUMNS_SETTING,
+            columns,
+        )
 
     private fun setMaxWidth(width: Int) =
         setValueInConfig(width, R.integer.quick_settings_infinite_grid_tile_max_width)
@@ -330,7 +336,8 @@ class QSColumnsViewModelTest : SysuiTestCase() {
         }
 
     companion object {
-        private const val SINGLE_SPLIT_SHADE_COLUMNS = 4
+        private const val SINGLE_SPLIT_SHADE_COLUMNS = QSColumnsRepository.DEFAULT_USER_COLUMNS
+        private const val MAX_USER_COLUMNS = 10
         private const val DUAL_SHADE_COLUMNS = 2
 
         private fun Kosmos.makeMediaVisible(@MediaLocation location: Int, visible: Boolean) {

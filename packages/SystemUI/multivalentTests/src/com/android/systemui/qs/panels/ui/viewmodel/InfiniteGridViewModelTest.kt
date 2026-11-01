@@ -28,10 +28,11 @@ import com.android.systemui.kosmos.useUnconfinedTestDispatcher
 import com.android.systemui.lifecycle.activateIn
 import com.android.systemui.qs.composefragment.dagger.usingMediaInComposeFragment
 import com.android.systemui.qs.panels.data.repository.DefaultLargeTilesRepository
+import com.android.systemui.qs.panels.data.repository.QSColumnsRepository
 import com.android.systemui.qs.panels.data.repository.defaultLargeTilesRepository
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.infiniteGridLayout
 import com.android.systemui.qs.pipeline.shared.TileSpec
-import com.android.systemui.res.R
+import com.android.systemui.shared.settings.data.repository.fakeSecureSettingsRepository
 import com.android.systemui.testKosmos
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -43,10 +44,6 @@ import org.junit.runner.RunWith
 class InfiniteGridViewModelTest : SysuiTestCase() {
     private val kosmos =
         testKosmos().useUnconfinedTestDispatcher().apply {
-            testCase.context.orCreateTestableResources.addOverride(
-                R.integer.quick_settings_infinite_grid_num_columns,
-                4,
-            )
             defaultLargeTilesRepository =
                 object : DefaultLargeTilesRepository {
                     override val defaultLargeTiles: Set<TileSpec> = setOf(TileSpec.create("large"))
@@ -123,12 +120,7 @@ class InfiniteGridViewModelTest : SysuiTestCase() {
                 underTest.activateIn(testScope)
                 val rows = 3
 
-                // Set columns to 2
-                testCase.context.orCreateTestableResources.addOverride(
-                    R.integer.quick_settings_infinite_grid_num_columns,
-                    2,
-                )
-                fakeConfigurationRepository.onConfigurationChange()
+                fakeSecureSettingsRepository.setInt(QSColumnsRepository.USER_COLUMNS_SETTING, 3)
 
                 val tiles =
                     listOf(
@@ -146,19 +138,19 @@ class InfiniteGridViewModelTest : SysuiTestCase() {
                         largeTile(),
                     )
                 // --- Page 1 ---
-                // [L L] [S] [S]
-                // [L L] [L L]
-                // [S] [S] [L L]
+                // [L L] [S]
+                // [S] [L L]
+                // [L L] [S]
                 // --- Page 2 ---
-                // [L L] [S] [S]
-                // [L L]
+                // [S] [L L]
+                // [L L] [S]
+                // [S] [L L]
 
                 val pages = underTest.splitIntoPages(tiles, rows = rows)
 
-                assertThat(pages).hasSize(3)
-                assertThat(pages[0]).isEqualTo(tiles.take(4))
-                assertThat(pages[1]).isEqualTo(tiles.subList(4, 8))
-                assertThat(pages[2]).isEqualTo(tiles.drop(8))
+                assertThat(pages).hasSize(2)
+                assertThat(pages[0]).isEqualTo(tiles.take(6))
+                assertThat(pages[1]).isEqualTo(tiles.drop(6))
             }
         }
 

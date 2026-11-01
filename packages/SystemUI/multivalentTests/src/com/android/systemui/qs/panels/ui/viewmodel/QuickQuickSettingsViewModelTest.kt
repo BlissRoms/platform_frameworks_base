@@ -30,10 +30,12 @@ import com.android.systemui.media.controls.ui.controller.mediaHostStatesManager
 import com.android.systemui.media.controls.ui.view.MediaHost
 import com.android.systemui.media.remedia.data.repository.setHasMedia
 import com.android.systemui.qs.composefragment.dagger.usingMediaInComposeFragment
+import com.android.systemui.qs.panels.data.repository.QSColumnsRepository
 import com.android.systemui.qs.panels.domain.interactor.qsPreferencesInteractor
 import com.android.systemui.qs.pipeline.domain.interactor.currentTilesInteractor
 import com.android.systemui.qs.pipeline.shared.TileSpec
 import com.android.systemui.res.R
+import com.android.systemui.shared.settings.data.repository.fakeSecureSettingsRepository
 import com.android.systemui.testKosmos
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.TestScope
@@ -66,11 +68,6 @@ class QuickQuickSettingsViewModelTest : SysuiTestCase() {
             qsPreferencesInteractor.setLargeTilesSpecs(
                 tiles.filter { it.spec.startsWith(PREFIX_LARGE) }.toSet()
             )
-            testCase.context.orCreateTestableResources.addOverride(
-                R.integer.quick_settings_infinite_grid_num_columns,
-                4,
-            )
-            fakeConfigurationRepository.onConfigurationChange()
             usingMediaInComposeFragment = true
         }
 
@@ -174,6 +171,23 @@ class QuickQuickSettingsViewModelTest : SysuiTestCase() {
                 // [1] [2]
                 // [3 3]
                 assertThat(underTest.tileViewModels.map { it.tile.spec }).isEqualTo(tiles.take(3))
+            }
+        }
+
+    @Test
+    fun userColumns_overrideLargeScreenColumns() =
+        with(kosmos) {
+            testScope.runTest {
+                testCase.context.orCreateTestableResources.addOverride(
+                    R.integer.quick_settings_infinite_grid_num_columns,
+                    6,
+                )
+                fakeSecureSettingsRepository.setInt(QSColumnsRepository.USER_COLUMNS_SETTING, 5)
+                setRows(1)
+
+                assertThat(underTest.columns).isEqualTo(5)
+                // [1] [2] [3 3] [4]
+                assertThat(underTest.tileViewModels.map { it.tile.spec }).isEqualTo(tiles.take(4))
             }
         }
 

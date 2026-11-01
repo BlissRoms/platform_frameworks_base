@@ -35,6 +35,8 @@ import com.android.systemui.res.R
 import com.android.systemui.shade.domain.interactor.enableDualShade
 import com.android.systemui.shade.domain.interactor.enableSingleShade
 import com.android.systemui.shade.domain.interactor.enableSplitShade
+import com.android.systemui.shared.settings.data.repository.fakeSecureSettingsRepository
+import com.android.systemui.shared.settings.data.repository.secureSettingsRepository
 import com.android.systemui.testKosmos
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -48,18 +50,15 @@ class QSColumnsInteractorTest : SysuiTestCase() {
     private val kosmos =
         testKosmos().useUnconfinedTestDispatcher().apply {
             testCase.context.orCreateTestableResources.addOverride(
-                R.integer.quick_settings_infinite_grid_num_columns,
-                1,
-            )
-            testCase.context.orCreateTestableResources.addOverride(
                 R.integer.quick_settings_dual_shade_num_columns,
                 2,
             )
-            testCase.context.orCreateTestableResources.addOverride(
-                R.integer.quick_settings_split_shade_num_columns,
-                3,
-            )
-            qsColumnsRepository = QSColumnsRepository(mainResources, configurationRepository)
+            qsColumnsRepository =
+                QSColumnsRepository(
+                    mainResources,
+                    configurationRepository,
+                    secureSettingsRepository,
+                )
         }
     private lateinit var underTest: QSColumnsInteractor
 
@@ -72,10 +71,11 @@ class QSColumnsInteractorTest : SysuiTestCase() {
     fun withSingleShade_returnsCorrectValue() =
         kosmos.runTest {
             val latest by collectLastValue(underTest.columns)
+            fakeSecureSettingsRepository.setInt(QSColumnsRepository.USER_COLUMNS_SETTING, 5)
 
             enableSingleShade()
 
-            assertThat(latest).isEqualTo(1)
+            assertThat(latest).isEqualTo(5)
         }
 
     @Test
@@ -95,6 +95,7 @@ class QSColumnsInteractorTest : SysuiTestCase() {
     fun withSplitShade_returnsCorrectValue() =
         kosmos.runTest {
             val latest by collectLastValue(underTest.columns)
+            fakeSecureSettingsRepository.setInt(QSColumnsRepository.USER_COLUMNS_SETTING, 3)
 
             enableSplitShade()
 

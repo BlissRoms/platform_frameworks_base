@@ -107,6 +107,7 @@ import com.android.systemui.common.shared.model.Icon
 import com.android.systemui.haptics.msdl.qs.TileHapticsViewModel
 import com.android.systemui.lifecycle.rememberViewModel
 import com.android.systemui.qs.flags.QsDetailedView
+import com.android.systemui.qs.panels.data.repository.QSColumnsRepository
 import com.android.systemui.qs.panels.ui.compose.BounceableInfo
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.CyberPunkTileShape
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.classicTileShape
@@ -266,7 +267,11 @@ fun rememberQSTileLabelHide(): Boolean = rememberSecureIntSetting("qs_tile_label
 fun rememberQSTileColumns(): Int {
     val max = LocalContext.current.resources.getInteger(
         com.android.internal.R.integer.config_qsTileColumnsMax)
-    return rememberSecureIntSetting("qs_tile_columns", 4).coerceIn(3, max)
+    return rememberSecureIntSetting(
+            QSColumnsRepository.USER_COLUMNS_SETTING,
+            QSColumnsRepository.DEFAULT_USER_COLUMNS,
+        )
+        .coerceIn(QSColumnsRepository.MIN_USER_COLUMNS, max)
 }
 
 @Composable

@@ -43,9 +43,13 @@ constructor(
             .flatMapLatest {
                 when (it) {
                     ShadeMode.Dual -> repo.dualShadeColumns
-                    ShadeMode.Split -> repo.splitShadeColumns
-                    ShadeMode.Single -> repo.columns
+                    ShadeMode.Split,
+                    ShadeMode.Single -> repo.userColumns
                 }
             }
-            .stateIn(scope, SharingStarted.WhileSubscribed(), repo.defaultColumns)
+            .stateIn(
+                scope,
+                SharingStarted.WhileSubscribed(),
+                QSColumnsRepository.DEFAULT_USER_COLUMNS,
+            )
 }

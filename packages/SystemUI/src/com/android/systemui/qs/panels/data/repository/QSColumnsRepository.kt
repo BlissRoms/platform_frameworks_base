@@ -21,10 +21,14 @@ import com.android.systemui.common.ui.data.repository.ConfigurationRepository
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.res.R
 import com.android.systemui.shade.ShadeDisplayAware
+import com.android.systemui.shared.settings.data.repository.SecureSettingsRepository
 import com.android.systemui.util.kotlin.emitOnStart
 import com.android.systemui.util.kotlin.mapDirect
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 
 @SysUISingleton
 class QSColumnsRepository
@@ -32,19 +36,26 @@ class QSColumnsRepository
 constructor(
     @ShadeDisplayAware private val resources: Resources,
     @ShadeDisplayAware configurationRepository: ConfigurationRepository,
+    secureSettingsRepository: SecureSettingsRepository,
 ) {
-    val splitShadeColumns: Flow<Int> =
-        configurationRepository.onConfigurationChange.emitOnStart().mapDirect {
-            resources.getInteger(R.integer.quick_settings_split_shade_num_columns)
-        }
     val dualShadeColumns: Flow<Int> =
         configurationRepository.onConfigurationChange.emitOnStart().mapDirect {
             resources.getInteger(R.integer.quick_settings_dual_shade_num_columns)
         }
-    val columns: Flow<Int> =
-        configurationRepository.onConfigurationChange.emitOnStart().mapDirect {
-            resources.getInteger(R.integer.quick_settings_infinite_grid_num_columns)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userColumns: Flow<Int> =
+        configurationRepository.onConfigurationChange.emitOnStart().flatMapLatest {
+            val maxColumns =
+                resources.getInteger(com.android.internal.R.integer.config_qsTileColumnsMax)
+            secureSettingsRepository.intSetting(USER_COLUMNS_SETTING, DEFAULT_USER_COLUMNS).map {
+                it.coerceIn(MIN_USER_COLUMNS, maxColumns)
+            }
         }
-    val defaultColumns: Int =
-        resources.getInteger(R.integer.quick_settings_infinite_grid_num_columns)
+
+    companion object {
+        const val USER_COLUMNS_SETTING = "qs_tile_columns"
+        const val DEFAULT_USER_COLUMNS = 4
+        const val MIN_USER_COLUMNS = 3
+    }
 }

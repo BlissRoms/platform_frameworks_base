@@ -24,6 +24,7 @@ import com.android.systemui.coroutines.collectLastValue
 import com.android.systemui.kosmos.testCase
 import com.android.systemui.kosmos.testScope
 import com.android.systemui.res.R
+import com.android.systemui.shared.settings.data.repository.fakeSecureSettingsRepository
 import com.android.systemui.testKosmos
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -41,8 +42,8 @@ class QSColumnsRepositoryTest : SysuiTestCase() {
                 2,
             )
             testCase.context.orCreateTestableResources.addOverride(
-                R.integer.quick_settings_split_shade_num_columns,
-                3,
+                com.android.internal.R.integer.config_qsTileColumnsMax,
+                6,
             )
         }
     private lateinit var underTest: QSColumnsRepository
@@ -53,16 +54,57 @@ class QSColumnsRepositoryTest : SysuiTestCase() {
     }
 
     @Test
-    fun configChanges_triggerColumnsUpdate() =
+    fun userColumns_unset_returnsDefault() =
         with(kosmos) {
             testScope.runTest {
-                val latest by collectLastValue(underTest.columns)
+                val latest by collectLastValue(underTest.userColumns)
 
-                setColumnsInConfig(4)
-                assertThat(latest).isEqualTo(4)
+                assertThat(latest).isEqualTo(QSColumnsRepository.DEFAULT_USER_COLUMNS)
+            }
+        }
 
-                setColumnsInConfig(8)
-                assertThat(latest).isEqualTo(8)
+    @Test
+    fun userColumns_tracksSetting() =
+        with(kosmos) {
+            testScope.runTest {
+                val latest by collectLastValue(underTest.userColumns)
+
+                setUserColumns(5)
+                assertThat(latest).isEqualTo(5)
+
+                setUserColumns(3)
+                assertThat(latest).isEqualTo(3)
+            }
+        }
+
+    @Test
+    fun userColumns_outOfRange_isClamped() =
+        with(kosmos) {
+            testScope.runTest {
+                val latest by collectLastValue(underTest.userColumns)
+
+                setUserColumns(1)
+                assertThat(latest).isEqualTo(QSColumnsRepository.MIN_USER_COLUMNS)
+
+                setUserColumns(9)
+                assertThat(latest).isEqualTo(6)
+            }
+        }
+
+    @Test
+    fun userColumns_configChange_reappliesMaxColumns() =
+        with(kosmos) {
+            testScope.runTest {
+                val latest by collectLastValue(underTest.userColumns)
+                setUserColumns(6)
+
+                testCase.context.orCreateTestableResources.addOverride(
+                    com.android.internal.R.integer.config_qsTileColumnsMax,
+                    5,
+                )
+                fakeConfigurationRepository.onConfigurationChange()
+
+                assertThat(latest).isEqualTo(5)
             }
         }
 
@@ -76,22 +118,9 @@ class QSColumnsRepositoryTest : SysuiTestCase() {
             }
         }
 
-    @Test
-    fun withSplitShade_returnsCorrectValue() =
-        with(kosmos) {
-            testScope.runTest {
-                val latest by collectLastValue(underTest.splitShadeColumns)
-
-                assertThat(latest).isEqualTo(3)
-            }
-        }
-
-    private fun setColumnsInConfig(
-        columns: Int,
-        id: Int = R.integer.quick_settings_infinite_grid_num_columns,
-    ) =
-        with(kosmos) {
-            testCase.context.orCreateTestableResources.addOverride(id, columns)
-            fakeConfigurationRepository.onConfigurationChange()
-        }
+    private suspend fun setUserColumns(columns: Int) =
+        kosmos.fakeSecureSettingsRepository.setInt(
+            QSColumnsRepository.USER_COLUMNS_SETTING,
+            columns,
+        )
 }
