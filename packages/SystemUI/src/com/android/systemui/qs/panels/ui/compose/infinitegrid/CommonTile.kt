@@ -259,24 +259,8 @@ fun ClassicCircleTileContent(
     hideLabel: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val icon = iconProvider(context)
-    val animatedColor by animateColorAsState(colors.icon, label = "QSTileIconColor")
     val circleSize = CommonTileDefaults.ClassicCircleSize
     val tileHeight = CommonTileDefaults.ClassicTileHeight
-    val iconSize = 28.dp
-
-    val iconModifier = modifier
-        .size({ iconSize.roundToPx() }, { iconSize.roundToPx() })
-        .sysuiResTag(TEST_TAG_TILE_ICON)
-
-    val loadedDrawable =
-        remember(icon, context) {
-            when (icon) {
-                is Icon.Loaded -> icon.drawable
-                is Icon.Resource -> context.getDrawable(icon.resId)
-            }
-        }
 
     val opacity = LocalQSTileOpacity.current / 100f
     val bgColor = colors.background.copy(alpha = colors.background.alpha * opacity)
@@ -294,12 +278,11 @@ fun ClassicCircleTileContent(
                 .clip(classicTileShape(LocalQSTileShape.current))
                 .background(bgColor)
         ) {
-            NonClippedImage(
-                painter = rememberDrawablePainter(loadedDrawable),
-                contentDescription = icon.contentDescription?.load(),
-                colorFilter = ColorFilter.tint(color = animatedColor),
-                modifier = iconModifier.align(Alignment.Center),
-                contentScale = ContentScale.Fit,
+            SmallTileContent(
+                iconProvider = iconProvider,
+                color = colors.icon,
+                size = { CommonTileDefaults.ClassicIconSize },
+                modifier = Modifier.align(Alignment.Center),
             )
         }
 
@@ -353,30 +336,17 @@ fun NothingCircleTileContent(
     visualState: Int,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val icon = iconProvider(context)
     val isActive = visualState == android.service.quicksettings.Tile.STATE_ACTIVE
     val iconColor = if (isActive) Color.Black else Color.White
-    val animatedIconColor by animateColorAsState(iconColor, label = "NothingCircleIconColor")
-    val iconSize = 28.dp
-
-    val loadedDrawable = remember(icon, context) {
-        when (icon) {
-            is Icon.Loaded -> icon.drawable
-            is Icon.Resource -> context.getDrawable(icon.resId)
-        }
-    }
 
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        NonClippedImage(
-            painter = rememberDrawablePainter(loadedDrawable),
-            contentDescription = icon.contentDescription?.load(),
-            colorFilter = ColorFilter.tint(color = animatedIconColor),
-            modifier = Modifier.size(iconSize),
-            contentScale = ContentScale.Fit,
+        SmallTileContent(
+            iconProvider = iconProvider,
+            color = iconColor,
+            size = { CommonTileDefaults.NothingCircleIconSize },
         )
     }
 }
@@ -389,19 +359,9 @@ fun NothingPillTileContent(
     visualState: Int,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val icon = iconProvider(context)
     val isActive = visualState == android.service.quicksettings.Tile.STATE_ACTIVE
     val contentColor = if (isActive) Color.Black else Color.White
     val dividerColor = if (isActive) Color(0x33000000) else Color(0x33FFFFFF)
-    val iconSize = 26.dp
-
-    val loadedDrawable = remember(icon, context) {
-        when (icon) {
-            is Icon.Loaded -> icon.drawable
-            is Icon.Resource -> context.getDrawable(icon.resId)
-        }
-    }
 
     Row(
         modifier = modifier
@@ -410,12 +370,10 @@ fun NothingPillTileContent(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // Left Icon
-        NonClippedImage(
-            painter = rememberDrawablePainter(loadedDrawable),
-            contentDescription = icon.contentDescription?.load(),
-            colorFilter = ColorFilter.tint(color = contentColor),
-            modifier = Modifier.size(iconSize),
-            contentScale = ContentScale.Fit,
+        SmallTileContent(
+            iconProvider = iconProvider,
+            color = contentColor,
+            size = { CommonTileDefaults.NothingPillIconSize },
         )
 
         // Vertical divider |
@@ -472,7 +430,6 @@ fun NothingQuadTileContent(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val icon = iconProvider(context)
     val isActive = visualState == android.service.quicksettings.Tile.STATE_ACTIVE
     val iconBtnBg = if (isActive) Color.White else Color(0xFF383838)
     val iconTint = if (isActive) Color.Black else Color.White
@@ -480,7 +437,7 @@ fun NothingQuadTileContent(
 
     val isBluetooth = tileSpec == "bt" || label.contains("Bluetooth", ignoreCase = true)
     val connectedDevices: List<String> = if (isBluetooth) {
-        remember(context) {
+        remember(context, visualState, secondaryLabel) {
             try {
                 val btManager = context.getSystemService(BluetoothManager::class.java)
                 val adapter = btManager?.adapter
@@ -504,13 +461,6 @@ fun NothingQuadTileContent(
         emptyList()
     }
 
-    val loadedDrawable = remember(icon, context) {
-        when (icon) {
-            is Icon.Loaded -> icon.drawable
-            is Icon.Resource -> context.getDrawable(icon.resId)
-        }
-    }
-
     if (isBluetooth && connectedDevices.size > 1) {
         val pagerState = rememberPagerState { connectedDevices.size }
         Column(
@@ -529,12 +479,10 @@ fun NothingQuadTileContent(
                     .clickable { onClick() },
                 contentAlignment = Alignment.Center,
             ) {
-                NonClippedImage(
-                    painter = rememberDrawablePainter(loadedDrawable),
-                    contentDescription = icon.contentDescription?.load(),
-                    colorFilter = ColorFilter.tint(color = iconTint),
-                    modifier = Modifier.size(iconSize),
-                    contentScale = ContentScale.Fit,
+                SmallTileContent(
+                    iconProvider = iconProvider,
+                    color = iconTint,
+                    size = { iconSize },
                 )
             }
 
@@ -610,12 +558,10 @@ fun NothingQuadTileContent(
                     .clickable { onClick() },
                 contentAlignment = Alignment.Center,
             ) {
-                NonClippedImage(
-                    painter = rememberDrawablePainter(loadedDrawable),
-                    contentDescription = icon.contentDescription?.load(),
-                    colorFilter = ColorFilter.tint(color = iconTint),
-                    modifier = Modifier.size(iconSize),
-                    contentScale = ContentScale.Fit,
+                SmallTileContent(
+                    iconProvider = iconProvider,
+                    color = iconTint,
+                    size = { iconSize },
                 )
             }
 
@@ -845,6 +791,10 @@ object TileBounceMotionTestKeys {
 }
 
 object CommonTileDefaults {
+    val ClassicIconSize = 28.dp
+    val NothingCircleIconSize = 28.dp
+    val NothingPillIconSize = 26.dp
+
     val ActiveIconCornerRadius: Dp
         @Composable
         @ReadOnlyComposable
