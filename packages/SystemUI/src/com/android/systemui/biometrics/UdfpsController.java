@@ -886,9 +886,16 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             mUdfpsAnimation = null;
         }
         mUdfpsAnimation = new UdfpsAnimation(mContext, mWindowManager, mSensorProps, mAuthController);
-        if (mUdfpsAnimation != null) {
-            mUdfpsAnimation.updatePosition();
+        mUdfpsAnimation.updatePosition();
+        if (mOverlay != null) {
+            mUdfpsAnimation.setIsKeyguard(shouldShowUdfpsAnimation(mOverlay.getRequestReason()));
         }
+    }
+
+    private boolean shouldShowUdfpsAnimation(int requestReason) {
+        return requestReason == REASON_AUTH_KEYGUARD
+                || mKeyguardStateController.isShowing()
+                || mStatusBarStateController.isDozing();
     }
 
     /**
@@ -945,10 +952,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         final int requestReason = overlay.getRequestReason();
 
         if (mUdfpsAnimation != null) {
-            mUdfpsAnimation.setIsKeyguard(
-                    requestReason == REASON_AUTH_KEYGUARD
-                            || mKeyguardStateController.isShowing()
-                            || mStatusBarStateController.isDozing());
+            mUdfpsAnimation.setIsKeyguard(shouldShowUdfpsAnimation(requestReason));
         }
 
         if (requestReason == REASON_AUTH_KEYGUARD
