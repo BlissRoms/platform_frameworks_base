@@ -60,6 +60,18 @@ class BluetoothDeviceCategoryTest : SysuiTestCase() {
     }
 
     @Test
+    fun digitalPenClassReportingMouseInput_isStylus() {
+        val traits =
+            BluetoothDeviceTraits(
+                inputSources = InputDevice.SOURCE_MOUSE or InputDevice.SOURCE_KEYBOARD,
+                deviceClass = 0x051C,
+                majorDeviceClass = BluetoothClass.Device.Major.PERIPHERAL,
+            )
+
+        assertThat(traits.toCategory()).isEqualTo(BluetoothDeviceCategory.STYLUS)
+    }
+
+    @Test
     fun gamepadInputSource_isGamepad() {
         val traits =
             BluetoothDeviceTraits(

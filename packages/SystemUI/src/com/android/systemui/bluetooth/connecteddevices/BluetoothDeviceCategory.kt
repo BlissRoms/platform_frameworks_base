@@ -46,8 +46,12 @@ data class BluetoothDeviceTraits(
     val majorDeviceClass: Int? = null,
 )
 
+// Bluetooth Assigned Numbers peripheral minor class 0b0111; BluetoothClass has no constant for it.
+private const val PERIPHERAL_DIGITAL_PEN = 0x051C
+
 fun BluetoothDeviceTraits.toCategory(): BluetoothDeviceCategory =
     categoryFromMetadata(metadataDeviceType)
+        ?: BluetoothDeviceCategory.STYLUS.takeIf { deviceClass == PERIPHERAL_DIGITAL_PEN }
         ?: categoryFromInput(inputSources, hasAlphabeticKeyboard)
         ?: BluetoothDeviceCategory.HEARING_AID.takeIf { isHearingDevice }
         ?: categoryFromDeviceClass(deviceClass)
