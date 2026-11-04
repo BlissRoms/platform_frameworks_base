@@ -75,6 +75,7 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileShap
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileOpacity
 
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.Tile
+import com.android.systemui.bluetooth.connecteddevices.ConnectedBluetoothDevicesInteractor
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -87,6 +88,7 @@ constructor(
     override val viewModelFactory: InfiniteGridViewModel.Factory,
     private val textFeedbackContentViewModelFactory: TextFeedbackContentViewModel.Factory,
     private val tileHapticsViewModelFactory: TileHapticsViewModel.Factory,
+    private val connectedBluetoothDevicesInteractor: ConnectedBluetoothDevicesInteractor,
 ) : PaginatableGridLayout {
 
     @Composable
@@ -176,6 +178,8 @@ constructor(
                         LocalQSTileOpacity provides tileOpacity,
                         LocalQSTileAnimationStyle provides tileAnimationStyle,
                         LocalQSQuadTiles provides quadTiles,
+                        LocalQSBluetoothDevices provides
+                            connectedBluetoothDevicesInteractor.devices,
                     ) {
                         Tile(
                             tile = it,

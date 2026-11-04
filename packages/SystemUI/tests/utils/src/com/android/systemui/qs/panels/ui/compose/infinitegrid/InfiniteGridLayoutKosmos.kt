@@ -16,6 +16,7 @@
 
 package com.android.systemui.qs.panels.ui.compose.infinitegrid
 
+import com.android.systemui.bluetooth.connecteddevices.connectedBluetoothDevicesInteractor
 import com.android.systemui.haptics.msdl.tileHapticsViewModelFactory
 import com.android.systemui.kosmos.Kosmos
 import com.android.systemui.qs.panels.ui.viewmodel.detailsViewModel
@@ -31,5 +32,6 @@ val Kosmos.infiniteGridLayout by
             infiniteGridViewModelFactory,
             textFeedbackContentViewModelFactory,
             tileHapticsViewModelFactory,
+            connectedBluetoothDevicesInteractor,
         )
     }

@@ -38,6 +38,7 @@ import com.android.systemui.grid.ui.compose.calculate2DPlacements
 import com.android.systemui.qs.composefragment.ui.GridAnchor
 import com.android.systemui.qs.panels.shared.model.SizedTileImpl
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSPanelStyle
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSBluetoothDevices
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSQuadTiles
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileAnimationStyle
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileLabelHide
@@ -137,6 +138,7 @@ fun ContentScope.QuickQuickSettings(
                         LocalQSTileOpacity provides tileOpacity,
                         LocalQSTileAnimationStyle provides tileAnimationStyle,
                         LocalQSQuadTiles provides quadTiles,
+                        LocalQSBluetoothDevices provides viewModel.connectedBluetoothDevices,
                     ) {
                         Tile(
                             tile = it,

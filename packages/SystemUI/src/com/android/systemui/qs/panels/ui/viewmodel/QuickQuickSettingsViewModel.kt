@@ -19,6 +19,7 @@ package com.android.systemui.qs.panels.ui.viewmodel
 import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import com.android.systemui.bluetooth.connecteddevices.ConnectedBluetoothDevicesInteractor
 import com.android.systemui.haptics.msdl.qs.TileHapticsViewModel
 import com.android.systemui.lifecycle.HydratedActivatable
 import com.android.systemui.media.controls.ui.controller.MediaHierarchyManager.Companion.LOCATION_QQS
@@ -45,7 +46,10 @@ constructor(
     val squishinessViewModel: TileSquishinessViewModel,
     val iconTilesViewModel: IconTilesViewModel,
     val tileHapticsViewModelFactory: TileHapticsViewModel.Factory,
+    connectedBluetoothDevicesInteractor: ConnectedBluetoothDevicesInteractor,
 ) : HydratedActivatable() {
+
+    val connectedBluetoothDevices = connectedBluetoothDevicesInteractor.devices
 
     private val qsColumnsViewModel = qsColumnsViewModelFactory.create(LOCATION_QQS, mediaUiBehavior)
     private val mediaInRowViewModel =

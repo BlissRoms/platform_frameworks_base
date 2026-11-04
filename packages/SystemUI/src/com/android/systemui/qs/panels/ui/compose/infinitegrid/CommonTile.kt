@@ -16,7 +16,6 @@
 
 package com.android.systemui.qs.panels.ui.compose.infinitegrid
 
-import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -24,8 +23,6 @@ import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
@@ -128,6 +125,7 @@ private const val TEST_TAG_TILE_ICON = "qs_tile_icon"
 private const val TEST_TAG_TOGGLE = "qs_tile_toggle_target"
 private const val TEST_TAG_SMALL = "qs_tile_small"
 private const val TEST_TAG_LARGE = "qs_tile_large"
+private const val BLUETOOTH_TILE_SPEC = "bt"
 
 @Composable
 fun LargeTileContent(
@@ -426,193 +424,28 @@ fun NothingQuadTileContent(
     iconProvider: Context.() -> Icon,
     visualState: Int,
     onClick: () -> Unit = {},
-    onLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
     val isActive = visualState == android.service.quicksettings.Tile.STATE_ACTIVE
-    val iconBtnBg = if (isActive) Color.White else Color(0xFF383838)
-    val iconTint = if (isActive) Color.Black else Color.White
-    val iconSize = 28.dp
-
-    val isBluetooth = tileSpec == "bt" || label.contains("Bluetooth", ignoreCase = true)
-    val connectedDevices: List<String> = if (isBluetooth) {
-        remember(context, visualState, secondaryLabel) {
-            try {
-                val btManager = context.getSystemService(BluetoothManager::class.java)
-                val adapter = btManager?.adapter
-                if (adapter != null && adapter.isEnabled) {
-                    val bonded = adapter.bondedDevices ?: emptySet()
-                    bonded.filter { device ->
-                        try {
-                            device.isConnected
-                        } catch (e: Exception) {
-                            false
-                        }
-                    }.map { it.alias ?: it.name ?: "Bluetooth Device" }
-                } else {
-                    emptyList()
-                }
-            } catch (e: Exception) {
-                emptyList()
-            }
-        }
-    } else {
-        emptyList()
+    if (tileSpec == BLUETOOTH_TILE_SPEC) {
+        NothingBluetoothQuadTileContent(
+            iconProvider = iconProvider,
+            isActive = isActive,
+            label = label,
+            secondaryLabel = secondaryLabel,
+            onClick = onClick,
+            modifier = modifier,
+        )
+        return
     }
-
-    if (isBluetooth && connectedDevices.size > 1) {
-        val pagerState = rememberPagerState { connectedDevices.size }
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            // Top circular action button
-            Box(
-                modifier = Modifier
-                    .size(54.dp)
-                    .clip(CircleShape)
-                    .background(iconBtnBg)
-                    .clickable { onClick() },
-                contentAlignment = Alignment.Center,
-            ) {
-                SmallTileContent(
-                    iconProvider = iconProvider,
-                    color = iconTint,
-                    size = { iconSize },
-                )
-            }
-
-            // Swipeable pager for multiple connected devices
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth(),
-            ) { page ->
-                val deviceName = connectedDevices.getOrNull(page) ?: label
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        text = deviceName,
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center,
-                        ),
-                        maxLines = 1,
-                        softWrap = false,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = "Connected",
-                        color = Color.White.copy(alpha = 0.65f),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center,
-                        ),
-                        maxLines = 1,
-                        softWrap = false,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-
-            // Bottom device pager dots (only shown when multiple devices connected)
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                repeat(connectedDevices.size) { i ->
-                    Box(
-                        modifier = Modifier
-                            .size(5.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (i == pagerState.currentPage) Color.White
-                                else Color.White.copy(alpha = 0.35f)
-                            )
-                    )
-                }
-            }
-        }
-    } else {
-        // Standard view: 0 or 1 device connected, or not bluetooth
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            // Top circular action button
-            Box(
-                modifier = Modifier
-                    .size(54.dp)
-                    .clip(CircleShape)
-                    .background(iconBtnBg)
-                    .clickable { onClick() },
-                contentAlignment = Alignment.Center,
-            ) {
-                SmallTileContent(
-                    iconProvider = iconProvider,
-                    color = iconTint,
-                    size = { iconSize },
-                )
-            }
-
-            // Center Title & Status (NO pager, NO dots)
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                val primaryText = if (isBluetooth && connectedDevices.size == 1) {
-                    connectedDevices[0]
-                } else if (!secondaryLabel.isNullOrEmpty() && secondaryLabel != label) {
-                    secondaryLabel
-                } else {
-                    label
-                }
-                Text(
-                    text = primaryText,
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                    ),
-                    maxLines = 1,
-                    softWrap = false,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                val subtext = if (isBluetooth && connectedDevices.size == 1) {
-                    "Connected"
-                } else if (!secondaryLabel.isNullOrEmpty() && secondaryLabel != label) {
-                    label
-                } else if (isActive) {
-                    "On"
-                } else {
-                    "Off"
-                }
-                Text(
-                    text = subtext,
-                    color = Color.White.copy(alpha = 0.65f),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Center,
-                    ),
-                    maxLines = 1,
-                    softWrap = false,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-        }
+    Column(
+        modifier = modifier.fillMaxSize().padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
+        NothingQuadIconButton(iconProvider = iconProvider, isActive = isActive, onClick = onClick)
+        NothingQuadTileLabels(label, secondaryLabel, isActive)
+        Spacer(modifier = Modifier.height(5.dp))
     }
 }
 

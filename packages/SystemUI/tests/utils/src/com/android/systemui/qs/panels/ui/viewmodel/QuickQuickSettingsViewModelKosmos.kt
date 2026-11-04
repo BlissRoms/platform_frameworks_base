@@ -16,6 +16,7 @@
 
 package com.android.systemui.qs.panels.ui.viewmodel
 
+import com.android.systemui.bluetooth.connecteddevices.connectedBluetoothDevicesInteractor
 import com.android.systemui.haptics.msdl.tileHapticsViewModelFactory
 import com.android.systemui.kosmos.Kosmos
 import com.android.systemui.qs.panels.domain.interactor.quickQuickSettingsRowInteractor
@@ -33,6 +34,7 @@ val Kosmos.quickQuickSettingsViewModelFactory by
                     tileSquishinessViewModel,
                     iconTilesViewModel,
                     tileHapticsViewModelFactory,
+                    connectedBluetoothDevicesInteractor,
                 )
             }
         }

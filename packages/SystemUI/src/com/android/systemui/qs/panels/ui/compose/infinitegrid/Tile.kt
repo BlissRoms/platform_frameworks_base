@@ -660,7 +660,6 @@ fun ContentScope.Tile(
                             iconProvider = iconProvider,
                             visualState = uiState.visualState,
                             onClick = { tile.toggleClick() },
-                            onLongClick = longClick,
                             modifier = Modifier.fillMaxSize(),
                         )
                     } else if (!iconOnly) {
