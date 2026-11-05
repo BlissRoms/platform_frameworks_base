@@ -245,11 +245,6 @@ public class CompanionDeviceManagerService extends SystemService {
         // Init association stores
         mAssociationStore.refreshCache();
 
-        // Remove any revoked associations after reboot.
-        for (AssociationInfo ai : mAssociationStore.getRevokedAssociations()) {
-            mDisassociationProcessor.disassociate(ai.getId(), REASON_REVOKED);
-        }
-
         // Init UUID store
         mObservableUuidStore.readObservableUuids(getContext().getUserId());
 
@@ -293,6 +288,11 @@ public class CompanionDeviceManagerService extends SystemService {
     public void onUserUnlocked(@NonNull TargetUser user) {
         Slog.i(TAG, "onUserUnlocked() user=" + user);
         final int userId = user.getUserIdentifier();
+        for (AssociationInfo a : mAssociationStore.getRevokedAssociations()) {
+            if (a.getUserId() == userId) {
+                mDisassociationProcessor.disassociate(a.getId(), REASON_REVOKED);
+            }
+        }
 
         // Notify and bind the app after the phone is unlocked.
         mDevicePresenceProcessor.sendDevicePresenceEventOnUnlocked(userId);
@@ -685,23 +685,19 @@ public class CompanionDeviceManagerService extends SystemService {
         }
 
         @Override
-        public PendingIntent buildPermissionTransferUserConsentIntent(String packageName,
-                int userId, int associationId) {
-            return mSystemDataTransferProcessor.buildPermissionTransferUserConsentIntent(
-                    packageName, userId, associationId);
+        public PendingIntent buildPermissionTransferUserConsentIntent(int associationId) {
+            return mSystemDataTransferProcessor.buildPermissionTransferUserConsentIntent(associationId);
         }
 
         @Override
-        public boolean isPermissionTransferUserConsented(String packageName, int userId,
-                int associationId) {
+        public boolean isPermissionTransferUserConsented(int associationId) {
             return mSystemDataTransferProcessor.isPermissionTransferUserConsented(associationId);
         }
 
         @Override
-        public void startSystemDataTransfer(String packageName, int userId, int associationId,
+        public void startSystemDataTransfer(int associationId,
                 ISystemDataTransferCallback callback) {
-            mSystemDataTransferProcessor.startSystemDataTransfer(packageName, userId,
-                    associationId, callback);
+            mSystemDataTransferProcessor.startSystemDataTransfer(associationId, callback);
         }
 
         @Override
