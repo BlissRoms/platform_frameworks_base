@@ -623,6 +623,8 @@ private fun NothingBrightnessSlider(
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val currentOnValueChange by rememberUpdatedState(onValueChange)
+    val currentOnValueChangeFinished by rememberUpdatedState(onValueChangeFinished)
     val totalRange = (valueRange.endInclusive - valueRange.start).coerceAtLeast(1f)
     val fraction = ((value - valueRange.start) / totalRange).coerceIn(0f, 1f)
 
@@ -640,8 +642,8 @@ private fun NothingBrightnessSlider(
                 detectTapGestures { offset ->
                     val newFraction = (offset.x / size.width).coerceIn(0f, 1f)
                     val newValue = valueRange.start + newFraction * totalRange
-                    onValueChange(newValue)
-                    onValueChangeFinished()
+                    currentOnValueChange(newValue)
+                    currentOnValueChangeFinished()
                 }
             }
             .pointerInput(enabled, overriddenByAppState, valueRange) {
@@ -650,19 +652,19 @@ private fun NothingBrightnessSlider(
                     onDragStart = { offset ->
                         val newFraction = (offset.x / size.width).coerceIn(0f, 1f)
                         val newValue = valueRange.start + newFraction * totalRange
-                        onValueChange(newValue)
+                        currentOnValueChange(newValue)
                     },
                     onHorizontalDrag = { change, _ ->
                         change.consume()
                         val newFraction = (change.position.x / size.width).coerceIn(0f, 1f)
                         val newValue = valueRange.start + newFraction * totalRange
-                        onValueChange(newValue)
+                        currentOnValueChange(newValue)
                     },
                     onDragEnd = {
-                        onValueChangeFinished()
+                        currentOnValueChangeFinished()
                     },
                     onDragCancel = {
-                        onValueChangeFinished()
+                        currentOnValueChangeFinished()
                     }
                 )
             }
