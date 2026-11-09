@@ -246,7 +246,7 @@ fun BrightnessSlider(
         }
     }
 
-    val isNothingStyle = rememberQSPanelStyle() == 5
+    val isNothingStyle = rememberQSPanelStyle() == NOTHING_QS_PANEL_STYLE
 
     if (isNothingStyle) {
         NothingBrightnessSlider(
@@ -536,6 +536,8 @@ fun BrightnessSliderContainer(
         )
 
     val isRestricted = restriction is PolicyRestriction.Restricted
+    val isNothingStyle = rememberQSPanelStyle() == NOTHING_QS_PANEL_STYLE
+    val nothingMaxContentWidth = rememberNothingQSMaxContentWidth()
     Box(
         modifier =
             modifier
@@ -564,7 +566,16 @@ fun BrightnessSliderContainer(
             },
             onIconClick = { viewModel.onIconClick() },
             modifier =
-                Modifier.borderOnFocus(
+                Modifier.then(
+                        if (isNothingStyle) {
+                            Modifier.fillMaxWidth()
+                                .wrapContentWidth()
+                                .widthIn(max = nothingMaxContentWidth)
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .borderOnFocus(
                         color = MaterialTheme.colorScheme.secondary,
                         cornerSize = CornerSize(SliderTrackRoundedCorner),
                     )
@@ -615,13 +626,8 @@ private fun NothingBrightnessSlider(
     val totalRange = (valueRange.endInclusive - valueRange.start).coerceAtLeast(1f)
     val fraction = ((value - valueRange.start) / totalRange).coerceIn(0f, 1f)
 
-    val maxContentWidth = rememberNothingQSMaxContentWidth()
-
     BoxWithConstraints(
         modifier = modifier
-            .fillMaxWidth()
-            .wrapContentWidth()
-            .widthIn(max = maxContentWidth)
             .fillMaxWidth()
             .height(52.dp)
             .clip(RoundedCornerShape(50))
@@ -698,6 +704,8 @@ private fun NothingBrightnessSlider(
         }
     }
 }
+
+private const val NOTHING_QS_PANEL_STYLE = 5
 
 data class ContainerColors(val idleColor: Color, val mirrorColor: Color) {
     companion object {
