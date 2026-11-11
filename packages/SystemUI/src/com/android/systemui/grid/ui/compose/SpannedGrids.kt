@@ -357,6 +357,7 @@ fun calculate2DPlacements(
     maxRowsPerPage: Int = 0,
     maxRows: Int = 0,
     preferredPlacements: Map<Int, Pair<Int, Int>>? = null,
+    fillGaps: Boolean = false,
 ): List<PlacedGridItem> {
     val occupied = mutableListOf<BooleanArray>()
     fun isOccupied(r: Int, c: Int): Boolean {
@@ -409,7 +410,7 @@ fun calculate2DPlacements(
         }
 
         if (foundRow == -1) {
-            var r = minRow
+            var r = if (fillGaps) 0 else minRow
             while (foundRow == -1) {
                 if (maxRows > 0 && r + rowSpan > maxRows) {
                     break
@@ -474,12 +475,19 @@ fun TwoDimensionalSpannedGrid(
     horizontalPadding: Dp = 0.dp,
     targetCellSize: Dp = Dp.Unspecified,
     maxCellSize: Dp = Dp.Unspecified,
+    fillGaps: Boolean = false,
     modifier: Modifier = Modifier,
     keys: (index: Int) -> Any = { it },
     content: @Composable BoxScope.(index: Int, placement: PlacedGridItem) -> Unit,
 ) {
-    val placements = customPlacements ?: remember(spans, columns, preferredPlacements, maxRows) {
-        calculate2DPlacements(spans, columns, preferredPlacements = preferredPlacements, maxRows = maxRows)
+    val placements = customPlacements ?: remember(spans, columns, preferredPlacements, maxRows, fillGaps) {
+        calculate2DPlacements(
+            spans,
+            columns,
+            preferredPlacements = preferredPlacements,
+            maxRows = maxRows,
+            fillGaps = fillGaps,
+        )
     }
     val totalRows = remember(placements) {
         placements.maxOfOrNull { it.row + it.rowSpan } ?: 0

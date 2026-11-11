@@ -119,7 +119,8 @@ constructor(
         val tileShape = rememberQSTileShape()
         val tileOpacity = rememberQSTileOpacity()
         val tileAnimationStyle = rememberQSTileAnimationStyle()
-        val columns = if (isNothingStyle) 4 else if (isClassicStyle) customColumns else viewModel.columnsWithMediaViewModel.columns
+        val nothingColumns = rememberNothingQSColumns()
+        val columns = if (isNothingStyle) nothingColumns else if (isClassicStyle) customColumns else viewModel.columnsWithMediaViewModel.columns
         val rows = if (isClassicStyle) customRows else viewModel.columnsWithMediaViewModel.columns // fallback
         val largeTilesSpan = if (isClassicStyle) 1 else viewModel.columnsWithMediaViewModel.largeSpan
         val largeTiles by viewModel.iconTilesViewModel.largeTilesState
@@ -142,7 +143,7 @@ constructor(
         val scope = rememberCoroutineScope()
 
         if (isNothingStyle) {
-            val tileLayout = rememberQSTileLayout()
+            val tileLayout = rememberQSTileLayout().forNothingColumns(columns)
             val nothingSpans = remember(tiles, largeTiles, quadTiles) {
                 tiles.map {
                     if (quadTiles.contains(it.spec)) GridSpan(colSpan = 2, rowSpan = 2)
@@ -164,6 +165,7 @@ constructor(
                 maxRows = 4,
                 useSquareCells = true,
                 maxCellSize = rememberNothingQSMaxCellSize(),
+                fillGaps = isNothingReflow(columns),
                 keys = { tiles[it].spec },
                 modifier = modifier,
             ) { spanIndex, placement ->
@@ -302,7 +304,7 @@ constructor(
         val isNothingStyle = panelStyle == 5
         val quadTiles = if (isNothingStyle) rememberQuadTiles() else emptySet()
         val tileLayout = if (isNothingStyle) rememberQSTileLayout() else emptyMap()
-        val columns = if (isNothingStyle) 4 else columnsViewModel.columns
+        val columns = if (isNothingStyle) NOTHING_LAYOUT_COLUMNS else columnsViewModel.columns
         val largeTilesSpan = columnsViewModel.largeSpan
         val largeTiles by viewModel.iconTilesViewModel.largeTilesState
 

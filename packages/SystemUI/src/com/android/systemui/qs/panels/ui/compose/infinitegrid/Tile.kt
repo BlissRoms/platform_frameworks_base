@@ -80,6 +80,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -254,11 +255,40 @@ fun rememberNothingQSMaxCellSize(): Dp {
     return if (maxCellSize > 0.dp) maxCellSize else Dp.Unspecified
 }
 
+const val NOTHING_LAYOUT_COLUMNS = 4
+
 @Composable
-fun rememberNothingQSMaxContentWidth(): Dp {
+fun rememberNothingQSColumns(): Int = integerResource(R.integer.qs_nothing_columns)
+
+@Composable
+fun rememberNothingQSMaxContentWidth(columns: Int = NOTHING_LAYOUT_COLUMNS): Dp {
     val maxCellSize = rememberNothingQSMaxCellSize()
-    return if (maxCellSize == Dp.Unspecified) Dp.Unspecified else maxCellSize * 4 + 16.dp * 3
+    return if (maxCellSize == Dp.Unspecified) {
+        Dp.Unspecified
+    } else {
+        maxCellSize * columns + 16.dp * (columns - 1)
+    }
 }
+
+// Saved positions are authored on the 4 column editor, so other widths reflow them in order.
+fun <T> List<T>.inNothingLayoutOrder(
+    layout: Map<TileSpec, Pair<Int, Int>>,
+    columns: Int,
+    spec: (T) -> TileSpec,
+): List<T> {
+    if (columns == NOTHING_LAYOUT_COLUMNS) return this
+    return sortedWith(
+        compareBy(
+            { layout[spec(it)]?.first ?: Int.MAX_VALUE },
+            { layout[spec(it)]?.second ?: Int.MAX_VALUE },
+        )
+    )
+}
+
+fun Map<TileSpec, Pair<Int, Int>>.forNothingColumns(columns: Int): Map<TileSpec, Pair<Int, Int>> =
+    if (columns == NOTHING_LAYOUT_COLUMNS) this else emptyMap()
+
+fun isNothingReflow(columns: Int): Boolean = columns != NOTHING_LAYOUT_COLUMNS
 
 @Composable
 fun rememberQSTileLabelHide(): Boolean = rememberSecureIntSetting("qs_tile_label_hide") == 1

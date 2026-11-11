@@ -49,6 +49,10 @@ import com.android.systemui.development.ui.compose.BuildNumber
 import com.android.systemui.development.ui.viewmodel.BuildNumberViewModel
 import com.android.systemui.lifecycle.rememberViewModel
 import com.android.systemui.qs.panels.dagger.PaginatedBaseLayoutType
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.forNothingColumns
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.inNothingLayoutOrder
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.isNothingReflow
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberNothingQSColumns
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberNothingQSMaxContentWidth
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileColumns
@@ -97,33 +101,36 @@ constructor(
         val isClassicStyle = panelStyle == 1
         val isNothingStyle = panelStyle == 5
         val customQsRows = rememberQSTileQsRows()
-        val customColumns = if (isNothingStyle) 4 else rememberQSTileColumns()
+        val customColumns = if (isNothingStyle) rememberNothingQSColumns() else rememberQSTileColumns()
         val quadTiles = rememberQuadTiles()
         val largeTiles by viewModel.largeTiles.collectAsStateWithLifecycle()
         val pages = if (isNothingStyle) {
             val maxRowsPerPage = 4
             val tileLayout = rememberQSTileLayout()
-            remember(tiles, largeTiles, quadTiles, maxRowsPerPage, tileLayout) {
+            remember(tiles, largeTiles, quadTiles, maxRowsPerPage, tileLayout, customColumns) {
                 if (tiles.isEmpty()) {
                     listOf(emptyList())
                 } else {
-                    val spans = tiles.map {
+                    val orderedTiles = tiles.inNothingLayoutOrder(tileLayout, customColumns) { it.spec }
+                    val placedLayout = tileLayout.forNothingColumns(customColumns)
+                    val spans = orderedTiles.map {
                         if (quadTiles.contains(it.spec)) GridSpan(colSpan = 2, rowSpan = 2)
                         else if (largeTiles.contains(it.spec)) GridSpan(colSpan = 2, rowSpan = 1)
                         else GridSpan(colSpan = 1, rowSpan = 1)
                     }
-                    val preferredPlacements = tiles.mapIndexedNotNull { index, tile ->
-                        tileLayout[tile.spec]?.let { index to it }
+                    val preferredPlacements = orderedTiles.mapIndexedNotNull { index, tile ->
+                        placedLayout[tile.spec]?.let { index to it }
                     }.toMap()
                     val placements = calculate2DPlacements(
                         spans,
                         customColumns,
                         preferredPlacements = preferredPlacements,
                         maxRowsPerPage = maxRowsPerPage,
+                        fillGaps = isNothingReflow(customColumns),
                     )
                     val grouped = placements.groupBy { it.row / maxRowsPerPage }
                     grouped.keys.sorted().map { pageIndex ->
-                        grouped[pageIndex]!!.map { tiles[it.index] }
+                        grouped[pageIndex]!!.map { orderedTiles[it.index] }
                     }.ifEmpty { listOf(emptyList()) }
                 }
             }
@@ -144,7 +151,7 @@ constructor(
         }
 
         val pagerState = rememberPagerState(0) { pages.size }
-        val pagerMaxWidth = if (isNothingStyle) rememberNothingQSMaxContentWidth() else Dp.Unspecified
+        val pagerMaxWidth = if (isNothingStyle) rememberNothingQSMaxContentWidth(customColumns) else Dp.Unspecified
 
         LaunchedEffect(listening, pagerState) {
             snapshotFlow { listening() }

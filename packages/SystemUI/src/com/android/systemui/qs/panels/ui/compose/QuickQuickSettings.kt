@@ -45,6 +45,10 @@ import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileLabelHi
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileOpacity
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.LocalQSTileShape
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.Tile
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.forNothingColumns
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.inNothingLayoutOrder
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.isNothingReflow
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberNothingQSColumns
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberNothingQSMaxCellSize
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSTileAnimationStyle
@@ -78,15 +82,18 @@ fun ContentScope.QuickQuickSettings(
     val isClassicStyle = panelStyle == 1
     val isNothingStyle = panelStyle == 5
     val quadTiles = rememberQuadTiles()
-    val columns = if (isNothingStyle) 4 else if (isClassicStyle) customColumns else viewModel.columns
+    val nothingColumns = rememberNothingQSColumns()
+    val columns = if (isNothingStyle) nothingColumns else if (isClassicStyle) customColumns else viewModel.columns
     val squishiness by viewModel.squishinessViewModel.squishiness.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val largeTiles by viewModel.iconTilesViewModel.largeTiles.collectAsStateWithLifecycle()
 
     if (isNothingStyle) {
         val qqsMaxRows = 2
-        val tileLayout = rememberQSTileLayout()
+        val savedLayout = rememberQSTileLayout()
+        val tileLayout = savedLayout.forNothingColumns(columns)
         val allTiles = viewModel.allTileViewModels.map { it.tile }
+            .inNothingLayoutOrder(savedLayout, columns) { it.spec }
         val allSpans = remember(allTiles, largeTiles, quadTiles) {
             allTiles.map {
                 if (quadTiles.contains(it.spec)) GridSpan(colSpan = 2, rowSpan = 2)
@@ -105,6 +112,7 @@ fun ContentScope.QuickQuickSettings(
                 columns,
                 preferredPlacements = preferredPlacements,
                 maxRows = qqsMaxRows,
+                fillGaps = isNothingReflow(columns),
             )
         }
         val qqsTiles = remember(qqsPlacements, allTiles) {

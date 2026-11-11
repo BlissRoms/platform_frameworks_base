@@ -50,6 +50,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.input.pointer.pointerInput
+import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberNothingQSColumns
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberNothingQSMaxContentWidth
 import com.android.systemui.qs.panels.ui.compose.infinitegrid.rememberQSPanelStyle
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -537,7 +538,7 @@ fun BrightnessSliderContainer(
 
     val isRestricted = restriction is PolicyRestriction.Restricted
     val isNothingStyle = rememberQSPanelStyle() == NOTHING_QS_PANEL_STYLE
-    val nothingMaxContentWidth = rememberNothingQSMaxContentWidth()
+    val nothingMaxContentWidth = rememberNothingQSMaxContentWidth(rememberNothingQSColumns())
     Box(
         modifier =
             modifier
