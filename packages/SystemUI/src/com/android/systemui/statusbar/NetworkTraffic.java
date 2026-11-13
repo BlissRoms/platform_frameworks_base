@@ -19,6 +19,7 @@ package com.android.systemui.statusbar;
 import static com.android.systemui.statusbar.StatusBarIconView.STATE_ICON;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -38,6 +39,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,8 +124,8 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable,
     private ConnectivityManager mConnectivityManager;
     private final Handler mTrafficHandler;
 
-    private final AbsoluteSizeSpan mSpeedAbsoluteSizeSpan = new AbsoluteSizeSpan(7, true);
-    private final AbsoluteSizeSpan mUnitAbsoluteSizeSpan = new AbsoluteSizeSpan(6, true);
+    private static final float SPEED_TEXT_SIZE_DP = 7f;
+    private static final float UNIT_TEXT_SIZE_DP = 6f;
     private final DecimalFormat mDecimalFormat_0_2 = new DecimalFormat("0.##");
     private final DecimalFormat mDecimalFormat_2_0 = new DecimalFormat("##0");
     private final DecimalFormat mDecimalFormat_1_1 = new DecimalFormat("#0.#");
@@ -329,15 +331,20 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable,
                     formatSpeed = mDecimalFormat_0_2.format(speed / (float)Kilo);
                 }
                 spanSpeedString = new SpannableString(formatSpeed);
-                spanSpeedString.setSpan(mSpeedAbsoluteSizeSpan, 0, (formatSpeed).length(),
+                spanSpeedString.setSpan(textSizeSpan(SPEED_TEXT_SIZE_DP), 0, (formatSpeed).length(),
                         Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
                 spanUnitString = new SpannableString(unit);
-                spanUnitString.setSpan(mUnitAbsoluteSizeSpan, 0, (unit).length(),
+                spanUnitString.setSpan(textSizeSpan(UNIT_TEXT_SIZE_DP), 0, (unit).length(),
                         Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 return TextUtils.concat(spanSpeedString, "\n", spanUnitString);
             }
         };
+    }
+
+    private AbsoluteSizeSpan textSizeSpan(float sizeDp) {
+        return new AbsoluteSizeSpan(Math.round(TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, sizeDp, getResources().getDisplayMetrics())));
     }
 
     public static NetworkTraffic fromContext(Context context, String slot) {
@@ -530,6 +537,13 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable,
             setFixedWidth();
             setVisibility(mVisible ? View.VISIBLE : View.GONE);
         }
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mCurrentWidth = -1;
+        setFixedWidth();
     }
 
     private void setFixedWidth() {
